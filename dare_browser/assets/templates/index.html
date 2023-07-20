@@ -1,0 +1,46 @@
+{% include 'header.html' %}
+<div class="container">
+  {% include 'navigation.html' %}
+  <div class="row">
+    <div class="column">
+      <h1>DARE Database</h1>
+      <p><input class="u-full-width" placeholder="{{ query_string }}" id="query_string"></p>
+      <table>
+        <tr>
+          <th>Name</th>
+          <th>Location</th>
+          <th>Unit</th>
+          <th>Matched</th>
+        </tr>
+        {% for row in table_data %}
+        <tr>
+          <td><a href="{{ url_for('process_detail', id=row.id) }}">{{row.name}}</a></td>
+          <td>{{row.location}}</td>
+          <td>{{row.unit}}</td>
+          <td>{%  if row.matched %}<i class="fa-solid fa-check"></i>{% else %}<i class="fa-solid fa-circle-xmark"></i>{% endif %}</td>
+        </tr>
+        {% endfor %}
+      </table>
+    </div>
+  </div>
+</div>
+
+<script type="text/javascript">
+var search_bar = document.getElementById("query_string");
+search_bar.focus();
+
+var do_search = function () {
+  var qs = encodeURIComponent(document.getElementById("query_string").value);
+  if (qs) {
+    location.assign("{{ url_for('search') }}?database={{ database }}&q=" + qs);
+  };
+};
+
+search_bar.addEventListener("click", do_search);
+search_bar.addEventListener("keypress", function(event) {
+  if (event.key === "Enter") {
+    do_search();
+  }
+});
+</script>
+{% include 'footer.html' %}

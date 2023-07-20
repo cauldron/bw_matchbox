@@ -1,0 +1,58 @@
+{% include 'header.html' %}
+<div class="container">
+  {% include 'navigation.html' %}
+  <div class="row">
+    <div class="column">
+      <h1>{{ ds.name }}</h1>
+      <ul>
+          <li>Database: {{ ds.database }}</li>
+          <li>Location: {{ ds.location }}</li>
+          <li>Unit: {{ ds.unit }}</li>
+          <li>Comment: {{ds.comment }}</li>
+          {% if same_name_count %}
+              <li>Datasets with same name: {{ same_name_count }}: {% for obj in same_name %}<a href="{{ url_for('process_detail', id=obj.id) }}">{{obj.location}}</a> {% endfor %}</li>
+          {% endif %}
+
+      </ul>
+      <h2>Technosphere Inputs</h2>
+      <table>
+        <tr>
+          <th>Amount</th>
+          <th>Name</th>
+          <th>Location</th>
+          <th>Unit</th>
+          {% if show_matching %}
+            <th>Matched</th>
+            <th>Action</th>
+          {% endif %}
+        </tr>
+        {% for row in technosphere %}
+        <tr>
+          <td>{{row.amount}}</td>
+          <td><a href="{{ url_for('process_detail', id=row.input.id) }}">{{row.input.name}}</a></td>
+          <td>{{row.input.location}}</td>
+          <td>{{row.input.unit}}</td>
+          {% if show_matching %}
+            <td>{% if row.matched %}<i class="fa-solid fa-check"></i>{% else %}<i class="fa-solid fa-circle-xmark"></i>{% endif %}</td>
+            <td>
+              {% if row.matched %}
+                <div class="tooltip">
+                    <a class="button button-primary" href="{{ url_for("compare", source=row.input.id, target=row.match.id)}}">Compare</a>
+                    <div class="left">
+                        <p>{{ row.match.name }}</p>
+                        <p>{{ row.match.unit }}</p>
+                        <p>{{ row.match.location }}</p>
+                    </div>
+                </div>
+              {%  else %}
+                <a class="button button-primary" target="_blank" href="{{ url_for("match", source=row.input.id) }}">Match</a>
+              {% endif %}
+            </td>
+          {% endif %}
+        </tr>
+        {% endfor %}
+      </table>
+    </div>
+  </div>
+</div>
+{% include 'footer.html' %}

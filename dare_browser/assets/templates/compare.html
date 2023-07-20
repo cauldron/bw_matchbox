@@ -1,0 +1,58 @@
+{% include 'header.html' %}
+<div class="container">
+  {% include 'navigation.html' %}
+  <div class="row">
+    <div class="column one-third">
+      <h4>Location: {% if source.location == target.location %}Same{% else %}{{ source.location }} | {{ target.location }}{% endif %}</h4>
+    </div>
+    <div class="column one-third">
+      <h4>Unit: {% if source.unit == target.unit %}Same{% else %}{{ source.unit }} | {{ target.unit }}{% endif %}</h4>
+    </div>
+    <div class="column one-third">
+      <button class="button-primary" id="save-mapping">Save</button>
+    </div>
+  </div>
+  <div class="row">
+    <div class="column one-half">
+      <h3>{{ source.name }}</h3>
+      <table>
+        <tr>
+          <th>Amount</th>
+          <th>Name</th>
+          <th>Location</th>
+          <th>Unit</th>
+        </tr>
+        {% for row in source_technosphere %}
+        <tr>
+          <td>{{'%04g' % row.amount}}</td>
+          <td>{{row.input.name}}</td>
+          <td>{{row.input.location}}</td>
+          <td>{{row.input.unit}}</td>
+        </tr>
+        {% endfor %}
+      </table>
+    </div>
+    <div class="column one-half">
+      <h3>{{ target.name }}</h3>
+      <table>
+        <tr>
+          <th>Exc.</th>
+          <th>Amount</th>
+          <th>Name</th>
+          <th>Location</th>
+          <th>Unit</th>
+        </tr>
+        {% for row in target_technosphere %}
+        <tr>
+          <td><input type="checkbox" id="exclude-exchange-{{ row.id }}"></td>
+          <td>{{'%04g' % row.amount}}</td>
+          <td>{{row.input.name}}</td>
+          <td>{{row.input.location}}</td>
+          <td>{{row.input.unit}}</td>
+        </tr>
+        {% endfor %}
+      </table>
+    </div>
+  </div>
+</div>
+{% include 'footer.html' %}

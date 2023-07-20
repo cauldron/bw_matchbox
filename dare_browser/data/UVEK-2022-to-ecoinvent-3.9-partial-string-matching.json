@@ -1,0 +1,3622 @@
+{
+  "name": "UVEK-2022-to-ecoinvent-3.9-partial-string-matching",
+  "licenses": [
+    {
+      "name": "CC BY 4.0",
+      "path": "https://creativecommons.org/licenses/by/4.0/",
+      "title": "Creative Commons Attribution 4.0 International"
+    }
+  ],
+  "version": "1.0.0",
+  "description": "Partial matching of UVEK activities to ecoinvent activity/product/locations focused on mining and associated processes",
+  "created": "2023-06-13T13:43:26.367778",
+  "contributors": [
+    {
+      "title": "Chris Mutel",
+      "path": "https://chris.mutel.org/",
+      "role": "author"
+    }
+  ],
+  "replace": [
+    {
+      "source": {
+        "name": "canal",
+        "unit": "meter-year"
+      },
+      "target": {
+        "name": "canal construction",
+        "reference product": "canal"
+      }
+    },
+    {
+      "source": {
+        "name": "electricity, medium voltage, residual mix",
+        "unit": "kilowatt hour"
+      },
+      "target": {
+        "name": "electricity, medium voltage, residual mix",
+        "reference product": "electricity, medium voltage"
+      }
+    },
+    {
+      "source": {
+        "name": "electricity, low voltage, residual mix",
+        "unit": "kilowatt hour"
+      },
+      "target": {
+        "name": "electricity, low voltage, residual mix",
+        "reference product": "electricity, low voltage"
+      }
+    },
+    {
+      "source": {
+        "name": "electricity, low voltage, residual mix",
+        "unit": "kilowatt hour"
+      },
+      "target": {
+        "name": "electricity, low voltage, residual mix",
+        "reference product": "electricity, low voltage"
+      }
+    },
+    {
+      "source": {
+        "name": "tillage, ploughing",
+        "unit": "hectare"
+      },
+      "target": {
+        "name": "tillage, ploughing",
+        "reference product": "tillage, ploughing"
+      }
+    },
+    {
+      "source": {
+        "name": "section bar extrusion, aluminium",
+        "unit": "kilogram"
+      },
+      "target": {
+        "name": "section bar extrusion, aluminium",
+        "reference product": "section bar extrusion, aluminium"
+      }
+    },
+    {
+      "source": {
+        "name": "solid manure loading and spreading, by hydraulic loader and spreader",
+        "unit": "kilogram"
+      },
+      "target": {
+        "name": "solid manure loading and spreading, by hydraulic loader and spreader",
+        "reference product": "solid manure loading and spreading, by hydraulic loader and spreader"
+      }
+    },
+    {
+      "source": {
+        "name": "electricity, high voltage, residual mix",
+        "unit": "kilowatt hour"
+      },
+      "target": {
+        "name": "electricity, high voltage, residual mix",
+        "reference product": "electricity, high voltage"
+      }
+    },
+    {
+      "source": {
+        "name": "sheet rolling, chromium steel",
+        "unit": "kilogram"
+      },
+      "target": {
+        "name": "sheet rolling, chromium steel",
+        "reference product": "sheet rolling, chromium steel"
+      }
+    },
+    {
+      "source": {
+        "name": "brake wear emissions, passenger car",
+        "unit": "kilogram"
+      },
+      "target": {
+        "name": "treatment of brake wear emissions, passenger car",
+        "reference product": "brake wear emissions, passenger car"
+      }
+    },
+    {
+      "source": {
+        "name": "electricity, high voltage, residual mix",
+        "unit": "kilowatt hour"
+      },
+      "target": {
+        "name": "electricity, high voltage, residual mix",
+        "reference product": "electricity, high voltage"
+      }
+    },
+    {
+      "source": {
+        "name": "electricity, high voltage, residual mix",
+        "unit": "kilowatt hour"
+      },
+      "target": {
+        "name": "electricity, high voltage, residual mix",
+        "reference product": "electricity, high voltage"
+      }
+    },
+    {
+      "source": {
+        "name": "electricity, medium voltage, residual mix",
+        "unit": "kilowatt hour"
+      },
+      "target": {
+        "name": "electricity, medium voltage, residual mix",
+        "reference product": "electricity, medium voltage"
+      }
+    },
+    {
+      "source": {
+        "name": "electricity, high voltage, residual mix",
+        "unit": "kilowatt hour"
+      },
+      "target": {
+        "name": "electricity, high voltage, residual mix",
+        "reference product": "electricity, high voltage"
+      }
+    },
+    {
+      "source": {
+        "name": "indium, at regional storage",
+        "unit": "kilogram"
+      },
+      "target": {
+        "name": "indium production",
+        "reference product": "indium"
+      }
+    },
+    {
+      "source": {
+        "name": "harvesting/bundling, energy wood harvester",
+        "unit": "hour"
+      },
+      "target": {
+        "name": "harvesting/bundling, energy wood harvester",
+        "reference product": "harvesting/bundling, energy wood harvester"
+      }
+    },
+    {
+      "source": {
+        "name": "blasting",
+        "unit": "kilogram"
+      },
+      "target": {
+        "name": "blasting",
+        "reference product": "blasting"
+      }
+    },
+    {
+      "source": {
+        "name": "milking",
+        "unit": "kilogram"
+      },
+      "target": {
+        "name": "milking",
+        "reference product": "milking"
+      }
+    },
+    {
+      "source": {
+        "name": "electricity, high voltage, residual mix",
+        "unit": "kilowatt hour"
+      },
+      "target": {
+        "name": "electricity, high voltage, residual mix",
+        "reference product": "electricity, high voltage"
+      }
+    },
+    {
+      "source": {
+        "name": "aluminium melting furnace",
+        "unit": "unit"
+      },
+      "target": {
+        "name": "aluminium melting furnace production",
+        "reference product": "aluminium melting furnace"
+      }
+    },
+    {
+      "source": {
+        "name": "tillage, harrowing, by rotary harrow",
+        "unit": "hectare"
+      },
+      "target": {
+        "name": "tillage, harrowing, by rotary harrow",
+        "reference product": "tillage, harrowing, by rotary harrow"
+      }
+    },
+    {
+      "source": {
+        "name": "mounting, through-hole technology, Pb-containing solder",
+        "unit": "square meter"
+      },
+      "target": {
+        "name": "mounting, through-hole technology, Pb-containing solder",
+        "reference product": "mounting, through-hole technology, Pb-containing solder"
+      }
+    },
+    {
+      "source": {
+        "name": "packaging glass, green, at regional storage",
+        "unit": "kilogram"
+      },
+      "target": {
+        "name": "packaging glass production, green",
+        "reference product": "packaging glass, green"
+      }
+    },
+    {
+      "source": {
+        "name": "folpet, at regional storage",
+        "unit": "kilogram"
+      },
+      "target": {
+        "name": "folpet production",
+        "reference product": "folpet"
+      }
+    },
+    {
+      "source": {
+        "name": "pump station",
+        "unit": "unit"
+      },
+      "target": {
+        "name": "pump station construction",
+        "reference product": "pump station"
+      }
+    },
+    {
+      "source": {
+        "name": "selective coating, aluminium sheet, nickel pigmented aluminium oxide",
+        "unit": "square meter"
+      },
+      "target": {
+        "name": "selective coating, aluminium sheet, nickel pigmented aluminium oxide",
+        "reference product": "selective coat, aluminium sheet, nickel pigmented aluminium oxide"
+      }
+    },
+    {
+      "source": {
+        "name": "transport, passenger coach",
+        "unit": "person kilometer"
+      },
+      "target": {
+        "name": "transport, passenger coach",
+        "reference product": "transport, passenger coach"
+      }
+    },
+    {
+      "source": {
+        "name": "sheet rolling, aluminium",
+        "unit": "kilogram"
+      },
+      "target": {
+        "name": "sheet rolling, aluminium",
+        "reference product": "sheet rolling, aluminium"
+      }
+    },
+    {
+      "source": {
+        "name": "electricity, low voltage, residual mix",
+        "unit": "kilowatt hour"
+      },
+      "target": {
+        "name": "electricity, low voltage, residual mix",
+        "reference product": "electricity, low voltage"
+      }
+    },
+    {
+      "source": {
+        "name": "anode, for metal electrolysis",
+        "unit": "kilogram"
+      },
+      "target": {
+        "name": "anode production, for metal electrolysis",
+        "reference product": "anode, for metal electrolysis"
+      }
+    },
+    {
+      "source": {
+        "name": "transmission network, electricity, high voltage",
+        "unit": "kilometer"
+      },
+      "target": {
+        "name": "transmission network construction, electricity, high voltage",
+        "reference product": "transmission network, electricity, high voltage"
+      }
+    },
+    {
+      "source": {
+        "name": "electricity, medium voltage, residual mix",
+        "unit": "kilowatt hour"
+      },
+      "target": {
+        "name": "electricity, medium voltage, residual mix",
+        "reference product": "electricity, medium voltage"
+      }
+    },
+    {
+      "source": {
+        "name": "barge tanker",
+        "unit": "unit"
+      },
+      "target": {
+        "name": "barge tanker production",
+        "reference product": "barge tanker"
+      }
+    },
+    {
+      "source": {
+        "name": "electricity, medium voltage, residual mix",
+        "unit": "kilowatt hour"
+      },
+      "target": {
+        "name": "electricity, medium voltage, residual mix",
+        "reference product": "electricity, medium voltage"
+      }
+    },
+    {
+      "source": {
+        "name": "sweetening, natural gas",
+        "unit": "cubic meter"
+      },
+      "target": {
+        "name": "sweetening, natural gas",
+        "reference product": "sweetening, natural gas"
+      }
+    },
+    {
+      "source": {
+        "name": "dung slab",
+        "unit": "square meter"
+      },
+      "target": {
+        "name": "dung slab construction",
+        "reference product": "dung slab"
+      }
+    },
+    {
+      "source": {
+        "name": "electricity, low voltage, residual mix",
+        "unit": "kilowatt hour"
+      },
+      "target": {
+        "name": "electricity, low voltage, residual mix",
+        "reference product": "electricity, low voltage"
+      }
+    },
+    {
+      "source": {
+        "name": "welding, gas, steel",
+        "unit": "meter"
+      },
+      "target": {
+        "name": "welding, gas, steel",
+        "reference product": "welding, gas, steel"
+      }
+    },
+    {
+      "source": {
+        "name": "plaster mixing",
+        "unit": "kilogram"
+      },
+      "target": {
+        "name": "plaster mixing",
+        "reference product": "plaster mixing"
+      }
+    },
+    {
+      "source": {
+        "name": "sanitary ceramics, at regional storage",
+        "unit": "kilogram"
+      },
+      "target": {
+        "name": "sanitary ceramics production",
+        "reference product": "sanitary ceramics"
+      }
+    },
+    {
+      "source": {
+        "name": "electricity, medium voltage, residual mix",
+        "unit": "kilowatt hour"
+      },
+      "target": {
+        "name": "electricity, medium voltage, residual mix",
+        "reference product": "electricity, medium voltage"
+      }
+    },
+    {
+      "source": {
+        "name": "planting",
+        "unit": "hectare"
+      },
+      "target": {
+        "name": "planting",
+        "reference product": "planting"
+      }
+    },
+    {
+      "source": {
+        "name": "paper mill, integrated",
+        "unit": "unit"
+      },
+      "target": {
+        "name": "paper mill construction, integrated",
+        "reference product": "paper mill, integrated"
+      }
+    },
+    {
+      "source": {
+        "name": "electricity, low voltage, residual mix",
+        "unit": "kilowatt hour"
+      },
+      "target": {
+        "name": "electricity, low voltage, residual mix",
+        "reference product": "electricity, low voltage"
+      }
+    },
+    {
+      "source": {
+        "name": "welding, arc, aluminium",
+        "unit": "meter"
+      },
+      "target": {
+        "name": "welding, arc, aluminium",
+        "reference product": "welding, arc, aluminium"
+      }
+    },
+    {
+      "source": {
+        "name": "potato planting",
+        "unit": "hectare"
+      },
+      "target": {
+        "name": "planting, potato",
+        "reference product": "potato planting"
+      }
+    },
+    {
+      "source": {
+        "name": "sugar refinery",
+        "unit": "unit"
+      },
+      "target": {
+        "name": "market for sugar refinery",
+        "reference product": "sugar refinery"
+      }
+    },
+    {
+      "source": {
+        "name": "electricity, medium voltage, residual mix",
+        "unit": "kilowatt hour"
+      },
+      "target": {
+        "name": "electricity, medium voltage, residual mix",
+        "reference product": "electricity, medium voltage"
+      }
+    },
+    {
+      "source": {
+        "name": "electricity, medium voltage, residual mix",
+        "unit": "kilowatt hour"
+      },
+      "target": {
+        "name": "electricity, medium voltage, residual mix",
+        "reference product": "electricity, medium voltage"
+      }
+    },
+    {
+      "source": {
+        "name": "electricity, high voltage, residual mix",
+        "unit": "kilowatt hour"
+      },
+      "target": {
+        "name": "electricity, high voltage, residual mix",
+        "reference product": "electricity, high voltage"
+      }
+    },
+    {
+      "source": {
+        "name": "electricity, low voltage, residual mix",
+        "unit": "kilowatt hour"
+      },
+      "target": {
+        "name": "electricity, low voltage, residual mix",
+        "reference product": "electricity, low voltage"
+      }
+    },
+    {
+      "source": {
+        "name": "building machine",
+        "unit": "unit"
+      },
+      "target": {
+        "name": "building machine production",
+        "reference product": "building machine"
+      }
+    },
+    {
+      "source": {
+        "name": "casting, bronze",
+        "unit": "kilogram"
+      },
+      "target": {
+        "name": "casting, bronze",
+        "reference product": "casting, bronze"
+      }
+    },
+    {
+      "source": {
+        "name": "calendering, rigid sheets",
+        "unit": "kilogram"
+      },
+      "target": {
+        "name": "calendering, rigid sheets",
+        "reference product": "calendering, rigid sheets"
+      }
+    },
+    {
+      "source": {
+        "name": "laser machining, metal, with CO2-laser, 6000W power",
+        "unit": "hour"
+      },
+      "target": {
+        "name": "laser machining, metal, with CO2-laser, 6000W power",
+        "reference product": "laser machining, metal, with CO2-laser, 6000W power"
+      }
+    },
+    {
+      "source": {
+        "name": "electricity, medium voltage, residual mix",
+        "unit": "kilowatt hour"
+      },
+      "target": {
+        "name": "electricity, medium voltage, residual mix",
+        "reference product": "electricity, medium voltage"
+      }
+    },
+    {
+      "source": {
+        "name": "electronic component machinery, unspecified",
+        "unit": "unit"
+      },
+      "target": {
+        "name": "electronic component machinery production, unspecified",
+        "reference product": "electronic component machinery, unspecified"
+      }
+    },
+    {
+      "source": {
+        "name": "sowing",
+        "unit": "hectare"
+      },
+      "target": {
+        "name": "sowing",
+        "reference product": "sowing"
+      }
+    },
+    {
+      "source": {
+        "name": "orbencarb, at regional storage",
+        "unit": "kilogram"
+      },
+      "target": {
+        "name": "orbencarb production",
+        "reference product": "orbencarb"
+      }
+    },
+    {
+      "source": {
+        "name": "pipeline, natural gas, long distance, low capacity, onshore",
+        "unit": "kilometer"
+      },
+      "target": {
+        "name": "pipeline construction, natural gas, long distance, low capacity, onshore",
+        "reference product": "pipeline, natural gas, long distance, low capacity, onshore"
+      }
+    },
+    {
+      "source": {
+        "name": "fertilising, by broadcaster",
+        "unit": "hectare"
+      },
+      "target": {
+        "name": "fertilising, by broadcaster",
+        "reference product": "fertilising, by broadcaster"
+      }
+    },
+    {
+      "source": {
+        "name": "naphtha, at regional storage",
+        "unit": "kilogram"
+      },
+      "target": {
+        "name": "market for naphtha",
+        "reference product": "naphtha"
+      }
+    },
+    {
+      "source": {
+        "name": "maintenance, bicycle",
+        "unit": "unit"
+      },
+      "target": {
+        "name": "maintenance, bicycle",
+        "reference product": "maintenance, bicycle"
+      }
+    },
+    {
+      "source": {
+        "name": "electricity, medium voltage, residual mix",
+        "unit": "kilowatt hour"
+      },
+      "target": {
+        "name": "electricity, medium voltage, residual mix",
+        "reference product": "electricity, medium voltage"
+      }
+    },
+    {
+      "source": {
+        "name": "laser machining, metal, with YAG-laser, 30W power",
+        "unit": "hour"
+      },
+      "target": {
+        "name": "laser machining, metal, with YAG-laser, 30W power",
+        "reference product": "laser machining, metal, with YAG-laser, 30W power"
+      }
+    },
+    {
+      "source": {
+        "name": "electricity, high voltage, residual mix",
+        "unit": "kilowatt hour"
+      },
+      "target": {
+        "name": "electricity, high voltage, residual mix",
+        "reference product": "electricity, high voltage"
+      }
+    },
+    {
+      "source": {
+        "name": "hard coal, at regional storage",
+        "unit": "kilogram"
+      },
+      "target": {
+        "name": "market for hard coal",
+        "reference product": "hard coal"
+      }
+    },
+    {
+      "source": {
+        "name": "electricity, medium voltage, residual mix",
+        "unit": "kilowatt hour"
+      },
+      "target": {
+        "name": "electricity, medium voltage, residual mix",
+        "reference product": "electricity, medium voltage"
+      }
+    },
+    {
+      "source": {
+        "name": "electricity, low voltage, residual mix",
+        "unit": "kilowatt hour"
+      },
+      "target": {
+        "name": "electricity, low voltage, residual mix",
+        "reference product": "electricity, low voltage"
+      }
+    },
+    {
+      "source": {
+        "name": "nuclear power plant, boiling water reactor 1000MW",
+        "unit": "unit"
+      },
+      "target": {
+        "name": "nuclear power plant construction, boiling water reactor 1000MW",
+        "reference product": "nuclear power plant, boiling water reactor 1000MW"
+      }
+    },
+    {
+      "source": {
+        "name": "chlorothalonil, at regional storage",
+        "unit": "kilogram"
+      },
+      "target": {
+        "name": "chlorothalonil production",
+        "reference product": "chlorothalonil"
+      }
+    },
+    {
+      "source": {
+        "name": "limestone, crushed, for mill",
+        "unit": "kilogram"
+      },
+      "target": {
+        "name": "market for limestone, crushed, for mill",
+        "reference product": "limestone, crushed, for mill"
+      }
+    },
+    {
+      "source": {
+        "name": "hard coal, at regional storage",
+        "unit": "kilogram"
+      },
+      "target": {
+        "name": "market for hard coal",
+        "reference product": "hard coal"
+      }
+    },
+    {
+      "source": {
+        "name": "mowing, by motor mower",
+        "unit": "hectare"
+      },
+      "target": {
+        "name": "mowing, by motor mower",
+        "reference product": "mowing, by motor mower"
+      }
+    },
+    {
+      "source": {
+        "name": "welding, arc, steel",
+        "unit": "meter"
+      },
+      "target": {
+        "name": "welding, arc, steel",
+        "reference product": "welding, arc, steel"
+      }
+    },
+    {
+      "source": {
+        "name": "potato grading",
+        "unit": "kilogram"
+      },
+      "target": {
+        "name": "potato grading",
+        "reference product": "potato grading"
+      }
+    },
+    {
+      "source": {
+        "name": "tillage, rotary cultivator",
+        "unit": "hectare"
+      },
+      "target": {
+        "name": "tillage, rotary cultivator",
+        "reference product": "tillage, rotary cultivator"
+      }
+    },
+    {
+      "source": {
+        "name": "electricity, medium voltage, residual mix",
+        "unit": "kilowatt hour"
+      },
+      "target": {
+        "name": "electricity, medium voltage, residual mix",
+        "reference product": "electricity, medium voltage"
+      }
+    },
+    {
+      "source": {
+        "name": "recultivation, limestone mine",
+        "unit": "square meter"
+      },
+      "target": {
+        "name": "recultivation, limestone mine",
+        "reference product": "recultivation, limestone mine"
+      }
+    },
+    {
+      "source": {
+        "name": "electricity, high voltage, residual mix",
+        "unit": "kilowatt hour"
+      },
+      "target": {
+        "name": "electricity, high voltage, residual mix",
+        "reference product": "electricity, high voltage"
+      }
+    },
+    {
+      "source": {
+        "name": "blow moulding",
+        "unit": "kilogram"
+      },
+      "target": {
+        "name": "blow moulding",
+        "reference product": "blow moulding"
+      }
+    },
+    {
+      "source": {
+        "name": "electricity, low voltage, residual mix",
+        "unit": "kilowatt hour"
+      },
+      "target": {
+        "name": "electricity, low voltage, residual mix",
+        "reference product": "electricity, low voltage"
+      }
+    },
+    {
+      "source": {
+        "name": "electricity, low voltage, residual mix",
+        "unit": "kilowatt hour"
+      },
+      "target": {
+        "name": "electricity, low voltage, residual mix",
+        "reference product": "electricity, low voltage"
+      }
+    },
+    {
+      "source": {
+        "name": "drying, natural gas",
+        "unit": "cubic meter"
+      },
+      "target": {
+        "name": "drying, natural gas",
+        "reference product": "drying, natural gas"
+      }
+    },
+    {
+      "source": {
+        "name": "port facilities",
+        "unit": "unit"
+      },
+      "target": {
+        "name": "port facilities construction",
+        "reference product": "port facilities"
+      }
+    },
+    {
+      "source": {
+        "name": "process-specific burdens, municipal waste incineration",
+        "unit": "kilogram"
+      },
+      "target": {
+        "name": "process-specific burdens, municipal waste incineration",
+        "reference product": "process-specific burdens, municipal waste incineration"
+      }
+    },
+    {
+      "source": {
+        "name": "blast oxygen furnace converter",
+        "unit": "unit"
+      },
+      "target": {
+        "name": "blast oxygen furnace converter production",
+        "reference product": "blast oxygen furnace converter"
+      }
+    },
+    {
+      "source": {
+        "name": "transport, trolleybus",
+        "unit": "person kilometer"
+      },
+      "target": {
+        "name": "transport, trolleybus",
+        "reference product": "transport, trolleybus"
+      }
+    },
+    {
+      "source": {
+        "name": "liquid storage tank, chemicals, organics",
+        "unit": "unit"
+      },
+      "target": {
+        "name": "liquid storage tank production, chemicals, organics",
+        "reference product": "liquid storage tank, chemicals, organics"
+      }
+    },
+    {
+      "source": {
+        "name": "harvesting, by complete harvester, beets",
+        "unit": "hectare"
+      },
+      "target": {
+        "name": "harvesting, by complete harvester, beets",
+        "reference product": "harvesting, by complete harvester, beets"
+      }
+    },
+    {
+      "source": {
+        "name": "metaldehyde, at regional storage",
+        "unit": "kilogram"
+      },
+      "target": {
+        "name": "metaldehyde production",
+        "reference product": "metaldehyde"
+      }
+    },
+    {
+      "source": {
+        "name": "laser machining, metal, with YAG-laser, 500W power",
+        "unit": "hour"
+      },
+      "target": {
+        "name": "laser machining, metal, with YAG-laser, 500W power",
+        "reference product": "laser machining, metal, with YAG-laser, 500W power"
+      }
+    },
+    {
+      "source": {
+        "name": "solar collector factory",
+        "unit": "unit"
+      },
+      "target": {
+        "name": "solar collector factory construction",
+        "reference product": "solar collector factory"
+      }
+    },
+    {
+      "source": {
+        "name": "electricity, low voltage, residual mix",
+        "unit": "kilowatt hour"
+      },
+      "target": {
+        "name": "electricity, low voltage, residual mix",
+        "reference product": "electricity, low voltage"
+      }
+    },
+    {
+      "source": {
+        "name": "hard coal, at regional storage",
+        "unit": "kilogram"
+      },
+      "target": {
+        "name": "hard coal, import from ID",
+        "reference product": "hard coal"
+      }
+    },
+    {
+      "source": {
+        "name": "natural stone plate, cut, at regional storage",
+        "unit": "kilogram"
+      },
+      "target": {
+        "name": "natural stone plate production, cut",
+        "reference product": "natural stone plate, cut"
+      }
+    },
+    {
+      "source": {
+        "name": "road wear emissions, lorry",
+        "unit": "kilogram"
+      },
+      "target": {
+        "name": "treatment of road wear emissions, lorry",
+        "reference product": "road wear emissions, lorry"
+      }
+    },
+    {
+      "source": {
+        "name": "powder coating, steel",
+        "unit": "square meter"
+      },
+      "target": {
+        "name": "powder coating, steel",
+        "reference product": "powder coat, steel"
+      }
+    },
+    {
+      "source": {
+        "name": "heavy fuel oil, burned in refinery furnace",
+        "unit": "megajoule"
+      },
+      "target": {
+        "name": "heavy fuel oil, burned in refinery furnace",
+        "reference product": "heavy fuel oil, burned in refinery furnace"
+      }
+    },
+    {
+      "source": {
+        "name": "dried roughage store, air dried, solar",
+        "unit": "cubic meter"
+      },
+      "target": {
+        "name": "dried roughage store construction, air dried, solar",
+        "reference product": "dried roughage store, air dried, solar"
+      }
+    },
+    {
+      "source": {
+        "name": "mounting, surface mount technology, Pb-free solder",
+        "unit": "square meter"
+      },
+      "target": {
+        "name": "mounting, surface mount technology, Pb-free solder",
+        "reference product": "mounting, surface mount technology, Pb-free solder"
+      }
+    },
+    {
+      "source": {
+        "name": "maintenance, barge",
+        "unit": "unit"
+      },
+      "target": {
+        "name": "maintenance, barge",
+        "reference product": "maintenance, barge"
+      }
+    },
+    {
+      "source": {
+        "name": "maintenance, goods wagon",
+        "unit": "unit"
+      },
+      "target": {
+        "name": "maintenance, goods wagon",
+        "reference product": "maintenance, goods wagon"
+      }
+    },
+    {
+      "source": {
+        "name": "goods wagon",
+        "unit": "unit"
+      },
+      "target": {
+        "name": "goods wagon production",
+        "reference product": "goods wagon"
+      }
+    },
+    {
+      "source": {
+        "name": "pipeline, natural gas, low pressure distribution network",
+        "unit": "kilometer"
+      },
+      "target": {
+        "name": "pipeline construction, natural gas, low pressure distribution network",
+        "reference product": "pipeline, natural gas, low pressure distribution network"
+      }
+    },
+    {
+      "source": {
+        "name": "enamelling",
+        "unit": "square meter"
+      },
+      "target": {
+        "name": "enamelling",
+        "reference product": "enamelling"
+      }
+    },
+    {
+      "source": {
+        "name": "packaging glass, white, at regional storage",
+        "unit": "kilogram"
+      },
+      "target": {
+        "name": "packaging glass production, white",
+        "reference product": "packaging glass, white"
+      }
+    },
+    {
+      "source": {
+        "name": "railway track",
+        "unit": "meter-year"
+      },
+      "target": {
+        "name": "railway track construction",
+        "reference product": "railway track"
+      }
+    },
+    {
+      "source": {
+        "name": "isoproturon, at regional storage",
+        "unit": "kilogram"
+      },
+      "target": {
+        "name": "isoproturon production",
+        "reference product": "isoproturon"
+      }
+    },
+    {
+      "source": {
+        "name": "dried roughage store, non ventilated",
+        "unit": "cubic meter"
+      },
+      "target": {
+        "name": "dried roughage store construction, non ventilated",
+        "reference product": "dried roughage store, non ventilated"
+      }
+    },
+    {
+      "source": {
+        "name": "maintenance, passenger car",
+        "unit": "unit"
+      },
+      "target": {
+        "name": "maintenance, passenger car",
+        "reference product": "passenger car maintenance"
+      }
+    },
+    {
+      "source": {
+        "name": "electricity, high voltage, residual mix",
+        "unit": "kilowatt hour"
+      },
+      "target": {
+        "name": "electricity, high voltage, residual mix",
+        "reference product": "electricity, high voltage"
+      }
+    },
+    {
+      "source": {
+        "name": "electricity, medium voltage, residual mix",
+        "unit": "kilowatt hour"
+      },
+      "target": {
+        "name": "electricity, medium voltage, residual mix",
+        "reference product": "electricity, medium voltage"
+      }
+    },
+    {
+      "source": {
+        "name": "haying, by rotary tedder",
+        "unit": "hectare"
+      },
+      "target": {
+        "name": "haying, by rotary tedder",
+        "reference product": "haying, by rotary tedder"
+      }
+    },
+    {
+      "source": {
+        "name": "building, hall, steel construction",
+        "unit": "square meter"
+      },
+      "target": {
+        "name": "building construction, hall, steel construction",
+        "reference product": "building, hall, steel construction"
+      }
+    },
+    {
+      "source": {
+        "name": "laser machining, metal, with CO2-laser, 5000W power",
+        "unit": "hour"
+      },
+      "target": {
+        "name": "laser machining, metal, with CO2-laser, 5000W power",
+        "reference product": "laser machining, metal, with CO2-laser, 5000W power"
+      }
+    },
+    {
+      "source": {
+        "name": "wire drawing, steel",
+        "unit": "kilogram"
+      },
+      "target": {
+        "name": "wire drawing, steel",
+        "reference product": "wire drawing, steel"
+      }
+    },
+    {
+      "source": {
+        "name": "prosulfocarb, at regional storage",
+        "unit": "kilogram"
+      },
+      "target": {
+        "name": "prosulfocarb production",
+        "reference product": "prosulfocarb"
+      }
+    },
+    {
+      "source": {
+        "name": "zinc coating, coils",
+        "unit": "square meter"
+      },
+      "target": {
+        "name": "zinc coating, coils",
+        "reference product": "zinc coat, coils"
+      }
+    },
+    {
+      "source": {
+        "name": "water supply network",
+        "unit": "kilometer"
+      },
+      "target": {
+        "name": "water supply network construction",
+        "reference product": "water supply network"
+      }
+    },
+    {
+      "source": {
+        "name": "electricity, medium voltage, residual mix",
+        "unit": "kilowatt hour"
+      },
+      "target": {
+        "name": "electricity, medium voltage, residual mix",
+        "reference product": "electricity, medium voltage"
+      }
+    },
+    {
+      "source": {
+        "name": "electricity, low voltage, residual mix",
+        "unit": "kilowatt hour"
+      },
+      "target": {
+        "name": "electricity, low voltage, residual mix",
+        "reference product": "electricity, low voltage"
+      }
+    },
+    {
+      "source": {
+        "name": "tillage, hoeing and earthing-up, potatoes",
+        "unit": "hectare"
+      },
+      "target": {
+        "name": "tillage, hoeing and earthing-up, potatoes",
+        "reference product": "tillage, hoeing and earthing-up, potatoes"
+      }
+    },
+    {
+      "source": {
+        "name": "distribution network, electricity, low voltage",
+        "unit": "kilometer"
+      },
+      "target": {
+        "name": "distribution network construction, electricity, low voltage",
+        "reference product": "distribution network, electricity, low voltage"
+      }
+    },
+    {
+      "source": {
+        "name": "extrusion, plastic film",
+        "unit": "kilogram"
+      },
+      "target": {
+        "name": "extrusion, plastic film",
+        "reference product": "extrusion, plastic film"
+      }
+    },
+    {
+      "source": {
+        "name": "clefting of energy wood",
+        "unit": "hour"
+      },
+      "target": {
+        "name": "clefting/splitting of energy wood",
+        "reference product": "clefting of energy wood"
+      }
+    },
+    {
+      "source": {
+        "name": "selective coating, copper sheet, sputtering",
+        "unit": "square meter"
+      },
+      "target": {
+        "name": "selective coating, copper sheet, sputtering",
+        "reference product": "selective coat, copper sheet, sputter deposition"
+      }
+    },
+    {
+      "source": {
+        "name": "electricity, low voltage, residual mix",
+        "unit": "kilowatt hour"
+      },
+      "target": {
+        "name": "electricity, low voltage, residual mix",
+        "reference product": "electricity, low voltage"
+      }
+    },
+    {
+      "source": {
+        "name": "electricity, low voltage, residual mix",
+        "unit": "kilowatt hour"
+      },
+      "target": {
+        "name": "electricity, low voltage, residual mix",
+        "reference product": "electricity, low voltage"
+      }
+    },
+    {
+      "source": {
+        "name": "ethanol fermentation plant",
+        "unit": "unit"
+      },
+      "target": {
+        "name": "ethanol fermentation plant construction",
+        "reference product": "ethanol fermentation plant"
+      }
+    },
+    {
+      "source": {
+        "name": "catalytic converter, oxidation, 20 litre",
+        "unit": "unit"
+      },
+      "target": {
+        "name": "catalytic converter production, oxidation, 20 litre",
+        "reference product": "catalytic converter, oxidation, 20 litre"
+      }
+    },
+    {
+      "source": {
+        "name": "planing mill",
+        "unit": "unit"
+      },
+      "target": {
+        "name": "planing mill production",
+        "reference product": "planing mill"
+      }
+    },
+    {
+      "source": {
+        "name": "laser machining, metal, with YAG-laser, 200W power",
+        "unit": "hour"
+      },
+      "target": {
+        "name": "laser machining, metal, with YAG-laser, 200W power",
+        "reference product": "laser machining, metal, with YAG-laser, 200W power"
+      }
+    },
+    {
+      "source": {
+        "name": "electricity, low voltage, residual mix",
+        "unit": "kilowatt hour"
+      },
+      "target": {
+        "name": "electricity, low voltage, residual mix",
+        "reference product": "electricity, low voltage"
+      }
+    },
+    {
+      "source": {
+        "name": "tram",
+        "unit": "unit"
+      },
+      "target": {
+        "name": "tram production",
+        "reference product": "tram"
+      }
+    },
+    {
+      "source": {
+        "name": "metamitron, at regional storage",
+        "unit": "kilogram"
+      },
+      "target": {
+        "name": "metamitron production",
+        "reference product": "metamitron"
+      }
+    },
+    {
+      "source": {
+        "name": "electricity, high voltage, residual mix",
+        "unit": "kilowatt hour"
+      },
+      "target": {
+        "name": "electricity, high voltage, residual mix",
+        "reference product": "electricity, high voltage"
+      }
+    },
+    {
+      "source": {
+        "name": "laser machining, metal, with CO2-laser, 2700W power",
+        "unit": "hour"
+      },
+      "target": {
+        "name": "laser machining, metal, with CO2-laser, 2700W power",
+        "reference product": "laser machining, metal, with CO2-laser, 2700W power"
+      }
+    },
+    {
+      "source": {
+        "name": "combine harvesting",
+        "unit": "hectare"
+      },
+      "target": {
+        "name": "combine harvesting",
+        "reference product": "combine harvesting"
+      }
+    },
+    {
+      "source": {
+        "name": "electricity, medium voltage, residual mix",
+        "unit": "kilowatt hour"
+      },
+      "target": {
+        "name": "electricity, medium voltage, residual mix",
+        "reference product": "electricity, medium voltage"
+      }
+    },
+    {
+      "source": {
+        "name": "thermoforming, with calendering",
+        "unit": "kilogram"
+      },
+      "target": {
+        "name": "thermoforming, with calendering",
+        "reference product": "thermoforming, with calendering"
+      }
+    },
+    {
+      "source": {
+        "name": "nuclear power plant, boiling water reactor 1000MW",
+        "unit": "unit"
+      },
+      "target": {
+        "name": "nuclear power plant construction, boiling water reactor 1000MW",
+        "reference product": "nuclear power plant, boiling water reactor 1000MW"
+      }
+    },
+    {
+      "source": {
+        "name": "oil mill",
+        "unit": "unit"
+      },
+      "target": {
+        "name": "oil mill construction",
+        "reference product": "oil mill"
+      }
+    },
+    {
+      "source": {
+        "name": "aclonifen, at regional storage",
+        "unit": "kilogram"
+      },
+      "target": {
+        "name": "aclonifen production",
+        "reference product": "aclonifen"
+      }
+    },
+    {
+      "source": {
+        "name": "process-specific burdens, hazardous waste incineration plant",
+        "unit": "kilogram"
+      },
+      "target": {
+        "name": "process-specific burdens, hazardous waste incineration plant",
+        "reference product": "process-specific burdens, hazardous waste incineration plant"
+      }
+    },
+    {
+      "source": {
+        "name": "bicycle, at regional storage",
+        "unit": "unit"
+      },
+      "target": {
+        "name": "bicycle production",
+        "reference product": "bicycle"
+      }
+    },
+    {
+      "source": {
+        "name": "electricity, low voltage, residual mix",
+        "unit": "kilowatt hour"
+      },
+      "target": {
+        "name": "electricity, low voltage, residual mix",
+        "reference product": "electricity, low voltage"
+      }
+    },
+    {
+      "source": {
+        "name": "potato haulm cutting",
+        "unit": "hectare"
+      },
+      "target": {
+        "name": "potato haulm cutting",
+        "reference product": "potato haulm cutting"
+      }
+    },
+    {
+      "source": {
+        "name": "electricity, high voltage, residual mix",
+        "unit": "kilowatt hour"
+      },
+      "target": {
+        "name": "electricity, high voltage, residual mix",
+        "reference product": "electricity, high voltage"
+      }
+    },
+    {
+      "source": {
+        "name": "section bar rolling, steel",
+        "unit": "kilogram"
+      },
+      "target": {
+        "name": "section bar rolling, steel",
+        "reference product": "section bar rolling, steel"
+      }
+    },
+    {
+      "source": {
+        "name": "platinum, at regional storage",
+        "unit": "kilogram"
+      },
+      "target": {
+        "name": "treatment of automobile catalyst",
+        "reference product": "platinum"
+      }
+    },
+    {
+      "source": {
+        "name": "electricity, low voltage, residual mix",
+        "unit": "kilowatt hour"
+      },
+      "target": {
+        "name": "electricity, low voltage, residual mix",
+        "reference product": "electricity, low voltage"
+      }
+    },
+    {
+      "source": {
+        "name": "tillage, cultivating, chiselling",
+        "unit": "hectare"
+      },
+      "target": {
+        "name": "tillage, cultivating, chiselling",
+        "reference product": "tillage, cultivating, chiselling"
+      }
+    },
+    {
+      "source": {
+        "name": "electricity, high voltage, residual mix",
+        "unit": "kilowatt hour"
+      },
+      "target": {
+        "name": "electricity, high voltage, residual mix",
+        "reference product": "electricity, high voltage"
+      }
+    },
+    {
+      "source": {
+        "name": "pipeline, natural gas, long distance, high capacity, offshore",
+        "unit": "kilometer"
+      },
+      "target": {
+        "name": "pipeline construction, natural gas, long distance, high capacity, offshore",
+        "reference product": "pipeline, natural gas, long distance, high capacity, offshore"
+      }
+    },
+    {
+      "source": {
+        "name": "iodine",
+        "unit": "kilogram"
+      },
+      "target": {
+        "name": "iodine production",
+        "reference product": "iodine"
+      }
+    },
+    {
+      "source": {
+        "name": "mini CHP plant, components for electricity only",
+        "unit": "unit"
+      },
+      "target": {
+        "name": "mini CHP plant production, components for electricity only",
+        "reference product": "mini CHP plant, components for electricity only"
+      }
+    },
+    {
+      "source": {
+        "name": "hard coal, at regional storage",
+        "unit": "kilogram"
+      },
+      "target": {
+        "name": "hard coal preparation, crushing and destoning",
+        "reference product": "hard coal"
+      }
+    },
+    {
+      "source": {
+        "name": "electricity, high voltage, residual mix",
+        "unit": "kilowatt hour"
+      },
+      "target": {
+        "name": "electricity, high voltage, residual mix",
+        "reference product": "electricity, high voltage"
+      }
+    },
+    {
+      "source": {
+        "name": "natural gas, vented",
+        "unit": "cubic meter"
+      },
+      "target": {
+        "name": "natural gas venting from petroleum/natural gas production",
+        "reference product": "natural gas, vented"
+      }
+    },
+    {
+      "source": {
+        "name": "paper mill, non-integrated",
+        "unit": "unit"
+      },
+      "target": {
+        "name": "paper mill construction, non-integrated",
+        "reference product": "paper mill, non-integrated"
+      }
+    },
+    {
+      "source": {
+        "name": "electricity, medium voltage, residual mix",
+        "unit": "kilowatt hour"
+      },
+      "target": {
+        "name": "electricity, medium voltage, residual mix",
+        "reference product": "electricity, medium voltage"
+      }
+    },
+    {
+      "source": {
+        "name": "maintenance, electric bicycle",
+        "unit": "unit"
+      },
+      "target": {
+        "name": "maintenance, electric bicycle",
+        "reference product": "maintenance, electric bicycle"
+      }
+    },
+    {
+      "source": {
+        "name": "building, hall",
+        "unit": "square meter"
+      },
+      "target": {
+        "name": "building construction, hall",
+        "reference product": "building, hall"
+      }
+    },
+    {
+      "source": {
+        "name": "molybdenum, at regional storage",
+        "unit": "kilogram"
+      },
+      "target": {
+        "name": "molybdenum production",
+        "reference product": "molybdenum"
+      }
+    },
+    {
+      "source": {
+        "name": "dimethenamide, at regional storage",
+        "unit": "kilogram"
+      },
+      "target": {
+        "name": "dimethenamide production",
+        "reference product": "dimethenamide"
+      }
+    },
+    {
+      "source": {
+        "name": "heat pump, brine-water, 10kW",
+        "unit": "unit"
+      },
+      "target": {
+        "name": "heat pump production, brine-water, 10kW",
+        "reference product": "heat pump, brine-water, 10kW"
+      }
+    },
+    {
+      "source": {
+        "name": "paper, newsprint, at regional storage",
+        "unit": "kilogram"
+      },
+      "target": {
+        "name": "paper production, newsprint, recycled",
+        "reference product": "paper, newsprint"
+      }
+    },
+    {
+      "source": {
+        "name": "hot water tank factory",
+        "unit": "unit"
+      },
+      "target": {
+        "name": "hot water tank factory construction",
+        "reference product": "hot water tank factory"
+      }
+    },
+    {
+      "source": {
+        "name": "sheet rolling, steel",
+        "unit": "kilogram"
+      },
+      "target": {
+        "name": "sheet rolling, steel",
+        "reference product": "sheet rolling, steel"
+      }
+    },
+    {
+      "source": {
+        "name": "laser machining, metal, with YAG-laser, 50W power",
+        "unit": "hour"
+      },
+      "target": {
+        "name": "laser machining, metal, with YAG-laser, 50W power",
+        "reference product": "laser machining, metal, with YAG-laser, 50W power"
+      }
+    },
+    {
+      "source": {
+        "name": "photovoltaic panel factory",
+        "unit": "unit"
+      },
+      "target": {
+        "name": "photovoltaic panel factory construction",
+        "reference product": "photovoltaic panel factory"
+      }
+    },
+    {
+      "source": {
+        "name": "electricity, low voltage, residual mix",
+        "unit": "kilowatt hour"
+      },
+      "target": {
+        "name": "electricity, low voltage, residual mix",
+        "reference product": "electricity, low voltage"
+      }
+    },
+    {
+      "source": {
+        "name": "tyre wear emissions, passenger car",
+        "unit": "kilogram"
+      },
+      "target": {
+        "name": "treatment of tyre wear emissions, passenger car",
+        "reference product": "tyre wear emissions, passenger car"
+      }
+    },
+    {
+      "source": {
+        "name": "captan, at regional storage",
+        "unit": "kilogram"
+      },
+      "target": {
+        "name": "captan production",
+        "reference product": "captan"
+      }
+    },
+    {
+      "source": {
+        "name": "rolling mill",
+        "unit": "unit"
+      },
+      "target": {
+        "name": "rolling mill production",
+        "reference product": "rolling mill"
+      }
+    },
+    {
+      "source": {
+        "name": "dried roughage store, cold-air dried, conventional",
+        "unit": "cubic meter"
+      },
+      "target": {
+        "name": "dried roughage store construction, cold-air dried, conventional",
+        "reference product": "dried roughage store, cold-air dried, conventional"
+      }
+    },
+    {
+      "source": {
+        "name": "maintenance, tram",
+        "unit": "unit"
+      },
+      "target": {
+        "name": "maintenance, tram",
+        "reference product": "maintenance, tram"
+      }
+    },
+    {
+      "source": {
+        "name": "airport",
+        "unit": "unit"
+      },
+      "target": {
+        "name": "airport construction",
+        "reference product": "airport"
+      }
+    },
+    {
+      "source": {
+        "name": "electricity, high voltage, residual mix",
+        "unit": "kilowatt hour"
+      },
+      "target": {
+        "name": "electricity, high voltage, residual mix",
+        "reference product": "electricity, high voltage"
+      }
+    },
+    {
+      "source": {
+        "name": "electricity, high voltage, residual mix",
+        "unit": "kilowatt hour"
+      },
+      "target": {
+        "name": "electricity, high voltage, residual mix",
+        "reference product": "electricity, high voltage"
+      }
+    },
+    {
+      "source": {
+        "name": "transport, tram",
+        "unit": "person kilometer"
+      },
+      "target": {
+        "name": "transport, tram",
+        "reference product": "transport, tram"
+      }
+    },
+    {
+      "source": {
+        "name": "kerosene, at regional storage",
+        "unit": "kilogram"
+      },
+      "target": {
+        "name": "petroleum refinery operation",
+        "reference product": "kerosene"
+      }
+    },
+    {
+      "source": {
+        "name": "electricity, medium voltage, residual mix",
+        "unit": "kilowatt hour"
+      },
+      "target": {
+        "name": "electricity, medium voltage, residual mix",
+        "reference product": "electricity, medium voltage"
+      }
+    },
+    {
+      "source": {
+        "name": "stretch blow moulding",
+        "unit": "kilogram"
+      },
+      "target": {
+        "name": "stretch blow moulding",
+        "reference product": "stretch blow moulding"
+      }
+    },
+    {
+      "source": {
+        "name": "electricity, low voltage, residual mix",
+        "unit": "kilowatt hour"
+      },
+      "target": {
+        "name": "electricity, low voltage, residual mix",
+        "reference product": "electricity, low voltage"
+      }
+    },
+    {
+      "source": {
+        "name": "anti-reflex-coating, etching, solar glass",
+        "unit": "square meter"
+      },
+      "target": {
+        "name": "anti-reflex-coating, etching, solar glass",
+        "reference product": "anti-reflex-coating, etching, solar glass"
+      }
+    },
+    {
+      "source": {
+        "name": "ferromanganese, high-coal, 74.5% Mn, at regional storage",
+        "unit": "kilogram"
+      },
+      "target": {
+        "name": "ferromanganese production, high-coal, 74.5% Mn",
+        "reference product": "ferromanganese, high-coal, 74.5% Mn"
+      }
+    },
+    {
+      "source": {
+        "name": "mounting, through-hole technology, Pb-free solder",
+        "unit": "square meter"
+      },
+      "target": {
+        "name": "mounting, through-hole technology, Pb-free solder",
+        "reference product": "mounting, through-hole technology, Pb-free solder"
+      }
+    },
+    {
+      "source": {
+        "name": "tower silo, plastic",
+        "unit": "cubic meter"
+      },
+      "target": {
+        "name": "tower silo production, plastic",
+        "reference product": "tower silo, plastic"
+      }
+    },
+    {
+      "source": {
+        "name": "electricity, medium voltage, residual mix",
+        "unit": "kilowatt hour"
+      },
+      "target": {
+        "name": "electricity, medium voltage, residual mix",
+        "reference product": "electricity, medium voltage"
+      }
+    },
+    {
+      "source": {
+        "name": "electricity, medium voltage, residual mix",
+        "unit": "kilowatt hour"
+      },
+      "target": {
+        "name": "electricity, medium voltage, residual mix",
+        "reference product": "electricity, medium voltage"
+      }
+    },
+    {
+      "source": {
+        "name": "milking parlour",
+        "unit": "unit"
+      },
+      "target": {
+        "name": "milking parlour construction",
+        "reference product": "milking parlour"
+      }
+    },
+    {
+      "source": {
+        "name": "wire drawing, copper",
+        "unit": "kilogram"
+      },
+      "target": {
+        "name": "wire drawing, copper",
+        "reference product": "wire drawing, copper"
+      }
+    },
+    {
+      "source": {
+        "name": "hoeing",
+        "unit": "hectare"
+      },
+      "target": {
+        "name": "hoeing",
+        "reference product": "hoeing"
+      }
+    },
+    {
+      "source": {
+        "name": "fodder loading, by self-loading trailer",
+        "unit": "cubic meter"
+      },
+      "target": {
+        "name": "fodder loading, by self-loading trailer",
+        "reference product": "fodder loading, by self-loading trailer"
+      }
+    },
+    {
+      "source": {
+        "name": "light fuel oil, at regional storage",
+        "unit": "kilogram"
+      },
+      "target": {
+        "name": "market group for light fuel oil",
+        "reference product": "light fuel oil"
+      }
+    },
+    {
+      "source": {
+        "name": "process-specific burdens, inert material landfill",
+        "unit": "kilogram"
+      },
+      "target": {
+        "name": "process-specific burdens, inert material landfill",
+        "reference product": "process-specific burdens, inert material landfill"
+      }
+    },
+    {
+      "source": {
+        "name": "road wear emissions, passenger car",
+        "unit": "kilogram"
+      },
+      "target": {
+        "name": "treatment of road wear emissions, passenger car",
+        "reference product": "road wear emissions, passenger car"
+      }
+    },
+    {
+      "source": {
+        "name": "zinc coating, pieces",
+        "unit": "square meter"
+      },
+      "target": {
+        "name": "zinc coating, pieces",
+        "reference product": "zinc coat, pieces"
+      }
+    },
+    {
+      "source": {
+        "name": "pipeline, natural gas, high pressure distribution network",
+        "unit": "kilometer"
+      },
+      "target": {
+        "name": "pipeline construction, natural gas, high pressure distribution network",
+        "reference product": "pipeline, natural gas, high pressure distribution network"
+      }
+    },
+    {
+      "source": {
+        "name": "excavation, skid-steer loader",
+        "unit": "cubic meter"
+      },
+      "target": {
+        "name": "excavation, skid-steer loader",
+        "reference product": "excavation, skid-steer loader"
+      }
+    },
+    {
+      "source": {
+        "name": "limestone, crushed, washed",
+        "unit": "kilogram"
+      },
+      "target": {
+        "name": "limestone production, crushed, washed",
+        "reference product": "limestone, crushed, washed"
+      }
+    },
+    {
+      "source": {
+        "name": "laser machining, metal, with YAG-laser, 330W power",
+        "unit": "hour"
+      },
+      "target": {
+        "name": "laser machining, metal, with YAG-laser, 330W power",
+        "reference product": "laser machining, metal, with YAG-laser, 330W power"
+      }
+    },
+    {
+      "source": {
+        "name": "nuclear power plant, boiling water reactor 1000MW",
+        "unit": "unit"
+      },
+      "target": {
+        "name": "nuclear power plant construction, boiling water reactor 1000MW",
+        "reference product": "nuclear power plant, boiling water reactor 1000MW"
+      }
+    },
+    {
+      "source": {
+        "name": "injection moulding",
+        "unit": "kilogram"
+      },
+      "target": {
+        "name": "injection moulding",
+        "reference product": "injection moulding"
+      }
+    },
+    {
+      "source": {
+        "name": "electric arc furnace converter",
+        "unit": "unit"
+      },
+      "target": {
+        "name": "electric arc furnace converter construction",
+        "reference product": "electric arc furnace converter"
+      }
+    },
+    {
+      "source": {
+        "name": "wood chipping, chipper, mobile, diesel, at forest road",
+        "unit": "hour"
+      },
+      "target": {
+        "name": "wood chipping, mobile chipper, at forest road",
+        "reference product": "wood chipping, chipper, mobile, diesel, at forest road"
+      }
+    },
+    {
+      "source": {
+        "name": "forwarding, forwarder",
+        "unit": "hour"
+      },
+      "target": {
+        "name": "forwarding, forwarder",
+        "reference product": "forwarding, forwarder"
+      }
+    },
+    {
+      "source": {
+        "name": "tillage, currying, by weeder",
+        "unit": "hectare"
+      },
+      "target": {
+        "name": "tillage, currying, by weeder",
+        "reference product": "tillage, currying, by weeder"
+      }
+    },
+    {
+      "source": {
+        "name": "natural gas, burned in gas turbine",
+        "unit": "megajoule"
+      },
+      "target": {
+        "name": "natural gas, burned in gas turbine",
+        "reference product": "natural gas, burned in gas turbine"
+      }
+    },
+    {
+      "source": {
+        "name": "rhodium, at regional storage",
+        "unit": "kilogram"
+      },
+      "target": {
+        "name": "treatment of automobile catalyst",
+        "reference product": "rhodium"
+      }
+    },
+    {
+      "source": {
+        "name": "brake wear emissions, lorry",
+        "unit": "kilogram"
+      },
+      "target": {
+        "name": "treatment of brake wear emissions, lorry",
+        "reference product": "brake wear emissions, lorry"
+      }
+    },
+    {
+      "source": {
+        "name": "electricity, medium voltage, residual mix",
+        "unit": "kilowatt hour"
+      },
+      "target": {
+        "name": "electricity, medium voltage, residual mix",
+        "reference product": "electricity, medium voltage"
+      }
+    },
+    {
+      "source": {
+        "name": "electricity, high voltage, residual mix",
+        "unit": "kilowatt hour"
+      },
+      "target": {
+        "name": "electricity, high voltage, residual mix",
+        "reference product": "electricity, high voltage"
+      }
+    },
+    {
+      "source": {
+        "name": "multi-Si wafer, at regional storage",
+        "unit": "square meter"
+      },
+      "target": {
+        "name": "multi-Si wafer production",
+        "reference product": "multi-Si wafer"
+      }
+    },
+    {
+      "source": {
+        "name": "natural gas, burned in gas turbine",
+        "unit": "megajoule"
+      },
+      "target": {
+        "name": "natural gas, burned in gas turbine",
+        "reference product": "natural gas, burned in gas turbine"
+      }
+    },
+    {
+      "source": {
+        "name": "electricity, high voltage, residual mix",
+        "unit": "kilowatt hour"
+      },
+      "target": {
+        "name": "electricity, high voltage, residual mix",
+        "reference product": "electricity, high voltage"
+      }
+    },
+    {
+      "source": {
+        "name": "electricity, medium voltage, residual mix",
+        "unit": "kilowatt hour"
+      },
+      "target": {
+        "name": "electricity, medium voltage, residual mix",
+        "reference product": "electricity, medium voltage"
+      }
+    },
+    {
+      "source": {
+        "name": "electricity, medium voltage, residual mix",
+        "unit": "kilowatt hour"
+      },
+      "target": {
+        "name": "electricity, medium voltage, residual mix",
+        "reference product": "electricity, medium voltage"
+      }
+    },
+    {
+      "source": {
+        "name": "potassium hydroxide, at regional storage",
+        "unit": "kilogram"
+      },
+      "target": {
+        "name": "potassium hydroxide production",
+        "reference product": "potassium hydroxide"
+      }
+    },
+    {
+      "source": {
+        "name": "recultivation, bauxite mine",
+        "unit": "square meter"
+      },
+      "target": {
+        "name": "recultivation, bauxite mine",
+        "reference product": "recultivation, bauxite mine"
+      }
+    },
+    {
+      "source": {
+        "name": "diesel, at regional storage",
+        "unit": "kilogram"
+      },
+      "target": {
+        "name": "market group for diesel",
+        "reference product": "diesel"
+      }
+    },
+    {
+      "source": {
+        "name": "wood chipping, forwarder with terrain chipper, in forest",
+        "unit": "hour"
+      },
+      "target": {
+        "name": "wood chipping, terrain chipper, diesel",
+        "reference product": "wood chipping, forwarder with terrain chipper, in forest"
+      }
+    },
+    {
+      "source": {
+        "name": "pipeline, natural gas, long distance, high capacity, onshore",
+        "unit": "kilometer"
+      },
+      "target": {
+        "name": "market for pipeline, natural gas, long distance, high capacity, onshore",
+        "reference product": "pipeline, natural gas, long distance, high capacity, onshore"
+      }
+    },
+    {
+      "source": {
+        "name": "laser machining, metal, with YAG-laser, 120W power",
+        "unit": "hour"
+      },
+      "target": {
+        "name": "laser machining, metal, with YAG-laser, 120W power",
+        "reference product": "laser machining, metal, with YAG-laser, 120W power"
+      }
+    },
+    {
+      "source": {
+        "name": "light fuel oil, at regional storage",
+        "unit": "kilogram"
+      },
+      "target": {
+        "name": "market for light fuel oil",
+        "reference product": "light fuel oil"
+      }
+    },
+    {
+      "source": {
+        "name": "mancozeb, at regional storage",
+        "unit": "kilogram"
+      },
+      "target": {
+        "name": "mancozeb production",
+        "reference product": "mancozeb"
+      }
+    },
+    {
+      "source": {
+        "name": "electricity, high voltage, residual mix",
+        "unit": "kilowatt hour"
+      },
+      "target": {
+        "name": "electricity, high voltage, residual mix",
+        "reference product": "electricity, high voltage"
+      }
+    },
+    {
+      "source": {
+        "name": "natural stone plate, grounded, at regional storage",
+        "unit": "kilogram"
+      },
+      "target": {
+        "name": "natural stone plate production, grounded",
+        "reference product": "natural stone plate, grounded"
+      }
+    },
+    {
+      "source": {
+        "name": "chopping, maize",
+        "unit": "hectare"
+      },
+      "target": {
+        "name": "chopping, maize",
+        "reference product": "chopping, maize"
+      }
+    },
+    {
+      "source": {
+        "name": "diesel, at regional storage",
+        "unit": "kilogram"
+      },
+      "target": {
+        "name": "petroleum refinery operation",
+        "reference product": "diesel"
+      }
+    },
+    {
+      "source": {
+        "name": "transmission network, electricity, medium voltage",
+        "unit": "kilometer"
+      },
+      "target": {
+        "name": "transmission network construction, electricity, medium voltage",
+        "reference product": "transmission network, electricity, medium voltage"
+      }
+    },
+    {
+      "source": {
+        "name": "tempering, flat glass",
+        "unit": "kilogram"
+      },
+      "target": {
+        "name": "tempering, flat glass",
+        "reference product": "tempering, flat glass"
+      }
+    },
+    {
+      "source": {
+        "name": "transport, freight, light commercial vehicle",
+        "unit": "ton kilometer"
+      },
+      "target": {
+        "name": "market group for transport, freight, light commercial vehicle",
+        "reference product": "transport, freight, light commercial vehicle"
+      }
+    },
+    {
+      "source": {
+        "name": "fosetyl-Al, at regional storage",
+        "unit": "kilogram"
+      },
+      "target": {
+        "name": "fosetyl-Al production",
+        "reference product": "fosetyl-Al"
+      }
+    },
+    {
+      "source": {
+        "name": "electricity, high voltage, residual mix",
+        "unit": "kilowatt hour"
+      },
+      "target": {
+        "name": "electricity, high voltage, residual mix",
+        "reference product": "electricity, high voltage"
+      }
+    },
+    {
+      "source": {
+        "name": "electricity, medium voltage, residual mix",
+        "unit": "kilowatt hour"
+      },
+      "target": {
+        "name": "electricity, medium voltage, residual mix",
+        "reference product": "electricity, medium voltage"
+      }
+    },
+    {
+      "source": {
+        "name": "transport, regular bus",
+        "unit": "person kilometer"
+      },
+      "target": {
+        "name": "transport, regular bus",
+        "reference product": "transport, regular bus"
+      }
+    },
+    {
+      "source": {
+        "name": "power sawing, with catalytic converter",
+        "unit": "hour"
+      },
+      "target": {
+        "name": "power sawing, with catalytic converter",
+        "reference product": "power sawing, with catalytic converter"
+      }
+    },
+    {
+      "source": {
+        "name": "tyre wear emissions, lorry",
+        "unit": "kilogram"
+      },
+      "target": {
+        "name": "treatment of tyre wear emissions, lorry",
+        "reference product": "tyre wear emissions, lorry"
+      }
+    },
+    {
+      "source": {
+        "name": "process-specific burdens, residual material landfill",
+        "unit": "kilogram"
+      },
+      "target": {
+        "name": "process-specific burdens, residual material landfill",
+        "reference product": "process-specific burdens, residual material landfill"
+      }
+    },
+    {
+      "source": {
+        "name": "building, hall, wood construction",
+        "unit": "square meter"
+      },
+      "target": {
+        "name": "building construction, hall, wood construction",
+        "reference product": "building, hall, wood construction"
+      }
+    },
+    {
+      "source": {
+        "name": "selective coating, copper sheet, physical vapour deposition",
+        "unit": "square meter"
+      },
+      "target": {
+        "name": "selective coating, copper sheet, physical vapour deposition",
+        "reference product": "selective coat, copper sheet, physical vapour deposition"
+      }
+    },
+    {
+      "source": {
+        "name": "laser machining, metal, with YAG-laser, 60W power",
+        "unit": "hour"
+      },
+      "target": {
+        "name": "laser machining, metal, with YAG-laser, 60W power",
+        "reference product": "laser machining, metal, with YAG-laser, 60W power"
+      }
+    },
+    {
+      "source": {
+        "name": "metal working factory",
+        "unit": "unit"
+      },
+      "target": {
+        "name": "metal working factory construction",
+        "reference product": "metal working factory"
+      }
+    },
+    {
+      "source": {
+        "name": "paper, woodfree, coated, at regional storage",
+        "unit": "kilogram"
+      },
+      "target": {
+        "name": "paper production, woodfree, coated, at non-integrated mill",
+        "reference product": "paper, woodfree, coated"
+      }
+    },
+    {
+      "source": {
+        "name": "natural gas service station",
+        "unit": "unit"
+      },
+      "target": {
+        "name": "natural gas service station construction",
+        "reference product": "natural gas service station"
+      }
+    },
+    {
+      "source": {
+        "name": "electricity, medium voltage, residual mix",
+        "unit": "kilowatt hour"
+      },
+      "target": {
+        "name": "electricity, medium voltage, residual mix",
+        "reference product": "electricity, medium voltage"
+      }
+    },
+    {
+      "source": {
+        "name": "tillage, harrowing, by spring tine harrow",
+        "unit": "hectare"
+      },
+      "target": {
+        "name": "tillage, harrowing, by spring tine harrow",
+        "reference product": "tillage, harrowing, by spring tine harrow"
+      }
+    },
+    {
+      "source": {
+        "name": "heavy fuel oil, at regional storage",
+        "unit": "kilogram"
+      },
+      "target": {
+        "name": "market group for heavy fuel oil",
+        "reference product": "heavy fuel oil"
+      }
+    },
+    {
+      "source": {
+        "name": "bus",
+        "unit": "unit"
+      },
+      "target": {
+        "name": "bus production",
+        "reference product": "bus"
+      }
+    },
+    {
+      "source": {
+        "name": "laser machining, metal, with CO2-laser, 2000W power",
+        "unit": "hour"
+      },
+      "target": {
+        "name": "laser machining, metal, with CO2-laser, 2000W power",
+        "reference product": "laser machining, metal, with CO2-laser, 2000W power"
+      }
+    },
+    {
+      "source": {
+        "name": "tram track",
+        "unit": "meter-year"
+      },
+      "target": {
+        "name": "tram track construction",
+        "reference product": "tram track"
+      }
+    },
+    {
+      "source": {
+        "name": "transport, freight, light commercial vehicle",
+        "unit": "ton kilometer"
+      },
+      "target": {
+        "name": "transport, freight, light commercial vehicle",
+        "reference product": "transport, freight, light commercial vehicle"
+      }
+    },
+    {
+      "source": {
+        "name": "swath, by rotary windrower",
+        "unit": "hectare"
+      },
+      "target": {
+        "name": "swath, by rotary windrower",
+        "reference product": "swath, by rotary windrower"
+      }
+    },
+    {
+      "source": {
+        "name": "barge",
+        "unit": "unit"
+      },
+      "target": {
+        "name": "barge production",
+        "reference product": "barge"
+      }
+    },
+    {
+      "source": {
+        "name": "casting, brass",
+        "unit": "kilogram"
+      },
+      "target": {
+        "name": "casting, brass",
+        "reference product": "casting, brass"
+      }
+    },
+    {
+      "source": {
+        "name": "chlorotoluron, at regional storage",
+        "unit": "kilogram"
+      },
+      "target": {
+        "name": "chlorotoluron production",
+        "reference product": "chlorotoluron"
+      }
+    },
+    {
+      "source": {
+        "name": "power sawing, without catalytic converter",
+        "unit": "hour"
+      },
+      "target": {
+        "name": "power sawing, without catalytic converter",
+        "reference product": "power sawing, without catalytic converter"
+      }
+    },
+    {
+      "source": {
+        "name": "lead, at regional storage",
+        "unit": "kilogram"
+      },
+      "target": {
+        "name": "treatment of scrap lead acid battery, remelting",
+        "reference product": "lead"
+      }
+    },
+    {
+      "source": {
+        "name": "electricity, medium voltage, residual mix",
+        "unit": "kilowatt hour"
+      },
+      "target": {
+        "name": "electricity, medium voltage, residual mix",
+        "reference product": "electricity, medium voltage"
+      }
+    },
+    {
+      "source": {
+        "name": "extrusion, plastic pipes",
+        "unit": "kilogram"
+      },
+      "target": {
+        "name": "extrusion, plastic pipes",
+        "reference product": "extrusion, plastic pipes"
+      }
+    },
+    {
+      "source": {
+        "name": "mini CHP plant, common components for heat+electricity",
+        "unit": "unit"
+      },
+      "target": {
+        "name": "mini CHP plant construction, common components for heat+electricity",
+        "reference product": "mini CHP plant, common components for heat+electricity"
+      }
+    },
+    {
+      "source": {
+        "name": "electricity, low voltage, residual mix",
+        "unit": "kilowatt hour"
+      },
+      "target": {
+        "name": "electricity, low voltage, residual mix",
+        "reference product": "electricity, low voltage"
+      }
+    },
+    {
+      "source": {
+        "name": "hard coal, at regional storage",
+        "unit": "kilogram"
+      },
+      "target": {
+        "name": "hard coal, import from RU",
+        "reference product": "hard coal"
+      }
+    },
+    {
+      "source": {
+        "name": "laser machining, metal, with YAG-laser, 40W power",
+        "unit": "hour"
+      },
+      "target": {
+        "name": "laser machining, metal, with YAG-laser, 40W power",
+        "reference product": "laser machining, metal, with YAG-laser, 40W power"
+      }
+    },
+    {
+      "source": {
+        "name": "uranium mill",
+        "unit": "unit"
+      },
+      "target": {
+        "name": "uranium mill construction",
+        "reference product": "uranium mill"
+      }
+    },
+    {
+      "source": {
+        "name": "wafer factory",
+        "unit": "unit"
+      },
+      "target": {
+        "name": "wafer factory construction",
+        "reference product": "wafer factory"
+      }
+    },
+    {
+      "source": {
+        "name": "electricity, low voltage, residual mix",
+        "unit": "kilowatt hour"
+      },
+      "target": {
+        "name": "electricity, low voltage, residual mix",
+        "reference product": "electricity, low voltage"
+      }
+    },
+    {
+      "source": {
+        "name": "electricity, high voltage, residual mix",
+        "unit": "kilowatt hour"
+      },
+      "target": {
+        "name": "electricity, high voltage, residual mix",
+        "reference product": "electricity, high voltage"
+      }
+    },
+    {
+      "source": {
+        "name": "packaging glass, brown, at regional storage",
+        "unit": "kilogram"
+      },
+      "target": {
+        "name": "packaging glass production, brown",
+        "reference product": "packaging glass, brown"
+      }
+    },
+    {
+      "source": {
+        "name": "recultivation, bentonite mine",
+        "unit": "square meter"
+      },
+      "target": {
+        "name": "recultivation, bentonite mine",
+        "reference product": "recultivation, bentonite mine"
+      }
+    },
+    {
+      "source": {
+        "name": "degreasing, metal part in alkaline bath",
+        "unit": "square meter"
+      },
+      "target": {
+        "name": "degreasing, metal part in alkaline bath",
+        "reference product": "degreasing, metal part in alkaline bath"
+      }
+    },
+    {
+      "source": {
+        "name": "electricity, low voltage, residual mix",
+        "unit": "kilowatt hour"
+      },
+      "target": {
+        "name": "electricity, low voltage, residual mix",
+        "reference product": "electricity, low voltage"
+      }
+    },
+    {
+      "source": {
+        "name": "shed",
+        "unit": "square meter"
+      },
+      "target": {
+        "name": "shed construction",
+        "reference product": "shed"
+      }
+    },
+    {
+      "source": {
+        "name": "palladium, at regional storage",
+        "unit": "kilogram"
+      },
+      "target": {
+        "name": "treatment of automobile catalyst",
+        "reference product": "palladium"
+      }
+    },
+    {
+      "source": {
+        "name": "electricity, low voltage, residual mix",
+        "unit": "kilowatt hour"
+      },
+      "target": {
+        "name": "electricity, low voltage, residual mix",
+        "reference product": "electricity, low voltage"
+      }
+    },
+    {
+      "source": {
+        "name": "electricity, low voltage, residual mix",
+        "unit": "kilowatt hour"
+      },
+      "target": {
+        "name": "electricity, low voltage, residual mix",
+        "reference product": "electricity, low voltage"
+      }
+    },
+    {
+      "source": {
+        "name": "electricity, medium voltage, residual mix",
+        "unit": "kilowatt hour"
+      },
+      "target": {
+        "name": "electricity, medium voltage, residual mix",
+        "reference product": "electricity, medium voltage"
+      }
+    },
+    {
+      "source": {
+        "name": "sheet rolling, copper",
+        "unit": "kilogram"
+      },
+      "target": {
+        "name": "sheet rolling, copper",
+        "reference product": "sheet rolling, copper"
+      }
+    },
+    {
+      "source": {
+        "name": "methyl iodide",
+        "unit": "kilogram"
+      },
+      "target": {
+        "name": "methyl iodide production",
+        "reference product": "methyl iodide"
+      }
+    },
+    {
+      "source": {
+        "name": "electricity, high voltage, residual mix",
+        "unit": "kilowatt hour"
+      },
+      "target": {
+        "name": "electricity, high voltage, residual mix",
+        "reference product": "electricity, high voltage"
+      }
+    },
+    {
+      "source": {
+        "name": "electricity, low voltage, residual mix",
+        "unit": "kilowatt hour"
+      },
+      "target": {
+        "name": "electricity, low voltage, residual mix",
+        "reference product": "electricity, low voltage"
+      }
+    },
+    {
+      "source": {
+        "name": "mowing, by rotary mower",
+        "unit": "hectare"
+      },
+      "target": {
+        "name": "mowing, by rotary mower",
+        "reference product": "mowing, by rotary mower"
+      }
+    },
+    {
+      "source": {
+        "name": "electricity, low voltage, residual mix",
+        "unit": "kilowatt hour"
+      },
+      "target": {
+        "name": "electricity, low voltage, residual mix",
+        "reference product": "electricity, low voltage"
+      }
+    },
+    {
+      "source": {
+        "name": "selective coating, copper sheet, black majic",
+        "unit": "square meter"
+      },
+      "target": {
+        "name": "selective coating, copper sheet, black majic",
+        "reference product": "selective coat, copper sheet, black majic"
+      }
+    },
+    {
+      "source": {
+        "name": "harvesting, forestry harvester",
+        "unit": "hour"
+      },
+      "target": {
+        "name": "harvesting, forestry harvester",
+        "reference product": "harvesting, forestry harvester"
+      }
+    },
+    {
+      "source": {
+        "name": "electricity, high voltage, residual mix",
+        "unit": "kilowatt hour"
+      },
+      "target": {
+        "name": "electricity, high voltage, residual mix",
+        "reference product": "electricity, high voltage"
+      }
+    },
+    {
+      "source": {
+        "name": "electricity, high voltage, residual mix",
+        "unit": "kilowatt hour"
+      },
+      "target": {
+        "name": "electricity, high voltage, residual mix",
+        "reference product": "electricity, high voltage"
+      }
+    },
+    {
+      "source": {
+        "name": "tetrafluoroethylene film, on glass",
+        "unit": "kilogram"
+      },
+      "target": {
+        "name": "tetrafluoroethylene film production, on glass",
+        "reference product": "tetrafluoroethylene film, on glass"
+      }
+    },
+    {
+      "source": {
+        "name": "naphtha, at regional storage",
+        "unit": "kilogram"
+      },
+      "target": {
+        "name": "petroleum refinery operation",
+        "reference product": "naphtha"
+      }
+    },
+    {
+      "source": {
+        "name": "electricity, high voltage, residual mix",
+        "unit": "kilowatt hour"
+      },
+      "target": {
+        "name": "electricity, high voltage, residual mix",
+        "reference product": "electricity, high voltage"
+      }
+    },
+    {
+      "source": {
+        "name": "paper, newsprint, at regional storage",
+        "unit": "kilogram"
+      },
+      "target": {
+        "name": "paper production, newsprint, virgin",
+        "reference product": "paper, newsprint"
+      }
+    },
+    {
+      "source": {
+        "name": "electricity, low voltage, residual mix",
+        "unit": "kilowatt hour"
+      },
+      "target": {
+        "name": "electricity, low voltage, residual mix",
+        "reference product": "electricity, low voltage"
+      }
+    },
+    {
+      "source": {
+        "name": "hard coal, at regional storage",
+        "unit": "kilogram"
+      },
+      "target": {
+        "name": "hard coal, import from ID",
+        "reference product": "hard coal"
+      }
+    },
+    {
+      "source": {
+        "name": "delimbing/sorting, excavator-based processor",
+        "unit": "hour"
+      },
+      "target": {
+        "name": "delimbing, with excavator-based processor",
+        "reference product": "delimbing/sorting, excavator-based processor"
+      }
+    },
+    {
+      "source": {
+        "name": "chromium, at regional storage",
+        "unit": "kilogram"
+      },
+      "target": {
+        "name": "chromium production",
+        "reference product": "chromium"
+      }
+    },
+    {
+      "source": {
+        "name": "packing, cement",
+        "unit": "kilogram"
+      },
+      "target": {
+        "name": "packing, cement",
+        "reference product": "packing, cement"
+      }
+    },
+    {
+      "source": {
+        "name": "electricity, high voltage, residual mix",
+        "unit": "kilowatt hour"
+      },
+      "target": {
+        "name": "electricity, high voltage, residual mix",
+        "reference product": "electricity, high voltage"
+      }
+    },
+    {
+      "source": {
+        "name": "laser machining, metal, with CO2-laser, 3200W power",
+        "unit": "hour"
+      },
+      "target": {
+        "name": "laser machining, metal, with CO2-laser, 3200W power",
+        "reference product": "laser machining, metal, with CO2-laser, 3200W power"
+      }
+    },
+    {
+      "source": {
+        "name": "selective coating, stainless steel sheet, black chrome",
+        "unit": "square meter"
+      },
+      "target": {
+        "name": "selective coating, stainless steel sheet, black chrome",
+        "reference product": "selective coat, stainless steel sheet, black chrome"
+      }
+    },
+    {
+      "source": {
+        "name": "methanol, from biomass, at regional storage",
+        "unit": "kilogram"
+      },
+      "target": {
+        "name": "market for methanol, from biomass",
+        "reference product": "methanol, from biomass"
+      }
+    },
+    {
+      "source": {
+        "name": "plasticiser, for concrete, based on sulfonated melamine formaldehyde",
+        "unit": "kilogram"
+      },
+      "target": {
+        "name": "plasticiser production, for concrete, based on sulfonated melamine formaldehyde",
+        "reference product": "plasticiser, for concrete, based on sulfonated melamine formaldehyde"
+      }
+    },
+    {
+      "source": {
+        "name": "baling",
+        "unit": "unit"
+      },
+      "target": {
+        "name": "baling",
+        "reference product": "baling"
+      }
+    },
+    {
+      "source": {
+        "name": "electric bicycle, at regional storage",
+        "unit": "unit"
+      },
+      "target": {
+        "name": "electric bicycle production",
+        "reference product": "electric bicycle"
+      }
+    },
+    {
+      "source": {
+        "name": "water storage",
+        "unit": "unit"
+      },
+      "target": {
+        "name": "water storage construction",
+        "reference product": "water storage"
+      }
+    },
+    {
+      "source": {
+        "name": "electricity, low voltage, residual mix",
+        "unit": "kilowatt hour"
+      },
+      "target": {
+        "name": "electricity, low voltage, residual mix",
+        "reference product": "electricity, low voltage"
+      }
+    },
+    {
+      "source": {
+        "name": "electricity, high voltage, residual mix",
+        "unit": "kilowatt hour"
+      },
+      "target": {
+        "name": "electricity, high voltage, residual mix",
+        "reference product": "electricity, high voltage"
+      }
+    },
+    {
+      "source": {
+        "name": "ventilation components factory",
+        "unit": "unit"
+      },
+      "target": {
+        "name": "ventilation components factory construction",
+        "reference product": "ventilation components factory"
+      }
+    },
+    {
+      "source": {
+        "name": "storage building, chemicals, solid",
+        "unit": "unit"
+      },
+      "target": {
+        "name": "storage building construction, chemicals, solid",
+        "reference product": "storage building, chemicals, solid"
+      }
+    },
+    {
+      "source": {
+        "name": "pendimethalin, at regional storage",
+        "unit": "kilogram"
+      },
+      "target": {
+        "name": "pendimethalin production",
+        "reference product": "pendimethalin"
+      }
+    },
+    {
+      "source": {
+        "name": "mulching",
+        "unit": "hectare"
+      },
+      "target": {
+        "name": "mulching",
+        "reference product": "mulching"
+      }
+    },
+    {
+      "source": {
+        "name": "wood chipping, industrial residual wood, stationary electric chipper",
+        "unit": "kilogram"
+      },
+      "target": {
+        "name": "wood chipping, industrial residual wood, stationary electric chipper",
+        "reference product": "wood chipping, industrial residual wood, stationary electric chipper"
+      }
+    },
+    {
+      "source": {
+        "name": "solar glass, low-iron, at regional storage",
+        "unit": "kilogram"
+      },
+      "target": {
+        "name": "solar glass production, low-iron",
+        "reference product": "solar glass, low-iron"
+      }
+    },
+    {
+      "source": {
+        "name": "electricity, high voltage, residual mix",
+        "unit": "kilowatt hour"
+      },
+      "target": {
+        "name": "electricity, high voltage, residual mix",
+        "reference product": "electricity, high voltage"
+      }
+    },
+    {
+      "source": {
+        "name": "maintenance, locomotive",
+        "unit": "unit"
+      },
+      "target": {
+        "name": "maintenance, locomotive",
+        "reference product": "maintenance, locomotive"
+      }
+    },
+    {
+      "source": {
+        "name": "non-ferrous metal smelter",
+        "unit": "unit"
+      },
+      "target": {
+        "name": "market for non-ferrous metal smelter",
+        "reference product": "non-ferrous metal smelter"
+      }
+    },
+    {
+      "source": {
+        "name": "building, multi-storey",
+        "unit": "cubic meter"
+      },
+      "target": {
+        "name": "building construction, multi-storey",
+        "reference product": "building, multi-storey"
+      }
+    },
+    {
+      "source": {
+        "name": "mini CHP plant, components for heat only",
+        "unit": "unit"
+      },
+      "target": {
+        "name": "mini CHP plant production, components for heat only",
+        "reference product": "mini CHP plant, components for heat only"
+      }
+    },
+    {
+      "source": {
+        "name": "napropamide, at regional storage",
+        "unit": "kilogram"
+      },
+      "target": {
+        "name": "napropamide production",
+        "reference product": "napropamide"
+      }
+    },
+    {
+      "source": {
+        "name": "heavy fuel oil, at regional storage",
+        "unit": "kilogram"
+      },
+      "target": {
+        "name": "petroleum refinery operation",
+        "reference product": "heavy fuel oil"
+      }
+    },
+    {
+      "source": {
+        "name": "photovoltaic cell factory",
+        "unit": "unit"
+      },
+      "target": {
+        "name": "photovoltaic cell factory construction",
+        "reference product": "photovoltaic cell factory"
+      }
+    },
+    {
+      "source": {
+        "name": "tin plating, pieces",
+        "unit": "square meter"
+      },
+      "target": {
+        "name": "tin plating, pieces",
+        "reference product": "tin plating, pieces"
+      }
+    },
+    {
+      "source": {
+        "name": "road",
+        "unit": "meter-year"
+      },
+      "target": {
+        "name": "road construction",
+        "reference product": "road"
+      }
+    },
+    {
+      "source": {
+        "name": "maintenance, bus",
+        "unit": "unit"
+      },
+      "target": {
+        "name": "maintenance, bus",
+        "reference product": "maintenance, bus"
+      }
+    },
+    {
+      "source": {
+        "name": "electricity, medium voltage, residual mix",
+        "unit": "kilowatt hour"
+      },
+      "target": {
+        "name": "electricity, medium voltage, residual mix",
+        "reference product": "electricity, medium voltage"
+      }
+    },
+    {
+      "source": {
+        "name": "electricity, high voltage, residual mix",
+        "unit": "kilowatt hour"
+      },
+      "target": {
+        "name": "electricity, high voltage, residual mix",
+        "reference product": "electricity, high voltage"
+      }
+    },
+    {
+      "source": {
+        "name": "electricity, low voltage, residual mix",
+        "unit": "kilowatt hour"
+      },
+      "target": {
+        "name": "electricity, low voltage, residual mix",
+        "reference product": "electricity, low voltage"
+      }
+    },
+    {
+      "source": {
+        "name": "manganese, at regional storage",
+        "unit": "kilogram"
+      },
+      "target": {
+        "name": "manganese production",
+        "reference product": "manganese"
+      }
+    },
+    {
+      "source": {
+        "name": "electricity, medium voltage, residual mix",
+        "unit": "kilowatt hour"
+      },
+      "target": {
+        "name": "electricity, medium voltage, residual mix",
+        "reference product": "electricity, medium voltage"
+      }
+    },
+    {
+      "source": {
+        "name": "petrol, two-stroke blend, at regional storage",
+        "unit": "kilogram"
+      },
+      "target": {
+        "name": "petrol blending for two-stroke engines",
+        "reference product": "petrol, two-stroke blend"
+      }
+    },
+    {
+      "source": {
+        "name": "lignite power plant",
+        "unit": "unit"
+      },
+      "target": {
+        "name": "lignite power plant construction",
+        "reference product": "lignite power plant"
+      }
+    },
+    {
+      "source": {
+        "name": "blast furnace",
+        "unit": "unit"
+      },
+      "target": {
+        "name": "blast furnace production",
+        "reference product": "blast furnace"
+      }
+    },
+    {
+      "source": {
+        "name": "natural stone plate, polished, at regional storage",
+        "unit": "kilogram"
+      },
+      "target": {
+        "name": "natural stone plate production, polished",
+        "reference product": "natural stone plate, polished"
+      }
+    },
+    {
+      "source": {
+        "name": "tillage, rolling",
+        "unit": "hectare"
+      },
+      "target": {
+        "name": "tillage, rolling",
+        "reference product": "tillage, rolling"
+      }
+    },
+    {
+      "source": {
+        "name": "electricity, medium voltage, residual mix",
+        "unit": "kilowatt hour"
+      },
+      "target": {
+        "name": "electricity, medium voltage, residual mix",
+        "reference product": "electricity, medium voltage"
+      }
+    },
+    {
+      "source": {
+        "name": "sanitary landfill facility",
+        "unit": "unit"
+      },
+      "target": {
+        "name": "sanitary landfill facility construction",
+        "reference product": "sanitary landfill facility"
+      }
+    },
+    {
+      "source": {
+        "name": "natural gas, burned in gas turbine",
+        "unit": "megajoule"
+      },
+      "target": {
+        "name": "market for natural gas, burned in gas turbine",
+        "reference product": "natural gas, burned in gas turbine"
+      }
+    },
+    {
+      "source": {
+        "name": "helicopter",
+        "unit": "unit"
+      },
+      "target": {
+        "name": "helicopter production",
+        "reference product": "helicopter"
+      }
+    },
+    {
+      "source": {
+        "name": "locomotive",
+        "unit": "unit"
+      },
+      "target": {
+        "name": "locomotive production",
+        "reference product": "locomotive"
+      }
+    },
+    {
+      "source": {
+        "name": "powder coating, aluminium sheet",
+        "unit": "square meter"
+      },
+      "target": {
+        "name": "powder coating, aluminium sheet",
+        "reference product": "powder coat, aluminium sheet"
+      }
+    },
+    {
+      "source": {
+        "name": "electricity, high voltage, residual mix",
+        "unit": "kilowatt hour"
+      },
+      "target": {
+        "name": "electricity, high voltage, residual mix",
+        "reference product": "electricity, high voltage"
+      }
+    },
+    {
+      "source": {
+        "name": "selective coating, copper sheet, black chrome",
+        "unit": "square meter"
+      },
+      "target": {
+        "name": "selective coating, copper sheet, black chrome",
+        "reference product": "selective coat, copper sheet, black chrome"
+      }
+    },
+    {
+      "source": {
+        "name": "electricity, high voltage, residual mix",
+        "unit": "kilowatt hour"
+      },
+      "target": {
+        "name": "electricity, high voltage, residual mix",
+        "reference product": "electricity, high voltage"
+      }
+    },
+    {
+      "source": {
+        "name": "hydraulic digger",
+        "unit": "unit"
+      },
+      "target": {
+        "name": "hydraulic digger production",
+        "reference product": "hydraulic digger"
+      }
+    },
+    {
+      "source": {
+        "name": "electricity, low voltage, residual mix",
+        "unit": "kilowatt hour"
+      },
+      "target": {
+        "name": "electricity, low voltage, residual mix",
+        "reference product": "electricity, low voltage"
+      }
+    },
+    {
+      "source": {
+        "name": "electricity, low voltage, residual mix",
+        "unit": "kilowatt hour"
+      },
+      "target": {
+        "name": "electricity, low voltage, residual mix",
+        "reference product": "electricity, low voltage"
+      }
+    },
+    {
+      "source": {
+        "name": "recultivation, iron mine",
+        "unit": "square meter"
+      },
+      "target": {
+        "name": "recultivation, iron mine",
+        "reference product": "recultivation, iron mine"
+      }
+    },
+    {
+      "source": {
+        "name": "electricity, medium voltage, residual mix",
+        "unit": "kilowatt hour"
+      },
+      "target": {
+        "name": "electricity, medium voltage, residual mix",
+        "reference product": "electricity, medium voltage"
+      }
+    },
+    {
+      "source": {
+        "name": "laser machining, metal, with CO2-laser, 4000W power",
+        "unit": "hour"
+      },
+      "target": {
+        "name": "laser machining, metal, with CO2-laser, 4000W power",
+        "reference product": "laser machining, metal, with CO2-laser, 4000W power"
+      }
+    },
+    {
+      "source": {
+        "name": "anodising, aluminium sheet",
+        "unit": "square meter"
+      },
+      "target": {
+        "name": "anodising, aluminium sheet",
+        "reference product": "anodising, aluminium sheet"
+      }
+    },
+    {
+      "source": {
+        "name": "paper, woodfree, uncoated, at regional storage",
+        "unit": "kilogram"
+      },
+      "target": {
+        "name": "paper production, woodfree, uncoated, at integrated mill",
+        "reference product": "paper, woodfree, uncoated"
+      }
+    },
+    {
+      "source": {
+        "name": "process-specific burdens, sanitary landfill",
+        "unit": "kilogram"
+      },
+      "target": {
+        "name": "process-specific burdens, sanitary landfill",
+        "reference product": "process-specific burdens, sanitary landfill"
+      }
+    },
+    {
+      "source": {
+        "name": "mecoprop, at regional storage",
+        "unit": "kilogram"
+      },
+      "target": {
+        "name": "mecoprop production",
+        "reference product": "mecoprop"
+      }
+    },
+    {
+      "source": {
+        "name": "natural gas, burned in gas turbine",
+        "unit": "megajoule"
+      },
+      "target": {
+        "name": "natural gas, burned in gas turbine",
+        "reference product": "natural gas, burned in gas turbine"
+      }
+    },
+    {
+      "source": {
+        "name": "electricity, medium voltage, residual mix",
+        "unit": "kilowatt hour"
+      },
+      "target": {
+        "name": "electricity, medium voltage, residual mix",
+        "reference product": "electricity, medium voltage"
+      }
+    },
+    {
+      "source": {
+        "name": "mounting, surface mount technology, Pb-containing solder",
+        "unit": "square meter"
+      },
+      "target": {
+        "name": "mounting, surface mount technology, Pb-containing solder",
+        "reference product": "mounting, surface mount technology, Pb-containing solder"
+      }
+    },
+    {
+      "source": {
+        "name": "chimney",
+        "unit": "meter"
+      },
+      "target": {
+        "name": "chimney production",
+        "reference product": "chimney"
+      }
+    },
+    {
+      "source": {
+        "name": "refinery gas, burned in furnace",
+        "unit": "megajoule"
+      },
+      "target": {
+        "name": "refinery gas, burned in furnace",
+        "reference product": "heat, district or industrial, other than natural gas"
+      }
+    }
+  ]
+}

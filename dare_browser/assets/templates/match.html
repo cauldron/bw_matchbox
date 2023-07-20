@@ -1,0 +1,59 @@
+{% include 'header.html' %}
+<div class="container">
+  {% include 'navigation.html' %}
+  <div class="row">
+    <div class="column">
+      <h2>{{ ds.name }}</h2>
+      <ul>
+        <li>Location: {{ds.location}}</li>
+        <li>Unit: {{ds.unit}}</li>
+        <li>Comment: {{ds.comment}}</li>
+      </ul>
+      <p><input class="u-full-width" placeholder="{{ query_string }}" id="query_string"></p>
+      <table id="result-table">
+        <tr>
+          <th>Activity</th>
+          <th>Product</th>
+          <th>Location</th>
+          <th>Unit</th>
+        </tr>
+        {% for obj in matches %}
+        <tr>
+          <td><a href="{{ url_for('compare', source=ds.id, target=obj.id) }}">{{obj.name}}</a></td>
+          <td>{{ obj["reference product"]}}</td>
+          <td>{{ obj.location }}</td>
+          <td>{{ obj.unit }}</td>
+        </tr>
+        {% endfor %}
+      </table>
+    </div>
+  </div>
+</div>
+
+<script type="text/javascript">
+var search_bar = document.getElementById("query_string");
+search_bar.focus();
+
+var result_table = document.getElementById("result-table");
+function search_result_updater() {
+  result_table.innerHTML = this.responseText;
+}
+
+var do_search = function () {
+  var qs = encodeURIComponent(document.getElementById("query_string").value);
+  if (qs) {
+    const req = new XMLHttpRequest();
+    req.addEventListener("load", search_result_updater);
+    req.open("GET", "{{ url_for('search') }}?e=1&source={{ ds.id }}&database=ecoinvent-3.9-cutoff&q=" + qs);
+    req.send();
+  };
+};
+
+search_bar.addEventListener("click", do_search);
+search_bar.addEventListener("keypress", function(event) {
+  if (event.key === "Enter") {
+    do_search();
+  }
+});
+</script>
+{% include 'footer.html' %}

@@ -1,0 +1,29 @@
+{% include 'header.html' %}
+<div class="container">
+  {% include 'navigation.html' %}
+  <div class="row">
+    <div class="column">
+      <h1>Match files status</h1>
+      {% for name, data in status %}
+        <p>{{ name }}: {{ data.count }} elements</p>
+        {% if data.duplicates %}
+          <p>Conflicting duplicate elements</p>
+          <ul>
+          {% for dup in data.duplicates %}
+              <li>{{ dup }}</li>
+          {% endfor %}
+          </ul>
+        {% endif %}
+      {% endfor %}
+    </div>
+    <div class="column">
+      <h1>Failed match files</h1>
+      <ul>
+        {% for row in failed %}
+          <li>{{row}}</li>
+        {% endfor %}
+      </ul>
+    </div>
+  </div>
+</div>
+{% include 'footer.html' %}

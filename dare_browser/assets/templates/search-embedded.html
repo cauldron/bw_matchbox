@@ -1,0 +1,16 @@
+<table>
+    <tr>
+      <th>Activity</th>
+      <th>Product</th>
+      <th>Location</th>
+      <th>Unit</th>
+    </tr>
+    {% for row in table_data %}
+    <tr>
+      <td><a href="{{ url_for('compare', source=source, target=row.id) }}">{{row.name}}</a></td>
+      <td>{{row['reference product']}}</td>
+      <td>{{row.location}}</td>
+      <td>{{row.unit}}</td>
+    </tr>
+    {% endfor %}
+</table>
