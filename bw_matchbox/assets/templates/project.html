@@ -1,0 +1,19 @@
+{% include 'header.html' %}
+<div class="container">
+  {% include 'navigation.html' %}
+  <div class="row">
+    <h1>Select Project</h1>
+    <form method="post">
+      <div class="row">
+        <div class="9 columns">
+          <select class="u-full-width" id="project" name="project">
+            {% for p in projects %}
+            <option value="{{ p.name }}">{{ p.name }}</option>
+            {% endfor %}
+          </select>
+        </div>
+        <div class="2 columns">
+          <input class="button-primary" type="submit" value="Select">
+        </div>
+    </form>
+{% include 'footer.html' %}

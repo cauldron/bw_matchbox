@@ -49,8 +49,8 @@ from werkzeug.security import generate_password_hash, check_password_hash
 BASE_DIR = Path(__file__).resolve().parent
 DATA_DIR = BASE_DIR / "data"
 
-dare_app = flask.Flask(
-    "dare_app",
+matchbox_app = flask.Flask(
+    "matchbox_app",
     static_folder=BASE_DIR / "assets",
     template_folder=BASE_DIR / "assets" / "templates"
 )
@@ -80,11 +80,11 @@ def verify_password(username, password):
 # }
 
 # Default limit for file uploads is 5 MB
-# dare_app.config["MAX_CONTENT_LENGTH"] = 5 * 1024 * 1024
-# dare_app.config["UPLOAD_FOLDER"] = UPLOAD_FOLDER
+# matchbox_app.config["MAX_CONTENT_LENGTH"] = 5 * 1024 * 1024
+# matchbox_app.config["UPLOAD_FOLDER"] = UPLOAD_FOLDER
 
 # Generate a secret key for the session, otherwise flash() returns an exception
-dare_app.config["SECRET_KEY"] = os.urandom(24)
+matchbox_app.config["SECRET_KEY"] = os.urandom(24)
 
 
 # def allowed_file(filename):
@@ -102,6 +102,17 @@ dare_app.config["SECRET_KEY"] = os.urandom(24)
 
 # OPERATIONS = ('create-exchanges', 'create-datasets', 'update', 'disaggregate', 'replace', 'delete')
 OPERATIONS = ('replace',)
+
+
+def get_context():
+    project = flask.request.cookies.get('project')
+    if not project:
+        return flask.redirect(flask.url_for("select_project"))
+    source = flask.request.cookies.get('source')
+    target = flask.request.cookies.get('target')
+    if not (source and target):
+        return flask.redirect(flask.url_for("select_databases"))
+    return project, source, target
 
 
 def load_data_files():
@@ -122,7 +133,7 @@ def load_data_files():
     return found
 
 
-@dare_app.route("/match-status", methods=["GET"])
+@matchbox_app.route("/match-status", methods=["GET"])
 @auth.login_required
 def match_status():
     crud = {}
@@ -155,36 +166,88 @@ def match_status():
     )
 
 
-@dare_app.route("/", methods=["GET"])
+@matchbox_app.route('/project', methods = ['POST', 'GET'])
+def select_project():
+    if flask.request.method == 'POST':
+        project = flask.request.form['project']
+        resp = flask.make_response(flask.redirect(flask.url_for("select_databases")))
+        resp.set_cookie('project', project)
+        return resp
+    else:
+        resp = flask.make_response(flask.render_template(
+            "project.html",
+            projects=[o for o in bd.projects],
+        ))
+        resp.delete_cookie("project")
+        resp.delete_cookie("source")
+        resp.delete_cookie("target")
+        return resp
+
+
+@matchbox_app.route('/databases', methods = ['POST', 'GET'])
+def select_databases():
+    project = flask.request.cookies.get('project')
+    if not project:
+        return flask.redirect(flask.url_for("select_project"))
+    bd.projects.set_current(project)
+
+    if flask.request.method == 'POST':
+        source = flask.request.form['source']
+        target = flask.request.form['target']
+        if source != target:
+            resp = flask.make_response(flask.redirect(flask.url_for("index")))
+            resp.set_cookie('source', source)
+            resp.set_cookie('target', target)
+            return resp
+
+    resp = flask.make_response(flask.render_template(
+        "databases.html",
+        project=project,
+        databases=bd.databases,
+    ))
+    resp.delete_cookie("source")
+    resp.delete_cookie("target")
+    return resp
+
+
+@matchbox_app.route("/", methods=["GET", "POST"])
 @auth.login_required
 def index():
-    bd.projects.set_current("DARE")
+    context = get_context()
+    if isinstance(context, flask.Response):
+        return context
+    p, s, t = context
+
+    bd.projects.set_current(p)
     return flask.render_template(
         "index.html",
-        title="DARE Index Page",
-        table_data=[obj for obj, _ in zip(bd.Database("uvek-2022"), range(50))],
+        title="bw_matchbox Index Page",
+        project=p,
+        source=s,
+        target=t,
+        table_data=[obj for obj, _ in zip(bd.Database(s), range(50))],
         query_string="",
-        database="uvek-2022",
+        database=s,
     )
 
 
-@dare_app.route("/ecoinvent/", methods=["GET"])
+@matchbox_app.route("/ecoinvent/", methods=["GET"])
 @auth.login_required
 def ecoinvent():
-    bd.projects.set_current("DARE")
+    # bd.projects.set_current("DARE")
     return flask.render_template(
         "index.html",
-        title="DARE Index Page",
+        title="bw_matchbox Index Page",
         table_data=[obj for obj, _ in zip(bd.Database("ecoinvent-3.9-cutoff"), range(50))],
         query_string="",
         database="ecoinvent-3.9-cutoff"
     )
 
 
-@dare_app.route("/search/", methods=["GET"])
+@matchbox_app.route("/search/", methods=["GET"])
 @auth.login_required
 def search():
-    bd.projects.set_current("DARE")
+    # bd.projects.set_current("DARE")
     q = flask.request.args.get("q")
     database = flask.request.args.get("database")
     source = flask.request.args.get("source")
@@ -198,17 +261,17 @@ def search():
     else:
         return flask.render_template(
             "index.html",
-            title="DARE Index Page",
+            title="bw_matchbox Index Page",
             table_data=bd.Database(database).search(q, limit=100),
             query_string=q,
             database=database,
         )
 
 
-@dare_app.route("/process/<id>", methods=["GET"])
+@matchbox_app.route("/process/<id>", methods=["GET"])
 @auth.login_required
 def process_detail(id):
-    bd.projects.set_current("DARE")
+    # bd.projects.set_current("DARE")
     node = bd.get_node(id=id)
     same_name = AD.select().where(AD.name == node['name'], AD.database == node['database'], AD.id != node.id)
     same_name_count = same_name.count()
@@ -217,7 +280,7 @@ def process_detail(id):
     if node['database'] == "ecoinvent-3.9-cutoff":
         return flask.render_template(
             "process_detail.html",
-            title="DARE ecoinvent Detail Page",
+            title="bw_matchbox Detail Page",
             ds=node,
             same_name_count=same_name_count,
             same_name=same_name,
@@ -252,7 +315,7 @@ def process_detail(id):
 
         return flask.render_template(
             "process_detail.html",
-            title="DARE FOEN Detail Page",
+            title="Database Detail Page",
             ds=node,
             same_name_count=same_name_count,
             same_name=same_name,
@@ -261,35 +324,35 @@ def process_detail(id):
         )
 
 
-@dare_app.route("/match/<source>", methods=["GET"])
+@matchbox_app.route("/match/<source>", methods=["GET"])
 @auth.login_required
 def match(source):
-    bd.projects.set_current("DARE")
+    # bd.projects.set_current("DARE")
     node = bd.get_node(id=source)
 
     matches = bd.Database("ecoinvent-3.9-cutoff").search(node['name'] + " " + node['location'])
 
     return flask.render_template(
         "match.html",
-        title="DARE Matching Page",
+        title="Database Matching Page",
         ds=node,
         query_string=node['name'] + " " + node['location'],
         matches=matches
     )
 
 
-@dare_app.route("/compare/<source>/<target>", methods=["GET"])
+@matchbox_app.route("/compare/<source>/<target>", methods=["GET"])
 @auth.login_required
 def compare(source, target):
     # found = load_data_files()
-    bd.projects.set_current("DARE")
+    # bd.projects.set_current("DARE")
     source = bd.get_node(id=int(source))
     target = bd.get_node(id=int(target))
     source_technosphere = sorted(source.technosphere(), key=lambda x: x['amount'], reverse=True)
     target_technosphere = sorted(target.technosphere(), key=lambda x: x['amount'], reverse=True)
     return flask.render_template(
         "compare.html",
-        title="DARE Comparison Page",
+        title="Database Comparison Page",
         source=source,
         source_technosphere=source_technosphere,
         target=target,
@@ -297,7 +360,7 @@ def compare(source, target):
     )
 
 
-# @dare_app.route("/search", methods=["GET"])
+# @matchbox_app.route("/search", methods=["GET"])
 # def search():
 #     catalogue = request.args.get("catalogue")
 #     search_term = request.args.get("search_term")
@@ -336,7 +399,7 @@ def compare(source, target):
 #         )
 
 
-# @dare_app.route("/export/<method>", methods=["POST"])
+# @matchbox_app.route("/export/<method>", methods=["POST"])
 # def export_linked_data(method):
 #     content = request.get_json()
 
@@ -349,13 +412,13 @@ def compare(source, target):
 #     return jsonify({"fp": fp.name})
 
 
-# @dare_app.route("/download/<path>", methods=["GET"])
+# @matchbox_app.route("/download/<path>", methods=["GET"])
 # def download_export(path):
 #     fp = export_dir / path
 #     return send_file(fp, as_attachment=True)
 
 
-# @dare_app.route("/file/<hash>", methods=["GET"])
+# @matchbox_app.route("/file/<hash>", methods=["GET"])
 # def uploaded_file(hash):
 #     try:
 #         file = File.get(sha256=hash)
@@ -372,7 +435,7 @@ def compare(source, target):
 #     )
 
 
-# @dare_app.route("/upload", methods=["POST"])
+# @matchbox_app.route("/upload", methods=["POST"])
 # def upload():
 
 #     # check if the post request has the file part
@@ -423,7 +486,7 @@ def compare(source, target):
 #         return result
 
 
-# @dare_app.route("/get_search_results/<catalog>/<query>")
+# @matchbox_app.route("/get_search_results/<catalog>/<query>")
 # def get_search_results(catalog, query):
 #     search_function = search_mapping[catalog]
 #     results = [normalize_search_results(o) for o in search_function(query)]

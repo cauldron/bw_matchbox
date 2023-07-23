@@ -1,4 +1,4 @@
-# dare_browser Changelog
+# bw_matchbox Changelog
 
 All notable changes to this project will be documented in this file.
 

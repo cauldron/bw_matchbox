@@ -1,7 +1,7 @@
 # Usage
 
 ```{eval-rst}
-.. click:: dare_browser.cli:run
-    :prog: dare-browser
+.. click:: bw_matchbox.cli:run
+    :prog: bw_matchbox
     :nested: full
 ```

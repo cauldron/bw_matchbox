@@ -1,0 +1,28 @@
+{% include 'header.html' %}
+<div class="container">
+  {% include 'navigation.html' %}
+  <div class="row">
+    <h1>Select Source and Target Databases</h1>
+    <form method="post">
+      <div class="row">
+        <div class="9 columns">
+          <label for="source">Source database</label>
+          <select class="u-full-width" id="source" name="source">
+            {% for d in databases %}
+            <option value="{{ d }}">{{ d }}</option>
+            {% endfor %}
+          </select>
+        </div>
+        <div class="9 columns">
+          <label for="source">Target database</label>
+          <select class="u-full-width" id="target" name="target">
+            {% for d in databases %}
+            <option value="{{ d }}">{{ d }}</option>
+            {% endfor %}
+          </select>
+        </div>
+        <div class="2 columns">
+          <input class="button-primary" type="submit" value="Select">
+        </div>
+    </form>
+{% include 'footer.html' %}

@@ -103,11 +103,11 @@ $ pip install pre-commit
 It is recommended to open an issue before starting work on anything.
 This will allow a chance to talk it over with the owners and validate your approach.
 
-[pull request]: https://github.com/cauldron/dare-browser/pulls
+[pull request]: https://github.com/cauldron/bw_matchbox/pulls
 [License]: https://opensource.org/licenses/MIT
-[Source Code]: https://github.com/cauldron/dare-browser
-[Documentation]: https://dare-browser.readthedocs.io/
-[Issue Tracker]: https://github.com/cauldron/dare-browser/issues
+[Source Code]: https://github.com/cauldron/bw_matchbox
+[Documentation]: https://bw_matchbox.readthedocs.io/
+[Issue Tracker]: https://github.com/cauldron/bw_matchbox/issues
 
 
 <!-- github-only -->

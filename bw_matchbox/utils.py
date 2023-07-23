@@ -11,7 +11,7 @@ def get_version_tuple() -> tuple:
 
     return tuple(
         as_integer(v)
-        for v in importlib.metadata.version("dare_browser")
+        for v in importlib.metadata.version("bw_matchbox")
         .strip()
         .split(".")
     )

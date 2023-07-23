@@ -1,3 +1,3 @@
-"""Fixtures for dare_browser"""
+"""Fixtures for bw_matchbox"""
 
 # import pytest
