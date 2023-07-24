@@ -365,7 +365,7 @@ def match(source):
 
     node = bd.get_node(id=source)
 
-    matches = bd.Database("ecoinvent-3.9-cutoff").search(node['name'] + " " + node['location'])
+    matches = bd.Database(t).search(node['name'] + " " + node.get('location', ''))
 
     return flask.render_template(
         "match.html",
@@ -378,7 +378,7 @@ def match(source):
         file_number=sum(1 for obj in files if obj['enabled']),
         user=auth.current_user(),
         changes_file=Path(matchbox_app.config["mb_changes_file"]).name,
-        query_string=node['name'] + " " + node['location'],
+        query_string=node['name'] + " " + node.get('location', ''),
         matches=matches
     )
 
@@ -414,7 +414,7 @@ def compare(source, target):
         'amount_display': "1.0",
         'name': target['name'],
         'unit': target['unit'],
-        'location': target['location'],
+        'location': target.get('location', ''),
         'input_id': target.id,
         'url': flask.url_for("process_detail", id=target.id),
     }
