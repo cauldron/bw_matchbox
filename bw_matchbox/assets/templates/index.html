@@ -3,7 +3,11 @@
   {% include 'navigation.html' %}
   <div class="row">
     <div class="column">
-      <h1>Database</h1>
+      <h1>
+        {% if unmatched_link %}Source Database <a href="{{ url_for('unmatched') }}">(Only unmatched)</a>
+        {% else %}Unmatched in Source Database
+        {% endif %}
+      </h1>
       <p><input class="u-full-width" placeholder="{{ query_string }}" id="query_string"></p>
       <table>
         <tr>
@@ -17,7 +21,13 @@
           <td><a href="{{ url_for('process_detail', id=row.id) }}">{{row.name}}</a></td>
           <td>{{row.location}}</td>
           <td>{{row.unit}}</td>
-          <td>{%  if row.matched %}<i class="fa-solid fa-check"></i>{% else %}<i class="fa-solid fa-circle-xmark"></i>{% endif %}</td>
+          <td>
+            {% if row.matched %}
+              <a class="button" href="{{ url_for("match", source=row.id)}}"><i class="fa-solid fa-check"></i> EDIT</a>
+            {% else %}
+              <a class="button button-primary" href="{{ url_for("match", source=row.id)}}"><i class="fa-solid fa-circle-xmark"></i> ADD</a>
+            {% endif %}
+          </td>
         </tr>
         {% endfor %}
       </table>

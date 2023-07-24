@@ -8,7 +8,7 @@
     }
   ],
   "version": "1.0.0",
-  "description": "Partial matching of UVEK activities to ecoinvent activity/product/locations focused on mining and associated processes",
+  "description": "Partial matching of UVEK activities to ecoinvent activity/product/locations",
   "created": "2023-06-13T13:43:26.367778",
   "contributors": [
     {

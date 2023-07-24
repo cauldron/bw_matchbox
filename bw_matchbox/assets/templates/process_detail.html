@@ -3,7 +3,11 @@
   {% include 'navigation.html' %}
   <div class="row">
     <div class="column">
-      <h1>{{ ds.name }}</h1>
+      <h1>{{ ds.name }}
+        {% if ds.database == source %}
+          {% if not ds.matched %}<button onclick="markMatched(this)" style="vertical-align: middle" class="button-primary" id="manual-match">Mark matched</button> <a style="vertical-align: middle" class="button button-primary" href="{{ url_for('match', source=ds.id)}}">Match</a>{% else %}<button id="manual-match" style="vertical-align: middle">Matched</button>{% endif %}
+        {% endif %}
+      </h1>
       <ul>
           <li>Database: {{ ds.database }}</li>
           <li>Location: {{ ds.location }}</li>
@@ -37,7 +41,7 @@
             <td>
               {% if row.matched %}
                 <div class="tooltip">
-                    <a class="button button-primary" href="{{ url_for("compare", source=row.input.id, target=row.match.id)}}">Compare</a>
+                    <a class="button button-primary" href="{{ url_for('compare', source=row.input.id, target=row.match.id)}}">Compare</a>
                     <div class="left">
                         <p>{{ row.match.name }}</p>
                         <p>{{ row.match.unit }}</p>
@@ -45,14 +49,48 @@
                     </div>
                 </div>
               {%  else %}
-                <a class="button button-primary" target="_blank" href="{{ url_for("match", source=row.input.id) }}">Match</a>
+                <a class="button button-primary" target="_blank" href="{{ url_for('match', source=row.input.id) }}">Match</a>
               {% endif %}
             </td>
           {% endif %}
         </tr>
         {% endfor %}
       </table>
+      <h2>Biosphere Inputs</h2>
+      {% if biosphere|length > 50 or not biosphere|length %}
+      <p>{{ biosphere|length }} biosphere exchanges</p>
+      {% else %}
+      <table>
+        <tr>
+          <th>Amount</th>
+          <th>Name</th>
+          <th>Categories</th>
+          <th>Unit</th>
+        </tr>
+        {% for exc in biosphere %}
+          <tr>
+            <td>{{ exc.amount }}</td>
+            <td>{{ exc.input.name }}</td>
+            <td>{{ exc.input.categories|join("|") }}</td>
+            <td>{{ exc.input.unit }}</td>
+          </tr>
+        {% endfor %}
+      {% endif %}
+      </table>
     </div>
   </div>
 </div>
+
+<script type="text/javascript">
+function markMatched (button) {
+  var url = "/mark-matched/{{ ds.id }}";
+  fetch(url).then((response) => {
+    if (!response.ok) {
+        throw new Error(`HTTP error ${response.status}`);
+    };
+    button.innerText = "Matched";
+    button.classList.remove("button-primary");
+  });
+};
+</script>
 {% include 'footer.html' %}

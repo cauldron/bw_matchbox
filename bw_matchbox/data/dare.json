@@ -1,0 +1,24 @@
+{
+  "name": "UVEK-2022-to-ecoinvent-3.9-manual-matching",
+  "licenses": [
+    {
+      "name": "CC BY 4.0",
+      "path": "https://creativecommons.org/licenses/by/4.0/",
+      "title": "Creative Commons Attribution 4.0 International"
+    }
+  ],
+  "version": "1.0.0",
+  "description": "Manual matching of UVEK activities to ecoinvent activity/product/locations",
+  "created": "2023-07-23T12:00:00.0",
+  "contributors": [
+    {
+      "title": "Chris Mutel",
+      "path": "https://chris.mutel.org/",
+      "role": "author"
+    }
+  ],
+  "replace": [],
+  "delete": [],
+  "disaggregate": [],
+  "update": []
+}

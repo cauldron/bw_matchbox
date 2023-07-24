@@ -1,0 +1,9 @@
+{% for row in exchanges %}
+<tr>
+  <td><span id="row-trash-{{ loop.index + 100 }}" onclick="removeRow(this)"><a><i class="fa-solid fa-trash-can"></i></a></span> | <span onclick="expandRow(this)" input_id="{{ row.input.id }}" amount="{{ row.amount }}"><a><i class="fa-solid fa-diamond fa-spin"></i></a></span></td>
+  <td>{{'%.2g' % row.amount}}</td>
+  <td>{{row.input.name}}</td>
+  <td>{{row.input.location}}</td>
+  <td>{{row.input.unit}}</td>
+</tr>
+{% endfor %}

@@ -5,7 +5,7 @@
     <h1>Select Source and Target Databases</h1>
     <form method="post">
       <div class="row">
-        <div class="9 columns">
+        <div class="five columns">
           <label for="source">Source database</label>
           <select class="u-full-width" id="source" name="source">
             {% for d in databases %}
@@ -13,7 +13,7 @@
             {% endfor %}
           </select>
         </div>
-        <div class="9 columns">
+        <div class="five columns">
           <label for="source">Target database</label>
           <select class="u-full-width" id="target" name="target">
             {% for d in databases %}
@@ -21,8 +21,55 @@
             {% endfor %}
           </select>
         </div>
-        <div class="2 columns">
-          <input class="button-primary" type="submit" value="Select">
+        <div class="two columns">
+          <label id="use_proxy_toggle" for="use_proxy">Use proxy</label>
+          <input type="checkbox" onclick="showProxySection(this,'proxy-row')" name="use-proxy" checked>
         </div>
+      </div>
+      <div class="row">
+        <div id="proxy-row">
+          <div class="five columns">
+            <label for="proxy-existing">Use existing database for proxy, or...</label>
+            <select class="u-full-width" id="proxy-existing" name="proxy-existing">
+              {% for d in databases %}
+              <option value="{{ d }}">{{ d }}</option>
+              {% endfor %}
+            </select>
+          </div>
+          <div class="five columns">
+            <label for="proxy-new">Create a new database</label>
+            <input class="u-full-width" type="text" id="proxy-new" name="proxy-new">
+          </div>
+        </div>
+        <div class="two columns">
+          <label for="submit">Save changes</label>
+          <input class="button-primary" type="submit" value="Submit" id="submit">
+        </div>
+      </div>
     </form>
+  </div>
+</div>
+
+<script>
+function showProxySection(checkbox, section_div) {
+   if( checkbox.checked == true ) {
+      document.getElementById(section_div).style.display = "block";
+   } else {
+      document.getElementById(section_div).style.display = "none";
+   }
+};
+
+// var select_cache = "";
+
+document.getElementById("proxy-new").addEventListener("keyup", function() {
+  var db_select = document.getElementById("proxy-existing");
+  if (this.value.trim().length) {
+    // select_cache = db_select.value;
+    // db_select.value = "None";
+    db_select.style.opacity = 0.3;
+  } else {
+    db_select.style.opacity = 1.0;
+  };
+});
+</script>
 {% include 'footer.html' %}

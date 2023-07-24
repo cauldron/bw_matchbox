@@ -1,0 +1,40 @@
+{% include 'header.html' %}
+<div class="container">
+  {% include 'navigation.html' %}
+  <div class="row">
+    <h1>Select Matching Files</h1>
+    <form method="post">
+      <div class="row">
+      {% for lineset in files %}
+        <fieldset>
+          <p>Directory: {{ lineset.0.dirpath|e }}</p>
+          <table class="u-full-width">
+            <thead>
+              <tr>
+                <th>Use</th>
+                <th>Filename</th>
+                <th>Editable</th>
+              </tr>
+            </thead>
+            <tbody>
+            {% for line in lineset %}
+              <tr>
+                <td>
+                  <input type="checkbox" name="enabled-{{ line.index }}" {% if line.enabled %}checked{% endif %}>
+                </td>
+                <td>{{ line.filename }}</td>
+                <td>{% if line.writable %}<i class="fa-solid fa-check"></i>{% else %}<i class="fa-solid fa-circle-xmark"></i>{% endif %}</td>
+              </tr>
+            {% endfor %}
+            </tbody>
+          </table>
+        </fieldset>
+        {% endfor %}
+        <div class="2 columns">
+          <input class="button-primary" type="submit" value="Save">
+        </div>
+      </div>
+    </form>
+  </div>
+</div>
+{% include 'footer.html' %}

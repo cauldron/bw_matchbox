@@ -7,7 +7,7 @@
     </tr>
     {% for row in table_data %}
     <tr>
-      <td><a href="{{ url_for('compare', source=source, target=row.id) }}">{{row.name}}</a></td>
+      <td><a href="{{ url_for('compare', source=source.id, target=row.id) }}">{{row.name}}</a></td>
       <td>{{row['reference product']}}</td>
       <td>{{row.location}}</td>
       <td>{{row.unit}}</td>

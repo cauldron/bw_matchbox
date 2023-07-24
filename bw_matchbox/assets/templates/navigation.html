@@ -1,10 +1,12 @@
 <div class="row" style="margin-top: 5%">
+    <div class="two columns"><a href="{{ url_for('index') }}">home</a></div>
+    <div class="two columns"><a href="{{ url_for('select_matching_files') }}">Input files ({{ file_number or 0}})</a></div>
+    <div class="two columns">User: {{ user }}</div>
+    <div class="two columns">Editing: {{ changes_file }}</div>
+    <div class="four columns">Proxy: {{ proxy or "None" }}</div>
+</div>
+<div class="row">
     {% if project %}<div class="four columns">Project: {{ project }} | <a href="{{ url_for('select_project') }}">Change</a></div>{% endif %}
     {% if source %}<div class="four columns">Source DB: {{ source }}</div>
     <div class="four columns">Target DB: {{ target }} | <a href="{{ url_for('select_databases') }}">Change</a></div>{% endif %}
-<!--
-    <div class="two columns"><a href="{{ url_for('index') }}">foen</a></div>
-    <div class="two columns"><a href="{{ url_for('ecoinvent') }}">ecoinvent</a></div>
-    <div class="two columns"><a href="{{ url_for('match_status') }}">matching files</a></div>
- -->
 </div>
