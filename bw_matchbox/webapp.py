@@ -1,6 +1,5 @@
 from bw2data.backends import ActivityDataset as AD
 from flask_httpauth import HTTPBasicAuth
-from frozendict import frozendict
 from pathlib import Path
 from werkzeug.security import check_password_hash
 import bw2data as bd
@@ -233,37 +232,37 @@ def unmatched():
     )
 
 
-@matchbox_app.route("/match-status", methods=["GET"])
-@auth.login_required
-def match_status():
-    crud = {}
-    status = {}
-    failed = []
+# @matchbox_app.route("/match-status", methods=["GET"])
+# @auth.login_required
+# def match_status():
+#     crud = {}
+#     status = {}
+#     failed = []
 
-    for filename in filter(lambda x: x.suffix.lower() == ".json", DATA_DIR.iterdir()):
-        try:
-            file_status = {'count': 0, 'duplicates': []}
-            data = json.load(open(filename))
-            for key in OPERATIONS:
-                for elem in data.get(key, []):
-                    lookup = frozendict(elem['source'])
-                    value = frozendict(elem['target'])
-                    file_status['count'] += 1
-                    if lookup in crud and crud.get(lookup) != value:
-                        error = "Source: {}. Already have: {}. Given: {}".format(dict(lookup), dict(crud[lookup]), dict(value))
-                        if error not in file_status['duplicates']:
-                            file_status['duplicates'].append(error)
-                    else:
-                        crud[lookup] = value
-            status[filename.name] = file_status
-        except:
-            failed.append(filename.name)
-            raise
-    return flask.render_template(
-        "match-status.html",
-        failed=failed,
-        status=[(key, value) for key, value in status.items()]
-    )
+#     for filename in filter(lambda x: x.suffix.lower() == ".json", DATA_DIR.iterdir()):
+#         try:
+#             file_status = {'count': 0, 'duplicates': []}
+#             data = json.load(open(filename))
+#             for key in OPERATIONS:
+#                 for elem in data.get(key, []):
+#                     lookup = frozendict(elem['source'])
+#                     value = frozendict(elem['target'])
+#                     file_status['count'] += 1
+#                     if lookup in crud and crud.get(lookup) != value:
+#                         error = "Source: {}. Already have: {}. Given: {}".format(dict(lookup), dict(crud[lookup]), dict(value))
+#                         if error not in file_status['duplicates']:
+#                             file_status['duplicates'].append(error)
+#                     else:
+#                         crud[lookup] = value
+#             status[filename.name] = file_status
+#         except:
+#             failed.append(filename.name)
+#             raise
+#     return flask.render_template(
+#         "match-status.html",
+#         failed=failed,
+#         status=[(key, value) for key, value in status.items()]
+#    )
 
 
 @matchbox_app.route("/search/", methods=["GET"])
@@ -330,9 +329,6 @@ def process_detail(id):
     same_name_count = same_name.count()
     technosphere = sorted(node.technosphere(), key=lambda x: x.input['name'])
     biosphere = sorted(node.biosphere(), key=lambda x: x.input['name'])
-
-    for exc in biosphere:
-        print(exc)
 
     return flask.render_template(
         "process_detail.html",
@@ -430,8 +426,6 @@ def compare(source, target):
         }
         for exc in target.technosphere()
     ]
-
-    print(source_technosphere)
 
     return flask.render_template(
         "compare.html",
