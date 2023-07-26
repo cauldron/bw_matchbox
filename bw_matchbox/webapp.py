@@ -1,12 +1,13 @@
 from bw2data.backends import ActivityDataset as AD
 from flask_httpauth import HTTPBasicAuth
 from pathlib import Path
-from werkzeug.security import check_password_hash
+from werkzeug.security import check_password_hash, generate_password_hash
 import bw2data as bd
 import flask
 import json
 import os
 import uuid
+import tomli
 
 
 BASE_DIR = Path(__file__).resolve().parent
@@ -27,6 +28,28 @@ def verify_password(username, password):
     users = matchbox_app.config['mb_users']
     if username in users and check_password_hash(users.get(username), password):
         return username
+
+
+def configure_app(filepath, app):
+    try:
+        config_fp = Path(filepath)
+        assert config_fp.exists
+        with open(config_fp, "rb") as f:
+            config = tomli.load(f)
+        assert 'users' in config
+    except:
+        raise ValueError("Invalid or unreadable config file")
+
+    app.config["mb_users"] = {
+        user: generate_password_hash(password)
+        for user, password in config['users'].items()
+    }
+    app.config["mb_changes_file"] = config['files']['changes_file']
+    try:
+        json.load(open(app.config["mb_changes_file"], "rb"))
+    except:
+        raise ValueError("Can't read changes file")
+    return app
 
 
 def get_context():
