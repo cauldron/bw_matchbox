@@ -1,10 +1,10 @@
 [users]
+# Used in basic HTTP auth. Required.
 joe = "example"
 jane = "another"
 
 [files]
-include_default = true
-# Won't be created, must exist already
+# Directory of extra matching files. Won't be created, must exist already. Can be an empty list.
 directories = ["/Some/directory/somewhere", "/Some/directory/somewhere-else"]
 # Won't be created - use `matchbox_webapp create` to create a blank
 # template file with this filepath
