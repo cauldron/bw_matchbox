@@ -19,12 +19,19 @@
 [pre-commit]: https://github.com/pre-commit/pre-commit
 [black]: https://github.com/psf/black
 
+`bw_matchbox` is a web app for matching two [Brightway](https://docs.brightway.dev/en/latest/). It allows you to do complicated matches, such as:
+
+* Link process a to processes b and c, with allocation factors
+* Link process a to a proxy for process b, changing the exchange values in b proxy to match those in process a where desired
+* Link process a to a proxy for process b, removing some exchanges from b and adding some from a
+* Link process a to a proxy for process b, expanding and inlining some exchanges from b to "flatten" its supply chain
+
 ## Installation
 
 You can install _bw_matchbox_ via [pip] from [PyPI]:
 
 ```console
-$ pip install bw_matchbox
+pip install bw_matchbox
 ```
 
 This library depends on:
@@ -41,15 +48,39 @@ This is a `flask` application. Flask has a debug server suitable for development
 
 To use `bw_matchbox`, you need to do the following:
 
-### Configuration
+### Create a configuration file
 
-Configuration is done via a `toml` file. See [`config_example.toml`](https://github.com/cauldron/bw_matchbox/blob/main/config_example.toml) for the structure of such a file. It needs to provide the following:
+Configuration is done via a `toml` file. See [`config_example.toml`](https://github.com/cauldron/bw_matchbox/blob/main/config_example.toml) for the structure of this file. It needs to provide the following:
 
 * `[users]` section: Authentication, via a set of usernames and passwords
-* `changes_file`: Location of matching file to save your changes to. You can create an empty file by running `matchbox_create_file <dirpath>` with a suitable directory path.
-* `directories`: (Optional) Location of existing matching files to use, if any. These files must be in the [randonneur](https://github.com/cmutel/randonneur) format.
+* `changes_file`: Location of the file where we will save your matching selections.
+* `directories`: (Optional) Location of existing [randonneur](https://github.com/cmutel/randonneur) matching files to use, if any.
+
+The easiest way to set this up is with:
+
+```console
+matchbox setup
+```
+
+This will create stub configuration and changes files in your current working directory - note that you need to edit `changes.json`, and should change the username/password in `config.toml`.
+
+### Create a Brightway project
+
+`bw_matchbox` is designed to match two [Brightway](https://docs.brightway.dev/en/latest/) databases against each other. If you are new to life cycle assessment, or just want to see matchbox in action, do the following.
+
+```console
+matchbox example_project
+```
+
+This will install the [US EEIO database](https://github.com/USEPA/USEEIO/). You can practice by linking it against itself :p
 
 ### Running the development server
+
+Just run:
+
+```console
+matchbox webapp config.toml
+```
 
 ### Running in production
 
@@ -57,20 +88,11 @@ You will need to configure the Flask app using `configure_app`, or re-implement 
 
 ```python
 from bw_matchbox import matchbox_app, configure_app
-config_filepath = "/something/something/config.toml"
+config_filepath = "/path/to/config.toml"
 app = configure_app(config_filepath, matchbox_app)
 
 from waitress import serve
 serve(app, port=8080)
-```
-
-### Creating an example Brightway project
-
-`bw_matchbox` is designed to match two [Brightway](https://docs.brightway.dev/en/latest/) databases against each other. If you are new to life cycle assessment, or just want to see matchbox in action, do the following. Note that this will create new files in your working directory:
-
-```bash
-matchbox_webapp example
-
 ```
 
 ## Contributing
