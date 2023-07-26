@@ -95,6 +95,14 @@ from waitress import serve
 serve(app, port=8080)
 ```
 
+### Starting the app
+
+Once the app is running and configured locally or remotely, connect to the correct address and port. If you are running locally, this is probably either `http://localhost:5000` or `http://127.0.0.1:5000`.
+
+In the first screen, choose the Brightway project you want to work on. This is `matchbox-example` if you ran `matchbox example_project`.
+
+On the next screen, choose one database as the *source*, and **a different database** as the *target*. Currently you need to specify a new proxy database by typing a new database name into the *Create a new database* input box.
+
 ## Contributing
 
 Contributions are very welcome.
