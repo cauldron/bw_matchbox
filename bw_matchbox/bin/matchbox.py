@@ -15,6 +15,7 @@ Options:
 from bw_matchbox.webapp import matchbox_app, configure_app
 from docopt import docopt
 from pathlib import Path
+import bw2data as bd
 import bw2io as bi
 import datetime
 import json
@@ -80,7 +81,9 @@ def main():
     elif args['example_project']:
         name = args['<project_name>'] or 'matchbox-example'
         bi.install_project('USEEIO-1.1', name)
-        print(f"Create project {name}")
+        bd.projects.set_current(name)
+        bd.Database("USEEIO-1.1").copy("USEEIO-copy")
+        print(f"Create project {name}. Make sure to select `USEEIO-1.1` for one database and `USEEIO-copy` for the other.")
     elif args['webapp']:
         filepath = args['<config>']
         port = int(args.get("--port", False) or 5000)
