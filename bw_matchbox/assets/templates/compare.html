@@ -1,5 +1,5 @@
 {% include 'header.html' %}
-<div class="container">
+<div class="container compare">
   {% include 'navigation.html' %}
   <span class="modal-wrapper">
     <div class="modal" id="number-editor">
@@ -21,15 +21,15 @@
       <button class="button-primary" id="save-mapping-button">{% if proxy and proxy != "None" %}Create Proxy</button> <button class="button-primary" id="one-to-one">1-to-1 Proxy</button>{% else %}Save{% endif %}</button>
     </div>
   </div>
-  <div class="row">
+  <div class="row compare-tables">
     <div class="column one-half">
       <h3>{{ source_node.name }}</h3>
-      <table id="source-table">
+      <table class="compare-table" id="source-table">
       </table>
     </div>
     <div class="column one-half">
       <h3>{{ target_node.name }} <span onclick="compareLogic.replaceWithTarget(this)"><a><i class="fa-solid fa-arrow-up"></i></a></span></h3>
-      <table id="target-table">
+      <table class="compare-table" id="target-table">
       </table>
     </div>
   </div>
@@ -59,6 +59,7 @@ const compareData = {
   collapsed: {
     selectedFirst: undefined, // undefined | { kind: 'source' | 'target', rowEl: HTMLTableRowElement }
     selectedSecond: undefined, // undefined | { kind: 'source' | 'target', rowEl: HTMLTableRowElement }
+    collapsedList: [], // List of collapsed rows (all together, TODO: to store collapsed rows by pairs, need to clarify)
   },
 };
 

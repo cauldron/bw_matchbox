@@ -45,10 +45,11 @@ const compareLogic = {
   },
 
   build_row: function(data, is_target) {
-    let a = `<tr row_id="${data.row_id}" onclick="compareLogic.clickRow(this)">`;
-    let c = `<td><a onClick="compareLogic.disableRowClick(this)" href="${data.url}">${data.name}</a></td><td>${data.location}</td><td>${data.unit}</td></tr>`
+    const start = `<tr row_id="${data.row_id}" onclick="compareLogic.clickRow(this)">`;
+    const end = `<td><a onClick="compareLogic.disableRowClick(this)" href="${data.url}">${data.name}</a></td><td>${data.location}</td><td>${data.unit}</td></tr>`
+    let content;
     if (is_target) {
-      var b = `
+      content = `
   <td row_id="${data.row_id}">
     <span id="row-trash-${data.row_id}" onclick="compareLogic.removeRow(this)"><a><i class="fa-solid fa-trash-can"></i></a></span>
     |
@@ -57,9 +58,9 @@ const compareLogic = {
   <td onclick="compareLogic.editNumber(this)" row_id="${data.row_id}"><a>${data.amount_display}</a></td>
     `;
     } else {
-      var b = `<td><a onclick="compareLogic.shiftRow(event, this, ${data.row_id})"><i class="fa-solid fa-arrow-right"></i></a></td><td>${data.amount_display}</td>`;
+      content = `<td><a onclick="compareLogic.shiftRow(event, this, ${data.row_id})"><i class="fa-solid fa-arrow-right"></i></a></td><td>${data.amount_display}</td>`;
     }
-    return a + b + c;
+    return start + content + end;
   },
 
   build_table: function(table_id, data, is_target) {
@@ -125,7 +126,7 @@ const compareLogic = {
           </tr>
     `;
 
-    compareData.target_data.forEach( function (item, index) {
+    compareData.target_data.forEach( function (item, _index) {
       text += `
           <tr input_id=${item.input_id}>
             <td>${item.name}</td>
@@ -207,7 +208,7 @@ const compareLogic = {
             return response.json();
         })
         .then((data) => {
-          data.forEach(function (item, index) {
+          data.forEach(function (item, _index) {
             compareData.target_data.push(item);
           });
           compareData.target_data.sort(compareLogic.number_sorter);
@@ -224,6 +225,7 @@ const compareLogic = {
       rowClick.releaseHandler = undefined;
     }
   },
+
   /** releaseRowClick - Enable processing of `clickRow`
   */
   releaseRowClick: function() {
@@ -250,22 +252,66 @@ const compareLogic = {
       // Do not process row click if disabled.
       return;
     }
-    const rowId = rowEl.getAttribute('row_id');
+    if (rowEl.classList.contains('collapsed')) {
+      // TODO: Do smth other if row is already collapsed (uncollapse)?
+      return;
+    }
+    // const rowId = rowEl.getAttribute('row_id'); // TODO?
     // Find main table (source or target one)
     const table = rowEl.closest('table');
     const tableId = table.getAttribute('id');
     const isSource = tableId === 'source-table';
-    const { selectedFirst, selectedSecond } = collapsed;
-    console.log('clickRow', {
-      selectedFirst,
-      selectedSecond,
-      collapsed,
-      rowId,
-      table,
-      tableId,
-      isSource,
-      rowEl,
-    });
+    // Row kind (source or target)...
+    const kind = isSource ? 'source' : 'target';
+    let { selectedFirst, selectedSecond, collapsedList } = collapsed;
+    /* // DEBUG
+     * console.log('clickRow', {
+     *   selectedFirst,
+     *   selectedSecond,
+     *   collapsed,
+     *   // rowId,
+     *   table,
+     *   tableId,
+     *   isSource,
+     *   rowEl,
+     * });
+     */
+    if (!selectedFirst) {
+      // Nothing selected -- then select as first element...
+      // console.log('clickRow: Nothing selected');
+      selectedFirst = collapsed.selectedFirst = { kind, rowEl };
+      rowEl.classList.add('selected', 'selected-first');
+    } else if (selectedFirst.rowEl === rowEl) {
+      // Already selected and clicked again -- then deselect...
+      // console.log('clickRow: Already selected and clicked again');
+      selectedFirst = collapsed.selectedFirst = undefined;
+      rowEl.classList.remove('selected', 'selected-first', 'selected-second');
+    } else if (selectedFirst.kind === kind) {
+      // Clicked another node in the same table -- then deselect old and select new
+      // console.log('clickRow: Clicked another node in the same table');
+      selectedFirst.rowEl.classList.remove('selected', 'selected-first', 'selected-second');
+      rowEl.classList.add('selected', 'selected-first');
+      selectedFirst = collapsed.selectedFirst = { kind, rowEl };
+    } else {
+      // Selected second element -- make both nodes collpaes (TODO)
+      // console.log('clickRow: Selected second element');
+      if (selectedSecond) {
+        // Clear previous second selection if exist...
+        selectedSecond.rowEl.classList.remove('selected', 'selected-first', 'selected-second');
+      }
+      selectedSecond = collapsed.selectedSecond = { kind, rowEl };
+      // Mark as collapsed and remove selected status...
+      selectedFirst.rowEl.classList.add('collapsed');
+      selectedSecond.rowEl.classList.add('collapsed');
+      // Add rows to collapsed list (TODO: Add by pairs?)
+      collapsedList.push(selectedFirst.rowEl);
+      collapsedList.push(selectedSecond.rowEl);
+      // Remove selected status...
+      selectedSecond.rowEl.classList.remove('selected', 'selected-first', 'selected-second');
+      selectedFirst.rowEl.classList.remove('selected', 'selected-first', 'selected-second');
+      collapsed.selectedFirst = undefined;
+      collapsed.selectedSecond = undefined;
+    }
   },
 
   replaceAmountRow: function(elem, target_id) {
@@ -299,7 +345,7 @@ const compareLogic = {
     compareLogic.disableRowClick();
     row_id = elem.getAttribute("row_id");
     current = Number(document.getElementById("number-current-amount").innerText);
-    compareData.target_data.forEach(function (item, index) {
+    compareData.target_data.forEach(function (item, _index) {
       if (item.row_id == row_id) {
         item.amount = current;
         item.amount_display = current.toExponential();
@@ -325,7 +371,7 @@ const compareLogic = {
             <th>Unit</th>
           </tr>
     `
-    compareData.source_data.forEach(function (item, index) {
+    compareData.source_data.forEach(function (item, _index) {
       a += `
         <tr amount="${item.amount}" source_id="${item.row_id}" onclick="compareLogic.replaceAmountRow(this, ${row.row_id})">
           <td>${item.amount_display}</td>
