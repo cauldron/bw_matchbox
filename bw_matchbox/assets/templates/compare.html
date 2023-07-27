@@ -38,8 +38,7 @@
 <script src="{{ url_for('static', filename='js/compare-logic.js') }}"></script>
 <script>
 
-// Global variables...
-// \<\(source_data\|target_data\|target_node\|source_id\|target_id\|target_name\|source_node_unit\|source_node_location\|comment\)\>
+// Global variables for compare tables feature (via global variable `compareData`)...
 const compareData = {
   source_data: {{ source_data_json|safe }},
   target_data: {{ target_data_json|safe }},
@@ -50,19 +49,30 @@ const compareData = {
   source_node_unit: '{{source_node.unit}}',
   source_node_location: '{{source_node.location}}',
   comment: '',
+  // Row click data...
+  rowClick: {
+    timeout: 100,
+    disabled: false,
+    releaseHandler: undefined,
+  },
+  // Collpsing rows data...
+  collapsed: {
+    selectedFirst: undefined, // undefined | { kind: 'source' | 'target', rowEl: HTMLTableRowElement }
+    selectedSecond: undefined, // undefined | { kind: 'source' | 'target', rowEl: HTMLTableRowElement }
+  },
 };
 
-compareLogic.build_table("source-table", compareData.source_data, false);
-compareLogic.build_table("target-table", compareData.target_data, true);
+compareLogic.build_table('source-table', compareData.source_data, false);
+compareLogic.build_table('target-table', compareData.target_data, true);
 
-document.getElementById('save-mapping-button').addEventListener("click", compareLogic.createProxyFunc, false);
-document.getElementById('one-to-one').addEventListener("click", compareLogic.createOneToOneProxyFunc, false);
+document.getElementById('save-mapping-button').addEventListener('click', compareLogic.createProxyFunc, false);
+document.getElementById('one-to-one').addEventListener('click', compareLogic.createOneToOneProxyFunc, false);
 
-var modal = document.getElementById("number-editor");
+var modal = document.getElementById('number-editor');
 
-var closer = document.getElementsByClassName("close")[0];
-closer.onclick = function() {
-  modal.style.display = "none";
+var closer = document.getElementsByClassName('close')[0];
+if (closer) {
+  closer.onclick = compareLogic.hideModal;
 }
 
 </script>
