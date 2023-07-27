@@ -1,13 +1,27 @@
-// \<\(compareTest\|number_sorter\|shiftRow\|build_row\|build_table\)\>
-// \<\(createOneToOneProxyFunc\|createProxyFunc\|replaceWithTarget\|removeRow\|expandRow\|replaceAmountRow\|rescaleAmount\|setNewNumber\|setNumber\|editNumber\|stop\)\>
+/* Compare tables feature code (via global variable `compareLogic`).
+ *
+ * Used handlers:
+ * - clickRow
+ * - disableRowClick
+ * - removeRow
+ * - expandRow
+ * - editNumber
+ * - shiftRow
+ * - replaceAmountRow
+ * - setNumber
+ * - setNewNumber
+ * - rescaleAmount
+ * - replaceWithTarget
+ *
+ */
 
 const compareLogic = {
 
-  compareTest: function compareTest() {
+  compareTest: function() {
     return 'test';
   },
 
-  number_sorter: function number_sorter (a, b) {
+  number_sorter: function(a, b) {
     if (a.amount < b.amount) {
       // Reversed because want ascending order
       return -1;
@@ -18,7 +32,8 @@ const compareLogic = {
     return 0;
   },
 
-  shiftRow: function shiftRow (event, row, row_id) {
+  shiftRow: function(event, row, row_id) {
+    compareLogic.disableRowClick();
     // Add row from source to target array
     event.preventDefault();
     row.parentElement.parentElement.classList.add("shift-right");
@@ -29,13 +44,15 @@ const compareLogic = {
     row.parentElement.innerHTML = `<i class="fa-solid fa-check"></i>`;
   },
 
-  build_row: function build_row (data, is_target) {
-    let a = `<tr>`;
-    let c = `<td><a href="${data.url}">${data.name}</a></td><td>${data.location}</td><td>${data.unit}</td></tr>`
+  build_row: function(data, is_target) {
+    let a = `<tr row_id="${data.row_id}" onclick="compareLogic.clickRow(this)">`;
+    let c = `<td><a onClick="compareLogic.disableRowClick(this)" href="${data.url}">${data.name}</a></td><td>${data.location}</td><td>${data.unit}</td></tr>`
     if (is_target) {
       var b = `
   <td row_id="${data.row_id}">
-    <span id="row-trash-${data.row_id}" onclick="compareLogic.removeRow(this)"><a><i class="fa-solid fa-trash-can"></i></a></span> | <span onclick="compareLogic.expandRow(this)" input_id="${data.input_id}" amount="${data.amount}"><a><i class="fa-solid fa-diamond fa-spin"></i></a></span>
+    <span id="row-trash-${data.row_id}" onclick="compareLogic.removeRow(this)"><a><i class="fa-solid fa-trash-can"></i></a></span>
+    |
+    <span onclick="compareLogic.expandRow(this)" input_id="${data.input_id}" amount="${data.amount}"><a><i class="fa-solid fa-diamond fa-spin"></i></a></span>
   </td>
   <td onclick="compareLogic.editNumber(this)" row_id="${data.row_id}"><a>${data.amount_display}</a></td>
     `;
@@ -45,7 +62,7 @@ const compareLogic = {
     return a + b + c;
   },
 
-  build_table: function build_table (table_id, data, is_target) {
+  build_table: function(table_id, data, is_target) {
     data.sort(compareLogic.number_sorter);
     let html_string = "";
     for (const [index, obj] of data.entries()) {
@@ -64,7 +81,7 @@ const compareLogic = {
     document.getElementById(table_id).innerHTML = header + html_string;
   },
 
-  createOneToOneProxyFunc: function createOneToOneProxyFunc (event) {
+  createOneToOneProxyFunc: function(event) {
     event.preventDefault();
 
     var submission_data = {
@@ -89,7 +106,7 @@ const compareLogic = {
     });
   },
 
-  createProxyFunc: function createProxyFunc (event) {
+  createProxyFunc: function(event) {
     event.preventDefault();
     var span = document.getElementById("modal-content-wrapper");
     var name = "Proxy for " + compareData.target_name.replace("Market group for ", "").replace("market group for ", "").replace("Market for ", "").replace("market for ", "").trim();
@@ -151,7 +168,8 @@ const compareLogic = {
     });
   },
 
-  replaceWithTarget: function replaceWithTarget(elem) {
+  replaceWithTarget: function(elem) {
+    compareLogic.disableRowClick();
     compareData.target_data.push(compareData.target_node);
     compareData.target_data.splice(0, compareData.target_data.length - 1);
     compareData.comment += `* Collapsed input exchanges to target node\n`;
@@ -159,7 +177,9 @@ const compareLogic = {
     elem.innerHTML = "";
   },
 
-  removeRow: function removeRow(element) {
+  removeRow: function(element) {
+    compareLogic.disableRowClick();
+    debugger;
     var row_id = element.parentElement.getAttribute("row_id");
 
     function removeValue(obj, index, arr) {
@@ -174,7 +194,8 @@ const compareLogic = {
     compareLogic.build_table("target-table", compareData.target_data, true);
   },
 
-  expandRow: function expandRow(element) {
+  expandRow: function(element) {
+    compareLogic.disableRowClick();
     var url = "/expand/" + element.getAttribute("input_id") + "/" + element.getAttribute("amount") + "/";
     var t = compareData.target_data.find(item => item.input_id == element.getAttribute("input_id"));
     compareData.comment += `* Expanded process inputs of ${t.amount} ${t.unit} from ${t.name} in ${t.location}.\n`;
@@ -194,14 +215,69 @@ const compareLogic = {
         });
   },
 
-  replaceAmountRow: function replaceAmountRow (elem, target_id) {
+  /** clearRowClickHandler - Clear row click disbale timer handler.
+  */
+  clearRowClickHandler: function() {
+    const { rowClick } = compareData;
+    if (rowClick.releaseHandler) {
+      clearTimeout(rowClick.releaseHandler);
+      rowClick.releaseHandler = undefined;
+    }
+  },
+  /** releaseRowClick - Enable processing of `clickRow`
+  */
+  releaseRowClick: function() {
+    const { rowClick } = compareData;
+    rowClick.disabled = false;
+    compareLogic.clearRowClickHandler();
+  },
+
+  /** disableRowClick - Disable processing of `clickRow` handlers for some time (allow to process clicks on inner elements)
+  */
+  disableRowClick: function() {
+    const { rowClick } = compareData;
+    compareLogic.clearRowClickHandler();
+    rowClick.disabled = true;
+    setTimeout(compareLogic.releaseRowClick, rowClick.timeout);
+  },
+
+  /** clickRow
+   * @param {HTMLTableRowElement} rowEl
+   */
+  clickRow: function(rowEl) {
+    const { rowClick, collapsed } = compareData;
+    if (rowClick.disabled) {
+      // Do not process row click if disabled.
+      return;
+    }
+    const rowId = rowEl.getAttribute('row_id');
+    // Find main table (source or target one)
+    const table = rowEl.closest('table');
+    const tableId = table.getAttribute('id');
+    const isSource = tableId === 'source-table';
+    const { selectedFirst, selectedSecond } = collapsed;
+    console.log('clickRow', {
+      selectedFirst,
+      selectedSecond,
+      collapsed,
+      rowId,
+      table,
+      tableId,
+      isSource,
+      rowEl,
+    });
+  },
+
+  replaceAmountRow: function(elem, target_id) {
+    compareLogic.disableRowClick();
     var s = compareData.source_data.find(item => item.row_id == elem.getAttribute("source_id"));
     var t = compareData.target_data.find(item => item.row_id == target_id);
     compareData.comment += `* Used source database amount ${s.amount} ${s.unit} from ${s.name} in ${s.location} instead of ${t.amount} ${t.unit} from ${t.name} in ${t.location}.\n`;
     document.getElementById("number-current-amount").innerText = elem.getAttribute("amount");
   },
 
-  rescaleAmount: function rescaleAmount (target_id) {
+  rescaleAmount: function(target_id) {
+    compareLogic.disableRowClick();
     var t = compareData.target_data.find(item => item.row_id == target_id);
     scale = Number(document.getElementById("rescale_number").value);
     node = document.getElementById("number-current-amount")
@@ -211,14 +287,16 @@ const compareLogic = {
     node.innerText = Number(node.innerText) * scale;
   },
 
-  setNewNumber: function setNewNumber (target_id) {
+  setNewNumber: function(target_id) {
+    compareLogic.disableRowClick();
     var t = compareData.target_data.find(item => item.row_id == target_id);
     new_value = document.getElementById("new_number").value;
     compareData.comment += `* Set manual exchange value of ${new_value} instead of ${t.amount} ${t.unit} for ${t.name} in ${t.location}.\n`;
     document.getElementById("number-current-amount").innerText = new_value;
   },
 
-  setNumber: function setNumber (elem) {
+  setNumber: function(elem) {
+    compareLogic.disableRowClick();
     row_id = elem.getAttribute("row_id");
     current = Number(document.getElementById("number-current-amount").innerText);
     compareData.target_data.forEach(function (item, index) {
@@ -231,7 +309,8 @@ const compareLogic = {
     compareLogic.build_table("target-table", compareData.target_data, true);
   },
 
-  editNumber: function editNumber(td) {
+  editNumber: function(td) {
+    compareLogic.disableRowClick();
     var row = compareData.target_data.find(item => item.row_id == td.getAttribute("row_id"));
     var span = document.getElementById("modal-content-wrapper");
 
@@ -286,8 +365,12 @@ const compareLogic = {
     modal.style.display = "block";
   },
 
-  stop: function stop(event) {
+  stop: function(event) {
     event.preventDefault();
+  },
+
+  hideModal: function() {
+    modal.style.display = "none";
   },
 
 };
