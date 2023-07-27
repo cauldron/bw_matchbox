@@ -128,5 +128,6 @@ dmypy.json
 # Pyre type checker
 .pyre/
 
-# Custom
+# Custom (project-generated files)
 config.toml
+changes.json

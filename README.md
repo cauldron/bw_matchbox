@@ -34,6 +34,12 @@ You can install _bw_matchbox_ via [pip] from [PyPI]:
 pip install bw_matchbox
 ```
 
+It's possible to install the library itself for development purposes (in the cloned project):
+
+```console
+pip install -e .
+```
+
 This library depends on:
 
 * Brightway 2.5 (`brightway25`)
