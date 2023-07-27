@@ -89,11 +89,14 @@ def main():
         port = int(args.get("--port", False) or 5000)
         host = "localhost" if args.get("--localhost", False) else "0.0.0.0"
 
-        app = configure_app(filepath, matchbox_app)
+        try:
+            app = configure_app(filepath, matchbox_app)
 
-        print("bw_matchbox webapp started on {}:{}".format(host, port))
-        app.run(host=host, port=port, debug=True)
-
+            print("bw_matchbox webapp started on {}:{}".format(host, port))
+            app.run(host=host, port=port, debug=True)
+        except Exception as err:
+            print("Error:", err)
+            raise err
 
 if __name__ == "__main__":
     main()
