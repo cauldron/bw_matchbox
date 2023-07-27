@@ -1,0 +1,47 @@
+:root {
+  --collapsed-color: #F60;
+  --collapsed-bg-color: rgba(255,102,0,.1);
+  --selected-color: #1EAEDB;
+  --selected-bg-color: rgba(30,174,219,.1);
+  --animation-time: 500ms;
+}
+
+.compare .compare-tables {
+}
+.compare .compare-tables > .column {
+  /* DEBUG */
+  /* border: 1px solid red; */
+  overflow: visible;
+}
+.compare .compare-tables > .column > table {
+  /* DEBUG */
+  /* border: 1px solid green; */
+}
+
+/* Fix skeleton styles to add some extra space for inner shadow (to indicate selected status)... */
+.compare-table th:first-child,
+.compare-table td:first-child {
+  padding-left: 12px;
+}
+.compare-table th:last-child,
+.compare-table td:last-child {
+  padding-right: 12px;
+}
+
+/* Selected styles themselves... */
+.compare-table tr {
+  transition: all var(--animation-time) ease;
+}
+.compare-table tr.collapsed {
+  box-shadow: 0 0 4px var(--collapsed-color), inset 0 0 2px var(--collapsed-color);
+  background-color: var(--collapsed-bg-color);
+}
+.compare-table tr.selected {
+  box-shadow: 0 0 4px var(--selected-color), inset 0 0 2px var(--selected-color);
+  background-color: var(--selected-bg-color);
+}
+.compare-table tr.selected td {
+  /* Remove nested td borders */
+  border-color: transparent;
+}
+
