@@ -32,10 +32,9 @@
 .compare-table tr {
   transition: all var(--animation-time) ease;
 }
-.compare-table tr.collapsed {
-  box-shadow: 0 0 4px var(--collapsed-color), inset 0 0 2px var(--collapsed-color);
-  background-color: var(--collapsed-bg-color);
-}
+
+/* Selected row... */
+
 .compare-table tr.selected {
   box-shadow: 0 0 4px var(--selected-color), inset 0 0 2px var(--selected-color);
   background-color: var(--selected-bg-color);
@@ -43,5 +42,18 @@
 .compare-table tr.selected td {
   /* Remove nested td borders */
   border-color: transparent;
+}
+
+/* Collapsed row... */
+
+.compare-table tr.collapsed {
+  box-shadow: 0 0 4px var(--collapsed-color), inset 0 0 2px var(--collapsed-color);
+  background-color: var(--collapsed-bg-color);
+  display: none;
+}
+
+.compare-table tr.collapsed-handler {
+  box-shadow: 0 0 4px var(--collapsed-color), inset 0 0 2px var(--collapsed-color);
+  background-color: var(--collapsed-bg-color);
 }
 

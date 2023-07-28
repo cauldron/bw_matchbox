@@ -43,8 +43,20 @@
   // Global variables for compare tables feature (via global variable `compareData`)...
   const compareData = {
     modal: undefined, // HTMLDivElement
-    source_data: {{ source_data_json|safe }},
-    target_data: {{ target_data_json|safe }},
+    /* Common types (ts-like):
+      interface TDataRecord {
+        amount: number; // Eg: 7.135225509515751e-9
+        amount_display: string; // Eg: '7.1e-09'
+        input_id: number; // Eg: 633
+        location: string; // Eg: 'United States'
+        name: string; // Eg: 'Clothing; at manufacturer'
+        row_id: string; // Eg: '0'
+        unit: string; // Eg: ''
+        url: string; // Eg: '/process/633'
+      }
+    */
+    source_data: {{ source_data_json|safe }}, // TDataRecord[]
+    target_data: {{ target_data_json|safe }}, // TDataRecord[]
     target_node: {{ target_json|safe}},
     source_id: {{ source_node.id }},
     target_id: {{ target_node.id }},
@@ -52,6 +64,8 @@
     source_node_unit: '{{source_node.unit}}',
     source_node_location: '{{source_node.location}}',
     comment: '',
+    // Number of columns in a table row...
+    rowColumnsCount: 5,
     // Row click data...
     rowClick: {
       timeout: 100,
@@ -60,12 +74,12 @@
     },
     // Collpsing rows data...
     collapsed: {
-      /* Types (TS-like definitions):
-      type TRowKind = 'source' | 'target';
-      type TRowEl = HTMLTableRowElement;
-      type TRowId = string;
-      interface TSelectedRow { rowKind: TRowKind, rowEl: TRowEl, rowId: TRowId };
-      interface TCollapsedRow extends TSelectedRow { pairId: TRowId };
+      /* Compare feature types (ts-like):
+        type TRowKind = 'source' | 'target';
+        type TRowEl = HTMLTableRowElement;
+        type TRowId = string;
+        interface TSelectedRow { rowKind: TRowKind, rowEl: TRowEl, rowId: TRowId };
+        interface TCollapsedRow extends TSelectedRow { pairId: TRowId };
       */
       selectedFirst: undefined, // <undefined | TSelectedRow>
       collapsedRows: {}, // Record<TRowId, TCollapsedRow> -- Hash of collapsed row

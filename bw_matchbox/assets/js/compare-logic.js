@@ -19,8 +19,21 @@
  *
  * TODO:
  *
- * - 2023.07.28, 16:57 -- Extract row-related low-level methods to external module.
+ * - 2023.07.28, 16:57 -- Extract row-related low-level methods to external
+ *   module. Probably we need two modules (for low-level supprting code and
+ *   high level logic-related one)
  *
+ * Data table record sample:
+  interface TDataRecord {
+    amount: number; // 7.135225509515751e-9
+    amount_display: string; // "7.1e-09"
+    input_id: number; // 633
+    location: string; // "United States"
+    name: string; // "Clothing; at manufacturer"
+    row_id: string; // "0"
+    unit: string; // ""
+    url: string; // "/process/633"
+  }
  */
 
 const compareLogic = {
@@ -51,7 +64,29 @@ const compareLogic = {
     row.parentElement.innerHTML = `<i class="fa-solid fa-check"></i>`;
   },
 
+  buildCollapsedHandlerRow: function (rowKind, rowId) {
+    // const { target_data, source_data } = compareData; // TODO: Use it to generate tooltip
+    const { rowColumnsCount } = compareData;
+    const collapsedId = compareLogic.getCollapsedId(rowKind, rowId);
+    console.log('buildCollapsedHandlerRow', {
+      collapsedId,
+      rowKind,
+      rowId,
+      // // DEBUG
+      // target_data,
+      // source_data,
+    });
+    // TODO: Use table data (from `compareData.target_data` or `compareData.source_data`) to generate tooltip text.
+    // TODO: Detect if row is collapsed, then render correspound class (`collapsed`) and make handler.
+    const start = `<tr class="collapsed-handler" for-collapsed-id="${collapsedId}">`;
+    const content = `<td colspan="${rowColumnsCount}">Collapsed row ${collapsedId}</td>`;
+    const end = `</tr>`;
+    return start + content + end;
+  },
+
   build_row: function (data, is_target) {
+    // TODO: Detect if row is collapsed, then render correspound class
+    // (`collapsed`) and make handler node (using `buildCollapsedHandlerRow`).
     const start = `<tr row_id="${data.row_id}" onclick="compareLogic.clickRow(this)">`;
     const end = `<td><a onClick="compareLogic.disableRowClick(this)" href="${data.url}">${data.name}</a></td><td>${data.location}</td><td>${data.unit}</td></tr>`;
     let content;
@@ -260,13 +295,35 @@ const compareLogic = {
     setTimeout(compareLogic.releaseRowClick, rowClick.timeout);
   },
 
-  /** getCollapsedCollapsedId -- Get combo id (`{rowKind}-{rowId}`)
-   * @param {<TCollapsedRow>} collapsedRowRecord
+  /** getCollapsedId -- Get collapsed id (`{rowKind}-{rowId}`)
+   * @param {<TRowKind>} rowKind
+   * @param {<TRowId>} rowId
    * @return {string}
    */
-  getCollapsedCollapsedId(collapsedRowRecord) {
-    const { rowKind, rowId } = collapsedRowRecord;
+  getCollapsedId(rowKind, rowId) {
     return [rowKind, rowId].join('-');
+  },
+
+  /* // UNUSED? Using `getCollapsedId` instead.
+   * [>* getCollapsedRecordId -- Get collapsed id (`{rowKind}-{rowId}`)
+   *  * @param {<TCollapsedRow>} collapsedRowRecord
+   *  * @return {string}
+   *  <]
+   * getCollapsedRecordId(collapsedRowRecord) {
+   *   const { rowKind, rowId } = collapsedRowRecord;
+   *   return compareLogic.getCollapsedId(rowKind, rowId);
+   * },
+   */
+
+  /** htmlToElement -- Create dom node instance from html string
+   * @param {string} HTML representing a single element
+   * @return {HTMLElement}
+   */
+  htmlToElement: function (html) {
+    const template = document.createElement('template');
+    html = html.trim(); // Never return a text node of whitespace as the result
+    template.innerHTML = html;
+    return template.content.firstChild;
   },
 
   /** collapseRow -- Collapse particular row record
@@ -276,21 +333,39 @@ const compareLogic = {
     const { collapsed } = compareData;
     const { collapsedRows } = collapsed;
     const { rowEl } = collapsedRowRecord;
-    const collapsedId = compareLogic.getCollapsedCollapsedId(collapsedRowRecord);
-    // DEBUG
-    console.log('collapseRow', {
-      collapsedId,
-      collapsedRowRecord,
-      rowEl,
-      // collapsedRows,
-    });
+    const { rowKind, rowId } = collapsedRowRecord;
+    const collapsedId = compareLogic.getCollapsedId(rowKind, rowId);
+    /* // DEBUG
+     * console.log('collapseRow', {
+     *   collapsedId,
+     *   collapsedRowRecord,
+     *   rowEl,
+     *   // collapsedRows,
+     * });
+     */
     // Add styles...
     rowEl.classList.add('collapsed');
     // Save id in the dom node...
     rowEl.setAttribute('collapsed-id', collapsedId);
     // Save record...
     collapsedRows[collapsedId] = collapsedRowRecord;
-    // TODO: Add interactive elements and other stuff (to uncollapse it later)
+    // Add interactive elements and other stuff (to uncollapse it later)...
+    // Create html representation and dom node to append...
+    const handlerRowHtml = compareLogic.buildCollapsedHandlerRow(rowKind, rowId);
+    const handlerRowEl = compareLogic.htmlToElement(handlerRowHtml);
+    // Find parent node...
+    const parentNode = rowEl.parentNode;
+    console.log('collapseRow: add collapse-handler', {
+      parentNode,
+      collapsedId,
+      collapsedRowRecord,
+      rowEl,
+      handlerRowEl,
+      handlerRowHtml,
+      // collapsedRows,
+    });
+    // Add handler before current row...
+    parentNode.insertBefore(handlerRowEl, rowEl);
   },
 
   /** makeRowsCollapsed
