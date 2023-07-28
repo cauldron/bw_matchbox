@@ -1,8 +1,4 @@
-/* global compareData */
-
 /* Compare tables feature code (via global variable `compareLogic`).
- *
- * Global object `compareData` comes from `bw_matchbox/assets/templates/compare.html`
  *
  * Used mouse handler' methods:
  * - clickRow
@@ -38,6 +34,9 @@
  */
 
 const compareLogic = {
+  sharedData: undefined,
+  localData: undefined,
+
   compareTest: function () {
     return 'test';
   },
@@ -58,37 +57,130 @@ const compareLogic = {
     // Add row from source to target array
     event.preventDefault();
     row.parentElement.parentElement.classList.add('shift-right');
-    var obj = compareData.source_data.find((item) => item.row_id == row_id);
-    compareData.target_data.push(obj);
-    compareLogic.build_table('target-table', compareData.target_data, true);
-    compareData.comment += `* Added source exchange of ${obj.amount} ${obj.unit} ${obj.name} in ${obj.location}.\n`;
+    var obj = compareLogic.sharedData.source_data.find((item) => item.row_id == row_id);
+    compareLogic.sharedData.target_data.push(obj);
+    compareLogic.build_table('target-table', compareLogic.sharedData.target_data, true);
+    compareLogic.sharedData.comment += `* Added source exchange of ${obj.amount} ${obj.unit} ${obj.name} in ${obj.location}.\n`;
     row.parentElement.innerHTML = `<i class="fa-solid fa-check"></i>`;
   },
 
-  buildCollapsedHandlerRow: function (rowKind, rowId) {
-    // const { target_data, source_data } = compareData; // TODO: Use it to generate tooltip
-    const { rowColumnsCount } = compareData;
+  /** getRowData -- Get row data
+   * @param {<TRowKind>} rowKind
+   * @param {<TRowId>} rowId
+   * @return {<TDataRecord>}
+   */
+  getRowData: function (rowKind, rowId) {
+    const { target_data, source_data } = compareLogic.sharedData;
+    const data = rowKind === 'source' ? source_data : target_data;
+    const found = data.find((item) => item.row_id === rowId);
+    return found;
+  },
+
+  /** getCollapsedHandlerTooltipText -- Get collpased node tooltip text
+   * @param {<TDataRecord>} data
+   * @return {string}
+   */
+  getCollapsedHandlerTooltipText: function (data) {
+    if (!data) {
+      return 'Data is undefined';
+    }
+    const {
+      // amount, // Eg: 7.135225509515751e-9
+      amount_display, // Eg: '7.1e-09'
+      // input_id, // Eg: 633
+      location, // Eg: 'United States'
+      name, // Eg: 'Clothing; at manufacturer'
+      // row_id, // Eg: '0'
+      unit, // Eg: ''
+      // url, // Eg: '/process/633'
+    } = data;
+    const text = [
+      ['Amount', amount_display], // Eg: '7.1e-09'
+      ['Name', name], // Eg: 'Clothing; at manufacturer'
+      ['Loation', location], // Eg: 'United States'
+      ['Unit', unit], // Eg: ''
+    ]
+      .map(([text, value]) => {
+        if (value) {
+          return text + ': ' + value;
+        }
+      })
+      .filter(Boolean)
+      .join('; ');
+    return 'Collapsed row: ' + text;
+  },
+
+  /** quoteHtmlAttr -- quote all invalid characters for html
+   * @param {string} str
+   * @param [{boolean}] preserveCR
+   */
+  quoteHtmlAttr: function (str, preserveCR) {
+    preserveCR = preserveCR ? '&#13;' : '\n';
+    return (
+      String(str) // Forces the conversion to string
+        .replace(/&/g, '&amp;') // This MUST be the 1st replacement
+        .replace(/'/g, '&apos;') // The 4 other predefined entities, required
+        .replace(/"/g, '&quot;')
+        .replace(/</g, '&lt;')
+        .replace(/>/g, '&gt;')
+        // You may add other replacements here for HTML only (but it's not
+        // necessary). Or for XML, only if the named entities are defined in its
+        // DTD.
+        .replace(/\r\n/g, preserveCR) // Must be before the next replacement
+        .replace(/[\r\n]/g, preserveCR)
+    );
+  },
+
+  buildCollapsedHandlerRow: function (rowKind, rowId, optionalData) {
+    const { rowColumnsCount } = compareLogic.sharedData;
     const collapsedId = compareLogic.getCollapsedId(rowKind, rowId);
-    console.log('buildCollapsedHandlerRow', {
-      collapsedId,
-      rowKind,
-      rowId,
-      // // DEBUG
-      // target_data,
-      // source_data,
-    });
-    // TODO: Use table data (from `compareData.target_data` or `compareData.source_data`) to generate tooltip text.
-    // TODO: Detect if row is collapsed, then render correspound class (`collapsed`) and make handler.
-    const start = `<tr class="collapsed-handler" for-collapsed-id="${collapsedId}">`;
+    const data = optionalData || compareLogic.getRowData(rowKind, rowId);
+    const tooltipText = compareLogic.getCollapsedHandlerTooltipText(data);
+    const quotedTooltipText = compareLogic.quoteHtmlAttr(tooltipText);
+    /* console.log('buildCollapsedHandlerRow', {
+     *   tooltipText,
+     *   quotedTooltipText,
+     *   collapsedId,
+     *   rowKind,
+     *   rowId,
+     *   data,
+     * });
+     */
+    // TODO: Use table data (from `compareLogic.sharedData.target_data` or `compareLogic.sharedData.source_data`) to generate tooltip text.
+    const start = `<tr class="collapsed-handler" for-collapsed-id="${collapsedId}" title="${quotedTooltipText}">`;
     const content = `<td colspan="${rowColumnsCount}">Collapsed row ${collapsedId}</td>`;
     const end = `</tr>`;
     return start + content + end;
   },
 
   build_row: function (data, is_target) {
-    // TODO: Detect if row is collapsed, then render correspound class
-    // (`collapsed`) and make handler node (using `buildCollapsedHandlerRow`).
-    const start = `<tr row_id="${data.row_id}" onclick="compareLogic.clickRow(this)">`;
+    const { collapsed } = compareLogic.sharedData;
+    const { collapsedRows } = collapsed;
+    const rowId = data.row_id;
+    const rowKind = is_target ? 'target' : 'source';
+    const collapsedId = compareLogic.getCollapsedId(rowKind, rowId);
+    // Detect if row is collapsed, then render correspound class (`collapsed`) and append handler node...
+    const isCollapsed = !!collapsedRows[collapsedId];
+    const collapsedRowHtml =
+      isCollapsed && compareLogic.buildCollapsedHandlerRow(rowKind, rowId, data);
+    // Create class name...
+    const className = [isCollapsed && 'collapsed'].filter(Boolean).join(' ');
+    const attrs = [['class', className], isCollapsed && ['collapsed-id', collapsedId]]
+      .filter(Boolean)
+      .map(([name, value]) => value && name + '="' + compareLogic.quoteHtmlAttr(value) + '"')
+      .filter(Boolean)
+      .join(' ');
+    /* console.log('buildCollapsedHandlerRow', {
+     *   attrs,
+     *   collapsedRowHtml,
+     *   isCollapsed,
+     *   collapsedRows,
+     *   collapsedId,
+     *   rowKind,
+     *   rowId,
+     * });
+     */
+    const start = `<tr ${attrs} row_id="${data.row_id}" onclick="compareLogic.clickRow(this)">`;
     const end = `<td><a onClick="compareLogic.disableRowClick(this)" href="${data.url}">${data.name}</a></td><td>${data.location}</td><td>${data.unit}</td></tr>`;
     let content;
     if (is_target) {
@@ -103,7 +195,8 @@ const compareLogic = {
     } else {
       content = `<td><a onclick="compareLogic.shiftRow(event, this, ${data.row_id})"><i class="fa-solid fa-arrow-right"></i></a></td><td>${data.amount_display}</td>`;
     }
-    return start + content + end;
+    // TODO: Use trim and join with '\b'?
+    return [start, content, end, collapsedRowHtml].filter(Boolean).join('');
   },
 
   build_table: function (table_id, data, is_target) {
@@ -129,12 +222,12 @@ const compareLogic = {
     event.preventDefault();
 
     var submission_data = {
-      exchanges: [{ input_id: compareData.target_id, amount: 1.0 }],
-      source: compareData.source_id,
+      exchanges: [{ input_id: compareLogic.sharedData.target_id, amount: 1.0 }],
+      source: compareLogic.sharedData.source_id,
       comment: 'One-to-one proxy',
       name:
         'Proxy for ' +
-        compareData.target_name
+        compareLogic.sharedData.target_name
           .replace('Market group for ', '')
           .replace('market group for ', '')
           .replace('Market for ', '')
@@ -159,7 +252,7 @@ const compareLogic = {
     var span = document.getElementById('modal-content-wrapper');
     var name =
       'Proxy for ' +
-      compareData.target_name
+      compareLogic.sharedData.target_name
         .replace('Market group for ', '')
         .replace('market group for ', '')
         .replace('Market for ', '')
@@ -170,8 +263,8 @@ const compareLogic = {
         <label for="proxy-name">Proxy name</label>
         <input class="u-full-width" type="text" id="proxy-name" name="proxy-name" value="${name}">
         <label for="proxy-comment">Comment</label>
-        <textarea class="u-full-width" id="proxy-comment" name="proxy-comment">${compareData.comment}</textarea>
-        <p><button class="button-primary" id="create-proxy-submit-button">Create Proxy Process</button> | Unit: ${compareData.source_node_unit} | Location: ${compareData.source_node_location}</p>
+        <textarea class="u-full-width" id="proxy-comment" name="proxy-comment">${compareLogic.sharedData.comment}</textarea>
+        <p><button class="button-primary" id="create-proxy-submit-button">Create Proxy Process</button> | Unit: ${compareLogic.sharedData.source_node_unit} | Location: ${compareLogic.sharedData.source_node_location}</p>
         <table>
           <tr>
             <th>Name</th>
@@ -180,7 +273,7 @@ const compareLogic = {
           </tr>
     `;
 
-    compareData.target_data.forEach(function (item, _index) {
+    compareLogic.sharedData.target_data.forEach(function (item, _index) {
       text += `
           <tr input_id=${item.input_id}>
             <td>${item.name}</td>
@@ -195,14 +288,14 @@ const compareLogic = {
       </form>
     `;
     span.innerHTML = text;
-    compareData.modal.style.display = 'block';
+    compareLogic.sharedData.modal.style.display = 'block';
 
     var submit = document.getElementById('create-proxy-submit-button');
     submit.addEventListener('click', async (e) => {
       e.preventDefault();
       var submission_data = {
-        exchanges: compareData.target_data,
-        source: compareData.source_id,
+        exchanges: compareLogic.sharedData.target_data,
+        source: compareLogic.sharedData.source_id,
         comment: document.getElementById('proxy-comment').value,
         name: document.getElementById('proxy-name').value,
       };
@@ -222,10 +315,10 @@ const compareLogic = {
 
   replaceWithTarget: function (elem) {
     compareLogic.disableRowClick();
-    compareData.target_data.push(compareData.target_node);
-    compareData.target_data.splice(0, compareData.target_data.length - 1);
-    compareData.comment += `* Collapsed input exchanges to target node\n`;
-    compareLogic.build_table('target-table', compareData.target_data, true);
+    compareLogic.sharedData.target_data.push(compareLogic.sharedData.target_node);
+    compareLogic.sharedData.target_data.splice(0, compareLogic.sharedData.target_data.length - 1);
+    compareLogic.sharedData.comment += `* Collapsed input exchanges to target node\n`;
+    compareLogic.build_table('target-table', compareLogic.sharedData.target_data, true);
     elem.innerHTML = '';
   },
 
@@ -235,24 +328,24 @@ const compareLogic = {
 
     function removeValue(obj, index, arr) {
       if (obj.row_id == row_id) {
-        compareData.comment += `* Removed exchange of ${obj.amount} ${obj.unit} ${obj.name} from ${obj.location}.\n`;
+        compareLogic.sharedData.comment += `* Removed exchange of ${obj.amount} ${obj.unit} ${obj.name} from ${obj.location}.\n`;
         arr.splice(index, 1);
         return true;
       }
       return false;
     }
-    compareData.target_data.filter(removeValue);
-    compareLogic.build_table('target-table', compareData.target_data, true);
+    compareLogic.sharedData.target_data.filter(removeValue);
+    compareLogic.build_table('target-table', compareLogic.sharedData.target_data, true);
   },
 
   expandRow: function (element) {
     compareLogic.disableRowClick();
     var url =
       '/expand/' + element.getAttribute('input_id') + '/' + element.getAttribute('amount') + '/';
-    var t = compareData.target_data.find(
+    var t = compareLogic.sharedData.target_data.find(
       (item) => item.input_id == element.getAttribute('input_id'),
     );
-    compareData.comment += `* Expanded process inputs of ${t.amount} ${t.unit} from ${t.name} in ${t.location}.\n`;
+    compareLogic.sharedData.comment += `* Expanded process inputs of ${t.amount} ${t.unit} from ${t.name} in ${t.location}.\n`;
     fetch(url)
       .then((response) => {
         if (!response.ok) {
@@ -262,9 +355,9 @@ const compareLogic = {
       })
       .then((data) => {
         data.forEach(function (item, _index) {
-          compareData.target_data.push(item);
+          compareLogic.sharedData.target_data.push(item);
         });
-        compareData.target_data.sort(compareLogic.number_sorter);
+        compareLogic.sharedData.target_data.sort(compareLogic.number_sorter);
         compareLogic.removeRow(element);
       });
   },
@@ -272,7 +365,7 @@ const compareLogic = {
   /** clearRowClickHandler - Clear row click disbale timer handler.
    */
   clearRowClickHandler: function () {
-    const { rowClick } = compareData;
+    const { rowClick } = compareLogic.sharedData;
     if (rowClick.releaseHandler) {
       clearTimeout(rowClick.releaseHandler);
       rowClick.releaseHandler = undefined;
@@ -282,7 +375,7 @@ const compareLogic = {
   /** releaseRowClick - Enable processing of `clickRow`
    */
   releaseRowClick: function () {
-    const { rowClick } = compareData;
+    const { rowClick } = compareLogic.sharedData;
     rowClick.disabled = false;
     compareLogic.clearRowClickHandler();
   },
@@ -290,7 +383,7 @@ const compareLogic = {
   /** disableRowClick - Disable processing of `clickRow` handlers for some time (allow to process clicks on inner elements)
    */
   disableRowClick: function () {
-    const { rowClick } = compareData;
+    const { rowClick } = compareLogic.sharedData;
     compareLogic.clearRowClickHandler();
     rowClick.disabled = true;
     setTimeout(compareLogic.releaseRowClick, rowClick.timeout);
@@ -331,7 +424,7 @@ const compareLogic = {
    * @param {<TCollapsedRow>} collapsedRowRecord
    */
   collapseRow(collapsedRowRecord) {
-    const { collapsed } = compareData;
+    const { collapsed } = compareLogic.sharedData;
     const { collapsedRows } = collapsed;
     const { rowEl } = collapsedRowRecord;
     const { rowKind, rowId } = collapsedRowRecord;
@@ -415,7 +508,7 @@ const compareLogic = {
    * @param {<TRowEl>} rowEl
    */
   selectRow(rowEl) {
-    const { collapsed } = compareData;
+    const { collapsed } = compareLogic.sharedData;
     const rowId = compareLogic.getRowId(rowEl);
     const rowKind = compareLogic.getRowKind(rowEl);
     // Save record...
@@ -428,7 +521,7 @@ const compareLogic = {
    * @param {<TRowEl>} rowEl
    */
   unselectRow(rowEl) {
-    const { collapsed } = compareData;
+    const { collapsed } = compareLogic.sharedData;
     // Clear styles...
     rowEl.classList.remove('selected', 'selected-first');
     // Reset saved selected record (if it's the same)...
@@ -442,7 +535,7 @@ const compareLogic = {
    * @param {<TRowEl>} rowEl
    */
   clickRow: function (rowEl) {
-    const { rowClick, collapsed } = compareData;
+    const { rowClick, collapsed } = compareLogic.sharedData;
     if (rowClick.disabled) {
       // Do not process row click if disabled.
       return;
@@ -489,28 +582,30 @@ const compareLogic = {
 
   replaceAmountRow: function (elem, target_id) {
     compareLogic.disableRowClick();
-    var s = compareData.source_data.find((item) => item.row_id == elem.getAttribute('source_id'));
-    var t = compareData.target_data.find((item) => item.row_id == target_id);
-    compareData.comment += `* Used source database amount ${s.amount} ${s.unit} from ${s.name} in ${s.location} instead of ${t.amount} ${t.unit} from ${t.name} in ${t.location}.\n`;
+    var s = compareLogic.sharedData.source_data.find(
+      (item) => item.row_id == elem.getAttribute('source_id'),
+    );
+    var t = compareLogic.sharedData.target_data.find((item) => item.row_id == target_id);
+    compareLogic.sharedData.comment += `* Used source database amount ${s.amount} ${s.unit} from ${s.name} in ${s.location} instead of ${t.amount} ${t.unit} from ${t.name} in ${t.location}.\n`;
     document.getElementById('number-current-amount').innerText = elem.getAttribute('amount');
   },
 
   rescaleAmount: function (target_id) {
     compareLogic.disableRowClick();
-    var t = compareData.target_data.find((item) => item.row_id == target_id);
+    var t = compareLogic.sharedData.target_data.find((item) => item.row_id == target_id);
     const scale = Number(document.getElementById('rescale_number').value);
     const node = document.getElementById('number-current-amount');
     if (scale != 1) {
-      compareData.comment += `* Rescaled amount ${t.amount} ${t.unit} from ${t.name} in ${t.location} by ${scale}.\n`;
+      compareLogic.sharedData.comment += `* Rescaled amount ${t.amount} ${t.unit} from ${t.name} in ${t.location} by ${scale}.\n`;
     }
     node.innerText = Number(node.innerText) * scale;
   },
 
   setNewNumber: function (target_id) {
     compareLogic.disableRowClick();
-    var t = compareData.target_data.find((item) => item.row_id == target_id);
+    var t = compareLogic.sharedData.target_data.find((item) => item.row_id == target_id);
     const new_value = document.getElementById('new_number').value;
-    compareData.comment += `* Set manual exchange value of ${new_value} instead of ${t.amount} ${t.unit} for ${t.name} in ${t.location}.\n`;
+    compareLogic.sharedData.comment += `* Set manual exchange value of ${new_value} instead of ${t.amount} ${t.unit} for ${t.name} in ${t.location}.\n`;
     document.getElementById('number-current-amount').innerText = new_value;
   },
 
@@ -518,19 +613,21 @@ const compareLogic = {
     compareLogic.disableRowClick();
     const row_id = elem.getAttribute('row_id');
     const current = Number(document.getElementById('number-current-amount').innerText);
-    compareData.target_data.forEach(function (item, _index) {
+    compareLogic.sharedData.target_data.forEach(function (item, _index) {
       if (item.row_id == row_id) {
         item.amount = current;
         item.amount_display = current.toExponential();
       }
     });
-    compareData.modal.style.display = 'none';
-    compareLogic.build_table('target-table', compareData.target_data, true);
+    compareLogic.sharedData.modal.style.display = 'none';
+    compareLogic.build_table('target-table', compareLogic.sharedData.target_data, true);
   },
 
   editNumber: function (td) {
     compareLogic.disableRowClick();
-    var row = compareData.target_data.find((item) => item.row_id == td.getAttribute('row_id'));
+    var row = compareLogic.sharedData.target_data.find(
+      (item) => item.row_id == td.getAttribute('row_id'),
+    );
     var span = document.getElementById('modal-content-wrapper');
 
     var a = `
@@ -544,7 +641,7 @@ const compareLogic = {
             <th>Unit</th>
           </tr>
     `;
-    compareData.source_data.forEach(function (item, _index) {
+    compareLogic.sharedData.source_data.forEach(function (item, _index) {
       a += `
         <tr amount="${item.amount}" source_id="${item.row_id}" onclick="compareLogic.replaceAmountRow(this, ${row.row_id})">
           <td>${item.amount_display}</td>
@@ -585,7 +682,7 @@ const compareLogic = {
     document
       .getElementById('close-number-editor')
       .addEventListener('click', compareLogic.stop, false);
-    compareData.modal.style.display = 'block';
+    compareLogic.sharedData.modal.style.display = 'block';
   },
 
   stop: function (event) {
@@ -593,15 +690,20 @@ const compareLogic = {
   },
 
   hideModal: function () {
-    compareData.modal.style.display = 'none';
+    compareLogic.sharedData.modal.style.display = 'none';
   },
 
   /** initCompare -- Initialize feature
    */
-  initCompare: function () {
-    compareLogic.build_table('source-table', compareData.source_data, false);
-    compareLogic.build_table('target-table', compareData.target_data, true);
+  initCompare: function (sharedData) {
+    // Save public data...
+    this.sharedData = sharedData;
 
+    // Create tables...
+    compareLogic.build_table('source-table', compareLogic.sharedData.source_data, false);
+    compareLogic.build_table('target-table', compareLogic.sharedData.target_data, true);
+
+    // Button handlers...
     document
       .getElementById('save-mapping-button')
       .addEventListener('click', compareLogic.createProxyFunc, false);
@@ -609,8 +711,10 @@ const compareLogic = {
       .getElementById('one-to-one')
       .addEventListener('click', compareLogic.createOneToOneProxyFunc, false);
 
-    compareData.modal = document.getElementById('number-editor');
+    // Get modal node...
+    compareLogic.sharedData.modal = document.getElementById('number-editor');
 
+    // Link close modal button handler...
     const closer = document.getElementsByClassName('close')[0];
     if (closer) {
       closer.onclick = compareLogic.hideModal;
