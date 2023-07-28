@@ -20,17 +20,18 @@
  *   high level logic-related one). Extract common potentionally reshareable
  *   methods to common module.
  *
- * Data table record sample:
-  interface TDataRecord {
-    amount: number; // 7.135225509515751e-9
-    amount_display: string; // "7.1e-09"
-    input_id: number; // 633
-    location: string; // "United States"
-    name: string; // "Clothing; at manufacturer"
-    row_id: string; // "0"
-    unit: string; // ""
-    url: string; // "/process/633"
-  }
+ * Data table record types:
+ *
+ * interface TDataRecord {
+ *   amount: number; // 7.135225509515751e-9
+ *   amount_display: string; // "7.1e-09"
+ *   input_id: number; // 633
+ *   location: string; // "United States"
+ *   name: string; // "Clothing; at manufacturer"
+ *   row_id: string; // "0"
+ *   unit: string; // ""
+ *   url: string; // "/process/633"
+ * }
  */
 
 const compareLogic = {
@@ -106,8 +107,8 @@ const compareLogic = {
         }
       })
       .filter(Boolean)
-      .join('; ');
-    return 'Collapsed row: ' + text;
+      .join('\n');
+    return 'COLLAPSED ROW\n' + text;
   },
 
   /** quoteHtmlAttr -- quote all invalid characters for html
@@ -137,18 +138,14 @@ const compareLogic = {
     const data = optionalData || compareLogic.getRowData(rowKind, rowId);
     const tooltipText = compareLogic.getCollapsedHandlerTooltipText(data);
     const quotedTooltipText = compareLogic.quoteHtmlAttr(tooltipText);
-    /* console.log('buildCollapsedHandlerRow', {
-     *   tooltipText,
-     *   quotedTooltipText,
-     *   collapsedId,
-     *   rowKind,
-     *   rowId,
-     *   data,
-     * });
-     */
     // TODO: Use table data (from `compareLogic.sharedData.target_data` or `compareLogic.sharedData.source_data`) to generate tooltip text.
-    const start = `<tr class="collapsed-handler" for-collapsed-id="${collapsedId}" title="${quotedTooltipText}">`;
-    const content = `<td colspan="${rowColumnsCount}">Collapsed row ${collapsedId}</td>`;
+    const start = `<tr
+      class="collapsed-handler"
+      for-collapsed-id="${collapsedId}"
+      title="${quotedTooltipText}"
+      onClick="compareLogic.clickUncollapseRow(this)"
+    >`;
+    const content = `<td colspan="${rowColumnsCount}"><br/></td>`;
     const end = `</tr>`;
     return start + content + end;
   },
@@ -170,30 +167,24 @@ const compareLogic = {
       .map(([name, value]) => value && name + '="' + compareLogic.quoteHtmlAttr(value) + '"')
       .filter(Boolean)
       .join(' ');
-    /* console.log('buildCollapsedHandlerRow', {
-     *   attrs,
-     *   collapsedRowHtml,
-     *   isCollapsed,
-     *   collapsedRows,
-     *   collapsedId,
-     *   rowKind,
-     *   rowId,
-     * });
-     */
-    const start = `<tr ${attrs} row_id="${data.row_id}" onclick="compareLogic.clickRow(this)">`;
+    const start = `<tr
+      ${attrs}
+      row_id="${data.row_id}"
+      onClick="compareLogic.clickRow(this)"
+    >`;
     const end = `<td><a onClick="compareLogic.disableRowClick(this)" href="${data.url}">${data.name}</a></td><td>${data.location}</td><td>${data.unit}</td></tr>`;
     let content;
     if (is_target) {
       content = `
   <td row_id="${data.row_id}">
-    <span id="row-trash-${data.row_id}" onclick="compareLogic.removeRow(this)"><a><i class="fa-solid fa-trash-can"></i></a></span>
+    <span id="row-trash-${data.row_id}" onClick="compareLogic.removeRow(this)"><a><i class="fa-solid fa-trash-can"></i></a></span>
     |
-    <span onclick="compareLogic.expandRow(this)" input_id="${data.input_id}" amount="${data.amount}"><a><i class="fa-solid fa-diamond fa-spin"></i></a></span>
+    <span onClick="compareLogic.expandRow(this)" input_id="${data.input_id}" amount="${data.amount}"><a><i class="fa-solid fa-diamond fa-spin"></i></a></span>
   </td>
-  <td onclick="compareLogic.editNumber(this)" row_id="${data.row_id}"><a>${data.amount_display}</a></td>
+  <td onClick="compareLogic.editNumber(this)" row_id="${data.row_id}"><a>${data.amount_display}</a></td>
     `;
     } else {
-      content = `<td><a onclick="compareLogic.shiftRow(event, this, ${data.row_id})"><i class="fa-solid fa-arrow-right"></i></a></td><td>${data.amount_display}</td>`;
+      content = `<td><a onClick="compareLogic.shiftRow(event, this, ${data.row_id})"><i class="fa-solid fa-arrow-right"></i></a></td><td>${data.amount_display}</td>`;
     }
     // TODO: Use trim and join with '\b'?
     return [start, content, end, collapsedRowHtml].filter(Boolean).join('');
@@ -201,21 +192,28 @@ const compareLogic = {
 
   build_table: function (table_id, data, is_target) {
     data.sort(compareLogic.number_sorter);
-    let html_string = '';
+    let rows = '';
     for (const [index, obj] of data.entries()) {
       obj['row_id'] = `${index}`;
-      html_string += compareLogic.build_row(obj, is_target);
+      rows += compareLogic.build_row(obj, is_target);
     }
     var header = `
-  <tr>
-    <th>Action</th>
-    <th>Amount</th>
-    <th>Name</th>
-    <th>Location</th>
-    <th>Unit</th>
-  </tr>
+      <thead>
+        <tr>
+          <th>Action</th>
+          <th>Amount</th>
+          <th>Name</th>
+          <th>Location</th>
+          <th>Unit</th>
+        </tr>
+      </thead>
     `;
-    document.getElementById(table_id).innerHTML = header + html_string;
+    const content = `
+      <tbody>
+        ${rows}
+      </tbody>
+    `;
+    document.getElementById(table_id).innerHTML = header + content;
   },
 
   createOneToOneProxyFunc: function (event) {
@@ -398,17 +396,6 @@ const compareLogic = {
     return [rowKind, rowId].join('-');
   },
 
-  /* // UNUSED? Using `getCollapsedId` instead.
-   * [>* getCollapsedRecordId -- Get collapsed id (`{rowKind}-{rowId}`)
-   *  * @param {<TCollapsedRow>} collapsedRowRecord
-   *  * @return {string}
-   *  <]
-   * getCollapsedRecordId(collapsedRowRecord) {
-   *   const { rowKind, rowId } = collapsedRowRecord;
-   *   return compareLogic.getCollapsedId(rowKind, rowId);
-   * },
-   */
-
   /** htmlToElement -- Create dom node instance from html string
    * @param {string} HTML representing a single element
    * @return {HTMLElement}
@@ -420,23 +407,16 @@ const compareLogic = {
     return template.content.firstChild;
   },
 
-  /** collapseRow -- Collapse particular row record
+  /** collapseRowByRecord -- Collapse particular row record
    * @param {<TCollapsedRow>} collapsedRowRecord
    */
-  collapseRow(collapsedRowRecord) {
+  collapseRowByRecord: function (collapsedRowRecord) {
     const { collapsed } = compareLogic.sharedData;
     const { collapsedRows } = collapsed;
-    const { rowEl } = collapsedRowRecord;
-    const { rowKind, rowId } = collapsedRowRecord;
+    // TODO: For paginated tables -- don't use saved elements (they would by dynamic)!
+    // See ` uncollapseRowByRecord` for example.
+    const { rowKind, rowId, rowEl } = collapsedRowRecord;
     const collapsedId = compareLogic.getCollapsedId(rowKind, rowId);
-    /* // DEBUG
-     * console.log('collapseRow', {
-     *   collapsedId,
-     *   collapsedRowRecord,
-     *   rowEl,
-     *   // collapsedRows,
-     * });
-     */
     // Add styles...
     rowEl.classList.add('collapsed');
     // Save id in the dom node...
@@ -449,38 +429,49 @@ const compareLogic = {
     const handlerRowEl = compareLogic.htmlToElement(handlerRowHtml);
     // Find parent node...
     const parentNode = rowEl.parentNode;
-    console.log('collapseRow: add collapse-handler', {
-      parentNode,
-      collapsedId,
-      collapsedRowRecord,
-      rowEl,
-      handlerRowEl,
-      handlerRowHtml,
-      // collapsedRows,
-    });
     // Add handler before current row...
     parentNode.insertBefore(handlerRowEl, rowEl);
+  },
+
+  /** uncollapseRowByRecord -- Collapse particular row record
+   * @param {<TCollapsedRow>} collapsedRowRecord
+   */
+  uncollapseRowByRecord: function (collapsedRowRecord) {
+    const { collapsed } = compareLogic.sharedData;
+    const { collapsedRows } = collapsed;
+    const { rowKind, rowId } = collapsedRowRecord;
+    const collapsedId = compareLogic.getCollapsedId(rowKind, rowId);
+    const tableId = rowKind + '-table';
+    const tableNode = document.getElementById(tableId);
+    const handlerEl = tableNode.querySelector('[for-collapsed-id="' + collapsedId + '"]');
+    const rowEl = tableNode.querySelector('[collapsed-id="' + collapsedId + '"]');
+    // Remove collapsed record data...
+    collapsedRows[collapsedRows] = undefined;
+    if (handlerEl) {
+      // Remove collapsed handler from dom (if exist in dom)...
+      handlerEl.remove();
+    }
+    // Restore row element state (id exist in dom)...
+    if (rowEl) {
+      rowEl.classList.remove('collapsed');
+      rowEl.removeAttribute('collapsed-id');
+    }
   },
 
   /** makeRowsCollapsed
    * @param {<TSelectedRow>} selectedFirst
    * @param {<TSelectedRow>} selectedSecond
    */
-  makeRowsCollapsed(selectedFirst, selectedSecond) {
+  makeRowsCollapsed: function (selectedFirst, selectedSecond) {
     // TODO: To check data validity (both records are defined and well-formed)?
-    /* console.log('makeRowsCollapsed', {
-     *   selectedFirst,
-     *   selectedSecond,
-     * });
-     */
     // Remove selected status...
     compareLogic.unselectRow(selectedFirst.rowEl);
     compareLogic.unselectRow(selectedSecond.rowEl);
     // Collapse the rows...
     const collapsedFirst = { ...selectedFirst, pairId: selectedSecond.rowId };
-    const collapsedSecond = { ...selectedSecond, pairId: selectedSecond.rowId };
-    compareLogic.collapseRow(collapsedFirst);
-    compareLogic.collapseRow(collapsedSecond);
+    const collapsedSecond = { ...selectedSecond, pairId: selectedFirst.rowId };
+    compareLogic.collapseRowByRecord(collapsedFirst);
+    compareLogic.collapseRowByRecord(collapsedSecond);
   },
 
   /** getRowKind -- Get row kind (source or target)
@@ -514,7 +505,7 @@ const compareLogic = {
     // Save record...
     collapsed.selectedFirst = { rowKind, rowEl, rowId };
     // Add styles...
-    rowEl.classList.add('selected', 'selected-first');
+    rowEl.classList.add('selected');
   },
 
   /** unselectRow -- Make row selected
@@ -523,7 +514,7 @@ const compareLogic = {
   unselectRow(rowEl) {
     const { collapsed } = compareLogic.sharedData;
     // Clear styles...
-    rowEl.classList.remove('selected', 'selected-first');
+    rowEl.classList.remove('selected');
     // Reset saved selected record (if it's the same)...
     const { selectedFirst } = collapsed;
     if (selectedFirst && selectedFirst.rowEl === rowEl) {
@@ -537,47 +528,60 @@ const compareLogic = {
   clickRow: function (rowEl) {
     const { rowClick, collapsed } = compareLogic.sharedData;
     if (rowClick.disabled) {
-      // Do not process row click if disabled.
+      // Do nothing if disabled
       return;
     }
     if (rowEl.classList.contains('collapsed')) {
-      // TODO: Do smth other if row is already collapsed (uncollapse)?
+      // Do nothing if row is already collapsed
       return;
     }
     const rowId = compareLogic.getRowId(rowEl);
     const rowKind = compareLogic.getRowKind(rowEl);
     const { selectedFirst } = collapsed;
-    /* // DEBUG
-     * console.log('clickRow', {
-     *   selectedFirst,
-     *   collapsed,
-     *   rowId,
-     *   rowEl,
-     * });
-     */
     if (!selectedFirst) {
-      // console.log('clickRow: Nothing selected -- select as first element');
+      // Nothing selected -- select as first element...
       compareLogic.selectRow(rowEl);
     } else if (selectedFirst.rowEl === rowEl) {
-      // console.log('clickRow: Already selected and clicked again -- deselect');
+      // Already selected and clicked again -- deselect...
       compareLogic.unselectRow(rowEl);
     } else if (selectedFirst.rowKind === rowKind) {
-      /* console.log('clickRow: Clicked another node in the same table -- deselect old and select new', {
-       *   selectedFirst,
-       * });
-       */
+      // Clicked another node in the same table -- deselect old and select new...
       compareLogic.unselectRow(selectedFirst.rowEl);
       compareLogic.selectRow(rowEl);
     } else {
       // Selected second element -- make both nodes collapsed...
       const selectedSecond = { rowKind, rowEl, rowId };
-      /* console.log('clickRow: Selected second element -- make both nodes collapsed', {
-       *   selectedFirst,
-       *   selectedSecond,
-       * });
-       */
       compareLogic.makeRowsCollapsed(selectedFirst, selectedSecond);
     }
+  },
+
+  /** clickUncollapseRow -- Uncollapse both rows for this clicked collpase handler
+   * @param {<HTMLTableRowElement>} firstHandlerEl
+   */
+  clickUncollapseRow: function (firstHandlerEl) {
+    const { collapsed } = compareLogic.sharedData;
+    const { collapsedRows } = collapsed;
+    // Get first collpased record by id...
+    const firstId = firstHandlerEl.getAttribute('for-collapsed-id');
+    const collapsedFirst = collapsedRows[firstId];
+    if (!collapsedFirst) {
+      throw new Error('Cannot find first collapsed element by collapsed-id: ' + firstId);
+    }
+    // Get seconds collapsed record (compose id from first `pairId`)...
+    const { rowKind, pairId } = collapsedFirst;
+    const secondRowKind = rowKind === 'source' ? 'target' : 'source';
+    const secondId = compareLogic.getCollapsedId(secondRowKind, pairId);
+    const collapsedSecond = collapsedRows[secondId];
+    if (!collapsedSecond) {
+      throw new Error('Cannot find second collapsed element by collapsed-id: ' + secondId);
+    }
+    const rootNode = firstHandlerEl.closest('.compare-tables');
+    if (!rootNode) {
+      throw new Error('Cannot find root dom node (`.compare-tables`)');
+    }
+    // Uncollapse found rows...
+    compareLogic.uncollapseRowByRecord(collapsedFirst);
+    compareLogic.uncollapseRowByRecord(collapsedSecond);
   },
 
   replaceAmountRow: function (elem, target_id) {
@@ -643,7 +647,7 @@ const compareLogic = {
     `;
     compareLogic.sharedData.source_data.forEach(function (item, _index) {
       a += `
-        <tr amount="${item.amount}" source_id="${item.row_id}" onclick="compareLogic.replaceAmountRow(this, ${row.row_id})">
+        <tr amount="${item.amount}" source_id="${item.row_id}" onClick="compareLogic.replaceAmountRow(this, ${row.row_id})">
           <td>${item.amount_display}</td>
           <td>${item.name}</td>
           <td>${item.unit}</td>
@@ -657,18 +661,18 @@ const compareLogic = {
       <div class="five columns">
         <h4>Original amount: ${row.amount}</h4>
         <h4>Current amount: <span id="number-current-amount">${row.amount}</span></h4>
-        <button class="button-primary" id="close-number-editor" row_id="${row.row_id}" onclick="compareLogic.setNumber(this)">Set and close</button>
+        <button class="button-primary" id="close-number-editor" row_id="${row.row_id}" onClick="compareLogic.setNumber(this)">Set and close</button>
         <form>
           <div>
             <label>Enter new amount</label>
             <input type="number" id="new_number" value="${row.amount}">
-            <button onclick="compareLogic.setNewNumber(${row.row_id})" id="new-number-button">Set</button>
+            <button onClick="compareLogic.setNewNumber(${row.row_id})" id="new-number-button">Set</button>
           </div>
           <hr />
           <div>
             <label>Rescale current amount</label>
             <input type="number" id="rescale_number" value="1.0">
-            <button onclick="compareLogic.rescaleAmount(${row.row_id})" id="rescale-button">Rescale</button>
+            <button onClick="compareLogic.rescaleAmount(${row.row_id})" id="rescale-button">Rescale</button>
           </div>
         </form>
       </div>
@@ -714,7 +718,7 @@ const compareLogic = {
     // Get modal node...
     compareLogic.sharedData.modal = document.getElementById('number-editor');
 
-    // Link close modal button handler...
+    // Link close modal button handler (TODO: To use more specific class?)...
     const closer = document.getElementsByClassName('close')[0];
     if (closer) {
       closer.onclick = compareLogic.hideModal;
