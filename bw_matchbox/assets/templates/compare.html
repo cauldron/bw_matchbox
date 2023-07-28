@@ -68,33 +68,8 @@
     target_name: '{{ target_node.name|safe }}',
     source_node_unit: '{{source_node.unit}}',
     source_node_location: '{{source_node.location}}',
-    comment: '',
     // Number of columns in a table row...
     rowColumnsCount: 5,
-    // Row click data...
-    rowClick: {
-      timeout: 100,
-      disabled: false,
-      releaseHandler: undefined,
-    },
-    // Collpsing rows data...
-    collapsed: {
-      /* Compare feature types (ts-like):
-       * type TRowKind = 'source' | 'target';
-       * type TRowEl = HTMLTableRowElement;
-       * type TRowId = string;
-       * interface TSelectedRow {
-       *   rowKind: TRowKind;
-       *   // TODO: It will be impossible to use elements for paginated tables
-       *   // (because the nodes for the same elements could be different).
-       *   rowEl: TRowEl;
-       *   rowId: TRowId;
-       * };
-       * interface TCollapsedRow extends TSelectedRow { pairId: TRowId };
-       */
-      selectedFirst: undefined, // <undefined | TSelectedRow>
-      collapsedRows: {}, // Record<TRowId, TCollapsedRow> -- Hash of collapsed row
-    },
   };
 
   compareLogic.initCompare(compareData);

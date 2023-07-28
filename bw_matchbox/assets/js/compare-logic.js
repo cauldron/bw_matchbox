@@ -34,9 +34,37 @@
  * }
  */
 
+// global module variable
+// eslint-disable-next-line no-unused-vars
 const compareLogic = {
   sharedData: undefined,
-  localData: undefined,
+  localData: {
+    comment: '',
+    // Row click data...
+    rowClick: {
+      timeout: 100,
+      disabled: false,
+      releaseHandler: undefined,
+    },
+    // Collpsing rows data...
+    collapsed: {
+      /* Compare feature types (ts-like):
+       * type TRowKind = 'source' | 'target';
+       * type TRowEl = HTMLTableRowElement;
+       * type TRowId = string;
+       * interface TSelectedRow {
+       *   rowKind: TRowKind;
+       *   // TODO: It will be impossible to use elements for paginated tables
+       *   // (because the nodes for the same elements could be different).
+       *   rowEl: TRowEl;
+       *   rowId: TRowId;
+       * };
+       * interface TCollapsedRow extends TSelectedRow { pairId: TRowId };
+       */
+      selectedFirst: undefined, // <undefined | TSelectedRow>
+      collapsedRows: {}, // Record<TRowId, TCollapsedRow> -- Hash of collapsed row
+    },
+  },
 
   compareTest: function () {
     return 'test';
@@ -61,7 +89,7 @@ const compareLogic = {
     var obj = compareLogic.sharedData.source_data.find((item) => item.row_id == row_id);
     compareLogic.sharedData.target_data.push(obj);
     compareLogic.build_table('target-table', compareLogic.sharedData.target_data, true);
-    compareLogic.sharedData.comment += `* Added source exchange of ${obj.amount} ${obj.unit} ${obj.name} in ${obj.location}.\n`;
+    compareLogic.localData.comment += `* Added source exchange of ${obj.amount} ${obj.unit} ${obj.name} in ${obj.location}.\n`;
     row.parentElement.innerHTML = `<i class="fa-solid fa-check"></i>`;
   },
 
@@ -151,7 +179,7 @@ const compareLogic = {
   },
 
   build_row: function (data, is_target) {
-    const { collapsed } = compareLogic.sharedData;
+    const { collapsed } = compareLogic.localData;
     const { collapsedRows } = collapsed;
     const rowId = data.row_id;
     const rowKind = is_target ? 'target' : 'source';
@@ -261,7 +289,7 @@ const compareLogic = {
         <label for="proxy-name">Proxy name</label>
         <input class="u-full-width" type="text" id="proxy-name" name="proxy-name" value="${name}">
         <label for="proxy-comment">Comment</label>
-        <textarea class="u-full-width" id="proxy-comment" name="proxy-comment">${compareLogic.sharedData.comment}</textarea>
+        <textarea class="u-full-width" id="proxy-comment" name="proxy-comment">${compareLogic.localData.comment}</textarea>
         <p><button class="button-primary" id="create-proxy-submit-button">Create Proxy Process</button> | Unit: ${compareLogic.sharedData.source_node_unit} | Location: ${compareLogic.sharedData.source_node_location}</p>
         <table>
           <tr>
@@ -315,7 +343,7 @@ const compareLogic = {
     compareLogic.disableRowClick();
     compareLogic.sharedData.target_data.push(compareLogic.sharedData.target_node);
     compareLogic.sharedData.target_data.splice(0, compareLogic.sharedData.target_data.length - 1);
-    compareLogic.sharedData.comment += `* Collapsed input exchanges to target node\n`;
+    compareLogic.localData.comment += `* Collapsed input exchanges to target node\n`;
     compareLogic.build_table('target-table', compareLogic.sharedData.target_data, true);
     elem.innerHTML = '';
   },
@@ -326,7 +354,7 @@ const compareLogic = {
 
     function removeValue(obj, index, arr) {
       if (obj.row_id == row_id) {
-        compareLogic.sharedData.comment += `* Removed exchange of ${obj.amount} ${obj.unit} ${obj.name} from ${obj.location}.\n`;
+        compareLogic.localData.comment += `* Removed exchange of ${obj.amount} ${obj.unit} ${obj.name} from ${obj.location}.\n`;
         arr.splice(index, 1);
         return true;
       }
@@ -343,7 +371,7 @@ const compareLogic = {
     var t = compareLogic.sharedData.target_data.find(
       (item) => item.input_id == element.getAttribute('input_id'),
     );
-    compareLogic.sharedData.comment += `* Expanded process inputs of ${t.amount} ${t.unit} from ${t.name} in ${t.location}.\n`;
+    compareLogic.localData.comment += `* Expanded process inputs of ${t.amount} ${t.unit} from ${t.name} in ${t.location}.\n`;
     fetch(url)
       .then((response) => {
         if (!response.ok) {
@@ -363,7 +391,7 @@ const compareLogic = {
   /** clearRowClickHandler - Clear row click disbale timer handler.
    */
   clearRowClickHandler: function () {
-    const { rowClick } = compareLogic.sharedData;
+    const { rowClick } = compareLogic.localData;
     if (rowClick.releaseHandler) {
       clearTimeout(rowClick.releaseHandler);
       rowClick.releaseHandler = undefined;
@@ -373,7 +401,7 @@ const compareLogic = {
   /** releaseRowClick - Enable processing of `clickRow`
    */
   releaseRowClick: function () {
-    const { rowClick } = compareLogic.sharedData;
+    const { rowClick } = compareLogic.localData;
     rowClick.disabled = false;
     compareLogic.clearRowClickHandler();
   },
@@ -381,7 +409,7 @@ const compareLogic = {
   /** disableRowClick - Disable processing of `clickRow` handlers for some time (allow to process clicks on inner elements)
    */
   disableRowClick: function () {
-    const { rowClick } = compareLogic.sharedData;
+    const { rowClick } = compareLogic.localData;
     compareLogic.clearRowClickHandler();
     rowClick.disabled = true;
     setTimeout(compareLogic.releaseRowClick, rowClick.timeout);
@@ -411,7 +439,7 @@ const compareLogic = {
    * @param {<TCollapsedRow>} collapsedRowRecord
    */
   collapseRowByRecord: function (collapsedRowRecord) {
-    const { collapsed } = compareLogic.sharedData;
+    const { collapsed } = compareLogic.localData;
     const { collapsedRows } = collapsed;
     // TODO: For paginated tables -- don't use saved elements (they would by dynamic)!
     // See ` uncollapseRowByRecord` for example.
@@ -437,7 +465,7 @@ const compareLogic = {
    * @param {<TCollapsedRow>} collapsedRowRecord
    */
   uncollapseRowByRecord: function (collapsedRowRecord) {
-    const { collapsed } = compareLogic.sharedData;
+    const { collapsed } = compareLogic.localData;
     const { collapsedRows } = collapsed;
     const { rowKind, rowId } = collapsedRowRecord;
     const collapsedId = compareLogic.getCollapsedId(rowKind, rowId);
@@ -499,7 +527,7 @@ const compareLogic = {
    * @param {<TRowEl>} rowEl
    */
   selectRow(rowEl) {
-    const { collapsed } = compareLogic.sharedData;
+    const { collapsed } = compareLogic.localData;
     const rowId = compareLogic.getRowId(rowEl);
     const rowKind = compareLogic.getRowKind(rowEl);
     // Save record...
@@ -512,7 +540,7 @@ const compareLogic = {
    * @param {<TRowEl>} rowEl
    */
   unselectRow(rowEl) {
-    const { collapsed } = compareLogic.sharedData;
+    const { collapsed } = compareLogic.localData;
     // Clear styles...
     rowEl.classList.remove('selected');
     // Reset saved selected record (if it's the same)...
@@ -526,7 +554,7 @@ const compareLogic = {
    * @param {<TRowEl>} rowEl
    */
   clickRow: function (rowEl) {
-    const { rowClick, collapsed } = compareLogic.sharedData;
+    const { rowClick, collapsed } = compareLogic.localData;
     if (rowClick.disabled) {
       // Do nothing if disabled
       return;
@@ -559,7 +587,7 @@ const compareLogic = {
    * @param {<HTMLTableRowElement>} firstHandlerEl
    */
   clickUncollapseRow: function (firstHandlerEl) {
-    const { collapsed } = compareLogic.sharedData;
+    const { collapsed } = compareLogic.localData;
     const { collapsedRows } = collapsed;
     // Get first collpased record by id...
     const firstId = firstHandlerEl.getAttribute('for-collapsed-id');
@@ -590,7 +618,7 @@ const compareLogic = {
       (item) => item.row_id == elem.getAttribute('source_id'),
     );
     var t = compareLogic.sharedData.target_data.find((item) => item.row_id == target_id);
-    compareLogic.sharedData.comment += `* Used source database amount ${s.amount} ${s.unit} from ${s.name} in ${s.location} instead of ${t.amount} ${t.unit} from ${t.name} in ${t.location}.\n`;
+    compareLogic.localData.comment += `* Used source database amount ${s.amount} ${s.unit} from ${s.name} in ${s.location} instead of ${t.amount} ${t.unit} from ${t.name} in ${t.location}.\n`;
     document.getElementById('number-current-amount').innerText = elem.getAttribute('amount');
   },
 
@@ -600,7 +628,7 @@ const compareLogic = {
     const scale = Number(document.getElementById('rescale_number').value);
     const node = document.getElementById('number-current-amount');
     if (scale != 1) {
-      compareLogic.sharedData.comment += `* Rescaled amount ${t.amount} ${t.unit} from ${t.name} in ${t.location} by ${scale}.\n`;
+      compareLogic.localData.comment += `* Rescaled amount ${t.amount} ${t.unit} from ${t.name} in ${t.location} by ${scale}.\n`;
     }
     node.innerText = Number(node.innerText) * scale;
   },
@@ -609,7 +637,7 @@ const compareLogic = {
     compareLogic.disableRowClick();
     var t = compareLogic.sharedData.target_data.find((item) => item.row_id == target_id);
     const new_value = document.getElementById('new_number').value;
-    compareLogic.sharedData.comment += `* Set manual exchange value of ${new_value} instead of ${t.amount} ${t.unit} for ${t.name} in ${t.location}.\n`;
+    compareLogic.localData.comment += `* Set manual exchange value of ${new_value} instead of ${t.amount} ${t.unit} for ${t.name} in ${t.location}.\n`;
     document.getElementById('number-current-amount').innerText = new_value;
   },
 
