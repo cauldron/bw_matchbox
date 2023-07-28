@@ -1,6 +1,10 @@
+/* global compareData */
+
 /* Compare tables feature code (via global variable `compareLogic`).
  *
- * Used handlers:
+ * Global object `compareData` comes from `bw_matchbox/assets/templates/compare.html`
+ *
+ * Used mouse handler' methods:
  * - clickRow
  * - disableRowClick
  * - removeRow
@@ -13,15 +17,18 @@
  * - rescaleAmount
  * - replaceWithTarget
  *
+ * TODO:
+ *
+ * - 2023.07.28, 16:57 -- Extract row-related low-level methods to external module.
+ *
  */
 
 const compareLogic = {
-
-  compareTest: function() {
+  compareTest: function () {
     return 'test';
   },
 
-  number_sorter: function(a, b) {
+  number_sorter: function (a, b) {
     if (a.amount < b.amount) {
       // Reversed because want ascending order
       return -1;
@@ -32,21 +39,21 @@ const compareLogic = {
     return 0;
   },
 
-  shiftRow: function(event, row, row_id) {
+  shiftRow: function (event, row, row_id) {
     compareLogic.disableRowClick();
     // Add row from source to target array
     event.preventDefault();
-    row.parentElement.parentElement.classList.add("shift-right");
-    var obj = compareData.source_data.find(item => item.row_id == row_id);
+    row.parentElement.parentElement.classList.add('shift-right');
+    var obj = compareData.source_data.find((item) => item.row_id == row_id);
     compareData.target_data.push(obj);
-    compareLogic.build_table("target-table", compareData.target_data, true);
+    compareLogic.build_table('target-table', compareData.target_data, true);
     compareData.comment += `* Added source exchange of ${obj.amount} ${obj.unit} ${obj.name} in ${obj.location}.\n`;
     row.parentElement.innerHTML = `<i class="fa-solid fa-check"></i>`;
   },
 
-  build_row: function(data, is_target) {
+  build_row: function (data, is_target) {
     const start = `<tr row_id="${data.row_id}" onclick="compareLogic.clickRow(this)">`;
-    const end = `<td><a onClick="compareLogic.disableRowClick(this)" href="${data.url}">${data.name}</a></td><td>${data.location}</td><td>${data.unit}</td></tr>`
+    const end = `<td><a onClick="compareLogic.disableRowClick(this)" href="${data.url}">${data.name}</a></td><td>${data.location}</td><td>${data.unit}</td></tr>`;
     let content;
     if (is_target) {
       content = `
@@ -63,13 +70,13 @@ const compareLogic = {
     return start + content + end;
   },
 
-  build_table: function(table_id, data, is_target) {
+  build_table: function (table_id, data, is_target) {
     data.sort(compareLogic.number_sorter);
-    let html_string = "";
+    let html_string = '';
     for (const [index, obj] of data.entries()) {
       obj['row_id'] = `${index}`;
       html_string += compareLogic.build_row(obj, is_target);
-    };
+    }
     var header = `
   <tr>
     <th>Action</th>
@@ -82,35 +89,46 @@ const compareLogic = {
     document.getElementById(table_id).innerHTML = header + html_string;
   },
 
-  createOneToOneProxyFunc: function(event) {
+  createOneToOneProxyFunc: function (event) {
     event.preventDefault();
 
     var submission_data = {
-      exchanges: [{'input_id': compareData.target_id, 'amount': 1.0}],
+      exchanges: [{ input_id: compareData.target_id, amount: 1.0 }],
       source: compareData.source_id,
-      comment: "One-to-one proxy",
-      name: "Proxy for " + compareData.target_name.replace("Market group for ", "").replace("market group for ", "").replace("Market for ", "").replace("market for ", "").trim()
+      comment: 'One-to-one proxy',
+      name:
+        'Proxy for ' +
+        compareData.target_name
+          .replace('Market group for ', '')
+          .replace('market group for ', '')
+          .replace('Market for ', '')
+          .replace('market for ', '')
+          .trim(),
     };
-    var url = "/create-proxy/";
-    fetch(
-      url,
-      {
-        method: "POST",
-        redirect: 'follow',
-        headers: {"Content-Type": "application/json"},
-        body: JSON.stringify(submission_data)
-      }
-    ).then((response) => {
+    var url = '/create-proxy/';
+    fetch(url, {
+      method: 'POST',
+      redirect: 'follow',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(submission_data),
+    }).then((response) => {
       if (response.redirected) {
-          window.location.href = response.url;
+        window.location.href = response.url;
       }
     });
   },
 
-  createProxyFunc: function(event) {
+  createProxyFunc: function (event) {
     event.preventDefault();
-    var span = document.getElementById("modal-content-wrapper");
-    var name = "Proxy for " + compareData.target_name.replace("Market group for ", "").replace("market group for ", "").replace("Market for ", "").replace("market for ", "").trim();
+    var span = document.getElementById('modal-content-wrapper');
+    var name =
+      'Proxy for ' +
+      compareData.target_name
+        .replace('Market group for ', '')
+        .replace('market group for ', '')
+        .replace('Market for ', '')
+        .replace('market for ', '')
+        .trim();
     var text = `
       <form>
         <label for="proxy-name">Proxy name</label>
@@ -126,99 +144,98 @@ const compareLogic = {
           </tr>
     `;
 
-    compareData.target_data.forEach( function (item, _index) {
+    compareData.target_data.forEach(function (item, _index) {
       text += `
           <tr input_id=${item.input_id}>
             <td>${item.name}</td>
             <td>${item.amount_display}</td>
             <td><textarea type="text" id="proxy-name-${item.input_id}" name="proxy-name-${item.input_id}"></textarea></td>
           </tr>
-      `
+      `;
     });
 
     text += `
         </table>
       </form>
-    `
+    `;
     span.innerHTML = text;
-    modal.style.display = "block";
+    compareData.modal.style.display = 'block';
 
-    var submit = document.getElementById("create-proxy-submit-button");
-    submit.addEventListener("click", async (e) => {
+    var submit = document.getElementById('create-proxy-submit-button');
+    submit.addEventListener('click', async (e) => {
       e.preventDefault();
       var submission_data = {
         exchanges: compareData.target_data,
         source: compareData.source_id,
-        comment: document.getElementById("proxy-comment").value,
-        name: document.getElementById("proxy-name").value
+        comment: document.getElementById('proxy-comment').value,
+        name: document.getElementById('proxy-name').value,
       };
-      var url = "/create-proxy/";
-      fetch(
-        url,
-        {
-          method: "POST",
-          redirect: 'follow',
-          headers: {"Content-Type": "application/json"},
-          body: JSON.stringify(submission_data)
-        }
-      ).then((response) => {
+      var url = '/create-proxy/';
+      fetch(url, {
+        method: 'POST',
+        redirect: 'follow',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(submission_data),
+      }).then((response) => {
         if (response.redirected) {
-            window.location.href = response.url;
+          window.location.href = response.url;
         }
       });
     });
   },
 
-  replaceWithTarget: function(elem) {
+  replaceWithTarget: function (elem) {
     compareLogic.disableRowClick();
     compareData.target_data.push(compareData.target_node);
     compareData.target_data.splice(0, compareData.target_data.length - 1);
     compareData.comment += `* Collapsed input exchanges to target node\n`;
-    compareLogic.build_table("target-table", compareData.target_data, true);
-    elem.innerHTML = "";
+    compareLogic.build_table('target-table', compareData.target_data, true);
+    elem.innerHTML = '';
   },
 
-  removeRow: function(element) {
+  removeRow: function (element) {
     compareLogic.disableRowClick();
-    debugger;
-    var row_id = element.parentElement.getAttribute("row_id");
+    var row_id = element.parentElement.getAttribute('row_id');
 
     function removeValue(obj, index, arr) {
       if (obj.row_id == row_id) {
-          compareData.comment += `* Removed exchange of ${obj.amount} ${obj.unit} ${obj.name} from ${obj.location}.\n`;
-          arr.splice(index, 1);
-          return true;
+        compareData.comment += `* Removed exchange of ${obj.amount} ${obj.unit} ${obj.name} from ${obj.location}.\n`;
+        arr.splice(index, 1);
+        return true;
       }
       return false;
-    };
+    }
     compareData.target_data.filter(removeValue);
-    compareLogic.build_table("target-table", compareData.target_data, true);
+    compareLogic.build_table('target-table', compareData.target_data, true);
   },
 
-  expandRow: function(element) {
+  expandRow: function (element) {
     compareLogic.disableRowClick();
-    var url = "/expand/" + element.getAttribute("input_id") + "/" + element.getAttribute("amount") + "/";
-    var t = compareData.target_data.find(item => item.input_id == element.getAttribute("input_id"));
+    var url =
+      '/expand/' + element.getAttribute('input_id') + '/' + element.getAttribute('amount') + '/';
+    var t = compareData.target_data.find(
+      (item) => item.input_id == element.getAttribute('input_id'),
+    );
     compareData.comment += `* Expanded process inputs of ${t.amount} ${t.unit} from ${t.name} in ${t.location}.\n`;
     fetch(url)
-        .then((response) => {
-            if (!response.ok) {
-                throw new Error(`HTTP error ${response.status}`);
-            }
-            return response.json();
-        })
-        .then((data) => {
-          data.forEach(function (item, _index) {
-            compareData.target_data.push(item);
-          });
-          compareData.target_data.sort(compareLogic.number_sorter);
-          compareLogic.removeRow(element);
+      .then((response) => {
+        if (!response.ok) {
+          throw new Error(`HTTP error ${response.status}`);
+        }
+        return response.json();
+      })
+      .then((data) => {
+        data.forEach(function (item, _index) {
+          compareData.target_data.push(item);
         });
+        compareData.target_data.sort(compareLogic.number_sorter);
+        compareLogic.removeRow(element);
+      });
   },
 
   /** clearRowClickHandler - Clear row click disbale timer handler.
-  */
-  clearRowClickHandler: function() {
+   */
+  clearRowClickHandler: function () {
     const { rowClick } = compareData;
     if (rowClick.releaseHandler) {
       clearTimeout(rowClick.releaseHandler);
@@ -227,26 +244,128 @@ const compareLogic = {
   },
 
   /** releaseRowClick - Enable processing of `clickRow`
-  */
-  releaseRowClick: function() {
+   */
+  releaseRowClick: function () {
     const { rowClick } = compareData;
     rowClick.disabled = false;
     compareLogic.clearRowClickHandler();
   },
 
   /** disableRowClick - Disable processing of `clickRow` handlers for some time (allow to process clicks on inner elements)
-  */
-  disableRowClick: function() {
+   */
+  disableRowClick: function () {
     const { rowClick } = compareData;
     compareLogic.clearRowClickHandler();
     rowClick.disabled = true;
     setTimeout(compareLogic.releaseRowClick, rowClick.timeout);
   },
 
-  /** clickRow
-   * @param {HTMLTableRowElement} rowEl
+  /** getCollapsedCollapsedId -- Get combo id (`{rowKind}-{rowId}`)
+   * @param {<TCollapsedRow>} collapsedRowRecord
+   * @return {string}
    */
-  clickRow: function(rowEl) {
+  getCollapsedCollapsedId(collapsedRowRecord) {
+    const { rowKind, rowId } = collapsedRowRecord;
+    return [rowKind, rowId].join('-');
+  },
+
+  /** collapseRow -- Collapse particular row record
+   * @param {<TCollapsedRow>} collapsedRowRecord
+   */
+  collapseRow(collapsedRowRecord) {
+    const { collapsed } = compareData;
+    const { collapsedRows } = collapsed;
+    const { rowEl } = collapsedRowRecord;
+    const collapsedId = compareLogic.getCollapsedCollapsedId(collapsedRowRecord);
+    // DEBUG
+    console.log('collapseRow', {
+      collapsedId,
+      collapsedRowRecord,
+      rowEl,
+      // collapsedRows,
+    });
+    // Add styles...
+    rowEl.classList.add('collapsed');
+    // Save id in the dom node...
+    rowEl.setAttribute('collapsed-id', collapsedId);
+    // Save record...
+    collapsedRows[collapsedId] = collapsedRowRecord;
+    // TODO: Add interactive elements and other stuff (to uncollapse it later)
+  },
+
+  /** makeRowsCollapsed
+   * @param {<TSelectedRow>} selectedFirst
+   * @param {<TSelectedRow>} selectedSecond
+   */
+  makeRowsCollapsed(selectedFirst, selectedSecond) {
+    // TODO: To check data validity (both records are defined and well-formed)?
+    /* console.log('makeRowsCollapsed', {
+     *   selectedFirst,
+     *   selectedSecond,
+     * });
+     */
+    // Remove selected status...
+    compareLogic.unselectRow(selectedFirst.rowEl);
+    compareLogic.unselectRow(selectedSecond.rowEl);
+    // Collapse the rows...
+    const collapsedFirst = { ...selectedFirst, pairId: selectedSecond.rowId };
+    const collapsedSecond = { ...selectedSecond, pairId: selectedSecond.rowId };
+    compareLogic.collapseRow(collapsedFirst);
+    compareLogic.collapseRow(collapsedSecond);
+  },
+
+  /** getRowKind -- Get row kind (source or target)
+   * @param {<TRowEl>} rowEl
+   * @return {<TRowKind>} (<'source' | 'target'>)
+   */
+  getRowKind(rowEl) {
+    // Find main table (source or target one)
+    const table = rowEl.closest('table');
+    const tableId = table.getAttribute('id');
+    const isSource = tableId === 'source-table';
+    // Row kind (source or target)...
+    return isSource ? 'source' : 'target';
+  },
+
+  /** getRowKind -- Get row id
+   * @param {<TRowEl>} rowEl
+   * @return {<TRowId>}
+   */
+  getRowId(rowEl) {
+    return rowEl.getAttribute('row_id');
+  },
+
+  /** selectRow -- Make row selected
+   * @param {<TRowEl>} rowEl
+   */
+  selectRow(rowEl) {
+    const { collapsed } = compareData;
+    const rowId = compareLogic.getRowId(rowEl);
+    const rowKind = compareLogic.getRowKind(rowEl);
+    // Save record...
+    collapsed.selectedFirst = { rowKind, rowEl, rowId };
+    // Add styles...
+    rowEl.classList.add('selected', 'selected-first');
+  },
+
+  /** unselectRow -- Make row selected
+   * @param {<TRowEl>} rowEl
+   */
+  unselectRow(rowEl) {
+    const { collapsed } = compareData;
+    // Clear styles...
+    rowEl.classList.remove('selected', 'selected-first');
+    // Reset saved selected record (if it's the same)...
+    const { selectedFirst } = collapsed;
+    if (selectedFirst && selectedFirst.rowEl === rowEl) {
+      collapsed.selectedFirst = undefined;
+    }
+  },
+
+  /** clickRow
+   * @param {<TRowEl>} rowEl
+   */
+  clickRow: function (rowEl) {
     const { rowClick, collapsed } = compareData;
     if (rowClick.disabled) {
       // Do not process row click if disabled.
@@ -256,109 +375,87 @@ const compareLogic = {
       // TODO: Do smth other if row is already collapsed (uncollapse)?
       return;
     }
-    // const rowId = rowEl.getAttribute('row_id'); // TODO?
-    // Find main table (source or target one)
-    const table = rowEl.closest('table');
-    const tableId = table.getAttribute('id');
-    const isSource = tableId === 'source-table';
-    // Row kind (source or target)...
-    const kind = isSource ? 'source' : 'target';
-    let { selectedFirst, selectedSecond, collapsedList } = collapsed;
+    const rowId = compareLogic.getRowId(rowEl);
+    const rowKind = compareLogic.getRowKind(rowEl);
+    const { selectedFirst } = collapsed;
     /* // DEBUG
      * console.log('clickRow', {
      *   selectedFirst,
-     *   selectedSecond,
      *   collapsed,
-     *   // rowId,
-     *   table,
-     *   tableId,
-     *   isSource,
+     *   rowId,
      *   rowEl,
      * });
      */
     if (!selectedFirst) {
-      // Nothing selected -- then select as first element...
-      // console.log('clickRow: Nothing selected');
-      selectedFirst = collapsed.selectedFirst = { kind, rowEl };
-      rowEl.classList.add('selected', 'selected-first');
+      // console.log('clickRow: Nothing selected -- select as first element');
+      compareLogic.selectRow(rowEl);
     } else if (selectedFirst.rowEl === rowEl) {
-      // Already selected and clicked again -- then deselect...
-      // console.log('clickRow: Already selected and clicked again');
-      selectedFirst = collapsed.selectedFirst = undefined;
-      rowEl.classList.remove('selected', 'selected-first', 'selected-second');
-    } else if (selectedFirst.kind === kind) {
-      // Clicked another node in the same table -- then deselect old and select new
-      // console.log('clickRow: Clicked another node in the same table');
-      selectedFirst.rowEl.classList.remove('selected', 'selected-first', 'selected-second');
-      rowEl.classList.add('selected', 'selected-first');
-      selectedFirst = collapsed.selectedFirst = { kind, rowEl };
+      // console.log('clickRow: Already selected and clicked again -- deselect');
+      compareLogic.unselectRow(rowEl);
+    } else if (selectedFirst.rowKind === rowKind) {
+      /* console.log('clickRow: Clicked another node in the same table -- deselect old and select new', {
+       *   selectedFirst,
+       * });
+       */
+      compareLogic.unselectRow(selectedFirst.rowEl);
+      compareLogic.selectRow(rowEl);
     } else {
-      // Selected second element -- make both nodes collpaes (TODO)
-      // console.log('clickRow: Selected second element');
-      if (selectedSecond) {
-        // Clear previous second selection if exist...
-        selectedSecond.rowEl.classList.remove('selected', 'selected-first', 'selected-second');
-      }
-      selectedSecond = collapsed.selectedSecond = { kind, rowEl };
-      // Mark as collapsed and remove selected status...
-      selectedFirst.rowEl.classList.add('collapsed');
-      selectedSecond.rowEl.classList.add('collapsed');
-      // Add rows to collapsed list (TODO: Add by pairs?)
-      collapsedList.push(selectedFirst.rowEl);
-      collapsedList.push(selectedSecond.rowEl);
-      // Remove selected status...
-      selectedSecond.rowEl.classList.remove('selected', 'selected-first', 'selected-second');
-      selectedFirst.rowEl.classList.remove('selected', 'selected-first', 'selected-second');
-      collapsed.selectedFirst = undefined;
-      collapsed.selectedSecond = undefined;
+      // Selected second element -- make both nodes collapsed...
+      const selectedSecond = { rowKind, rowEl, rowId };
+      /* console.log('clickRow: Selected second element -- make both nodes collapsed', {
+       *   selectedFirst,
+       *   selectedSecond,
+       * });
+       */
+      compareLogic.makeRowsCollapsed(selectedFirst, selectedSecond);
     }
   },
 
-  replaceAmountRow: function(elem, target_id) {
+  replaceAmountRow: function (elem, target_id) {
     compareLogic.disableRowClick();
-    var s = compareData.source_data.find(item => item.row_id == elem.getAttribute("source_id"));
-    var t = compareData.target_data.find(item => item.row_id == target_id);
+    var s = compareData.source_data.find((item) => item.row_id == elem.getAttribute('source_id'));
+    var t = compareData.target_data.find((item) => item.row_id == target_id);
     compareData.comment += `* Used source database amount ${s.amount} ${s.unit} from ${s.name} in ${s.location} instead of ${t.amount} ${t.unit} from ${t.name} in ${t.location}.\n`;
-    document.getElementById("number-current-amount").innerText = elem.getAttribute("amount");
+    document.getElementById('number-current-amount').innerText = elem.getAttribute('amount');
   },
 
-  rescaleAmount: function(target_id) {
+  rescaleAmount: function (target_id) {
     compareLogic.disableRowClick();
-    var t = compareData.target_data.find(item => item.row_id == target_id);
-    scale = Number(document.getElementById("rescale_number").value);
-    node = document.getElementById("number-current-amount")
+    var t = compareData.target_data.find((item) => item.row_id == target_id);
+    const scale = Number(document.getElementById('rescale_number').value);
+    const node = document.getElementById('number-current-amount');
     if (scale != 1) {
       compareData.comment += `* Rescaled amount ${t.amount} ${t.unit} from ${t.name} in ${t.location} by ${scale}.\n`;
-    };
+    }
     node.innerText = Number(node.innerText) * scale;
   },
 
-  setNewNumber: function(target_id) {
+  setNewNumber: function (target_id) {
     compareLogic.disableRowClick();
-    var t = compareData.target_data.find(item => item.row_id == target_id);
-    new_value = document.getElementById("new_number").value;
+    var t = compareData.target_data.find((item) => item.row_id == target_id);
+    const new_value = document.getElementById('new_number').value;
     compareData.comment += `* Set manual exchange value of ${new_value} instead of ${t.amount} ${t.unit} for ${t.name} in ${t.location}.\n`;
-    document.getElementById("number-current-amount").innerText = new_value;
+    document.getElementById('number-current-amount').innerText = new_value;
   },
 
-  setNumber: function(elem) {
+  setNumber: function (elem) {
     compareLogic.disableRowClick();
-    row_id = elem.getAttribute("row_id");
-    current = Number(document.getElementById("number-current-amount").innerText);
+    const row_id = elem.getAttribute('row_id');
+    const current = Number(document.getElementById('number-current-amount').innerText);
     compareData.target_data.forEach(function (item, _index) {
       if (item.row_id == row_id) {
         item.amount = current;
         item.amount_display = current.toExponential();
-      };
+      }
     });
-    modal.style.display = "none";
-    compareLogic.build_table("target-table", compareData.target_data, true);
+    compareData.modal.style.display = 'none';
+    compareLogic.build_table('target-table', compareData.target_data, true);
   },
 
-  editNumber: function(td) {
+  editNumber: function (td) {
     compareLogic.disableRowClick();
-    var row = compareData.target_data.find(item => item.row_id == td.getAttribute("row_id"));
-    var span = document.getElementById("modal-content-wrapper");
+    var row = compareData.target_data.find((item) => item.row_id == td.getAttribute('row_id'));
+    var span = document.getElementById('modal-content-wrapper');
 
     var a = `
       <h3>${row.name} | ${row.location} | ${row.unit}</h3>
@@ -370,7 +467,7 @@ const compareLogic = {
             <th>Name</th>
             <th>Unit</th>
           </tr>
-    `
+    `;
     compareData.source_data.forEach(function (item, _index) {
       a += `
         <tr amount="${item.amount}" source_id="${item.row_id}" onclick="compareLogic.replaceAmountRow(this, ${row.row_id})">
@@ -381,7 +478,7 @@ const compareLogic = {
       `;
     });
 
-    let b = `
+    const b = `
         </table>
       </div>
       <div class="five columns">
@@ -405,19 +502,42 @@ const compareLogic = {
     `;
 
     span.innerHTML = a + b;
-    document.getElementById('rescale-button').addEventListener("click", compareLogic.stop, false);
-    document.getElementById('new-number-button').addEventListener("click", compareLogic.stop, false);
-    document.getElementById('close-number-editor').addEventListener("click", compareLogic.stop, false);
-    modal.style.display = "block";
+    document.getElementById('rescale-button').addEventListener('click', compareLogic.stop, false);
+    document
+      .getElementById('new-number-button')
+      .addEventListener('click', compareLogic.stop, false);
+    document
+      .getElementById('close-number-editor')
+      .addEventListener('click', compareLogic.stop, false);
+    compareData.modal.style.display = 'block';
   },
 
-  stop: function(event) {
+  stop: function (event) {
     event.preventDefault();
   },
 
-  hideModal: function() {
-    modal.style.display = "none";
+  hideModal: function () {
+    compareData.modal.style.display = 'none';
   },
 
-};
+  /** initCompare -- Initialize feature
+   */
+  initCompare: function () {
+    compareLogic.build_table('source-table', compareData.source_data, false);
+    compareLogic.build_table('target-table', compareData.target_data, true);
 
+    document
+      .getElementById('save-mapping-button')
+      .addEventListener('click', compareLogic.createProxyFunc, false);
+    document
+      .getElementById('one-to-one')
+      .addEventListener('click', compareLogic.createOneToOneProxyFunc, false);
+
+    compareData.modal = document.getElementById('number-editor');
+
+    const closer = document.getElementsByClassName('close')[0];
+    if (closer) {
+      closer.onclick = compareLogic.hideModal;
+    }
+  },
+};
