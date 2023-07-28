@@ -2,7 +2,10 @@
 
 <link rel="stylesheet" href="{{ url_for('static', filename='css/compare.css') }}">
 
-<script src="{{ url_for('static', filename='js/compare-logic.js') }}"></script>
+<script src="{{ url_for('static', filename='js/compare-rows-helpers.js') }}"></script>
+<script src="{{ url_for('static', filename='js/compare-row-click.js') }}"></script>
+<script src="{{ url_for('static', filename='js/compare-rows.js') }}"></script>
+<script src="{{ url_for('static', filename='js/compare-core.js') }}"></script>
 
 <div class="container compare">
   {% include 'navigation.html' %}
@@ -33,7 +36,7 @@
       </table>
     </div>
     <div class="column one-half">
-      <h3>{{ target_node.name }} <span onclick="compareLogic.replaceWithTarget(this)"><a><i class="fa-solid fa-arrow-up"></i></a></span></h3>
+      <h3>{{ target_node.name }} <span onclick="compareCore.replaceWithTarget(this)"><a><i class="fa-solid fa-arrow-up"></i></a></span></h3>
       <table class="compare-table" id="target-table">
       </table>
     </div>
@@ -42,24 +45,28 @@
 
 <script>
 
-  // Global: `compareLogic` (from `bw_matchbox/assets/js/compare-logic.js`)
+  // Globals:
+  // - `compareCore` (from `bw_matchbox/assets/js/compare-core.js`)
 
-  // Global variables for compare tables feature (via global variable `compareData`)...
-  const compareData = {
+  /* // Common types (ts-like):
+   *
+   * Data record item (for `source_data` and `target_data` tables):
+   *
+   * interface TDataRecord {
+   *   amount: number; // Eg: 7.135225509515751e-9
+   *   amount_display: string; // Eg: '7.1e-09'
+   *   input_id: number; // Eg: 633
+   *   location: string; // Eg: 'United States'
+   *   name: string; // Eg: 'Clothing; at manufacturer'
+   *   row_id: string; // Eg: '0'
+   *   unit: string; // Eg: ''
+   *   url: string; // Eg: '/process/633'
+   * }
+   */
+
+  // Global variables for compare tables feature (via global variable `sharedData`)...
+  const sharedData = {
     // TODO: Separate data by shared and local.
-    modal: undefined, // HTMLDivElement
-    /* Common types (ts-like):
-     * interface TDataRecord {
-     *   amount: number; // Eg: 7.135225509515751e-9
-     *   amount_display: string; // Eg: '7.1e-09'
-     *   input_id: number; // Eg: 633
-     *   location: string; // Eg: 'United States'
-     *   name: string; // Eg: 'Clothing; at manufacturer'
-     *   row_id: string; // Eg: '0'
-     *   unit: string; // Eg: ''
-     *   url: string; // Eg: '/process/633'
-     * }
-     */
     source_data: {{ source_data_json|safe }}, // TDataRecord[]
     target_data: {{ target_data_json|safe }}, // TDataRecord[]
     target_node: {{ target_json|safe}},
@@ -68,11 +75,9 @@
     target_name: '{{ target_node.name|safe }}',
     source_node_unit: '{{source_node.unit}}',
     source_node_location: '{{source_node.location}}',
-    // Number of columns in a table row...
-    rowColumnsCount: 5,
   };
 
-  compareLogic.initCompare(compareData);
+  compareCore.initCompare(sharedData);
 
 </script>
 {% include 'footer.html' %}
