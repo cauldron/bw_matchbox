@@ -102,7 +102,7 @@ const compareRowsHelpers = {
     const text = [
       ['Amount', amount_display], // Eg: '7.1e-09'
       ['Name', name], // Eg: 'Clothing; at manufacturer'
-      ['Loation', location], // Eg: 'United States'
+      ['Location', location], // Eg: 'United States'
       ['Unit', unit], // Eg: ''
     ]
       .map(([text, value]) => {
