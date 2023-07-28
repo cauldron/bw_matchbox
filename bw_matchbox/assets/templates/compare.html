@@ -46,6 +46,7 @@
 
   // Global variables for compare tables feature (via global variable `compareData`)...
   const compareData = {
+    // TODO: Separate data by shared and local.
     modal: undefined, // HTMLDivElement
     /* Common types (ts-like):
       interface TDataRecord {
@@ -90,7 +91,7 @@
     },
   };
 
-  compareLogic.initCompare();
+  compareLogic.initCompare(compareData);
 
 </script>
 {% include 'footer.html' %}
