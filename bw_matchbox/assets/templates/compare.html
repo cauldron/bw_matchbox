@@ -38,43 +38,41 @@
 <script src="{{ url_for('static', filename='js/compare-logic.js') }}"></script>
 <script>
 
-// Global variables for compare tables feature (via global variable `compareData`)...
-const compareData = {
-  source_data: {{ source_data_json|safe }},
-  target_data: {{ target_data_json|safe }},
-  target_node: {{ target_json|safe}},
-  source_id: {{ source_node.id }},
-  target_id: {{ target_node.id }},
-  target_name: '{{ target_node.name|safe }}',
-  source_node_unit: '{{source_node.unit}}',
-  source_node_location: '{{source_node.location}}',
-  comment: '',
-  // Row click data...
-  rowClick: {
-    timeout: 100,
-    disabled: false,
-    releaseHandler: undefined,
-  },
-  // Collpsing rows data...
-  collapsed: {
-    selectedFirst: undefined, // undefined | { kind: 'source' | 'target', rowEl: HTMLTableRowElement }
-    selectedSecond: undefined, // undefined | { kind: 'source' | 'target', rowEl: HTMLTableRowElement }
-    collapsedList: [], // List of collapsed rows (all together, TODO: to store collapsed rows by pairs, need to clarify)
-  },
-};
+  // Global: `compareLogic` (from `bw_matchbox/assets/js/compare-logic.js`)
 
-compareLogic.build_table('source-table', compareData.source_data, false);
-compareLogic.build_table('target-table', compareData.target_data, true);
+  // Global variables for compare tables feature (via global variable `compareData`)...
+  const compareData = {
+    modal: undefined, // HTMLDivElement
+    source_data: {{ source_data_json|safe }},
+    target_data: {{ target_data_json|safe }},
+    target_node: {{ target_json|safe}},
+    source_id: {{ source_node.id }},
+    target_id: {{ target_node.id }},
+    target_name: '{{ target_node.name|safe }}',
+    source_node_unit: '{{source_node.unit}}',
+    source_node_location: '{{source_node.location}}',
+    comment: '',
+    // Row click data...
+    rowClick: {
+      timeout: 100,
+      disabled: false,
+      releaseHandler: undefined,
+    },
+    // Collpsing rows data...
+    collapsed: {
+      /* Types (TS-like definitions):
+      type TRowKind = 'source' | 'target';
+      type TRowEl = HTMLTableRowElement;
+      type TRowId = string;
+      interface TSelectedRow { rowKind: TRowKind, rowEl: TRowEl, rowId: TRowId };
+      interface TCollapsedRow extends TSelectedRow { pairId: TRowId };
+      */
+      selectedFirst: undefined, // <undefined | TSelectedRow>
+      collapsedRows: {}, // Record<TRowId, TCollapsedRow> -- Hash of collapsed row
+    },
+  };
 
-document.getElementById('save-mapping-button').addEventListener('click', compareLogic.createProxyFunc, false);
-document.getElementById('one-to-one').addEventListener('click', compareLogic.createOneToOneProxyFunc, false);
-
-var modal = document.getElementById('number-editor');
-
-var closer = document.getElementsByClassName('close')[0];
-if (closer) {
-  closer.onclick = compareLogic.hideModal;
-}
+  compareLogic.initCompare();
 
 </script>
 {% include 'footer.html' %}
