@@ -1,0 +1,41 @@
+{
+  "name": "bw_matchbox",
+  "version": "0.1.0",
+  "description": "bw_matchbox is a web app for matching two Brightway",
+  "main": "bw_matchbox/bin/matchbox.py",
+  "author": "Chris Mutel <cmutel@gmail.com>",
+  "license": "MIT",
+  "homepage": "https://github.com/cauldron/bw_matchbox#readme",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/cauldron/bw_matchbox.git"
+  },
+  "bugs": {
+    "url": "https://github.com/cauldron/bw_matchbox/issues"
+  },
+  "directories": {
+    "doc": "docs",
+    "test": "tests"
+  },
+  "devDependencies": {
+    "@babel/eslint-parser": "^7.22.9",
+    "@babel/plugin-proposal-decorators": "^7.22.7",
+    "@babel/preset-env": "^7.22.9",
+    "cross-env": "^7.0.3",
+    "eslint": "^8.45.0",
+    "eslint-config-prettier": "^8.9.0",
+    "eslint-plugin-import": "^2.28.0",
+    "eslint-plugin-json": "^3.1.0",
+    "eslint-plugin-jsonc": "^2.9.0",
+    "eslint-plugin-prettier": "^5.0.0",
+    "eslint-plugin-yaml": "^0.5.0",
+    "npm-run-all": "^4.1.5",
+    "prettier": "^3.0.0"
+  },
+  "scripts": {
+    "prettier": "echo --Run prettier-- && prettier --write --cache . | grep -v '(cached)' || true",
+    "lint": "echo --Lint sources-- && eslint bw_matchbox --ext js",
+    "start": "echo --Run dev flask server (use with activated venv)-- && python bw_matchbox/bin/matchbox.py webapp config.toml",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  }
+}
