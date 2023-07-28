@@ -1,4 +1,9 @@
 {% include 'header.html' %}
+
+<link rel="stylesheet" href="{{ url_for('static', filename='css/compare.css') }}">
+
+<script src="{{ url_for('static', filename='js/compare-logic.js') }}"></script>
+
 <div class="container compare">
   {% include 'navigation.html' %}
   <span class="modal-wrapper">
@@ -35,7 +40,6 @@
   </div>
 </div>
 
-<script src="{{ url_for('static', filename='js/compare-logic.js') }}"></script>
 <script>
 
   // Global: `compareLogic` (from `bw_matchbox/assets/js/compare-logic.js`)

@@ -19,9 +19,10 @@
  *
  * TODO:
  *
- * - 2023.07.28, 16:57 -- Extract row-related low-level methods to external
+ * - 2023.07.28, 16:57 -- Extract row-related low- and high-level methods to external
  *   module. Probably we need two modules (for low-level supprting code and
- *   high level logic-related one)
+ *   high level logic-related one). Extract common potentionally reshareable
+ *   methods to common module.
  *
  * Data table record sample:
   interface TDataRecord {
