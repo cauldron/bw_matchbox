@@ -1,0 +1,111 @@
+# @changed 2023.01.26, 20:36
+# @see https://eslint.org/docs/rules/
+root: true
+extends:
+  # - 'next/core-web-vitals'
+  - 'eslint:recommended'
+  # - 'plugin:jest/recommended'
+env:
+  es6: true
+  # jest: true
+  # jest/globals: true
+  # amd: true
+  commonjs: true
+rules:
+  no-console: warn
+  no-debugger: warn
+  no-extra-semi: warn
+  no-redeclare: warn
+  no-undef: error
+  no-unreachable: warn
+  prefer-const: warn
+  no-empty: warn
+  quotes:
+    - warn
+    - single
+  semi:
+    - warn
+    - always
+
+overrides:
+
+  - # Raw js files (from root)...
+    files: '**/*.js'
+    parser: '@babel/eslint-parser'
+    env:
+      node: true
+      browser: true # Only from `src/*` modules
+      commonjs: true
+      # amd: true
+    extends:
+      - 'eslint:recommended'
+      - 'plugin:prettier/recommended'
+      - 'plugin:import/recommended'
+    plugins:
+      - 'prettier' # prettier: Slighly slower (+~0.3s)
+    rules:
+      prettier/prettier: 'warn'
+      no-unused-vars:
+        - 'warn'
+        - argsIgnorePattern: '^_'
+      no-console: 'warn'
+      no-debugger: 'warn'
+      no-extra-semi: 'warn'
+      no-redeclare: 'warn'
+      no-undef: 'error'
+      no-unreachable: 'warn'
+      prefer-const: 'warn'
+      semi:
+        - 'warn'
+        - 'always'
+
+  - # Raw js project files...
+    files: 'src/**/*.js'
+    # parser: '@babel/eslint-parser'
+    parser: null
+    env:
+      es6: true
+      browser: true
+      # jest: true
+      # jest/globals: true
+    extends:
+      - 'eslint:recommended'
+      - 'plugin:prettier/recommended'
+    plugins:
+      - 'prettier' # prettier: Slighly slower (+~0.3s)
+    rules:
+      prettier/prettier: 'warn'
+      no-unused-vars:
+        - 'warn'
+        - argsIgnorePattern: '^_'
+      no-console: 'warn'
+      no-debugger: 'warn'
+      no-extra-semi: 'warn'
+      no-redeclare: 'warn'
+      no-undef: 'error'
+      no-unreachable: 'warn'
+      prefer-const: 'warn'
+      semi:
+        - 'warn'
+        - 'always'
+
+  - # json files (@see https://www.npmjs.com/package/eslint-plugin-json)...
+    files: '**/*.json'
+    extends:
+      - 'plugin:json/recommended'
+    rules:
+      prettier/prettier: 'warn'
+
+  - # jsonc files - commented json (@see https://www.npmjs.com/package/eslint-plugin-jsonc)...
+    files: '**/*.jsonc'
+    extends:
+      - 'plugin:jsonc/recommended-with-jsonc'
+    rules:
+      prettier/prettier: 'warn'
+
+  - # yaml files - commented json (@see https://www.npmjs.com/package/eslint-plugin-yaml)...
+    files: '**/*.+(yml|yaml)'
+    extends:
+      - 'plugin:yaml/recommended'
+    rules:
+      prettier/prettier: 'warn'
