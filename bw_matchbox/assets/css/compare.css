@@ -1,67 +1,122 @@
 :root {
-  --collapsed-color: #F60;
-  --collapsed-bg-color: rgba(255,102,0,.1);
-  --selected-color: #1EAEDB;
-  --selected-bg-color1: rgba(30,174,219,.1);
-  --selected-bg-color2: rgba(30,174,219,.2);
-  --selected-bg-color5: rgba(30,174,219,.5);
-  --animation-time: 250ms;
-  --selected-animation-time: 2s;
+  --compare-collapsed-color: #F60;
+  --compare-collapsed-bg-color: rgba(255,102,0,.1);
+  --compare-selected-color: #1EAEDB;
+  --compare-selected-bg-color05: rgba(30,174,219,.05);
+  --compare-selected-bg-color1: rgba(30,174,219,.1);
+  --compare-selected-bg-color2: rgba(30,174,219,.2);
+  --compare-selected-bg-color3: rgba(30,174,219,.3);
+  --compare-selected-bg-color4: rgba(30,174,219,.4);
+  --compare-selected-bg-color5: rgba(30,174,219,.5);
+  --compare-animation-time: 250ms;
+  --compare-selected-animation-time: 3s;
+  --compare-td-padding-h-at-edges: 8px;
+  --compare-td-padding-h: 4px;
+  --compare-td-padding-v: 8px;
 }
 
 .compare .compare-tables {
+  width: 100%;
 }
 .compare .compare-tables > .column {
   /* DEBUG */
-  /* border: 1px solid red; */
-  overflow: visible;
+  /* border: 2px solid red; */
+  /* overflow: hidden; */
+  position: relative;
 }
 .compare .compare-tables > .column > table {
   /* DEBUG */
   /* border: 1px solid green; */
+  border: 0;
+  table-layout: fixed;
+  width: 100%;
+  border-style: solid;
+  /* word-break: break-all; */
 }
 
-/* Fix skeleton styles to add some extra space for inner shadow (to indicate selected status)... */
+/* Table rows basic styles... */
+.compare-table tbody tr {
+  transition: all var(--compare-animation-time) ease;
+  cursor: pointer; /* All rows are always interactive. */
+}
+.compare-table tbody tr:hover {
+  background-color: var(--compare-selected-bg-color1);
+}
+
+/* Table cells basic styles... */
+.compare-table thead th,
+.compare-table tbody td {
+  padding: var(--compare-td-padding-v) var(--compare-td-padding-h);
+  line-height: 1.3;
+  width: 50px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.compare-table thead th > div,
+.compare-table tbody td > div {
+  position: absolute;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  width: 100%;
+  position: relative;
+}
+.compare-table tbody td a {
+  text-decoration: none;
+}
+.compare-table tbody td a:hover {
+  text-decoration: underline;
+}
+
+/* Particular columns width */
+.compare-table .cell-actions { width: 3.5em; }
+.compare-table .cell-amount { width: 4.5em; }
+.compare-table .cell-name { width: 50%; white-space: wrap; }
+.compare-table .cell-location { width: 30%; }
+.compare-table .cell-unit { width: 2em; }
+
+/* Name cell */
+.compare-table .cell-name {
+  white-space: wrap;
+  /* word-break: break-all; */
+}
+
+/* Action cell icons */
+.compare-table td.cell-actions { color: #e5e5e5; }
+.compare-table td.cell-actions a { transition: all var(--compare-animation-time) ease; opacity: .4; }
+.compare-table td.cell-actions a:hover { opacity: 1; }
+
+/* First and last columns fixups... */
 .compare-table th:first-child,
 .compare-table td:first-child {
-  padding-left: 12px;
+  padding-left: var(--compare-td-padding-h-at-edges);
 }
 .compare-table th:last-child,
 .compare-table td:last-child {
-  padding-right: 12px;
-}
-
-/* Selected styles themselves... */
-.compare-table tbody tr {
-  transition: all var(--animation-time) ease;
-  cursor: pointer; /* All rows are always interactive. */
-  transition: all var(--animation-time) ease;
-}
-.compare-table tbody tr:hover {
-  background-color: var(--selected-bg-color1);
+  /* padding-right: var(--compare-td-padding-h-at-edges); */
 }
 
 /* Selected row... */
 
-@keyframes compare-table-selected-bg {
+@keyframes compare-table-selected-animation {
   0% {
-    background-color: var(--selected-bg-color1);
-    box-shadow: 0 0 4px var(--selected-color), inset 0 0 2px var(--selected-color);
+    background-color: var(--compare-selected-bg-color05);
+    box-shadow: 0 0 2px var(--compare-selected-bg-color5), inset 0 0 2px var(--compare-selected-bg-color5);
   }
   50% {
-    background-color: var(--selected-bg-color2);
-    box-shadow: 0 0 6px var(--selected-color), inset 0 0 6px var(--selected-color);
+    background-color: var(--compare-selected-bg-color3);
+    box-shadow: 0 0 6px var(--compare-selected-bg-color5), inset 0 0 6px var(--compare-selected-bg-color5);
   }
   100% {
-    background-color: var(--selected-bg-color1);
-    box-shadow: 0 0 4px var(--selected-color), inset 0 0 2px var(--selected-color);
+    background-color: var(--compare-selected-bg-color05);
+    box-shadow: 0 0 2px var(--compare-selected-bg-color5), inset 0 0 2px var(--compare-selected-bg-color5);
   }
 }
 
 .compare-table tr.selected {
-  box-shadow: 0 0 4px var(--selected-color), inset 0 0 2px var(--selected-color);
-  background-color: var(--selected-bg-color1);
-  animation: compare-table-selected-bg var(--selected-animation-time) infinite;
+  box-shadow: 0 0 4px var(--compare-selected-bg-color5), inset 0 0 2px var(--compare-selected-bg-color5);
+  background-color: var(--compare-selected-bg-color1);
+  animation: compare-table-selected-animation var(--compare-selected-animation-time) infinite;
   animation-timing-function: ease-in-out;
 }
 .compare-table tr.selected td {
@@ -72,30 +127,30 @@
 /* Collapsed row... */
 
 .compare-table tr.collapsed {
-  box-shadow: 0 0 4px var(--collapsed-color), inset 0 0 2px var(--collapsed-color);
-  background-color: var(--collapsed-bg-color);
+  box-shadow: 0 0 4px var(--compare-collapsed-color), inset 0 0 2px var(--compare-collapsed-color);
+  background-color: var(--compare-collapsed-bg-color);
   display: none;
 }
 
 .compare-table tr.collapsed-handler {
-  /* box-shadow: 0 0 4px var(--selected-bg-color5), inset 0 0 4px var(--selected-bg-color5); */
+  /* box-shadow: 0 0 4px var(--compare-selected-bg-color5), inset 0 0 4px var(--compare-selected-bg-color5); */
   cursor: pointer;
-  background-color: var(--selected-bg-color1);
+  background-color: var(--compare-selected-bg-color1);
   background: repeating-linear-gradient(
     45deg,
-    var(--selected-bg-color2),
-    var(--selected-bg-color2) 10px,
-    var(--selected-bg-color1) 10px,
-    var(--selected-bg-color1) 20px
+    var(--compare-selected-bg-color2),
+    var(--compare-selected-bg-color2) 10px,
+    var(--compare-selected-bg-color1) 10px,
+    var(--compare-selected-bg-color1) 20px
   );
 }
 .compare-table tr.collapsed-handler td {
   padding: 0;
   font-size: 15px;
   line-height: 1;
-  transition: all var(--animation-time) ease;
+  transition: all var(--compare-animation-time) ease;
 }
 .compare-table tr.collapsed-handler td:hover {
-  background-color: var(--selected-bg-color2);
+  background-color: var(--compare-selected-bg-color2);
 }
 

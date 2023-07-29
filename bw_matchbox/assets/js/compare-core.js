@@ -53,7 +53,7 @@ const compareCore = {
     row.parentElement.innerHTML = `<i class="fa-solid fa-check"></i>`;
   },
 
-  build_row: function (data, is_target) {
+  build_row: function (data, is_target, index) {
     const rowId = data.row_id;
     const rowKind = is_target ? 'target' : 'source';
     const collapsedId = compareRowsHelpers.getCollapsedId(rowKind, rowId);
@@ -73,19 +73,55 @@ const compareCore = {
       row_id="${data.row_id}"
       onClick="compareRowsHelpers.clickRow(this)"
     >`;
-    const end = `<td><a onClick="compareRowClick.disableRowClick(this)" href="${data.url}">${data.name}</a></td><td>${data.location}</td><td>${data.unit}</td></tr>`;
+    let name = data.name;
+    // DEBUG
+    if (!index && !is_target) {
+      // Emulate long-long unfittable/unbreakable line...
+      name += ' extra_long_unwrappable_text_line_1';
+      // name += ' extra_long_unwrappable_text_line_1_extra_long_unwrappable_text_line_2';
+    }
+    const end = `<td class="cell-name"><div><a
+        onClick="compareRowClick.disableRowClick(this)"
+        href="${data.url}">${name}</a></div></td>
+      <td class="cell-location"><div>${data.location}</div></td>
+      <td class="cell-unit"><div>${data.unit}</div></td>
+    </tr>`;
     let content;
     if (is_target) {
       content = `
-  <td row_id="${data.row_id}">
-    <span id="row-trash-${data.row_id}" onClick="compareCore.removeRow(this)"><a><i class="fa-solid fa-trash-can"></i></a></span>
-    |
-    <span onClick="compareCore.expandRow(this)" input_id="${data.input_id}" amount="${data.amount}"><a><i class="fa-solid fa-diamond fa-spin"></i></a></span>
-  </td>
-  <td onClick="compareCore.editNumber(this)" row_id="${data.row_id}"><a>${data.amount_display}</a></td>
+        <td class="cell-actions" row_id="${data.row_id}"><div>
+          <span
+            id="row-trash-${data.row_id}"
+          ><a
+            onClick="compareCore.removeRow(this)"
+            title="Remove row"
+          ><i
+            class="fa-solid fa-trash-can"></i></a></span>
+          &nbsp;
+          <span
+            input_id="${data.input_id}"
+            amount="${data.amount}"><a
+              onClick="compareCore.expandRow(this)"
+              title="Expand row"
+            ><i
+            class="fa-solid fa-diamond fa-spin"></i></a></span>
+        </div></td>
+        <td
+          class="cell-amount"
+          row_id="${data.row_id}"><div><a onClick="compareCore.editNumber(this)">${data.amount_display}</a></div></td>
     `;
     } else {
-      content = `<td><a onClick="compareCore.shiftRow(event, this, ${data.row_id})"><i class="fa-solid fa-arrow-right"></i></a></td><td>${data.amount_display}</td>`;
+      content = `
+        <td class="cell-actions">
+          <div><a
+            onClick="compareCore.shiftRow(event, this, ${data.row_id})"
+            title="Shift row"
+          ><i
+          class="fa-solid fa-arrow-right"></i></a></div>
+        </td>
+        <td class="cell-amount">
+          <div>${data.amount_display}</div>
+        </td>`;
     }
     // TODO: Use trim and join with '\b'?
     return [start, content, end, collapsedRowHtml].filter(Boolean).join('');
@@ -96,16 +132,16 @@ const compareCore = {
     let rows = '';
     for (const [index, obj] of data.entries()) {
       obj['row_id'] = `${index}`;
-      rows += compareCore.build_row(obj, is_target);
+      rows += compareCore.build_row(obj, is_target, index);
     }
     var header = `
       <thead>
         <tr>
-          <th>Action</th>
-          <th>Amount</th>
-          <th>Name</th>
-          <th>Location</th>
-          <th>Unit</th>
+          <th class="cell-actions" title="Action"><div>Action</div></th>
+          <th class="cell-amount" title="Amount"><div>Amount</div></th>
+          <th class="cell-name" title="Name"><div>Name</div></th>
+          <th class="cell-location" title="Location"><div>Location</div></th>
+          <th class="cell-unit" title="Unit"><div>Unit</div></th>
         </tr>
       </thead>
     `;
@@ -175,9 +211,9 @@ const compareCore = {
     compareCore.sharedData.target_data.forEach(function (item, _index) {
       text += `
           <tr input_id=${item.input_id}>
-            <td>${item.name}</td>
-            <td>${item.amount_display}</td>
-            <td><textarea type="text" id="proxy-name-${item.input_id}" name="proxy-name-${item.input_id}"></textarea></td>
+            <td><div>${item.name}</div></td>
+            <td><div>${item.amount_display}</div></td>
+            <td><div><textarea type="text" id="proxy-name-${item.input_id}" name="proxy-name-${item.input_id}"></textarea></div></td>
           </tr>
       `;
     });
@@ -304,7 +340,8 @@ const compareCore = {
     compareCore.build_table('target-table', compareCore.sharedData.target_data, true);
   },
 
-  editNumber: function (td) {
+  editNumber: function (link) {
+    const td = link.closest('td');
     compareRowClick.disableRowClick();
     var row = compareCore.sharedData.target_data.find(
       (item) => item.row_id == td.getAttribute('row_id'),
@@ -325,9 +362,9 @@ const compareCore = {
     compareCore.sharedData.source_data.forEach(function (item, _index) {
       start += `
         <tr amount="${item.amount}" source_id="${item.row_id}" onClick="compareCore.replaceAmountRow(this, ${row.row_id})">
-          <td>${item.amount_display}</td>
-          <td>${item.name}</td>
-          <td>${item.unit}</td>
+          <td><div>${item.amount_display}</div></td>
+          <td><div>${item.name}</div></td>
+          <td><div>${item.unit}</div></td>
         </tr>
       `;
     });
