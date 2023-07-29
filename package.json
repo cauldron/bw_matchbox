@@ -33,6 +33,7 @@
     "prettier": "^3.0.0"
   },
   "scripts": {
+    "install-locally": "echo --Install python library locally (for development)-- && pip install -e .",
     "prettier": "echo --Run prettier-- && prettier --write --cache . | grep -v '(cached)' || true",
     "lint": "echo --Lint sources-- && eslint bw_matchbox --ext js",
     "start": "echo --Run dev flask server (use with activated venv)-- && python bw_matchbox/bin/matchbox.py webapp config.toml",

@@ -6,6 +6,7 @@
   --selected-bg-color2: rgba(30,174,219,.2);
   --selected-bg-color5: rgba(30,174,219,.5);
   --animation-time: 250ms;
+  --selected-animation-time: 2s;
 }
 
 .compare .compare-tables {
@@ -42,9 +43,26 @@
 
 /* Selected row... */
 
+@keyframes compare-table-selected-bg {
+  0% {
+    background-color: var(--selected-bg-color1);
+    box-shadow: 0 0 4px var(--selected-color), inset 0 0 2px var(--selected-color);
+  }
+  50% {
+    background-color: var(--selected-bg-color2);
+    box-shadow: 0 0 6px var(--selected-color), inset 0 0 6px var(--selected-color);
+  }
+  100% {
+    background-color: var(--selected-bg-color1);
+    box-shadow: 0 0 4px var(--selected-color), inset 0 0 2px var(--selected-color);
+  }
+}
+
 .compare-table tr.selected {
   box-shadow: 0 0 4px var(--selected-color), inset 0 0 2px var(--selected-color);
   background-color: var(--selected-bg-color1);
+  animation: compare-table-selected-bg var(--selected-animation-time) infinite;
+  animation-timing-function: ease-in-out;
 }
 .compare-table tr.selected td {
   /* Remove nested td borders */
