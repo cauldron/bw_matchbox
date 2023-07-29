@@ -100,16 +100,16 @@
 
 @keyframes compare-table-selected-animation {
   0% {
-    background-color: var(--compare-selected-bg-color05);
-    box-shadow: 0 0 2px var(--compare-selected-bg-color5), inset 0 0 2px var(--compare-selected-bg-color5);
-  }
-  50% {
     background-color: var(--compare-selected-bg-color3);
     box-shadow: 0 0 6px var(--compare-selected-bg-color5), inset 0 0 6px var(--compare-selected-bg-color5);
   }
-  100% {
+  50% {
     background-color: var(--compare-selected-bg-color05);
     box-shadow: 0 0 2px var(--compare-selected-bg-color5), inset 0 0 2px var(--compare-selected-bg-color5);
+  }
+  100% {
+    background-color: var(--compare-selected-bg-color3);
+    box-shadow: 0 0 6px var(--compare-selected-bg-color5), inset 0 0 6px var(--compare-selected-bg-color5);
   }
 }
 
