@@ -73,13 +73,14 @@ const compareCore = {
       row_id="${data.row_id}"
       onClick="compareRowsHelpers.clickRow(this)"
     >`;
-    let name = data.name;
-    // DEBUG
-    if (!index && !is_target) {
-      // Emulate long-long unfittable/unbreakable line...
-      name += ' extra_long_unwrappable_text_line_1';
-      // name += ' extra_long_unwrappable_text_line_1_extra_long_unwrappable_text_line_2';
-    }
+    const name = data.name;
+    /* // DEBUG
+     * if (!index && !is_target) {
+     *   // Emulate long-long unfittable/unbreakable line...
+     *   name += ' extra_long_unwrappable_text_line_1';
+     *   // name += ' extra_long_unwrappable_text_line_1_extra_long_unwrappable_text_line_2';
+     * }
+     */
     const end = `<td class="cell-name"><div><a
         onClick="compareRowClick.disableRowClick(this)"
         href="${data.url}">${name}</a></div></td>
