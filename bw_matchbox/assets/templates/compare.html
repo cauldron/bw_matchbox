@@ -4,7 +4,6 @@
 
 <script src="{{ url_for('static', filename='js/compare-rows-helpers.js') }}"></script>
 <script src="{{ url_for('static', filename='js/compare-row-click.js') }}"></script>
-<script src="{{ url_for('static', filename='js/compare-rows.js') }}"></script>
 <script src="{{ url_for('static', filename='js/compare-core.js') }}"></script>
 
 <div class="container compare">
@@ -32,12 +31,12 @@
   <div class="row compare-tables">
     <div class="column one-half">
       <h3>{{ source_node.name }}</h3>
-      <table class="compare-table" id="source-table">
+      <table class="compare-table" id="source-table" width="100%">
       </table>
     </div>
     <div class="column one-half">
       <h3>{{ target_node.name }} <span onclick="compareCore.replaceWithTarget(this)"><a><i class="fa-solid fa-arrow-up"></i></a></span></h3>
-      <table class="compare-table" id="target-table">
+      <table class="compare-table" id="target-table" width="100%">
       </table>
     </div>
   </div>
