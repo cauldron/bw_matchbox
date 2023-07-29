@@ -24,6 +24,10 @@
   /* overflow: hidden; */
   position: relative;
 }
+.compare .compare-tables > .column + .column {
+  /* Tables spacing */
+  margin-left: 15px;
+}
 .compare .compare-tables > .column > table {
   /* DEBUG */
   /* border: 1px solid green; */
