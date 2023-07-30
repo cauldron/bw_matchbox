@@ -128,5 +128,9 @@ dmypy.json
 # Pyre type checker
 .pyre/
 
-# Custom
+# vscode
+.vscode
+
+# Custom (project-generated files)
 config.toml
+changes.json

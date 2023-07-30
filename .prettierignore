@@ -1,0 +1,26 @@
+/.dependencygraph
+/.git
+/.history
+/.husky
+/.next
+/.storybook
+/.vscode
+/__mocks__
+/build
+/coverage
+/idea
+/i18n
+/node_modules
+/public
+/public-src
+/publish
+/types
+/utils
+
+# Project folders
+bw_matchbox.egg-info
+docs
+tests
+
+package-lock.*
+**/*_

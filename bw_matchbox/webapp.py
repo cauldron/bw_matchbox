@@ -42,6 +42,9 @@ def configure_app(filepath, app):
             config = tomli.load(f)
         assert 'users' in config
     except:
+        # NOTE: If you got this exception, make sure first you don't have
+        # windows-style backslahes in your config file for file names (no
+        # double `\\`).
         raise ValueError("Invalid or unreadable config file")
 
     app.config["mb_users"] = {
