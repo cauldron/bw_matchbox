@@ -6,9 +6,12 @@ from werkzeug.security import check_password_hash, generate_password_hash
 import bw2data as bd
 import flask
 import json
+import math
 import os
-import uuid
+import random
+import string
 import tomli
+import uuid
 
 
 BASE_DIR = Path(__file__).resolve().parent
@@ -472,6 +475,35 @@ def match(source):
     )
 
 
+def normalize_name(string):
+    return (string.lower().replace("market group for", "").replace("market for", "")
+            .replace(", at plant", "").strip())
+
+
+def similar_location(a, b):
+    return any([
+        (b == a),
+        (b == 'CH' and a in ('CH', 'RER', 'GLO', 'RoW')),
+        (len(b) == 2 and a in ('GLO', 'RoW')),
+        (b == 'RER' and a in ('GLO', 'RoW', 'RoE')),
+    ])
+
+
+def check_similar(node, candidates):
+    for index, candidate in enumerate(candidates):
+        if node.get('collapsed') or candidate.get('collapsed'):
+            continue
+        if (
+            normalize_name(node['name']) == normalize_name(candidate['name'])
+            and similar_location(node['location'], candidate['location'])
+            and node['unit'] == candidate['unit']
+            and math.isclose(node['amount'], candidate['amount'], rel_tol=0.025, abs_tol=1e-6)
+        ):
+            node['collapsed'] = candidate['collapsed'] = True
+            node['collapsed-group'] = candidate['collapsed-group'] = \
+                "Collapsed-{}-{}".format(index, "".join(random.choices(string.ascii_letters, k=6)))
+
+
 @matchbox_app.route("/compare/<source>/<target>", methods=["GET"])
 @auth.login_required
 def compare(source, target):
@@ -519,6 +551,10 @@ def compare(source, target):
         }
         for exc in target.technosphere()
     ]
+
+    for obj in target_technosphere:
+        # Modifies in place
+        check_similar(obj, source_technosphere)
 
     return flask.render_template(
         "compare.html",
