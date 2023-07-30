@@ -1,6 +1,7 @@
 from bw2data.backends import ActivityDataset as AD
 from flask_httpauth import HTTPBasicAuth
 from pathlib import Path
+from peewee import fn
 from werkzeug.security import check_password_hash, generate_password_hash
 import bw2data as bd
 import flask
@@ -225,6 +226,75 @@ def index():
         user=auth.current_user(),
         changes_file=Path(matchbox_app.config["mb_changes_file"]).name,
     )
+
+
+@matchbox_app.route("/processes", methods=["GET"])
+@auth.login_required
+def processes():
+    """API Endpoint to get process data for dynamic table population.
+
+    GET args:
+
+        * database (str): Name of database to draw processes from. Defaults to source database (stored in cookie) if not given.
+        * order_by (str): Parameter to sort by. Random if not provided. Valid parameters:
+            * name (will be used 99% of the time)
+            * location
+            * product (short name for reference product)
+        * offset (int): Offset from beginning of sorted values. Zero-indexed. Only used if sorting.
+        * limit (int): Number of results to return
+
+    Response data format (JSON):
+
+    ```
+        [
+            {
+                'details_url': 'URL for `process_detail` page for this activity',
+                'match_url': 'URL for `match` page for this activity',
+                'matched': 'Boolean. Whether or not process is already matched.',
+                'id': 'Integer process ID',
+                'name': 'Process name',
+                'location': 'Process location',
+                'unit': 'Unit of reference product',
+            }
+        ]
+    ```
+    """
+    context = get_context()
+    proj, s, t, proxy = context
+    bd.projects.set_current(proj)
+
+    database_label = flask.request.args.get("database") or s
+    qs = AD.select().where(AD.database == database_label)
+
+    order_by = flask.request.args.get("order_by")
+    if order_by and order_by in ("name", "location", "product"):
+        qs = qs.order_by(getattr(AD, order_by))
+    else:
+        qs = qs.order_by(fn.Random())
+
+    offset = flask.request.args.get("offset")
+    if offset:
+        qs = qs.offset(int(offset))
+
+    limit = flask.request.args.get("limit")
+    if limit:
+        qs = qs.limit(int(limit))
+    else:
+        qs = qs.limit(50)
+
+    payload = [
+        {
+            'details_url': flask.url_for("process_detail", id=obj.id),
+            'match_url': flask.url_for("match", source=obj.id),
+            'matched': bool(obj.data.get('matched')),
+            'id': obj.id,
+            'name': obj.name,
+            'location': obj.location,
+            'unit': obj.data['unit'],
+        }
+        for obj in qs
+    ]
+    return flask.jsonify(payload)
 
 
 @matchbox_app.route("/unmatched", methods=["GET"])
