@@ -17,12 +17,14 @@
 /publish
 /types
 /utils
-/data
 
 # Project folders
 bw_matchbox.egg-info
 docs
 tests
+
+# Don't prettify data files...
+/bw_matchbox/data
 
 # Don't prettify compexly-formatted html modules...
 *.html
