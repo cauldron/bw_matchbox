@@ -30,11 +30,15 @@
     "eslint-plugin-prettier": "^5.0.0",
     "eslint-plugin-yaml": "^0.5.0",
     "npm-run-all": "^4.1.5",
-    "prettier": "^3.0.0"
+    "prettier": "^3.0.0",
+    "stylelint": "^15.10.2",
+    "stylelint-config-recommended": "^13.0.0",
+    "stylelint-config-standard": "^34.0.0"
   },
   "scripts": {
     "install-locally": "echo --Install python library locally (for development)-- && pip install -e .",
     "prettier": "echo --Run prettier-- && prettier --write --cache . | grep -v '(cached)' || true",
+    "stylelint": "echo --Lint styles-- && stylelint bw_matchbox/**/*.{css,scss,less}",
     "lint": "echo --Lint sources-- && eslint bw_matchbox --ext js",
     "start": "echo --Run dev flask server (use with activated venv)-- && python bw_matchbox/bin/matchbox.py webapp config.toml",
     "test": "echo \"Error: no test specified\" && exit 1"
