@@ -1,0 +1,10 @@
+
+.processes-list .page-header h1 {
+  font-size: 200%;
+}
+
+.processes-list .page-filters label {
+  display: inline-block;
+  margin-left: 4px;
+  margin-right: 8px;
+}

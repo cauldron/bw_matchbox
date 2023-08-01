@@ -7,6 +7,14 @@
   --layout-theme-error-color: #CC3333
 }
 
+/* Basic layout */
+
+/* Issue #7: Widen default Skeleton page width */
+
+.container {
+  /* Re-limit max width of column: allow it to be wider */
+  max-width: 1600px;
+}
 
 /* Spinner */
 /* TODO */
