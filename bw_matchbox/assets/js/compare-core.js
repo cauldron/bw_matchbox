@@ -201,7 +201,7 @@ const compareCore = {
         <label for="proxy-comment">Comment</label>
         <textarea class="u-full-width" id="proxy-comment" name="proxy-comment">${compareCore.comment}</textarea>
         <p><button class="button-primary" id="create-proxy-submit-button">Create Proxy Process</button> | Unit: ${compareCore.sharedData.source_node_unit} | Location: ${compareCore.sharedData.source_node_location}</p>
-        <table>
+        <table width="100%">
           <tr>
             <th>Name</th>
             <th>Amount</th>
@@ -353,7 +353,7 @@ const compareCore = {
       <h3>${row.name} | ${row.location} | ${row.unit}</h3>
       <div class="five columns">
         <p>Click on a row to take that value</p>
-        <table>
+        <table width="100%">
           <tr>
             <th>Amount</th>
             <th>Name</th>

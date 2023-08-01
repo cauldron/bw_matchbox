@@ -1,3 +1,5 @@
+/* stylelint-disable number-max-precision, declaration-block-single-line-max-declarations, comment-empty-line-before, rule-empty-line-before */
+
 .shift-right {
   position: relative;
   animation-name: shift-right-anim;
@@ -5,13 +7,22 @@
 }
 
 @keyframes shift-right-anim {
-  0%   {background-color:white; left:0px;}
-  50%  {background-color:DeepSkyBlue; left:10px;}
-  100% {background-color:white; left:0px;}
+  0% {
+    background-color: white;
+    left: 0;
+  }
+  50% {
+    background-color: deepskyblue;
+    left: 10px;
+  }
+  100% {
+    background-color: white;
+    left: 0;
+  }
 }
 
 .tight {
-  margin-bottom: .5rem;
+  margin-bottom: 0.5rem;
 }
 
 .model-wrapper {
@@ -25,7 +36,7 @@
   /*  left: 0;*/
   /*  top: 0;*/
   width: 100%; /* Full width */
-  /*  height: 100%; /* Full height */*/
+  /*  height: 100%; /* Full height */
   overflow: auto; /* Enable scroll if needed */
   background-color: white;
   border: 2px solid #888;
@@ -60,21 +71,21 @@
 }
 
 .narrower {
-  color: #592A71;
+  color: #592a71;
 }
 
 .broader {
-  color: #AA3C39;
+  color: #aa3c39;
 }
 
 .exact {
-  color: #2D8632;
+  color: #2d8632;
 }
 
 .approximate {
-  color: #A8AA39;
+  color: #a8aa39;
 }
 
 .selected-element {
-  box-shadow: 0 0 5px 5px #33C3F0;
+  box-shadow: 0 0 5px 5px #33c3f0;
 }

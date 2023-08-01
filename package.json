@@ -30,13 +30,22 @@
     "eslint-plugin-prettier": "^5.0.0",
     "eslint-plugin-yaml": "^0.5.0",
     "npm-run-all": "^4.1.5",
-    "prettier": "^3.0.0"
+    "prettier": "^3.0.0",
+    "stylelint": "^15.10.2",
+    "stylelint-config-recommended": "^13.0.0",
+    "stylelint-config-standard": "^34.0.0"
   },
   "scripts": {
-    "install-locally": "echo --Install python library locally (for development)-- && pip install -e .",
+    "install-locally": "echo --Install python library locally /venv, dev/-- && pip install -e .",
+    "install-setup": "echo --Create local cnfiguration /venv, dev/-- && python bw_matchbox/bin/matchbox.py setup",
+    "install-example-project": "echo --Download and install example project data /venv, dev/-- && python bw_matchbox/bin/matchbox.py example_project",
+    "install-all": "echo --Install library for a local development (/venv, dev/)-- && npm-run-all install-locally install-setup install-example-project",
     "prettier": "echo --Run prettier-- && prettier --write --cache . | grep -v '(cached)' || true",
+    "stylelint": "echo --Lint styles-- && stylelint bw_matchbox/**/*.{css,scss,less}",
+    "stylelint-fix": "echo --Lint styles-- && stylelint bw_matchbox/**/*.{css,scss,less} --fix",
     "lint": "echo --Lint sources-- && eslint bw_matchbox --ext js",
-    "start": "echo --Run dev flask server (use with activated venv)-- && python bw_matchbox/bin/matchbox.py webapp config.toml",
+    "check-all": "echo --Run all pre-commit check-ups-- && npm-run-all prettier stylelint lint && echo --All check-ups are passed--",
+    "start": "echo --Run dev flask server /venv, dev/-- && python bw_matchbox/bin/matchbox.py webapp config.toml",
     "test": "echo \"Error: no test specified\" && exit 1"
   }
 }

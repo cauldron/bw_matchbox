@@ -1,5 +1,6 @@
 /.dependencygraph
 /.git
+/.github
 /.history
 /.husky
 /.next
@@ -21,6 +22,18 @@
 bw_matchbox.egg-info
 docs
 tests
+
+# Don't prettify data files...
+/bw_matchbox/data
+
+# Don't prettify compexly-formatted html modules...
+*.html
+
+# Don't prettify manually-written markdowns...
+/*.md
+
+# Library file
+bw_matchbox/assets/css/skeleton.css
 
 package-lock.*
 **/*_

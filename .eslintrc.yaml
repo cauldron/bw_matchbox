@@ -28,7 +28,6 @@ rules:
     - always
 
 overrides:
-
   - # Raw js files (from root)...
     files: '**/*.js'
     parser: '@babel/eslint-parser'

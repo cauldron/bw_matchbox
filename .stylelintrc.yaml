@@ -1,0 +1,39 @@
+# https://stylelint.io/user-guide/configuration/
+# https://stylelint.io/user-guide/rules/
+# https://stylelint.io/user-guide/faq/#how-do-i-turn-off-disable-or-ignore-a-rule
+
+extends:
+  - stylelint-config-recommended
+  # - stylelint-config-styled-components
+  # - stylelint-config-recommended-scss
+  - stylelint-config-standard
+
+files:
+  - 'src/**/*.css'
+  - 'src/**/*.scss'
+  - 'src/**/*.less'
+ignoreFiles:
+  - '**/*_/**/*'
+  - '**/*UNUSED/**/*'
+  - '**/*_'
+  - '**/*UNUSED'
+  - '.build*/'
+
+rules:
+  indentation:
+    - 2
+    - severity: warning
+  comment-whitespace-inside: null
+  block-no-empty: null
+  no-duplicate-selectors: null
+  no-invalid-double-slash-comments: true
+  declaration-colon-space-before: never
+  declaration-colon-space-after: always
+  media-feature-range-operator-space-before: never
+  media-feature-range-operator-space-after: always
+  media-feature-colon-space-before: never
+  media-feature-colon-space-after: always
+  no-descending-specificity: null # Got false-positive warnings for independent rules order
+  selector-pseudo-class-no-unknown: # https://stylelint.io/user-guide/rules/list/selector-pseudo-class-no-unknown/
+    - true
+    - ignorePseudoClasses: ['global']
