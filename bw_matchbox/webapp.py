@@ -1,3 +1,4 @@
+from functools import total_ordering
 from bw2data.backends import ActivityDataset as AD
 from flask_httpauth import HTTPBasicAuth
 from pathlib import Path
@@ -20,7 +21,7 @@ DATA_DIR = BASE_DIR / "data"
 matchbox_app = flask.Flask(
     "matchbox_app",
     static_folder=BASE_DIR / "assets",
-    template_folder=BASE_DIR / "assets" / "templates"
+    template_folder=BASE_DIR / "assets" / "templates",
 )
 matchbox_app.config["SECRET_KEY"] = os.urandom(24)
 
@@ -29,7 +30,7 @@ auth = HTTPBasicAuth()
 
 @auth.verify_password
 def verify_password(username, password):
-    users = matchbox_app.config['mb_users']
+    users = matchbox_app.config["mb_users"]
     if username in users and check_password_hash(users.get(username), password):
         return username
 
@@ -40,7 +41,7 @@ def configure_app(filepath, app):
         assert config_fp.exists
         with open(config_fp, "rb") as f:
             config = tomli.load(f)
-        assert 'users' in config
+        assert "users" in config
     except:
         # NOTE: If you got this exception, make sure first you don't have
         # windows-style backslahes in your config file for file names (no
@@ -49,9 +50,9 @@ def configure_app(filepath, app):
 
     app.config["mb_users"] = {
         user: generate_password_hash(password)
-        for user, password in config['users'].items()
+        for user, password in config["users"].items()
     }
-    app.config["mb_changes_file"] = config['files']['changes_file']
+    app.config["mb_changes_file"] = config["files"]["changes_file"]
     try:
         json.load(open(app.config["mb_changes_file"], "rb"))
     except:
@@ -60,19 +61,19 @@ def configure_app(filepath, app):
 
 
 def get_context():
-    project = flask.request.cookies.get('project')
+    project = flask.request.cookies.get("project")
     if not project:
         return flask.redirect(flask.url_for("select_project"))
-    source = flask.request.cookies.get('source')
-    target = flask.request.cookies.get('target')
+    source = flask.request.cookies.get("source")
+    target = flask.request.cookies.get("target")
     if not (source and target):
         return flask.redirect(flask.url_for("select_databases"))
-    proxy = flask.request.cookies.get('proxy')
+    proxy = flask.request.cookies.get("proxy")
     return project, source, target, proxy
 
 
 def get_files():
-    files = flask.request.cookies.get('files')
+    files = flask.request.cookies.get("files")
     if files:
         files = json.loads(files)
     else:
@@ -90,76 +91,80 @@ def get_files():
     return files
 
 
-@matchbox_app.route('/project', methods = ['POST', 'GET'])
+@matchbox_app.route("/project", methods=["POST", "GET"])
 @auth.login_required
 def select_project():
     files = get_files()
 
-    if flask.request.method == 'POST':
-        project = flask.request.form['project']
+    if flask.request.method == "POST":
+        project = flask.request.form["project"]
         resp = flask.make_response(flask.redirect(flask.url_for("select_databases")))
-        resp.set_cookie('project', project)
+        resp.set_cookie("project", project)
         return resp
     else:
-        resp = flask.make_response(flask.render_template(
-            "project.html",
-            file_number=sum(1 for obj in files if obj['enabled']),
-            projects=[o for o in bd.projects],
-            user=auth.current_user(),
-            changes_file=Path(matchbox_app.config["mb_changes_file"]).name,
-        ))
+        resp = flask.make_response(
+            flask.render_template(
+                "project.html",
+                file_number=sum(1 for obj in files if obj["enabled"]),
+                projects=[o for o in bd.projects],
+                user=auth.current_user(),
+                changes_file=Path(matchbox_app.config["mb_changes_file"]).name,
+            )
+        )
         resp.delete_cookie("project")
         resp.delete_cookie("source")
         resp.delete_cookie("target")
         return resp
 
 
-@matchbox_app.route('/databases', methods = ['POST', 'GET'])
+@matchbox_app.route("/databases", methods=["POST", "GET"])
 @auth.login_required
 def select_databases():
-    project = flask.request.cookies.get('project')
+    project = flask.request.cookies.get("project")
     if not project:
         return flask.redirect(flask.url_for("select_project"))
     bd.projects.set_current(project)
 
     files = get_files()
 
-    if flask.request.method == 'POST':
-        source = flask.request.form['source']
-        target = flask.request.form['target']
-        use_proxy = 'use-proxy' in flask.request.form
-        proxy_existing = flask.request.form['proxy-existing']
-        proxy_new = flask.request.form['proxy-new'].strip()
+    if flask.request.method == "POST":
+        source = flask.request.form["source"]
+        target = flask.request.form["target"]
+        use_proxy = "use-proxy" in flask.request.form
+        proxy_existing = flask.request.form["proxy-existing"]
+        proxy_new = flask.request.form["proxy-new"].strip()
         if source != target:
             resp = flask.make_response(flask.redirect(flask.url_for("index")))
-            resp.set_cookie('source', source)
-            resp.set_cookie('target', target)
+            resp.set_cookie("source", source)
+            resp.set_cookie("target", target)
 
             if use_proxy:
                 if proxy_new:
                     bd.Database(proxy_new).register()
-                    resp.set_cookie('proxy', proxy_new)
+                    resp.set_cookie("proxy", proxy_new)
                 else:
-                    resp.set_cookie('proxy', proxy_existing)
+                    resp.set_cookie("proxy", proxy_existing)
             else:
-                resp.set_cookie('proxy', "")
+                resp.set_cookie("proxy", "")
 
             return resp
 
-    resp = flask.make_response(flask.render_template(
-        "databases.html",
-        project=project,
-        file_number=sum(1 for obj in files if obj['enabled']),
-        user=auth.current_user(),
-        changes_file=Path(matchbox_app.config["mb_changes_file"]).name,
-        databases=bd.databases,
-    ))
+    resp = flask.make_response(
+        flask.render_template(
+            "databases.html",
+            project=project,
+            file_number=sum(1 for obj in files if obj["enabled"]),
+            user=auth.current_user(),
+            changes_file=Path(matchbox_app.config["mb_changes_file"]).name,
+            databases=bd.databases,
+        )
+    )
     resp.delete_cookie("source")
     resp.delete_cookie("target")
     return resp
 
 
-@matchbox_app.route('/files', methods = ['POST', 'GET'])
+@matchbox_app.route("/files", methods=["POST", "GET"])
 @auth.login_required
 def select_matching_files():
     context = get_context()
@@ -170,39 +175,44 @@ def select_matching_files():
 
     files = get_files()
 
-    if flask.request.method == 'POST':
+    if flask.request.method == "POST":
         # Don't get unchecked elements in forms
         for line in files:
-            line['enabled'] = False
+            line["enabled"] = False
 
         for key, value in flask.request.form.items():
             index = key.replace("enabled-", "")
             for line in files:
-                if line['index'] == index:
-                    line['enabled'] = value == "on"
+                if line["index"] == index:
+                    line["enabled"] = value == "on"
 
             resp = flask.make_response(flask.redirect(flask.url_for("index")))
-            resp.set_cookie('files', json.dumps(files))
+            resp.set_cookie("files", json.dumps(files))
             return resp
 
     # Format file cookie data for nicer form
     files_formatted = [
-        sorted([obj for obj in files if obj['dirpath'] == dirpath], key=lambda x: x['filename'])
-        for dirpath in sorted({obj['dirpath'] for obj in files})
+        sorted(
+            [obj for obj in files if obj["dirpath"] == dirpath],
+            key=lambda x: x["filename"],
+        )
+        for dirpath in sorted({obj["dirpath"] for obj in files})
     ]
 
-    resp = flask.make_response(flask.render_template(
-        "select_files.html",
-        files=files_formatted,
-        file_number=sum(1 for obj in files if obj['enabled']),
-        project=proj,
-        proxy=proxy,
-        source=s,
-        target=t,
-        user=auth.current_user(),
-        changes_file=Path(matchbox_app.config["mb_changes_file"]).name,
-    ))
-    resp.set_cookie('files', json.dumps(files))
+    resp = flask.make_response(
+        flask.render_template(
+            "select_files.html",
+            files=files_formatted,
+            file_number=sum(1 for obj in files if obj["enabled"]),
+            project=proj,
+            proxy=proxy,
+            source=s,
+            target=t,
+            user=auth.current_user(),
+            changes_file=Path(matchbox_app.config["mb_changes_file"]).name,
+        )
+    )
+    resp.set_cookie("files", json.dumps(files))
     return resp
 
 
@@ -224,7 +234,7 @@ def index():
         project=proj,
         source=s,
         target=t,
-        file_number=sum(1 for obj in files if obj['enabled']),
+        file_number=sum(1 for obj in files if obj["enabled"]),
         table_data=[obj for obj, _ in zip(bd.Database(s), range(50))],
         query_string="",
         database=s,
@@ -272,6 +282,8 @@ def processes():
     database_label = flask.request.args.get("database") or s
     qs = AD.select().where(AD.database == database_label)
 
+    total_records = qs.count()
+
     order_by = flask.request.args.get("order_by")
     if order_by and order_by in ("name", "location", "product"):
         qs = qs.order_by(getattr(AD, order_by))
@@ -288,18 +300,21 @@ def processes():
     else:
         qs = qs.limit(50)
 
-    payload = [
-        {
-            'details_url': flask.url_for("process_detail", id=obj.id),
-            'match_url': flask.url_for("match", source=obj.id),
-            'matched': bool(obj.data.get('matched')),
-            'id': obj.id,
-            'name': obj.name,
-            'location': obj.location,
-            'unit': obj.data['unit'],
-        }
-        for obj in qs
-    ]
+    payload = {
+        "total_records": total_records,
+        "data": [
+            {
+                "details_url": flask.url_for("process_detail", id=obj.id),
+                "match_url": flask.url_for("match", source=obj.id),
+                "matched": bool(obj.data.get("matched")),
+                "id": obj.id,
+                "name": obj.name,
+                "location": obj.location,
+                "unit": obj.data["unit"],
+            }
+            for obj in qs
+        ],
+    }
     return flask.jsonify(payload)
 
 
@@ -322,7 +337,7 @@ def unmatched():
         proxy=proxy,
         source=s,
         target=t,
-        file_number=sum(1 for obj in files if obj['enabled']),
+        file_number=sum(1 for obj in files if obj["enabled"]),
         table_data=[obj for obj, _ in zip(bd.Database(s), range(50))],
         query_string="",
         database=s,
@@ -391,7 +406,7 @@ def search():
             project=proj,
             source=s,
             target=t,
-            file_number=sum(1 for obj in files if obj['enabled']),
+            file_number=sum(1 for obj in files if obj["enabled"]),
             proxy=proxy,
             user=auth.current_user(),
             title="bw_matchbox Search Result",
@@ -408,7 +423,7 @@ def mark_matched(id):
     proj, s, t, proxy = context
     bd.projects.set_current(proj)
     node = bd.get_node(id=id)
-    node['matched'] = True
+    node["matched"] = True
     node.save()
     return ""
 
@@ -424,10 +439,12 @@ def process_detail(id):
     bd.projects.set_current(proj)
 
     node = bd.get_node(id=id)
-    same_name = AD.select().where(AD.name == node['name'], AD.database == node['database'], AD.id != node.id)
+    same_name = AD.select().where(
+        AD.name == node["name"], AD.database == node["database"], AD.id != node.id
+    )
     same_name_count = same_name.count()
-    technosphere = sorted(node.technosphere(), key=lambda x: x.input['name'])
-    biosphere = sorted(node.biosphere(), key=lambda x: x.input['name'])
+    technosphere = sorted(node.technosphere(), key=lambda x: x.input["name"])
+    biosphere = sorted(node.biosphere(), key=lambda x: x.input["name"])
 
     return flask.render_template(
         "process_detail.html",
@@ -437,7 +454,7 @@ def process_detail(id):
         proxy=proxy,
         source=s,
         target=t,
-        file_number=sum(1 for obj in files if obj['enabled']),
+        file_number=sum(1 for obj in files if obj["enabled"]),
         user=auth.current_user(),
         changes_file=Path(matchbox_app.config["mb_changes_file"]).name,
         same_name_count=same_name_count,
@@ -460,7 +477,7 @@ def match(source):
 
     node = bd.get_node(id=source)
 
-    matches = bd.Database(t).search(node['name'] + " " + node.get('location', ''))
+    matches = bd.Database(t).search(node["name"] + " " + node.get("location", ""))
 
     return flask.render_template(
         "match.html",
@@ -470,41 +487,53 @@ def match(source):
         proxy=proxy,
         source=s,
         target=t,
-        file_number=sum(1 for obj in files if obj['enabled']),
+        file_number=sum(1 for obj in files if obj["enabled"]),
         user=auth.current_user(),
         changes_file=Path(matchbox_app.config["mb_changes_file"]).name,
-        query_string=node['name'] + " " + node.get('location', ''),
-        matches=matches
+        query_string=node["name"] + " " + node.get("location", ""),
+        matches=matches,
     )
 
 
 def normalize_name(string):
-    return (string.lower().replace("market group for", "").replace("market for", "")
-            .replace(", at plant", "").strip())
+    return (
+        string.lower()
+        .replace("market group for", "")
+        .replace("market for", "")
+        .replace(", at plant", "")
+        .strip()
+    )
 
 
 def similar_location(a, b):
-    return any([
-        (b == a),
-        (b == 'CH' and a in ('CH', 'RER', 'GLO', 'RoW')),
-        (len(b) == 2 and a in ('GLO', 'RoW')),
-        (b == 'RER' and a in ('GLO', 'RoW', 'RoE')),
-    ])
+    return any(
+        [
+            (b == a),
+            (b == "CH" and a in ("CH", "RER", "GLO", "RoW")),
+            (len(b) == 2 and a in ("GLO", "RoW")),
+            (b == "RER" and a in ("GLO", "RoW", "RoE")),
+        ]
+    )
 
 
 def check_similar(node, candidates):
     for index, candidate in enumerate(candidates):
-        if node.get('collapsed') or candidate.get('collapsed'):
+        if node.get("collapsed") or candidate.get("collapsed"):
             continue
         if (
-            normalize_name(node['name']) == normalize_name(candidate['name'])
-            and similar_location(node['location'], candidate['location'])
-            and node['unit'] == candidate['unit']
-            and math.isclose(node['amount'], candidate['amount'], rel_tol=0.025, abs_tol=1e-6)
+            normalize_name(node["name"]) == normalize_name(candidate["name"])
+            and similar_location(node["location"], candidate["location"])
+            and node["unit"] == candidate["unit"]
+            and math.isclose(
+                node["amount"], candidate["amount"], rel_tol=0.025, abs_tol=1e-6
+            )
         ):
-            node['collapsed'] = candidate['collapsed'] = True
-            node['collapsed-group'] = candidate['collapsed-group'] = \
-                "Collapsed-{}-{}".format(index, "".join(random.choices(string.ascii_letters, k=6)))
+            node["collapsed"] = candidate["collapsed"] = True
+            node["collapsed-group"] = candidate[
+                "collapsed-group"
+            ] = "Collapsed-{}-{}".format(
+                index, "".join(random.choices(string.ascii_letters, k=6))
+            )
 
 
 @matchbox_app.route("/compare/<source>/<target>", methods=["GET"])
@@ -523,34 +552,34 @@ def compare(source, target):
 
     source_technosphere = [
         {
-            'amount': exc['amount'],
-            'amount_display': '{:0.2g}'.format(exc['amount']),
-            'name': exc.input['name'],
-            'unit': exc.input['unit'],
-            'location': exc.input['location'],
-            'input_id': exc.input.id,
-            'url': flask.url_for("process_detail", id=exc.input.id),
+            "amount": exc["amount"],
+            "amount_display": "{:0.2g}".format(exc["amount"]),
+            "name": exc.input["name"],
+            "unit": exc.input["unit"],
+            "location": exc.input["location"],
+            "input_id": exc.input.id,
+            "url": flask.url_for("process_detail", id=exc.input.id),
         }
         for exc in source.technosphere()
     ]
     target_itself = {
-        'amount': 1,
-        'amount_display': "1.0",
-        'name': target['name'],
-        'unit': target['unit'],
-        'location': target.get('location', ''),
-        'input_id': target.id,
-        'url': flask.url_for("process_detail", id=target.id),
+        "amount": 1,
+        "amount_display": "1.0",
+        "name": target["name"],
+        "unit": target["unit"],
+        "location": target.get("location", ""),
+        "input_id": target.id,
+        "url": flask.url_for("process_detail", id=target.id),
     }
     target_technosphere = [
         {
-            'amount': exc['amount'],
-            'amount_display': '{:0.2g}'.format(exc['amount']),
-            'name': exc.input['name'],
-            'unit': exc.input['unit'],
-            'location': exc.input['location'],
-            'input_id': exc.input.id,
-            'url': flask.url_for("process_detail", id=exc.input.id),
+            "amount": exc["amount"],
+            "amount_display": "{:0.2g}".format(exc["amount"]),
+            "name": exc.input["name"],
+            "unit": exc.input["unit"],
+            "location": exc.input["location"],
+            "input_id": exc.input.id,
+            "url": flask.url_for("process_detail", id=exc.input.id),
         }
         for exc in target.technosphere()
     ]
@@ -569,7 +598,7 @@ def compare(source, target):
         target_json=json.dumps(target_itself),
         user=auth.current_user(),
         changes_file=Path(matchbox_app.config["mb_changes_file"]).name,
-        file_number=sum(1 for obj in files if obj['enabled']),
+        file_number=sum(1 for obj in files if obj["enabled"]),
         source_node=source,
         source_data_json=json.dumps(source_technosphere),
         target_node=target,
@@ -591,17 +620,17 @@ def expand(id, scale):
 
     exchanges = list(node.technosphere())
     for exc in exchanges:
-        exc['amount'] *= scale
+        exc["amount"] *= scale
 
     payload = [
         {
-            'amount': exc['amount'],
-            'amount_display': '{:0.2g}'.format(exc['amount']),
-            'name': exc.input['name'],
-            'unit': exc.input['unit'],
-            'location': exc.input['location'],
-            'input_id': exc.input.id,
-            'url': flask.url_for("process_detail", id=exc.input.id),
+            "amount": exc["amount"],
+            "amount_display": "{:0.2g}".format(exc["amount"]),
+            "name": exc.input["name"],
+            "unit": exc.input["unit"],
+            "location": exc.input["location"],
+            "input_id": exc.input.id,
+            "url": flask.url_for("process_detail", id=exc.input.id),
         }
         for exc in exchanges
     ]
@@ -616,29 +645,31 @@ def create_proxy():
     # files = get_files()
     bd.projects.set_current(proj)
 
-    source = bd.get_activity(id=content['source'])
+    source = bd.get_activity(id=content["source"])
     process = bd.Database(proxy).new_activity(
-        name=content['name'],
+        name=content["name"],
         code=uuid.uuid4().hex,
-        comment=content['comment'],
-        unit=source['unit'],
-        location=source['location'],
-        original_name=source['name'],
+        comment=content["comment"],
+        unit=source["unit"],
+        location=source["location"],
+        original_name=source["name"],
         original_id=source.id,
-        **{'reference product': source.get('reference product')}
+        **{"reference product": source.get("reference product")}
     )
     process.save()
 
     source_rp = source.rp_exchange()
-    process.new_edge(input=process, amount=source_rp['amount'], type="production").save()
-    for exc in content['exchanges']:
+    process.new_edge(
+        input=process, amount=source_rp["amount"], type="production"
+    ).save()
+    for exc in content["exchanges"]:
         process.new_edge(
             type="technosphere",
-            input=bd.get_activity(id=exc['input_id']),
-            amount=exc['amount'],
+            input=bd.get_activity(id=exc["input_id"]),
+            amount=exc["amount"],
         ).save()
 
-    source['matched'] = True
+    source["matched"] = True
     source.save()
 
     return flask.redirect(flask.url_for("process_detail", id=process.id))

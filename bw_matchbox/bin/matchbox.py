@@ -37,7 +37,7 @@ CHANGES_TEMPLATE = {
         {
             "name": "CC BY 4.0",
             "path": "https://creativecommons.org/licenses/by/4.0/",
-            "title": "Creative Commons Attribution 4.0 International"
+            "title": "Creative Commons Attribution 4.0 International",
         }
     ],
     "version": "1.0.0",
@@ -45,9 +45,9 @@ CHANGES_TEMPLATE = {
     "created": None,
     "contributors": [
         {
-          "title": "<change-this-please>",
-          "path": "<change-this-please>",
-          "role": "author"
+            "title": "<change-this-please>",
+            "path": "<change-this-please>",
+            "role": "author",
         }
     ],
     "create-datasets": [],
@@ -55,7 +55,7 @@ CHANGES_TEMPLATE = {
     "delete": [],
     "disaggregate": [],
     "replace": [],
-    "update": []
+    "update": [],
 }
 
 
@@ -68,7 +68,7 @@ def create_setup_files(filename, changesfile):
         f.write(CONFIG_TEMPLATE.format(CWD / changesfile))
         print("Created config file {}".format(CWD / filename))
     with open(CWD / changesfile, "w") as f:
-        CHANGES_TEMPLATE['created'] = datetime.datetime.now().isoformat()
+        CHANGES_TEMPLATE["created"] = datetime.datetime.now().isoformat()
         json.dump(CHANGES_TEMPLATE, f, ensure_ascii=False, indent=2)
         print("Created changes file {}".format(CWD / changesfile))
 
@@ -76,16 +76,18 @@ def create_setup_files(filename, changesfile):
 def main():
     args = docopt(__doc__, version="bw_matchbox app 1.0")
 
-    if args['setup']:
+    if args["setup"]:
         create_setup_files("config.toml", "changes.json")
-    elif args['example_project']:
-        name = args['<project_name>'] or 'matchbox-example'
-        bi.install_project('USEEIO-1.1', name)
+    elif args["example_project"]:
+        name = args["<project_name>"] or "matchbox-example"
+        bi.install_project("USEEIO-1.1", name)
         bd.projects.set_current(name)
         bd.Database("USEEIO-1.1").copy("USEEIO-copy")
-        print(f"Create project {name}. Make sure to select `USEEIO-1.1` for one database and `USEEIO-copy` for the other.")
-    elif args['webapp']:
-        filepath = args['<config>']
+        print(
+            f"Create project {name}. Make sure to select `USEEIO-1.1` for one database and `USEEIO-copy` for the other."
+        )
+    elif args["webapp"]:
+        filepath = args["<config>"]
         port = int(args.get("--port", False) or 5000)
         host = "localhost" if args.get("--localhost", False) else "0.0.0.0"
 
@@ -97,6 +99,7 @@ def main():
         except Exception as err:
             print("Error:", err)
             raise err
+
 
 if __name__ == "__main__":
     main()
