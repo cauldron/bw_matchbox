@@ -43,9 +43,10 @@
         <input type="radio" name="order_by" id="order_by_product" value="product" onChange="processesList.onOrderByChange(this)">
         <label for="order_by_product">Product</label>
       </div>
-      <div class="page-navigation">
-        Navigation
+      <div id="processes-list-error" class="error">
+        Sample error text.
       </div>
+      <div class="table-pagination"></div>
       <table id="processes-list-table" class="processes-list-table" width="100%">
         <thead>
           <tr>
@@ -75,16 +76,19 @@
           -->
         </tbody>
       </table>
+      <div class="table-pagination"></div>
       <div id="loader-splash" class="loader-splash"><div class="loader-spinner"></div></div>
     </div>
   </div>
 </div>
 
 <script type="text/javascript">
+  // Initialize page data...
   const sharedParams = {
     searchUrl: '{{ url_for("search") }}',
     database: '{{ database }}',
   };
+  // Start page routines...
   processesList.start(sharedParams);
 </script>
 {% include 'footer.html' %}

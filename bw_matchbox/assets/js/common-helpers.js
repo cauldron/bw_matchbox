@@ -39,11 +39,25 @@ const commonHelpers = {
    */
   htmlToElement: function (html) {
     const template = document.createElement('template');
+    if (Array.isArray(html)) {
+      html = html.join('');
+    }
     html = html.trim(); // Never return a text node of whitespace as the result
     template.innerHTML = html;
-    return template.content.firstChild;
+    const content = template.content;
+    return content.firstChild;
   },
 
+  htmlToElements: function (html) {
+    const template = document.createElement('template');
+    if (Array.isArray(html)) {
+      html = html.join('');
+    }
+    html = html.trim(); // Never return a text node of whitespace as the result
+    template.innerHTML = html;
+    const content = template.content;
+    return content.children;
+  },
   /** decodeQuery
    * @param {string | string[]} qs
    * @param {string} sep

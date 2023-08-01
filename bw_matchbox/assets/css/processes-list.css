@@ -2,7 +2,8 @@
 .processes-list .page-header h1 {
   font-size: 200%;
 }
-.processes-list.empty .page-navigation,
+.processes-list.empty .page-filters,
+.processes-list.empty .table-pagination,
 .processes-list.empty .processes-list-table {
   display: none;
 }
@@ -11,7 +12,7 @@
 }
 .processes-list.loading .page-search,
 .processes-list.loading .page-filters,
-.processes-list.loading .page-navigation,
+.processes-list.loading .table-pagination,
 .processes-list.loading .processes-list-table {
   opacity: .5;
   pointer-events: none;
@@ -34,3 +35,35 @@
   opacity: 0;
   pointer-events: none;
 }
+
+/* Error */
+
+.processes-list .error {
+  color: var(--layout-theme-error-color);
+  margin: 20px auto;
+}
+.processes-list:not(.error) .error {
+  display: none;
+}
+
+/* Navigation */
+.processes-list .table-pagination {
+  padding: 20px 0;
+  display: flex;
+  gap: 10px;
+}
+.processes-list .table-pagination .text {
+  opacity: .3;
+}
+.processes-list .table-pagination .link {
+  cursor: pointer;
+  transition: all var(--common-animation-time);
+  color: var(--layout-theme-primary-color-dark1);
+}
+
+.processes-list .table-pagination .link:hover {
+  color: var(--layout-theme-primary-color-dark2);
+  text-decoration: underline;
+}
+
+
