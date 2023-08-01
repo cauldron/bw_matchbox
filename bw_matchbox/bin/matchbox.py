@@ -12,14 +12,15 @@ Options:
   --version     Show version.
 
 """
-from bw_matchbox.webapp import matchbox_app, configure_app
-from docopt import docopt
-from pathlib import Path
-import bw2data as bd
-import bw2io as bi
 import datetime
 import json
+from pathlib import Path
 
+import bw2data as bd
+import bw2io as bi
+from docopt import docopt
+
+from bw_matchbox.webapp import configure_app, matchbox_app
 
 CWD = Path.cwd()
 
@@ -84,7 +85,8 @@ def main():
         bd.projects.set_current(name)
         bd.Database("USEEIO-1.1").copy("USEEIO-copy")
         print(
-            f"Create project {name}. Make sure to select `USEEIO-1.1` for one database and `USEEIO-copy` for the other."
+            f"Create project {name}. Make sure to select `USEEIO-1.1` for one "
+            + "database and `USEEIO-copy` for the other."
         )
     elif args["webapp"]:
         filepath = args["<config>"]

@@ -29,12 +29,12 @@ repos:
   #     ]
 
   - repo: https://github.com/pycqa/isort
-    rev: 5.10.1
+    rev: 5.12.0
     hooks:
       - id: isort
 
   - repo: https://github.com/psf/black
-    rev: 22.12.0
+    rev: 23.7.0
     hooks:
       - id: black
         language_version: python3
@@ -51,14 +51,14 @@ repos:
       - id: flake8
     ## You can add flake8 plugins via `additional_dependencies`:
     #  additional_dependencies: [flake8-bugbear]
-  - repo: local
-    hooks:
-      - id: pylint
-        name: pylint
-        entry: pylint
-        language: system
-        types: [python]
-        args: [
-            '-rn', # Only display messages
-            '-sn', # Don't display the score
-          ]
+  # - repo: local
+  #   hooks:
+  #     - id: pylint
+  #       name: pylint
+  #       entry: pylint
+  #       language: system
+  #       types: [python]
+  #       args: [
+  #           '-rn', # Only display messages
+  #           '-sn', # Don't display the score
+  #         ]

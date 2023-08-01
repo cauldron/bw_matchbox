@@ -1,19 +1,20 @@
-from functools import total_ordering
-from bw2data.backends import ActivityDataset as AD
-from flask_httpauth import HTTPBasicAuth
-from pathlib import Path
-from peewee import fn
-from werkzeug.security import check_password_hash, generate_password_hash
-import bw2data as bd
-import flask
 import json
 import math
 import os
 import random
 import string
-import tomli
 import uuid
+from pathlib import Path
 
+import bw2data as bd
+import flask
+import tomli
+from bw2data.backends import ActivityDataset as AD
+from flask_httpauth import HTTPBasicAuth
+from peewee import fn
+from werkzeug.security import check_password_hash, generate_password_hash
+
+from .utils import name_close_enough, similar_location
 
 BASE_DIR = Path(__file__).resolve().parent
 DATA_DIR = BASE_DIR / "data"
@@ -251,13 +252,15 @@ def processes():
 
     GET args:
 
-        * database (str): Name of database to draw processes from. Defaults to source database (stored in cookie) if not given.
-        * order_by (str): Parameter to sort by. Random if not provided. Valid parameters:
-            * name (will be used 99% of the time)
-            * location
-            * product (short name for reference product)
-        * offset (int): Offset from beginning of sorted values. Zero-indexed. Only used if sorting.
-        * limit (int): Number of results to return
+    * database (str): Name of database to draw processes from. Defaults to source
+                      database (stored in cookie) if not given.
+    * order_by (str): Parameter to sort by. Random if not provided. Valid parameters:
+        * name (will be used 99% of the time)
+        * location
+        * product (short name for reference product)
+    * offset (int): Offset from beginning of sorted values. Zero-indexed.
+                    Only used if sorting.
+    * limit (int): Number of results to return
 
     Response data format (JSON):
 
@@ -363,7 +366,8 @@ def unmatched():
 #                     value = frozendict(elem['target'])
 #                     file_status['count'] += 1
 #                     if lookup in crud and crud.get(lookup) != value:
-#                         error = "Source: {}. Already have: {}. Given: {}".format(dict(lookup), dict(crud[lookup]), dict(value))
+#                         error = "Source: {}. Already have: {}. Given: {}".format(
+#                            dict(lookup), dict(crud[lookup]), dict(value))
 #                         if error not in file_status['duplicates']:
 #                             file_status['duplicates'].append(error)
 #                     else:
@@ -495,33 +499,12 @@ def match(source):
     )
 
 
-def normalize_name(string):
-    return (
-        string.lower()
-        .replace("market group for", "")
-        .replace("market for", "")
-        .replace(", at plant", "")
-        .strip()
-    )
-
-
-def similar_location(a, b):
-    return any(
-        [
-            (b == a),
-            (b == "CH" and a in ("CH", "RER", "GLO", "RoW")),
-            (len(b) == 2 and a in ("GLO", "RoW")),
-            (b == "RER" and a in ("GLO", "RoW", "RoE")),
-        ]
-    )
-
-
 def check_similar(node, candidates):
     for index, candidate in enumerate(candidates):
         if node.get("collapsed") or candidate.get("collapsed"):
             continue
         if (
-            normalize_name(node["name"]) == normalize_name(candidate["name"])
+            name_close_enough(node["name"], candidate["name"])
             and similar_location(node["location"], candidate["location"])
             and node["unit"] == candidate["unit"]
             and math.isclose(
