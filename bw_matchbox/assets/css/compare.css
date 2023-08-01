@@ -173,13 +173,13 @@
 
 /* Collapsed row... */
 
-/* // UNUSED: Collapsed rows are just hidden.
- * .compare-table tr.collapsed {
- *   box-shadow: 0 0 4px var(--compare-collapsed-color), inset 0 0 2px var(--compare-collapsed-color);
- *   background-color: var(--compare-collapsed-bg-color);
- *   display: none;
- * }
- */
+.compare-table tr.collapsed {
+  /* // UNUSED: Collapsed rows are just hidden.
+   * box-shadow: 0 0 4px var(--compare-collapsed-color), inset 0 0 2px var(--compare-collapsed-color);
+   * background-color: var(--compare-collapsed-bg-color);
+   */
+  display: none;
+}
 
 .compare-table tr.collapsed-handler {
   /* box-shadow: 0 0 4px var(--compare-selected-bg-color5), inset 0 0 4px var(--compare-selected-bg-color5); */

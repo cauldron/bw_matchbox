@@ -48,6 +48,10 @@
 
 <script>
 
+  /* // Enable debug mode...
+   * const useDebug = true;
+   */
+
   /* // Common types (ts-like):
    *
    * Data record item (for `source_data` and `target_data` tables):
@@ -78,6 +82,13 @@
     source_node_unit: '{{source_node.unit}}',
     source_node_location: '{{source_node.location}}',
   };
+
+  /* // DEBUG: Crop data table to easier debugging...
+   * if (useDebug) {
+   *   sharedData.source_data.length = 2;
+   *   sharedData.target_data.length = 2;
+   * }
+   */
 
   /* // DEBUG: Emulate pre-collapsed elements data...
    * if (useDebug) {
