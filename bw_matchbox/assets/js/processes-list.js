@@ -1,4 +1,4 @@
-/* --global commonHelpers */
+/* --global commonHelpers, processesListConstants */
 
 /* Process list table client code.
  */
