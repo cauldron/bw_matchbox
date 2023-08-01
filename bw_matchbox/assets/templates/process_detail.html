@@ -5,7 +5,7 @@
     <div class="column">
       <h1>{{ ds.name }}
         {% if ds.database == source %}
-          {% if not ds.matched %}<button onclick="markMatched(this)" style="vertical-align: middle" class="button-primary" id="manual-match">Mark matched</button> <a style="vertical-align: middle" class="button button-primary" href="{{ url_for('match', source=ds.id)}}">Match</a>{% else %}<button id="manual-match" style="vertical-align: middle">Matched</button>{% endif %}
+          {% if not ds.matched %}<button onclick="markMatched(this)" style="vertical-align: middle" class="button-primary" id="manual-match">No match needed</button> <a style="vertical-align: middle" class="button button-primary" href="{{ url_for('match', source=ds.id)}}">Match</a>{% else %}<button id="manual-match" style="vertical-align: middle">Matched</button>{% endif %}
         {% endif %}
       </h1>
       <ul>
