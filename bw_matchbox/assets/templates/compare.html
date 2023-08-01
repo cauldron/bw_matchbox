@@ -44,6 +44,8 @@
 
 <script>
 
+  // const useDebug = true; // DEBUG!
+
   // Globals:
   // - `compareCore` (from `bw_matchbox/assets/js/compare-core.js`)
 
@@ -57,9 +59,11 @@
    *   input_id: number; // Eg: 633
    *   location: string; // Eg: 'United States'
    *   name: string; // Eg: 'Clothing; at manufacturer'
-   *   row_id: string; // Eg: '0'
+   *   row_id: string; // "0" (auto increment primary key; initilizes dynamically on the client from the first iteration)
    *   unit: string; // Eg: ''
    *   url: string; // Eg: '/process/633'
+   *   collapsed: boolean; // true
+   *   collapsed-group: string; // "Collapsed-XXX-YYYYYY" -- unique key to locate corresponding pair.
    * }
    */
 
@@ -75,6 +79,22 @@
     source_node_unit: '{{source_node.unit}}',
     source_node_location: '{{source_node.location}}',
   };
+
+  /* // DEBUG: Emulate pre-collapsed elements data...
+   * if (useDebug) {
+   *   // Link first columns...
+   *   const collapsedGroupId = 'Collapsed-0-abcdef'
+   *   sharedData.source_data[0].collapsed = true
+   *   sharedData.source_data[0]['collapsed-group'] = collapsedGroupId;
+   *   sharedData.target_data[0].collapsed = true
+   *   sharedData.target_data[0]['collapsed-group'] = collapsedGroupId;
+   *   console.log('DEBUG: Emulate pre-collapsed elements data', {
+   *     source_data: sharedData.source_data,
+   *     target_data: sharedData.target_data,
+   *   });
+   *   debugger;
+   * }
+   */
 
   compareCore.initCompare(sharedData);
 

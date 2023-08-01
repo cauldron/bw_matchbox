@@ -24,9 +24,11 @@
  *   input_id: number; // 633
  *   location: string; // "United States"
  *   name: string; // "Clothing; at manufacturer"
- *   row_id: string; // "0"
+ *   row_id: string; // "0" (auto increment primary key; initilizes dynamically on the client from the first iteration)
  *   unit: string; // ""
  *   url: string; // "/process/633"
+ *   collapsed: boolean; // true
+ *   collapsed-group: string; // "Collapsed-XXX-YYYYYY" -- unique key to locate corresponding pair.
  * }
  */
 
@@ -53,12 +55,48 @@ const compareCore = {
     row.parentElement.innerHTML = `<i class="fa-solid fa-check"></i>`;
   },
 
-  build_row: function (data, is_target, index) {
-    const rowId = data.row_id;
+  build_row: function (data, is_target) {
+    const { collapsedRows } = compareRowsHelpers;
+    const {
+      collapsed,
+      row_id: rowId,
+      url,
+      location,
+      unit,
+      amount_display,
+      amount,
+      name,
+      input_id,
+    } = data;
     const rowKind = is_target ? 'target' : 'source';
     const collapsedId = compareRowsHelpers.getCollapsedId(rowKind, rowId);
+    if (collapsed && !collapsedRows[collapsedId]) {
+      const otherRowKind = !is_target ? 'target' : 'source';
+      const otherTableDataKey = otherRowKind + '_data';
+      const otherTableData = compareCore.sharedData[otherTableDataKey];
+      const collapsedGroupId = data['collapsed-group'];
+      const otherRowId = otherTableData.findIndex(
+        (other) => other['collapsed-group'] === collapsedGroupId,
+      );
+      // const otherRowData = otherRowId !== -1 && otherTableData[otherRowId]; // UNUSED
+      const otherCollapsedId = compareRowsHelpers.getCollapsedId(otherRowKind, otherRowId);
+      collapsedRows[collapsedId] = {
+        rowKind,
+        rowId,
+        pairId: otherRowId,
+        // rowEl, // OBSOLETE: Avoid of use it.
+      };
+      if (!collapsedRows[otherCollapsedId]) {
+        collapsedRows[otherCollapsedId] = {
+          rowKind: otherRowKind,
+          rowId: otherRowId,
+          pairId: rowId,
+          // rowEl, // OBSOLETE: Avoid of use it.
+        };
+      }
+    }
     // Detect if row is collapsed, then render correspound class (`collapsed`) and append handler node...
-    const isCollapsed = !!compareRowsHelpers.collapsedRows[collapsedId];
+    const isCollapsed = !!collapsedRows[collapsedId];
     const collapsedRowHtml =
       isCollapsed && compareRowsHelpers.buildCollapsedHandlerRow(rowKind, rowId, data);
     // Create class name...
@@ -70,12 +108,11 @@ const compareCore = {
       .join(' ');
     const start = `<tr
       ${attrs}
-      row_id="${data.row_id}"
+      row_id="${rowId}"
       onClick="compareRowsHelpers.clickRow(this)"
     >`;
-    const name = data.name;
-    /* // DEBUG
-     * if (!index && !is_target) {
+    /* // DEBUG: TODO: To move to tests?
+     * if (useDebug && !rowId && !is_target) {
      *   // Emulate long-long unfittable/unbreakable line...
      *   name += ' extra_long_unwrappable_text_line_1';
      *   // name += ' extra_long_unwrappable_text_line_1_extra_long_unwrappable_text_line_2';
@@ -83,16 +120,16 @@ const compareCore = {
      */
     const end = `<td class="cell-name"><div><a
         onClick="compareRowClick.disableRowClick(this)"
-        href="${data.url}">${name}</a></div></td>
-      <td class="cell-location"><div>${data.location}</div></td>
-      <td class="cell-unit"><div>${data.unit}</div></td>
+        href="${url}">${name}</a></div></td>
+      <td class="cell-location"><div>${location}</div></td>
+      <td class="cell-unit"><div>${unit}</div></td>
     </tr>`;
     let content;
     if (is_target) {
       content = `
-        <td class="cell-actions" row_id="${data.row_id}"><div>
+        <td class="cell-actions" row_id="${rowId}"><div>
           <span
-            id="row-trash-${data.row_id}"
+            id="row-trash-${rowId}"
           ><a
             onClick="compareCore.removeRow(this)"
             title="Remove row"
@@ -100,8 +137,8 @@ const compareCore = {
             class="fa-solid fa-trash-can"></i></a></span>
           &nbsp;
           <span
-            input_id="${data.input_id}"
-            amount="${data.amount}"><a
+            input_id="${input_id}"
+            amount="${amount}"><a
               onClick="compareCore.expandRow(this)"
               title="Expand row"
             ><i
@@ -109,19 +146,19 @@ const compareCore = {
         </div></td>
         <td
           class="cell-amount"
-          row_id="${data.row_id}"><div><a onClick="compareCore.editNumber(this)">${data.amount_display}</a></div></td>
+          row_id="${rowId}"><div><a onClick="compareCore.editNumber(this)">${amount_display}</a></div></td>
     `;
     } else {
       content = `
         <td class="cell-actions">
           <div><a
-            onClick="compareCore.shiftRow(event, this, ${data.row_id})"
+            onClick="compareCore.shiftRow(event, this, ${rowId})"
             title="Shift row"
           ><i
           class="fa-solid fa-arrow-right"></i></a></div>
         </td>
         <td class="cell-amount">
-          <div>${data.amount_display}</div>
+          <div>${amount_display}</div>
         </td>`;
     }
     // TODO: Use trim and join with '\b'?
@@ -132,10 +169,10 @@ const compareCore = {
     data.sort(commonHelpers.numberSorter);
     let rows = '';
     for (const [index, obj] of data.entries()) {
-      obj['row_id'] = `${index}`;
-      rows += compareCore.build_row(obj, is_target, index);
+      obj['row_id'] = `${index}`; // TODO: Is it ok to make server data 'dirty'?
+      rows += compareCore.build_row(obj, is_target);
     }
-    var header = `
+    const header = `
       <thead>
         <tr>
           <th class="cell-actions" title="Action"><div>Action</div></th>
