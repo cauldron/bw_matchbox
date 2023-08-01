@@ -10,6 +10,8 @@ const processesList = {
   orderBy: '',
   // Database...
   database: '',
+  searchBar: undefined,
+  searchValue: '',
 
   onOrderByChange(target) {
     const { value } = target;
@@ -27,31 +29,38 @@ const processesList = {
     const searchBar = document.getElementById('query_string');
     const searchValue = searchBar && searchBar.value;
     // TODO: pare search value with previous (if exists)?
-    if (searchValue) {
+    if (searchValue !== processesList.searchValue) {
+      // TIf searchValue is empty, then go to index (processes-list, root) page, else -- to the search page...
       const urlParams = {
         database,
         q: searchValue,
       };
       const urlQuery = commonHelpers.makeQuery(urlParams, { addQuestionSymbol: true });
-      // TODO: Use `commonHelpers.makeQuery`?
-      location.assign(searchUrl + urlQuery);
-      /* // ORIGINAL (To unsure that new method is completely working):
-       * '?database=' +
-       * encodeURIComponent(database) +
-       * '&q=' +
-       * encodeURIComponent(searchValue),
-       */
+      const urlBase = searchValue ? searchUrl : '/';
+      const url = urlBase + urlQuery;
+      console.log('doSearch', {
+        url,
+        urlQuery,
+        urlParams,
+        urlBase,
+        searchValue,
+        searchUrl,
+      });
+      location.assign(url);
     }
+    return false;
   },
 
   initSearchBar() {
-    // Find t) search input...
+    // Find the search input...
     const searchBar = document.getElementById('query_string');
+    // TODO: To store and re-use it?
     if (!searchBar) {
       throw new Error('Not found search input!');
     }
-    // ...and activate (default focus)...
-    searchBar.focus();
+    /* // UNUSED: ...and activate (default focus)...
+     * searchBar.focus();
+     */
     // ...And add search handlers...
     // Start search on input end (on focus out), not on click!
     searchBar.addEventListener('focusout', processesList.doSearch);
@@ -65,9 +74,10 @@ const processesList = {
   fetchUrlParams() {
     // Get & store the database value form the url query...
     const urlParams = commonHelpers.parseQuery(window.location.search);
-    const { database } = urlParams;
+    const { database, q: searchValue } = urlParams;
     // Get database from url or from server-passed data...
     processesList.database = database || processesList.sharedParams.database;
+    processesList.searchValue = searchValue || '';
   },
 
   /** Start entrypoint */
