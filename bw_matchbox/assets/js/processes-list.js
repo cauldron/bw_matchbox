@@ -12,6 +12,7 @@ const processesList = {
   database: '',
   searchBar: undefined,
   searchValue: '',
+  // data: [],
 
   onOrderByChange(target) {
     const { value } = target;
@@ -80,10 +81,69 @@ const processesList = {
     processesList.searchValue = searchValue || '';
   },
 
+
+  // clearData
+
+  loadData() {
+    const { pageSize, processesApiUrl: urlBase } = processesListConstants;
+    const { database, orderBy } = processesList;
+    const offset = 0; // TODO!
+    const params = {
+      database,
+      order_by: orderBy,
+      offset,
+      limit: pageSize,
+    };
+    const urlQuery = commonHelpers.makeQuery(params, { addQuestionSymbol: true });
+    const url = urlBase + urlQuery;
+    console.log('startLoadingData: start', {
+      url,
+      params,
+      urlQuery,
+      urlBase,
+    });
+    fetch(url)
+      .then((res) => {
+        console.log('startLoadingData: success', {
+          res,
+          url,
+          params,
+          urlQuery,
+          urlBase,
+        });
+        return res.json();
+      })
+      .then((data) => {
+        console.log('startLoadingData: get data', {
+          data,
+          url,
+          params,
+          urlQuery,
+          urlBase,
+        });
+        debugger;
+      })
+      .catch((err) => {
+        console.error('startLoadingData: error', {
+          err,
+          url,
+          params,
+          urlQuery,
+          urlBase,
+        });
+        debugger;
+      });
+  },
+
+  startLoadingData() {
+    this.loadData();
+  },
+
   /** Start entrypoint */
   start(sharedParams) {
     processesList.sharedParams = sharedParams;
     processesList.fetchUrlParams();
     processesList.initSearchBar();
+    processesList.startLoadingData();
   },
 };

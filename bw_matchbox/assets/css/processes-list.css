@@ -2,6 +2,20 @@
 .processes-list .page-header h1 {
   font-size: 200%;
 }
+.processes-list.empty .page-navigation,
+.processes-list.empty .processes-list-table {
+  display: none;
+}
+.processes-list > * {
+  transition: all var(--common-animation-time);
+}
+.processes-list.loading .page-search,
+.processes-list.loading .page-filters,
+.processes-list.loading .page-navigation,
+.processes-list.loading .processes-list-table {
+  opacity: .5;
+  pointer-events: none;
+}
 
 .processes-list .page-filters label {
   display: inline-block;
@@ -10,4 +24,13 @@
 }
 .processes-list .page-filters label:first-child {
   margin-left: 0;
+}
+
+.processes-list .loader-splash {
+  padding: 20px;
+}
+.processes-list:not(.loading) .loader-splash {
+  /* Inherited from `.loader-splash.hidden`, see `bw_matchbox/assets/css/common.css` */
+  opacity: 0;
+  pointer-events: none;
 }

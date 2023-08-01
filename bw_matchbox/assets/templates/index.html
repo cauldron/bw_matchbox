@@ -17,7 +17,7 @@
   - `processesList` (from `bw_matchbox/assets/js/processes-list.js`)
 #}
 
-<div class="container processes-list">
+<div id="processes-list-root" class="container processes-list empty loading">
   {% include 'navigation.html' %}
   <div class="row">
     <div class="column">
@@ -46,28 +46,36 @@
       <div class="page-navigation">
         Navigation
       </div>
-      <table width="100%">
-        <tr>
-          <th>Name</th>
-          <th>Location</th>
-          <th>Unit</th>
-          <th>Matched</th>
-        </tr>
-        {% for row in table_data %}
-        <tr>
-          <td><a href="{{ url_for('process_detail', id=row.id) }}">{{row.name}}</a></td>
-          <td>{{row.location}}</td>
-          <td>{{row.unit}}</td>
-          <td>
-            {% if row.matched %}
-              <a class="button" href="{{ url_for("match", source=row.id)}}"><i class="fa-solid fa-check"></i> EDIT</a>
-            {% else %}
-              <a class="button button-primary" href="{{ url_for("match", source=row.id)}}"><i class="fa-solid fa-circle-xmark"></i> ADD</a>
-            {% endif %}
-          </td>
-        </tr>
-        {% endfor %}
+      <table id="processes-list-table" class="processes-list-table" width="100%">
+        <thead>
+          <tr>
+            <th>Name</th>
+            <th>Location</th>
+            <th>Unit</th>
+            <th>Matched</th>
+          </tr>
+        </thead>
+        <tbody id="processes-list-table-body">
+          {# TODO: Replace this server code with client-populated js code #}
+          <!--
+          {% for row in table_data %}
+            <tr>
+              <td><a href="{{ url_for('process_detail', id=row.id) }}">{{row.name}}</a></td>
+              <td>{{row.location}}</td>
+              <td>{{row.unit}}</td>
+              <td>
+                {% if row.matched %}
+                  <a class="button" href="{{ url_for("match", source=row.id)}}"><i class="fa-solid fa-check"></i> EDIT</a>
+                {% else %}
+                  <a class="button button-primary" href="{{ url_for("match", source=row.id)}}"><i class="fa-solid fa-circle-xmark"></i> ADD</a>
+                {% endif %}
+              </td>
+            </tr>
+          {% endfor %}
+          -->
+        </tbody>
       </table>
+      <div id="loader-splash" class="loader-splash"><div class="loader-spinner"></div></div>
     </div>
   </div>
 </div>
