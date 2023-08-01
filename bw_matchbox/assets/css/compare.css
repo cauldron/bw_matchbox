@@ -5,14 +5,14 @@
    * --compare-collapsed-color: #F60;
    * --compare-collapsed-bg-color: rgba(255,102,0,.1);
    */
-  --compare-selected-color: #1EAEDB;
+  --compare-selected-color: var(--layout-theme-primary-color-dark1); /* #1EAEDB; */
   --compare-selected-bg-color05: rgba(30,174,219,.05);
   --compare-selected-bg-color1: rgba(30,174,219,.1);
   --compare-selected-bg-color2: rgba(30,174,219,.2);
   --compare-selected-bg-color3: rgba(30,174,219,.3);
   --compare-selected-bg-color4: rgba(30,174,219,.4);
   --compare-selected-bg-color5: rgba(30,174,219,.5);
-  --compare-animation-time: 250ms;
+  --compare-animation-time: var(--common-animation-time);
   --compare-selected-animation-time: 3s;
   --compare-td-padding-h-at-edges: 8px;
   --compare-td-padding-h: 4px;
