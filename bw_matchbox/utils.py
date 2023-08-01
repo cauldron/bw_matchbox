@@ -1,7 +1,7 @@
 import importlib.metadata
 from typing import Optional, Union
 
-from Levenshtein import hamming
+from Levenshtein import distance
 
 
 def get_version_tuple() -> tuple:
@@ -19,15 +19,18 @@ def get_version_tuple() -> tuple:
 
 def normalize_name(string_: str) -> str:
     REMOVED = [
-        "market group for",
-        "market for",
-        "construction",
+        "market group for ",
+        "market for ",
+        " construction",
         "at plant",
     ]
 
     string_ = string_.lower()
     for phrase in REMOVED:
         string_ = string_.replace(phrase, "")
+
+    while "  " in string_:
+        string_ = string_.replace("  ", " ")
 
     string_ = string_.strip()
     if string_.endswith(","):
@@ -36,7 +39,10 @@ def normalize_name(string_: str) -> str:
 
 
 def name_close_enough(a: str, b: str, cutoff: Optional[int] = 3) -> int:
-    return hamming(normalize_name(a), normalize_name(b)) < cutoff
+    print(normalize_name(a))
+    print(normalize_name(b))
+    print(distance(normalize_name(a), normalize_name(b)))
+    return distance(normalize_name(a), normalize_name(b)) < cutoff
 
 
 def similar_location(a: str, b: str) -> bool:
