@@ -8,3 +8,6 @@
   margin-left: 4px;
   margin-right: 8px;
 }
+.processes-list .page-filters label:first-child {
+  margin-left: 0;
+}
