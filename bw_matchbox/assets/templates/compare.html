@@ -6,6 +6,10 @@
 <script src="{{ url_for('static', filename='js/compare-row-click.js') }}"></script>
 <script src="{{ url_for('static', filename='js/compare-core.js') }}"></script>
 
+{# Globals:
+  - `compareCore` (from `bw_matchbox/assets/js/compare-core.js`)
+#}
+
 <div class="container compare">
   {% include 'navigation.html' %}
   <span class="modal-wrapper">
@@ -43,11 +47,6 @@
 </div>
 
 <script>
-
-  // const useDebug = true; // DEBUG!
-
-  // Globals:
-  // - `compareCore` (from `bw_matchbox/assets/js/compare-core.js`)
 
   /* // Common types (ts-like):
    *

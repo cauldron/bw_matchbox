@@ -1,4 +1,21 @@
 {% include 'header.html' %}
+
+{# TODO:
+  - Add control for `order_by` parameter (name, location, product; default (empty) -- random.
+  - Add pagination navigation (probably above and below the table?). Pass `offset` and `limit` parameters to request.
+  - Add loading spinner (to be displayed while data loading).
+  - Add place to show loading (network) errors.
+  - Make request with above parameters to `GET /processes` on page load and on pagfintation or order controls changed.
+#}
+
+<link rel="stylesheet" href="{{ url_for('static', filename='css/processes-list.css') }}">
+
+<script src="{{ url_for('static', filename='js/processes-list.js') }}"></script>
+
+{# Globals:
+  - `processesList` (from `bw_matchbox/assets/js/processes-list.js`)
+#}
+
 <div class="container">
   {% include 'navigation.html' %}
   <div class="row">
@@ -36,21 +53,6 @@
 </div>
 
 <script type="text/javascript">
-var search_bar = document.getElementById("query_string");
-search_bar.focus();
-
-var do_search = function () {
-  var qs = encodeURIComponent(document.getElementById("query_string").value);
-  if (qs) {
-    location.assign("{{ url_for('search') }}?database={{ database }}&q=" + qs);
-  };
-};
-
-search_bar.addEventListener("click", do_search);
-search_bar.addEventListener("keypress", function(event) {
-  if (event.key === "Enter") {
-    do_search();
-  }
-});
+  processesList.start();
 </script>
 {% include 'footer.html' %}

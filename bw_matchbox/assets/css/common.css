@@ -1,0 +1,12 @@
+:root {
+  /* Primary color */
+  --layout-theme-primary-color: #33C3F0; /* aka rgb(51,195,240) */
+  /* Primary color for hovered elements */
+  --layout-theme-primary-color-dark1: #1EAEDB; /* aks rgb(30,174,219) */
+  /* Error color */
+  --layout-theme-error-color: #CC3333
+}
+
+
+/* Spinner */
+/* TODO */
