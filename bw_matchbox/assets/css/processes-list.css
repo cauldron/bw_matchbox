@@ -1,0 +1,132 @@
+/* stylelint-disable
+    declaration-block-single-line-max-declarations
+    declaration-colon-space-after
+    rule-empty-line-before
+    comment-empty-line-before
+*/
+
+/* Root node */
+.processes-list {
+  margin-bottom: 20px;
+}
+
+/* Header */
+.processes-list .page-header h1 {
+  font-size: 200%;
+}
+
+/* Empty state: hode some elements... */
+/* .processes-list.empty .page-filters, */
+/* UNUSED: .processes-list.empty .table-pagination, */
+.processes-list.empty .processes-list-table {
+  display: none;
+}
+
+/* Loading state: disable some elements... */
+.processes-list > * {
+  transition: all var(--common-animation-time);
+}
+.processes-list.loading .page-search,
+.processes-list.loading .page-filters,
+/* UNUSED: .processes-list.loading .table-pagination, */
+.processes-list.loading .bottom-actions-links {
+  opacity: 0.5;
+  pointer-events: none;
+}
+.processes-list.loading .bottom-actions-links {
+  opacity: 0;
+}
+
+/* Table */
+.processes-list-table {
+  margin-bottom: 0;
+}
+
+/* Filter controls section */
+.processes-list .page-filters label {
+  display: inline-block;
+  margin-left: 4px;
+  margin-right: 8px;
+}
+.processes-list .page-filters label:first-child {
+  margin-left: 0;
+}
+
+/* Loader splash */
+.processes-list .loader-splash {
+  padding: 20px;
+}
+.processes-list:not(.loading) .loader-splash {
+  /* Inherited from `.loader-splash.hidden`, see `bw_matchbox/assets/css/common.css` */
+  opacity: 0;
+  pointer-events: none;
+}
+
+/* Error */
+.processes-list .error {
+  border-radius: 4px;
+  background-color: var(--layout-theme-error-color);
+  color: #fff;
+  margin: 20px auto;
+  padding: 10px 20px;
+}
+.processes-list:not(.error) .error {
+  display: none;
+}
+
+/* [> Pagination (UNUSED: using incremental loading) <]
+ * .processes-list .table-pagination {
+ *   padding: 20px 0;
+ *   display: flex;
+ *   gap: 10px;
+ * }
+ * .processes-list .table-pagination .text {
+ *   opacity: 0.3;
+ * }
+ * .processes-list .table-pagination .link {
+ *   cursor: pointer;
+ *   transition: all var(--common-animation-time);
+ *   color: var(--layout-theme-primary-color-dark1);
+ * }
+ * .processes-list .table-pagination .link:hover {
+ *   color: var(--layout-theme-primary-color-dark2);
+ *   text-decoration: underline;
+ * }
+ */
+
+/* Bottom actions */
+.processes-list .bottom-actions {
+  position: relative;
+  min-height: 80px;
+  text-align: center;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  align-content: center;
+}
+/* Action links... */
+.processes-list .bottom-actions-links {
+  transition: all var(--common-animation-time);
+}
+.processes-list .bottom-actions-links a {
+  display: none;
+  color: var(-layout-theme-primary-color-dark1);
+  cursor: pointer;
+  margin: 0 10px;
+}
+.processes-list .bottom-actions-links a + a:before {
+  content: ' | ',
+  display: inline-block;
+}
+.processes-list .bottom-actions-links a:hover {
+  text-decoration: underline;
+}
+/* Show 'Reload' (after error) button if error... */
+.processes-list.error .bottom-actions-links a#action-clear-and-reload,
+/* Show 'Load more' button for all 'order by' values except for 'random'... */
+.processes-list:not(.order-random):not(.error) .bottom-actions-links a#action-load-more,
+/* Show 'Refresh' button for 'random' 'order by' value... */
+.processes-list.order-random:not(.error) .bottom-actions-links a#action-reload-random {
+  display: inline-block;
+}
+

@@ -1,16 +1,21 @@
-/* stylelint-disable declaration-block-single-line-max-declarations, declaration-colon-space-after */
+/* stylelint-disable
+    declaration-block-single-line-max-declarations
+    declaration-colon-space-after
+ */
 
 :root {
-  --compare-collapsed-color: #f60;
-  --compare-collapsed-bg-color: rgb(255 102 0 / 10%);
-  --compare-selected-color: #1eaedb;
+  /* // UNUSED: Collapsed rows are just hidden.
+   * --compare-collapsed-color: #F60;
+   * --compare-collapsed-bg-color: rgba(255,102,0,.1);
+   */
+  --compare-selected-color: var(--layout-theme-primary-color-dark1); /* #1EAEDB; */
   --compare-selected-bg-color05: rgb(30 174 219 / 5%);
   --compare-selected-bg-color1: rgb(30 174 219 / 10%);
   --compare-selected-bg-color2: rgb(30 174 219 / 20%);
   --compare-selected-bg-color3: rgb(30 174 219 / 30%);
   --compare-selected-bg-color4: rgb(30 174 219 / 40%);
   --compare-selected-bg-color5: rgb(30 174 219 / 50%);
-  --compare-animation-time: 250ms;
+  --compare-animation-time: var(--common-animation-time);
   --compare-selected-animation-time: 3s;
   --compare-td-padding-h-at-edges: 8px;
   --compare-td-padding-h: 4px;
@@ -22,11 +27,6 @@
 }
 
 .compare .compare-tables > .column {
-  /* DEBUG */
-
-  /* border: 2px solid red; */
-
-  /* overflow: hidden; */
   position: relative;
 }
 
@@ -36,9 +36,6 @@
 }
 
 .compare .compare-tables > .column > table {
-  /* DEBUG */
-
-  /* border: 1px solid green; */
   border: 0;
   table-layout: fixed;
   width: 100%;
@@ -180,10 +177,10 @@
 /* Collapsed row... */
 
 .compare-table tr.collapsed {
-  box-shadow:
-    0 0 4px var(--compare-collapsed-color),
-    inset 0 0 2px var(--compare-collapsed-color);
-  background-color: var(--compare-collapsed-bg-color);
+  /* // UNUSED: Collapsed rows are just hidden.
+   * box-shadow: 0 0 4px var(--compare-collapsed-color), inset 0 0 2px var(--compare-collapsed-color);
+   * background-color: var(--compare-collapsed-bg-color);
+   */
   display: none;
 }
 
