@@ -1,9 +1,9 @@
 /* global
-    commonHelpers,
-    ProcessesListConstants,
-    ProcessesListDataLoad,
-    ProcessesListNodes,
-    ProcessesListData,
+    commonHelpers
+    ProcessesListConstants
+    ProcessesListDataLoad
+    ProcessesListNodes
+    ProcessesListData
 */
 
 /* @desc UNUSED: Pagination support.

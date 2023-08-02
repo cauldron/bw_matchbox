@@ -1,8 +1,8 @@
 /* global
-    ProcessesListData,
-    ProcessesListNodes,
-    ProcessesListDataRender,
-    ProcessesListDataLoad,
+    ProcessesListData
+    ProcessesListNodes
+    ProcessesListDataRender
+    ProcessesListDataLoad
 */
 
 /** @descr Control component's states

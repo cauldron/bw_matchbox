@@ -1,9 +1,9 @@
 /* global
-    commonHelpers,
-    ProcessesListConstants,
-    ProcessesListData,
-    ProcessesListStates,
-    ProcessesListDataRender,
+    commonHelpers
+    ProcessesListConstants
+    ProcessesListData
+    ProcessesListStates
+    ProcessesListDataRender
 */
 
 /** @descr Dynamic data loading support

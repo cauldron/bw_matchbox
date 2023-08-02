@@ -1,6 +1,6 @@
 /* global
-    commonHelpers,
-    ProcessesListNodes,
+    commonHelpers
+    ProcessesListNodes
 */
 
 /** @descr Render table content.

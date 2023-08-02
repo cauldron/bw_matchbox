@@ -1,4 +1,8 @@
-/* global commonHelpers, ProcessesListData, ProcessesListNodes */
+/* global
+    commonHelpers
+    ProcessesListData
+    ProcessesListNodes
+*/
 
 /** @descr Search bar support
  */

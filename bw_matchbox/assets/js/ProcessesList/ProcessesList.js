@@ -1,12 +1,12 @@
 /* global
-    commonHelpers,
-    ProcessesListConstants,
-    ProcessesListData,
-    ProcessesListDataLoad,
-    ProcessesListDataRender,
-    ProcessesListNodes,
-    ProcessesListSearch,
-    ProcessesListStates,
+    commonHelpers
+    ProcessesListConstants
+    ProcessesListData
+    ProcessesListDataLoad
+    ProcessesListDataRender
+    ProcessesListNodes
+    ProcessesListSearch
+    ProcessesListStates
 */
 
 // NOTE: Don't forget to call `startAllModules` for all the used modules...

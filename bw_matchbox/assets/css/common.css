@@ -1,10 +1,10 @@
 /* stylelint-disable
-    declaration-block-single-line-max-declarations,
-    declaration-colon-space-after,
-    rule-empty-line-before,
-    comment-empty-line-before,
-    at-rule-empty-line-before,
-    declaration-block-no-redundant-longhand-properties,
+    declaration-block-single-line-max-declarations
+    declaration-colon-space-after
+    rule-empty-line-before
+    comment-empty-line-before
+    at-rule-empty-line-before
+    declaration-block-no-redundant-longhand-properties
  */
 
 :root {

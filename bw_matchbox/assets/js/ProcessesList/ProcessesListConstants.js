@@ -1,5 +1,3 @@
-/* --global commonHelpers */
-
 /* @desc Shared constants
  */
 
