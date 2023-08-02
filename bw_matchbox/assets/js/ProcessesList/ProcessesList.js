@@ -31,10 +31,6 @@ const ProcessesList = {
   onOrderByChange(target) {
     // TODO: Move to Handlers module?
     const { value } = target;
-    console.log('[ProcessesList:onOrderByChange]', {
-      value,
-      target,
-    });
     ProcessesListStates.setOrderBy(value);
   },
 

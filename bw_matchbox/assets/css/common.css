@@ -1,11 +1,20 @@
+/* stylelint-disable
+    declaration-block-single-line-max-declarations,
+    declaration-colon-space-after,
+    rule-empty-line-before,
+    comment-empty-line-before,
+    at-rule-empty-line-before,
+    declaration-block-no-redundant-longhand-properties,
+ */
+
 :root {
   /* Primary color */
-  --layout-theme-primary-color: #33C3F0; /* aka rgb(51,195,240) */
+  --layout-theme-primary-color: #33c3f0; /* aka rgb(51,195,240) */
   /* Primary colors for hovered elements */
-  --layout-theme-primary-color-dark1: #1EAEDB; /* aks rgb(30,174,219) */
-  --layout-theme-primary-color-dark2: #0FA0CE; /* aks gb(15,160,206) */
+  --layout-theme-primary-color-dark1: #1eaedb; /* aks rgb(30,174,219) */
+  --layout-theme-primary-color-dark2: #0fa0ce; /* aks gb(15,160,206) */
   /* Error color */
-  --layout-theme-error-color: #CC3333;
+  --layout-theme-error-color: #c33;
   /* Animations */
   --common-animation-time: 250ms;
 }
@@ -49,7 +58,6 @@
 .loader-splash.bg-black {
   background-color: #000;
 }
-}
 .loader-splash.bg-primary {
   background-color: var(--layout-theme-primary-color);
 }
@@ -58,19 +66,17 @@
   background-color: #999;
 }
 
-
-
 /* Loader spinner */
 .loader-spinner {
   position: relative;
 }
 .loader-spinner,
-.loader-spinner:before {
+.loader-spinner::before {
   /* Full-size */
   height: 40px;
   width: 40px;
 }
-.loader-spinner:before {
+.loader-spinner::before {
   /* Half-size offset */
   margin-top: -20px;
   margin-left: -20px;
@@ -90,4 +96,3 @@
     transform: rotate(360deg);
   }
 }
-

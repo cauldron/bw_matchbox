@@ -48,7 +48,7 @@ const compareCore = {
     // Add row from source to target array
     event.preventDefault();
     row.parentElement.parentElement.classList.add('shift-right');
-    var obj = compareCore.sharedData.source_data.find((item) => item.row_id == row_id);
+    const obj = compareCore.sharedData.source_data.find((item) => item.row_id == row_id);
     compareCore.sharedData.target_data.push(obj);
     compareCore.build_table('target-table', compareCore.sharedData.target_data, true);
     compareCore.comment += `* Added source exchange of ${obj.amount} ${obj.unit} ${obj.name} in ${obj.location}.\n`;
@@ -194,7 +194,7 @@ const compareCore = {
   createOneToOneProxyFunc: function (event) {
     event.preventDefault();
 
-    var submission_data = {
+    const submission_data = {
       exchanges: [{ input_id: compareCore.sharedData.target_id, amount: 1.0 }],
       source: compareCore.sharedData.source_id,
       comment: 'One-to-one proxy',
@@ -207,7 +207,7 @@ const compareCore = {
           .replace('market for ', '')
           .trim(),
     };
-    var url = '/create-proxy/';
+    const url = '/create-proxy/';
     fetch(url, {
       method: 'POST',
       redirect: 'follow',
@@ -222,8 +222,8 @@ const compareCore = {
 
   createProxyFunc: function (event) {
     event.preventDefault();
-    var span = document.getElementById('modal-content-wrapper');
-    var name =
+    const span = document.getElementById('modal-content-wrapper');
+    const name =
       'Proxy for ' +
       compareCore.sharedData.target_name
         .replace('Market group for ', '')
@@ -231,7 +231,7 @@ const compareCore = {
         .replace('Market for ', '')
         .replace('market for ', '')
         .trim();
-    var text = `
+    let text = `
       <form>
         <label for="proxy-name">Proxy name</label>
         <input class="u-full-width" type="text" id="proxy-name" name="proxy-name" value="${name}">
@@ -263,16 +263,16 @@ const compareCore = {
     span.innerHTML = text;
     compareCore.modal.style.display = 'block';
 
-    var submit = document.getElementById('create-proxy-submit-button');
+    const submit = document.getElementById('create-proxy-submit-button');
     submit.addEventListener('click', async (e) => {
       e.preventDefault();
-      var submission_data = {
+      const submission_data = {
         exchanges: compareCore.sharedData.target_data,
         source: compareCore.sharedData.source_id,
         comment: document.getElementById('proxy-comment').value,
         name: document.getElementById('proxy-name').value,
       };
-      var url = '/create-proxy/';
+      const url = '/create-proxy/';
       fetch(url, {
         method: 'POST',
         redirect: 'follow',
@@ -297,7 +297,7 @@ const compareCore = {
 
   removeRow: function (element) {
     compareRowClick.disableRowClick();
-    var row_id = element.parentElement.getAttribute('row_id');
+    const row_id = element.parentElement.getAttribute('row_id');
 
     function removeValue(obj, index, arr) {
       if (obj.row_id == row_id) {
@@ -313,9 +313,9 @@ const compareCore = {
 
   expandRow: function (element) {
     compareRowClick.disableRowClick();
-    var url =
+    const url =
       '/expand/' + element.getAttribute('input_id') + '/' + element.getAttribute('amount') + '/';
-    var t = compareCore.sharedData.target_data.find(
+    const t = compareCore.sharedData.target_data.find(
       (item) => item.input_id == element.getAttribute('input_id'),
     );
     compareCore.comment += `* Expanded process inputs of ${t.amount} ${t.unit} from ${t.name} in ${t.location}.\n`;
@@ -337,17 +337,17 @@ const compareCore = {
 
   replaceAmountRow: function (elem, target_id) {
     compareRowClick.disableRowClick();
-    var s = compareCore.sharedData.source_data.find(
+    const s = compareCore.sharedData.source_data.find(
       (item) => item.row_id == elem.getAttribute('source_id'),
     );
-    var t = compareCore.sharedData.target_data.find((item) => item.row_id == target_id);
+    const t = compareCore.sharedData.target_data.find((item) => item.row_id == target_id);
     compareCore.comment += `* Used source database amount ${s.amount} ${s.unit} from ${s.name} in ${s.location} instead of ${t.amount} ${t.unit} from ${t.name} in ${t.location}.\n`;
     document.getElementById('number-current-amount').innerText = elem.getAttribute('amount');
   },
 
   rescaleAmount: function (target_id) {
     compareRowClick.disableRowClick();
-    var t = compareCore.sharedData.target_data.find((item) => item.row_id == target_id);
+    const t = compareCore.sharedData.target_data.find((item) => item.row_id == target_id);
     const scale = Number(document.getElementById('rescale_number').value);
     const node = document.getElementById('number-current-amount');
     if (scale != 1) {
@@ -358,7 +358,7 @@ const compareCore = {
 
   setNewNumber: function (target_id) {
     compareRowClick.disableRowClick();
-    var t = compareCore.sharedData.target_data.find((item) => item.row_id == target_id);
+    const t = compareCore.sharedData.target_data.find((item) => item.row_id == target_id);
     const new_value = document.getElementById('new_number').value;
     compareCore.comment += `* Set manual exchange value of ${new_value} instead of ${t.amount} ${t.unit} for ${t.name} in ${t.location}.\n`;
     document.getElementById('number-current-amount').innerText = new_value;
@@ -381,12 +381,12 @@ const compareCore = {
   editNumber: function (link) {
     const td = link.closest('td');
     compareRowClick.disableRowClick();
-    var row = compareCore.sharedData.target_data.find(
+    const row = compareCore.sharedData.target_data.find(
       (item) => item.row_id == td.getAttribute('row_id'),
     );
-    var span = document.getElementById('modal-content-wrapper');
+    const span = document.getElementById('modal-content-wrapper');
 
-    var start = `
+    let start = `
       <h3>${row.name} | ${row.location} | ${row.unit}</h3>
       <div class="five columns">
         <p>Click on a row to take that value</p>

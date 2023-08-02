@@ -98,13 +98,6 @@ const ProcessesListDataRender = {
      */
     const rowsContent = rows.map(this.renderDataRow.bind(this));
     const rowsNodes = commonHelpers.htmlToElements(rowsContent);
-    console.log('[ProcessesListDataRender:renderTableData]', {
-      opts,
-      rowsNodes,
-      rowsContent,
-      rows,
-      tBodyNode,
-    });
     if (opts.append) {
       // Append new data (will be used for incremental update)...
       tBodyNode.append.apply(tBodyNode, rowsNodes);

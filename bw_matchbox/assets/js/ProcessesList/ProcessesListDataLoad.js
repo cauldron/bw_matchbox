@@ -25,16 +25,17 @@ const ProcessesListDataLoad = {
     };
     const urlQuery = commonHelpers.makeQuery(params, { addQuestionSymbol: true });
     const url = urlBase + urlQuery;
-    console.log('[ProcessesListDataLoad:loadData]: start', {
-      url,
-      params,
-      urlQuery,
-      urlBase,
-      currentPage,
-      pageSize,
-      offset,
-      orderBy,
-    });
+    /* console.log('[ProcessesListDataLoad:loadData]: start', {
+     *   url,
+     *   params,
+     *   urlQuery,
+     *   urlBase,
+     *   currentPage,
+     *   pageSize,
+     *   offset,
+     *   orderBy,
+     * });
+     */
     ProcessesListStates.setLoading(true);
     fetch(url)
       .then((res) => {
@@ -62,15 +63,6 @@ const ProcessesListDataLoad = {
       .then((result) => {
         const { data, total_records: totalRecords } = result;
         const hasData = Array.isArray(data) && !!data.length;
-        console.log('[ProcessesListDataLoad:loadData]: done', {
-          data,
-          totalRecords,
-          result,
-          url,
-          params,
-          urlQuery,
-          urlBase,
-        });
         // Update total records number...
         ProcessesListData.totalRecords = totalRecords;
         // Append data to current table...

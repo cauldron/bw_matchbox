@@ -1,3 +1,9 @@
+/* stylelint-disable
+    declaration-block-single-line-max-declarations,
+    declaration-colon-space-after,
+    rule-empty-line-before,
+    comment-empty-line-before,
+*/
 
 /* Root node */
 .processes-list {
@@ -25,7 +31,7 @@
 .processes-list.loading .table-pagination,
 .processes-list.loading .bottom-actions-links,
 .processes-list.loading .processes-list-table {
-  opacity: .5;
+  opacity: 0.5;
   pointer-events: none;
 }
 .processes-list.loading .bottom-actions-links {
@@ -73,7 +79,7 @@
   gap: 10px;
 }
 .processes-list .table-pagination .text {
-  opacity: .3;
+  opacity: 0.3;
 }
 .processes-list .table-pagination .link {
   cursor: pointer;
@@ -115,5 +121,3 @@
 .processes-list.order-random .bottom-actions-links a#action-reload {
   display: inline-block;
 }
-
-
