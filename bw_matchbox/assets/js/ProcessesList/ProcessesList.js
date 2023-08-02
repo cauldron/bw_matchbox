@@ -9,6 +9,13 @@
     ProcessesListStates
 */
 
+/** @descr Process list table client code.
+ *
+ * TODO:
+ *
+ * - Add fallback for 'Reload' (reload last data chunk) if error occured.
+ */
+
 // NOTE: Don't forget to call `startAllModules` for all the used modules...
 const allModulesList = [
   ProcessesListConstants,
@@ -21,9 +28,6 @@ const allModulesList = [
   ProcessesListDataLoad,
 ];
 
-/** @descr Process list table client code.
- */
-
 // global module variable
 // eslint-disable-next-line no-unused-vars
 const ProcessesList = {
@@ -34,9 +38,17 @@ const ProcessesList = {
     ProcessesListStates.setOrderBy(value);
   },
 
-  reloadData() {
+  /** clearAndReloadData -- Reload entire data (clear and load only first chunk)
+   */
+  clearAndReloadData() {
     ProcessesListStates.clearData();
     ProcessesListDataLoad.loadData();
+  },
+
+  /** reloadLastData -- Reload last data chank (TODO, in progress)
+   */
+  reloadLastData() {
+    ProcessesListDataLoad.loadData({ update: true }); // TODO
   },
 
   loadMoreData() {

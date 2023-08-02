@@ -1,13 +1,5 @@
 {% include 'header.html' %}
 
-{# TODO:
-  - Add control for `order_by` parameter (name, location, product; default (empty) -- random.
-  - Add pagination navigation (probably above and below the table?). Pass `offset` and `limit` parameters to request.
-  - Add loading spinner (to be displayed while data loading).
-  - Add place to show loading (network) errors.
-  - Make request with above parameters to `GET /processes` on page load and on pagfintation or order controls changed.
-#}
-
 <link rel="stylesheet" href="{{ url_for('static', filename='css/processes-list.css') }}">
 
 <script src="{{ url_for('static', filename='js/ProcessesList/ProcessesListConstants.js') }}"></script>
@@ -55,7 +47,7 @@
         <label for="order_by_product">Product</label>
       </div>
       <div id="processes-list-error" class="error">
-        Sample error text.
+        <!-- Error text comes here -->
       </div>
       <table id="processes-list-table" class="processes-list-table" width="100%">
         <thead>
@@ -72,8 +64,9 @@
       </table>
       <div class="bottom-actions">
         <div class="bottom-actions-links">
-          <a id="action-reload" onClick="ProcessesList.reloadData(this)">Reload</a>
-          <a id="action-load-more" onClick="ProcessesList.loadMoreData(this)">Load more...</a>
+          <a id="action-reload-random" onClick="ProcessesList.clearAndReloadData(this)">Reload random data</a>
+          <a id="action-load-more" onClick="ProcessesList.loadMoreData(this)">Load more</a>
+          <a id="action-clear-and-reload" onClick="ProcessesList.clearAndReloadData(this)">Reload</a>
         </div>
         <div id="loader-splash" class="loader-splash full-cover"><div class="loader-spinner"></div></div>
       </div>

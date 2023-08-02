@@ -12,8 +12,11 @@
 // global module variable
 // eslint-disable-next-line no-unused-vars
 const ProcessesListDataLoad = {
-  /** Load next/current (?) data chunk */
-  loadData() {
+  /** Load next/current (?) data chunk
+   * @param {object} [opts] - Options.
+   * @param {boolean} [opts.update] - Update current data chunk.
+   */
+  loadData(_opts = true) {
     const { pageSize, processesApiUrl: urlBase } = ProcessesListConstants;
     const { currentPage, database, orderBy } = ProcessesListData;
     const offset = currentPage * pageSize; // TODO!
@@ -42,8 +45,10 @@ const ProcessesListDataLoad = {
         const { ok, status, statusText } = res;
         if (!ok) {
           // Something went wrong?
-          const reason = [statusText, status && 'status: ' + status].filter(Boolean).join(', ');
-          const error = new Error('Data loading error:' + reason);
+          const reason =
+            [statusText, status && 'status: ' + status].filter(Boolean).join(', ') ||
+            'Unknown error';
+          const error = new Error('Data loading error: ' + reason);
           // eslint-disable-next-line no-console
           console.error('[ProcessesListDataLoad:loadData]: error (on then)', {
             reason,
@@ -60,15 +65,36 @@ const ProcessesListDataLoad = {
         // All is ok...
         return res.json();
       })
-      .then((result) => {
-        const { data, total_records: totalRecords } = result;
+      .then((json) => {
+        const { data, total_records: totalRecords } = json;
         const hasData = Array.isArray(data) && !!data.length;
+        const loadedRecords = hasData ? data.length : 0;
+        const currentRecords = offset + loadedRecords;
+        const hasMoreData = hasData && currentRecords < totalRecords;
+        /* console.log('[ProcessesListDataLoad:loadData]: start', {
+         *   hasMoreData,
+         *   currentRecords,
+         *   totalRecords,
+         *   loadedRecords,
+         *   offset,
+         *   url,
+         *   params,
+         *   urlQuery,
+         *   urlBase,
+         *   currentPage,
+         *   pageSize,
+         *   orderBy,
+         *   json,
+         * });
+         */
         // Update total records number...
         ProcessesListData.totalRecords = totalRecords;
         // Append data to current table...
+        // TODO: Use `opts.update` to update last data chunk.
         ProcessesListDataRender.renderTableData(data, { append: true });
         ProcessesListStates.setError(undefined); // Clear the error: all is ok
         ProcessesListStates.setHasData(ProcessesListData.hasData || hasData); // Update 'has data' flag
+        ProcessesListStates.setHasMoreData(hasMoreData); // Update 'has more data' flag
       })
       .catch((error) => {
         // eslint-disable-next-line no-console

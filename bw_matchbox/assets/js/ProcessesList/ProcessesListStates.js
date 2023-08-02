@@ -19,10 +19,17 @@ const ProcessesListStates = {
   },
 
   setHasData(hasData) {
-    // TODO: Set css class for id="processes-list-root" --> empty, update local state
+    // Set css class for root node, update local state
     const rootNode = ProcessesListNodes.getRootNode();
     rootNode.classList.toggle('empty', !hasData);
     ProcessesListData.hasData = hasData;
+  },
+
+  setHasMoreData(hasMoreData) {
+    // Set css class for root node, update local state
+    const rootNode = ProcessesListNodes.getRootNode();
+    rootNode.classList.toggle('has-more-data', hasMoreData);
+    ProcessesListData.hasMoreData = hasMoreData;
   },
 
   /* // UNUSED: setError -- Shorthand for `setHasData`
@@ -56,6 +63,7 @@ const ProcessesListStates = {
 
   clearData() {
     this.setHasData(false);
+    this.setHasMoreData(true);
     ProcessesListDataRender.clearTableData();
   },
 
