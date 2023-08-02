@@ -13,7 +13,7 @@
 // eslint-disable-next-line no-unused-vars
 const ProcessesListPagination = {
   renderNavigationLink(id, text) {
-    return `<a pagination-id="${id}" class="link" onClick="ProcessesList.onNavigationClick(this)">${text}</a>`;
+    return `<a pagination-id="${id}" class="link" onClick="ProcessesListPagination.onNavigationClick(this)">${text}</a>`;
   },
 
   renderNavigationText(text) {
@@ -26,7 +26,7 @@ const ProcessesListPagination = {
 
   createPaginationItems() {
     const { pageSize } = ProcessesListConstants;
-    const { currentPage, totalRecords } = this;
+    const { currentPage, totalRecords } = ProcessesListData;
     const totalPages = Math.ceil(totalRecords / pageSize);
     const lastPageNo = totalPages - 1;
     const isFirstPage = !currentPage;
@@ -63,12 +63,12 @@ const ProcessesListPagination = {
     // Find all the pagination blocks...
     const rootNode = ProcessesListNodes.getRootNode();
     const paginationNodes = rootNode.getElementsByClassName('table-pagination');
-    console.log('[ProcessesListPagination:renderAllPaginations]', {
-      contentItems,
-      rootNode,
-      paginationNodes,
-    });
-    debugger;
+    /* console.log('[ProcessesListPagination:renderAllPaginations]', {
+     *   contentItems,
+     *   rootNode,
+     *   paginationNodes,
+     * });
+     */
     // Update contents of all the pagination blocks...
     for (const node of paginationNodes) {
       const contentNodes = commonHelpers.htmlToElements(contentItems);
@@ -91,7 +91,7 @@ const ProcessesListPagination = {
       return 0;
     }
     // Next or prev?
-    const { currentPage } = this;
+    const { currentPage } = ProcessesListData;
     if (id === 'prev') {
       return currentPage - 1;
     }
@@ -99,7 +99,7 @@ const ProcessesListPagination = {
       return currentPage + 1;
     }
     // Last?
-    const { totalRecords } = this;
+    const { totalRecords } = ProcessesListData;
     const { pageSize } = ProcessesListConstants;
     const totalPages = Math.ceil(totalRecords / pageSize);
     if (id === 'last') {
@@ -115,12 +115,13 @@ const ProcessesListPagination = {
   onNavigationClick(target) {
     const id = target.getAttribute('pagination-id');
     const pageNo = this.getNavigationPageNo(id);
-    console.log('[ProcessesListPagination:onNavigationClick]', {
-      pageNo,
-      id,
-    });
-    debugger;
-    this.currentPage = pageNo;
+    /* console.log('[ProcessesListPagination:onNavigationClick]', {
+     *   pageNo,
+     *   id,
+     * });
+     */
+    // TODO: Use `setPageNo` method?
+    ProcessesListData.currentPage = pageNo;
     // TODO: Load data...
     ProcessesListDataLoad.loadData();
   },
