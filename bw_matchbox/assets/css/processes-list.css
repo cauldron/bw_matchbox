@@ -1,23 +1,43 @@
 
+/* Root node */
+.processes-list {
+  margin-bottom: 20px;
+}
+
+/* Header */
 .processes-list .page-header h1 {
   font-size: 200%;
 }
+
+/* Empty state: hode some elements... */
 .processes-list.empty .page-filters,
 .processes-list.empty .table-pagination,
 .processes-list.empty .processes-list-table {
   display: none;
 }
+
+/* Loading state: disable some elements... */
 .processes-list > * {
   transition: all var(--common-animation-time);
 }
 .processes-list.loading .page-search,
 .processes-list.loading .page-filters,
 .processes-list.loading .table-pagination,
+.processes-list.loading .bottom-actions-links,
 .processes-list.loading .processes-list-table {
   opacity: .5;
   pointer-events: none;
 }
+.processes-list.loading .bottom-actions-links {
+  opacity: 0;
+}
 
+/* Table */
+.processes-list-table {
+  margin-bottom: 0;
+}
+
+/* Filter controls section */
 .processes-list .page-filters label {
   display: inline-block;
   margin-left: 4px;
@@ -27,6 +47,7 @@
   margin-left: 0;
 }
 
+/* Loader splash */
 .processes-list .loader-splash {
   padding: 20px;
 }
@@ -37,7 +58,6 @@
 }
 
 /* Error */
-
 .processes-list .error {
   color: var(--layout-theme-error-color);
   margin: 20px auto;
@@ -46,7 +66,7 @@
   display: none;
 }
 
-/* Navigation */
+/* Pagination (UNUSED: using incremental loading) */
 .processes-list .table-pagination {
   padding: 20px 0;
   display: flex;
@@ -64,6 +84,36 @@
 .processes-list .table-pagination .link:hover {
   color: var(--layout-theme-primary-color-dark2);
   text-decoration: underline;
+}
+
+/* Bottom actions */
+.processes-list .bottom-actions {
+  position: relative;
+  min-height: 80px;
+  text-align: center;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  align-content: center;
+}
+/* Action links... */
+.processes-list .bottom-actions-links {
+  transition: all var(--common-animation-time);
+}
+.processes-list .bottom-actions-links a {
+  display: none;
+  cursor: pointer;
+}
+.processes-list .bottom-actions-links a:hover {
+  text-decoration: underline;
+}
+/* Show 'Load more' button for all 'order by' values except for 'random'... */
+.processes-list:not(.order-random) .bottom-actions-links a#action-load-more {
+  display: inline-block;
+}
+/* Show 'Refresh' button for 'random' 'order by' value... */
+.processes-list.order-random .bottom-actions-links a#action-reload {
+  display: inline-block;
 }
 
 

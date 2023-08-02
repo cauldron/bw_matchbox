@@ -38,6 +38,16 @@ const ProcessesList = {
     ProcessesListStates.setOrderBy(value);
   },
 
+  reloadData() {
+    ProcessesListStates.clearData();
+    ProcessesListDataLoad.loadData();
+  },
+
+  loadMoreData() {
+    ProcessesListData.currentPage++;
+    ProcessesListDataLoad.loadData();
+  },
+
   /** Get all the parameters passed in the url query */
   fetchUrlParams() {
     // Get & store the database value form the url query...

@@ -6,7 +6,12 @@
     ProcessesListData,
 */
 
-/* @desc Pagination support.
+/* @desc UNUSED: Pagination support.
+ *
+ * Sample of pagination node in html:
+ * ```
+ *   <div class="table-pagination"></div>
+ * ```
  */
 
 // global module variable

@@ -8,7 +8,7 @@ const ProcessesListData = {
   sharedParams: undefined,
 
   // Data params...
-  orderBy: '', // Control for `order_by` parameter (name, location, product; default (empty) -- random.
+  orderBy: 'random', // Control for `order_by` parameter (name, location, product; default (empty) -- random.
   database: '',
   searchValue: '',
 
@@ -17,7 +17,6 @@ const ProcessesListData = {
 
   // Page state...
   totalRecords: 0,
-  // offset <- (currentOffset | currentPage)
   currentPage: 0,
   error: undefined,
   isError: false,

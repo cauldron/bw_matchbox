@@ -11,9 +11,6 @@
 // global module variable
 // eslint-disable-next-line no-unused-vars
 const ProcessesListStates = {
-  // clearData
-  // loadNextPage
-
   setLoading(isLoading) {
     // Set css class for id="processes-list-root" --> loading, set local status
     const rootNode = ProcessesListNodes.getRootNode();
@@ -64,8 +61,8 @@ const ProcessesListStates = {
 
   setOrderBy(orderBy) {
     const rootNode = ProcessesListNodes.getRootNode();
-    const prevClass = ['order', ProcessesListData.orderBy].filter(Boolean).join('-');
-    const nextClass = ['order', orderBy].filter(Boolean).join('-');
+    const prevClass = ['order', ProcessesListData.orderBy || 'random'].filter(Boolean).join('-');
+    const nextClass = ['order', orderBy || 'random'].filter(Boolean).join('-');
     rootNode.classList.toggle(prevClass, false);
     rootNode.classList.toggle(nextClass, true);
     ProcessesListData.orderBy = orderBy;
