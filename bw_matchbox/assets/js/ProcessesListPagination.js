@@ -13,7 +13,7 @@
 // eslint-disable-next-line no-unused-vars
 const ProcessesListPagination = {
   renderNavigationLink(id, text) {
-    return `<a pagination-id="${id}" class="link" onClick="processesList.onNavigationClick(this)">${text}</a>`;
+    return `<a pagination-id="${id}" class="link" onClick="ProcessesList.onNavigationClick(this)">${text}</a>`;
   },
 
   renderNavigationText(text) {

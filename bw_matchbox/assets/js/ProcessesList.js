@@ -15,7 +15,7 @@
 
 // global module variable
 // eslint-disable-next-line no-unused-vars
-const processesList = {
+const ProcessesList = {
   /** Update value of 'order by' parameter from user */
   onOrderByChange(target) {
     const { value } = target;

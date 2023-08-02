@@ -10,18 +10,18 @@
 
 <link rel="stylesheet" href="{{ url_for('static', filename='css/processes-list.css') }}">
 
-<script src="{{ url_for('static', filename='js/processes-list-constants.js') }}"></script>
-<script src="{{ url_for('static', filename='js/processes-list-data.js') }}"></script>
-<script src="{{ url_for('static', filename='js/processes-list-nodes.js') }}"></script>
-<script src="{{ url_for('static', filename='js/processes-list-search.js') }}"></script>
-<script src="{{ url_for('static', filename='js/processes-list-states.js') }}"></script>
-<script src="{{ url_for('static', filename='js/processes-list-data-load.js') }}"></script>
-<script src="{{ url_for('static', filename='js/processes-list-data-render.js') }}"></script>
-<script src="{{ url_for('static', filename='js/processes-list-pagination.js') }}"></script>
-<script src="{{ url_for('static', filename='js/processes-list.js') }}"></script>
+<script src="{{ url_for('static', filename='js/ProcessesListConstants.js') }}"></script>
+<script src="{{ url_for('static', filename='js/ProcessesListData.js') }}"></script>
+<script src="{{ url_for('static', filename='js/ProcessesListDataLoad.js') }}"></script>
+<script src="{{ url_for('static', filename='js/ProcessesListDataRender.js') }}"></script>
+<script src="{{ url_for('static', filename='js/ProcessesListNodes.js') }}"></script>
+<script src="{{ url_for('static', filename='js/ProcessesListPagination.js') }}"></script>
+<script src="{{ url_for('static', filename='js/ProcessesListSearch.js') }}"></script>
+<script src="{{ url_for('static', filename='js/ProcessesListStates.js') }}"></script>
+<script src="{{ url_for('static', filename='js/ProcessesList.js') }}"></script>
 
 {# Globals:
-  - `processesList` (from `bw_matchbox/assets/js/processes-list.js`)
+  - `ProcessesList` (from `bw_matchbox/assets/js/processes-list.js`)
 #}
 
 <div id="processes-list-root" class="container processes-list empty loading">
@@ -41,13 +41,13 @@
       <div class="page-filters">
         {# Control for `order_by` parameter (name, location, product; default (empty) -- random. #}
         <label class="radio-group-title">Order by:</label>
-        <input type="radio" name="order_by" id="order_by_random" value="" onChange="processesList.onOrderByChange(this)" checked>
+        <input type="radio" name="order_by" id="order_by_random" value="" onChange="ProcessesList.onOrderByChange(this)" checked>
         <label for="order_by_random">Random</label>
-        <input type="radio" name="order_by" id="order_by_name" value="name" onChange="processesList.onOrderByChange(this)">
+        <input type="radio" name="order_by" id="order_by_name" value="name" onChange="ProcessesList.onOrderByChange(this)">
         <label for="order_by_name">Name</label>
-        <input type="radio" name="order_by" id="order_by_location" value="location" onChange="processesList.onOrderByChange(this)">
+        <input type="radio" name="order_by" id="order_by_location" value="location" onChange="ProcessesList.onOrderByChange(this)">
         <label for="order_by_location">Location</label>
-        <input type="radio" name="order_by" id="order_by_product" value="product" onChange="processesList.onOrderByChange(this)">
+        <input type="radio" name="order_by" id="order_by_product" value="product" onChange="ProcessesList.onOrderByChange(this)">
         <label for="order_by_product">Product</label>
       </div>
       <div id="processes-list-error" class="error">
@@ -96,6 +96,6 @@
     database: '{{ database }}',
   };
   // Start page routines...
-  processesList.start(sharedParams);
+  ProcessesList.start(sharedParams);
 </script>
 {% include 'footer.html' %}
