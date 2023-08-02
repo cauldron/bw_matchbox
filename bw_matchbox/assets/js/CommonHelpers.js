@@ -1,6 +1,6 @@
 // global module variable
 // eslint-disable-next-line no-unused-vars
-const commonHelpers = {
+const CommonHelpers = {
   numberSorter: function (a, b) {
     if (a.amount < b.amount) {
       // Reversed because want ascending order
@@ -119,7 +119,7 @@ const commonHelpers = {
     if (search.indexOf('?') === 0) {
       search = search.substring(1);
     }
-    return commonHelpers.decodeQuery(search);
+    return CommonHelpers.decodeQuery(search);
   },
 
   /** makeQuery

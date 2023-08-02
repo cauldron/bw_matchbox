@@ -1,5 +1,5 @@
 /* global
-    commonHelpers
+    CommonHelpers
     ProcessesListConstants
     ProcessesListData
     ProcessesListStates
@@ -26,7 +26,7 @@ const ProcessesListDataLoad = {
       offset,
       limit: pageSize,
     };
-    const urlQuery = commonHelpers.makeQuery(params, { addQuestionSymbol: true });
+    const urlQuery = CommonHelpers.makeQuery(params, { addQuestionSymbol: true });
     const url = urlBase + urlQuery;
     /* console.log('[ProcessesListDataLoad:loadData]: start', {
      *   url,

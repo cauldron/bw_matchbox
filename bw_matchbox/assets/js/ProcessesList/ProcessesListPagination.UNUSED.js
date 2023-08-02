@@ -1,5 +1,5 @@
 /* global
-    commonHelpers
+    CommonHelpers
     ProcessesListConstants
     ProcessesListDataLoad
     ProcessesListNodes
@@ -58,7 +58,7 @@ const ProcessesListPagination = {
 
   renderPaginationNodes() {
     const items = this.createPaginationItems();
-    const nodes = commonHelpers.htmlToElements(items);
+    const nodes = CommonHelpers.htmlToElements(items);
     return nodes;
   },
 
@@ -76,7 +76,7 @@ const ProcessesListPagination = {
      */
     // Update contents of all the pagination blocks...
     for (const node of paginationNodes) {
-      const contentNodes = commonHelpers.htmlToElements(contentItems);
+      const contentNodes = CommonHelpers.htmlToElements(contentItems);
       node.replaceChildren.apply(node, contentNodes);
     }
   },

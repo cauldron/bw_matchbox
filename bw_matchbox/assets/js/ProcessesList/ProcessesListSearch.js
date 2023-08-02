@@ -1,5 +1,5 @@
 /* global
-    commonHelpers
+    CommonHelpers
     ProcessesListData
     ProcessesListNodes
 */
@@ -24,7 +24,7 @@ const ProcessesListSearch = {
         database,
         q: searchValue,
       };
-      const urlQuery = commonHelpers.makeQuery(urlParams, { addQuestionSymbol: true });
+      const urlQuery = CommonHelpers.makeQuery(urlParams, { addQuestionSymbol: true });
       const urlBase = searchValue ? searchUrl : '/';
       const url = urlBase + urlQuery;
       /* console.log('[ProcessesListSearch:doSearch]', {

@@ -1,5 +1,5 @@
 /* global
-    commonHelpers
+    CommonHelpers
     ProcessesListConstants
     ProcessesListData
     ProcessesListDataLoad
@@ -59,7 +59,7 @@ const ProcessesList = {
   /** Get all the parameters passed in the url query */
   fetchUrlParams() {
     // Get & store the database value form the url query...
-    const urlParams = commonHelpers.parseQuery(window.location.search);
+    const urlParams = CommonHelpers.parseQuery(window.location.search);
     const { database, q: searchValue } = urlParams;
     // Get database from url or from server-passed data...
     ProcessesListData.database = database || ProcessesListData.sharedParams.database;

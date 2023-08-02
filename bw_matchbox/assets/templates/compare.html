@@ -2,12 +2,12 @@
 
 <link rel="stylesheet" href="{{ url_for('static', filename='css/compare.css') }}">
 
-<script src="{{ url_for('static', filename='js/compare-rows-helpers.js') }}"></script>
-<script src="{{ url_for('static', filename='js/compare-row-click.js') }}"></script>
-<script src="{{ url_for('static', filename='js/compare-core.js') }}"></script>
+<script src="{{ url_for('static', filename='js/Compare/CompareRowsHelpers.js') }}"></script>
+<script src="{{ url_for('static', filename='js/Compare/CompareRowClick.js') }}"></script>
+<script src="{{ url_for('static', filename='js/Compare/CompareCore.js') }}"></script>
 
 {# Globals:
-  - `compareCore` (from `bw_matchbox/assets/js/compare-core.js`)
+  - `CompareCore` (from `bw_matchbox/assets/js/compare-core.js`)
 #}
 
 <div class="container compare">
@@ -39,7 +39,7 @@
       </table>
     </div>
     <div class="column one-half">
-      <h3>{{ target_node.name }} <span onclick="compareCore.replaceWithTarget(this)"><a><i class="fa-solid fa-arrow-up"></i></a></span></h3>
+      <h3>{{ target_node.name }} <span onclick="CompareCore.replaceWithTarget(this)"><a><i class="fa-solid fa-arrow-up"></i></a></span></h3>
       <table class="compare-table" id="target-table" width="100%">
       </table>
     </div>
@@ -106,7 +106,7 @@
    * }
    */
 
-  compareCore.initCompare(sharedData);
+  CompareCore.initCompare(sharedData);
 
 </script>
 {% include 'footer.html' %}

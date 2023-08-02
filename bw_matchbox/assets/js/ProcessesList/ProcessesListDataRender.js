@@ -1,5 +1,5 @@
 /* global
-    commonHelpers
+    CommonHelpers
     ProcessesListNodes
 */
 
@@ -97,7 +97,7 @@ const ProcessesListDataRender = {
      * - unit: ''
      */
     const rowsContent = rows.map(this.renderDataRow.bind(this));
-    const rowsNodes = commonHelpers.htmlToElements(rowsContent);
+    const rowsNodes = CommonHelpers.htmlToElements(rowsContent);
     if (opts.append) {
       // Append new data (will be used for incremental update)...
       tBodyNode.append.apply(tBodyNode, rowsNodes);
