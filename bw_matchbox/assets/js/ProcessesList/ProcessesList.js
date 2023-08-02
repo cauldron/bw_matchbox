@@ -29,14 +29,13 @@ const allModulesList = [
 const ProcessesList = {
   /** Update value of 'order by' parameter from user */
   onOrderByChange(target) {
+    // TODO: Move to Handlers module?
     const { value } = target;
     console.log('[ProcessesList:onOrderByChange]', {
       value,
       target,
     });
-    debugger;
-    ProcessesListData.orderBy = value;
-    // TODO: Clear current data and call re-load data method...
+    ProcessesListStates.setOrderBy(value);
   },
 
   /** Get all the parameters passed in the url query */

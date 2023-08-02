@@ -1,6 +1,8 @@
 /* global
     ProcessesListData,
     ProcessesListNodes,
+    ProcessesListDataRender,
+    ProcessesListDataLoad,
 */
 
 /** @descr Control component's states
@@ -26,7 +28,8 @@ const ProcessesListStates = {
     ProcessesListData.hasData = hasData;
   },
 
-  /* * setEmpty(isEmpty) {
+  /* // UNUSED: setError -- Shorthand for `setHasData`
+   * setEmpty(isEmpty) {
    *   this.setHasData(false);
    * },
    */
@@ -52,6 +55,23 @@ const ProcessesListStates = {
     }
     // Update error block content...
     errorNode.innerHTML = errorText;
+  },
+
+  clearData() {
+    this.setHasData(false);
+    ProcessesListDataRender.clearTableData();
+  },
+
+  setOrderBy(orderBy) {
+    const rootNode = ProcessesListNodes.getRootNode();
+    const prevClass = ['order', ProcessesListData.orderBy].filter(Boolean).join('-');
+    const nextClass = ['order', orderBy].filter(Boolean).join('-');
+    rootNode.classList.toggle(prevClass, false);
+    rootNode.classList.toggle(nextClass, true);
+    ProcessesListData.orderBy = orderBy;
+    // Clear current data and call load data method...
+    this.clearData();
+    ProcessesListDataLoad.loadData();
   },
 
   /** updatePage -- Update all the page dynamic elements

@@ -71,8 +71,10 @@ const ProcessesListDataLoad = {
           urlQuery,
           urlBase,
         });
+        // Update total records number...
         ProcessesListData.totalRecords = totalRecords;
-        ProcessesListDataRender.renderTableData(data);
+        // Append data to current table...
+        ProcessesListDataRender.renderTableData(data, { append: true });
         ProcessesListStates.setError(undefined); // Clear the error: all is ok
         ProcessesListStates.setHasData(ProcessesListData.hasData || hasData); // Update 'has data' flag
       })
