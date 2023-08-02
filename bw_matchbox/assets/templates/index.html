@@ -1,56 +1,86 @@
 {% include 'header.html' %}
-<div class="container">
+
+<link rel="stylesheet" href="{{ url_for('static', filename='css/processes-list.css') }}">
+
+<script src="{{ url_for('static', filename='js/ProcessesList/ProcessesListConstants.js') }}"></script>
+<script src="{{ url_for('static', filename='js/ProcessesList/ProcessesListData.js') }}"></script>
+<script src="{{ url_for('static', filename='js/ProcessesList/ProcessesListDataLoad.js') }}"></script>
+<script src="{{ url_for('static', filename='js/ProcessesList/ProcessesListDataRender.js') }}"></script>
+<script src="{{ url_for('static', filename='js/ProcessesList/ProcessesListNodes.js') }}"></script>
+{# UNUSED ProcessesListPagination -- Using incremental data loading
+<script src="{{ url_for('static', filename='js/ProcessesList/ProcessesListPagination.js') }}"></script>
+#}
+<script src="{{ url_for('static', filename='js/ProcessesList/ProcessesListSearch.js') }}"></script>
+<script src="{{ url_for('static', filename='js/ProcessesList/ProcessesListStates.js') }}"></script>
+<script src="{{ url_for('static', filename='js/ProcessesList/ProcessesList.js') }}"></script>
+
+{# Globals:
+  - `ProcessesList` (from `bw_matchbox/assets/js/processes-list.js`)
+#}
+
+<div id="processes-list-root" class="container processes-list empty loading order-random">
   {% include 'navigation.html' %}
   <div class="row">
     <div class="column">
-      <h1>
-        {% if unmatched_link %}Source Database <a href="{{ url_for('unmatched') }}">(Only unmatched)</a>
-        {% else %}Unmatched in Source Database
-        {% endif %}
-      </h1>
-      <p><input class="u-full-width" placeholder="{{ query_string }}" id="query_string"></p>
-      <table width="100%">
-        <tr>
-          <th>Name</th>
-          <th>Location</th>
-          <th>Unit</th>
-          <th>Matched</th>
-        </tr>
-        {% for row in table_data %}
-        <tr>
-          <td><a href="{{ url_for('process_detail', id=row.id) }}">{{row.name}}</a></td>
-          <td>{{row.location}}</td>
-          <td>{{row.unit}}</td>
-          <td>
-            {% if row.matched %}
-              <a class="button" href="{{ url_for("match", source=row.id)}}"><i class="fa-solid fa-check"></i> EDIT</a>
-            {% else %}
-              <a class="button button-primary" href="{{ url_for("match", source=row.id)}}"><i class="fa-solid fa-circle-xmark"></i> ADD</a>
-            {% endif %}
-          </td>
-        </tr>
-        {% endfor %}
+      <div class="page-header">
+        <h1>
+          {% if unmatched_link %}Source Database <a href="{{ url_for('unmatched') }}">(Only unmatched)</a>
+          {% else %}Unmatched in Source Database
+          {% endif %}
+        </h1>
+      </div>
+      <div class="page-search">
+        <p><input class="u-full-width" placeholder="Enter value to search" value="{{ query_string }}" id="query_string"></p>
+      </div>
+      <div class="page-filters">
+        {# Controls for `order_by` parameter (name, location, product; default
+        is (empty) i.e. random (see `order-random` for `.processes-list` root
+        node. #}
+        <label class="radio-group-title">Order by:</label>
+        <input type="radio" name="order_by" id="order_by_random" value="" onChange="ProcessesList.onOrderByChange(this)" checked>
+        <label for="order_by_random">Random</label>
+        <input type="radio" name="order_by" id="order_by_name" value="name" onChange="ProcessesList.onOrderByChange(this)">
+        <label for="order_by_name">Name</label>
+        <input type="radio" name="order_by" id="order_by_location" value="location" onChange="ProcessesList.onOrderByChange(this)">
+        <label for="order_by_location">Location</label>
+        <input type="radio" name="order_by" id="order_by_product" value="product" onChange="ProcessesList.onOrderByChange(this)">
+        <label for="order_by_product">Product</label>
+      </div>
+      <div id="processes-list-error" class="error">
+        <!-- Error text comes here -->
+      </div>
+      <table id="processes-list-table" class="processes-list-table" width="100%">
+        <thead>
+          <tr>
+            <th>Name</th>
+            <th>Location</th>
+            <th>Unit</th>
+            <th>Matched</th>
+          </tr>
+        </thead>
+        <tbody id="processes-list-table-body">
+          {# NOTE: Content is dynamically populated in client's js code, see `ProcessesListDataRender` #}
+        </tbody>
       </table>
+      <div class="bottom-actions">
+        <div class="bottom-actions-links">
+          <a id="action-reload-random" onClick="ProcessesList.clearAndReloadData(this)">Reload random data</a>
+          <a id="action-load-more" onClick="ProcessesList.loadMoreData(this)">Load more</a>
+          <a id="action-clear-and-reload" onClick="ProcessesList.clearAndReloadData(this)">Reload</a>
+        </div>
+        <div id="loader-splash" class="loader-splash full-cover"><div class="loader-spinner"></div></div>
+      </div>
     </div>
   </div>
 </div>
 
 <script type="text/javascript">
-var search_bar = document.getElementById("query_string");
-search_bar.focus();
-
-var do_search = function () {
-  var qs = encodeURIComponent(document.getElementById("query_string").value);
-  if (qs) {
-    location.assign("{{ url_for('search') }}?database={{ database }}&q=" + qs);
+  // Initialize page data...
+  const sharedParams = {
+    searchUrl: '{{ url_for("search") }}',
+    database: '{{ database }}',
   };
-};
-
-search_bar.addEventListener("click", do_search);
-search_bar.addEventListener("keypress", function(event) {
-  if (event.key === "Enter") {
-    do_search();
-  }
-});
+  // Start page routines...
+  ProcessesList.start(sharedParams);
 </script>
 {% include 'footer.html' %}

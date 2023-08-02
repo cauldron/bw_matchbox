@@ -1,4 +1,4 @@
-/* global commonHelpers, compareRowClick */
+/* global CommonHelpers, CompareRowClick */
 
 /* // Compare rows-related feature types (ts-like):
  * type TRowKind = 'source' | 'target';
@@ -15,9 +15,9 @@
  */
 
 // global module variable
-const compareRowsHelpers = {
+const CompareRowsHelpers = {
   // Data...
-  sharedData: undefined, // Initializing in `compareCore.initCompare` from `bw_matchbox/assets/templates/compare.html`
+  sharedData: undefined, // Initializing in `CompareCore.initCompare` from `bw_matchbox/assets/templates/compare.html`
   rowColumnsCount: 5, // Number of columns in a table row...
   selectedFirst: undefined, // <undefined | TSelectedRow>
   collapsedRows: {}, // Record<TRowId, TCollapsedRow> -- Hash of collapsed row
@@ -30,7 +30,7 @@ const compareRowsHelpers = {
    * @return {<TDataRecord>}
    */
   getRowData: function (rowKind, rowId) {
-    const { target_data, source_data } = compareRowsHelpers.sharedData;
+    const { target_data, source_data } = CompareRowsHelpers.sharedData;
     const data = rowKind === 'source' ? source_data : target_data;
     const found = data.find((item) => item.row_id === rowId);
     return found;
@@ -61,10 +61,10 @@ const compareRowsHelpers = {
    * @param {<TRowEl>} rowEl
    */
   selectRow(rowEl) {
-    const rowId = compareRowsHelpers.getRowId(rowEl);
-    const rowKind = compareRowsHelpers.getRowKind(rowEl);
+    const rowId = CompareRowsHelpers.getRowId(rowEl);
+    const rowKind = CompareRowsHelpers.getRowKind(rowEl);
     // Save record...
-    compareRowsHelpers.selectedFirst = { rowKind, rowEl, rowId };
+    CompareRowsHelpers.selectedFirst = { rowKind, rowEl, rowId };
     // Add styles...
     rowEl.classList.add('selected');
   },
@@ -76,8 +76,8 @@ const compareRowsHelpers = {
     // Clear styles...
     rowEl.classList.remove('selected');
     // Reset saved selected record (if it's the same)...
-    if (compareRowsHelpers.selectedFirst && compareRowsHelpers.selectedFirst.rowEl === rowEl) {
-      compareRowsHelpers.selectedFirst = undefined;
+    if (CompareRowsHelpers.selectedFirst && CompareRowsHelpers.selectedFirst.rowEl === rowEl) {
+      CompareRowsHelpers.selectedFirst = undefined;
     }
   },
 
@@ -131,17 +131,17 @@ const compareRowsHelpers = {
    * @return {string}
    */
   buildCollapsedHandlerRow: function (rowKind, rowId, optionalData) {
-    const collapsedId = compareRowsHelpers.getCollapsedId(rowKind, rowId);
-    const data = optionalData || compareRowsHelpers.getRowData(rowKind, rowId);
-    const tooltipText = compareRowsHelpers.getCollapsedHandlerTooltipText(data);
-    const quotedTooltipText = commonHelpers.quoteHtmlAttr(tooltipText);
+    const collapsedId = CompareRowsHelpers.getCollapsedId(rowKind, rowId);
+    const data = optionalData || CompareRowsHelpers.getRowData(rowKind, rowId);
+    const tooltipText = CompareRowsHelpers.getCollapsedHandlerTooltipText(data);
+    const quotedTooltipText = CommonHelpers.quoteHtmlAttr(tooltipText);
     const start = `<tr
       class="collapsed-handler"
       for-collapsed-id="${collapsedId}"
       title="${quotedTooltipText}"
-      onClick="compareRowsHelpers.clickUncollapseRow(this)"
+      onClick="CompareRowsHelpers.clickUncollapseRow(this)"
     >`;
-    const content = `<td colspan="${compareRowsHelpers.rowColumnsCount}"><br/></td>`;
+    const content = `<td colspan="${CompareRowsHelpers.rowColumnsCount}"><br/></td>`;
     const end = `</tr>`;
     return start + content + end;
   },
@@ -153,17 +153,17 @@ const compareRowsHelpers = {
     // TODO: For paginated tables -- don't use saved elements (they would by dynamic)!
     // See ` uncollapseRowByRecord` for example.
     const { rowKind, rowId, rowEl } = collapsedRowRecord;
-    const collapsedId = compareRowsHelpers.getCollapsedId(rowKind, rowId);
+    const collapsedId = CompareRowsHelpers.getCollapsedId(rowKind, rowId);
     // Add styles...
     rowEl.classList.add('collapsed');
     // Save id in the dom node...
     rowEl.setAttribute('collapsed-id', collapsedId);
     // Save record...
-    compareRowsHelpers.collapsedRows[collapsedId] = collapsedRowRecord;
+    CompareRowsHelpers.collapsedRows[collapsedId] = collapsedRowRecord;
     // Add interactive elements and other stuff (to uncollapse it later)...
     // Create html representation and dom node to append...
-    const handlerRowHtml = compareRowsHelpers.buildCollapsedHandlerRow(rowKind, rowId);
-    const handlerRowEl = commonHelpers.htmlToElement(handlerRowHtml);
+    const handlerRowHtml = CompareRowsHelpers.buildCollapsedHandlerRow(rowKind, rowId);
+    const handlerRowEl = CommonHelpers.htmlToElement(handlerRowHtml);
     // Find parent node...
     const parentNode = rowEl.parentNode;
     // Add handler before current row...
@@ -175,13 +175,13 @@ const compareRowsHelpers = {
    */
   uncollapseRowByRecord: function (collapsedRowRecord) {
     const { rowKind, rowId } = collapsedRowRecord;
-    const collapsedId = compareRowsHelpers.getCollapsedId(rowKind, rowId);
+    const collapsedId = CompareRowsHelpers.getCollapsedId(rowKind, rowId);
     const tableId = rowKind + '-table';
     const tableNode = document.getElementById(tableId);
     const handlerEl = tableNode.querySelector('[for-collapsed-id="' + collapsedId + '"]');
     const rowEl = tableNode.querySelector('[collapsed-id="' + collapsedId + '"]');
     // Remove collapsed record data...
-    compareRowsHelpers.collapsedRows[collapsedId] = undefined;
+    CompareRowsHelpers.collapsedRows[collapsedId] = undefined;
     if (handlerEl) {
       // Remove collapsed handler from dom (if exist in dom)...
       handlerEl.remove();
@@ -200,20 +200,20 @@ const compareRowsHelpers = {
   makeRowsCollapsed: function (selectedFirst, selectedSecond) {
     // TODO: To check data validity (both records are defined and well-formed)?
     // Remove selected status...
-    compareRowsHelpers.unselectRow(selectedFirst.rowEl);
-    compareRowsHelpers.unselectRow(selectedSecond.rowEl);
+    CompareRowsHelpers.unselectRow(selectedFirst.rowEl);
+    CompareRowsHelpers.unselectRow(selectedSecond.rowEl);
     // Collapse the rows...
     const collapsedFirst = { ...selectedFirst, pairId: selectedSecond.rowId };
     const collapsedSecond = { ...selectedSecond, pairId: selectedFirst.rowId };
-    compareRowsHelpers.collapseRowByRecord(collapsedFirst);
-    compareRowsHelpers.collapseRowByRecord(collapsedSecond);
+    CompareRowsHelpers.collapseRowByRecord(collapsedFirst);
+    CompareRowsHelpers.collapseRowByRecord(collapsedSecond);
   },
 
   /** clickRow
    * @param {<TRowEl>} rowEl
    */
   clickRow: function (rowEl) {
-    if (compareRowClick.disabled) {
+    if (CompareRowClick.disabled) {
       // Do nothing if disabled
       return;
     }
@@ -221,22 +221,22 @@ const compareRowsHelpers = {
       // Do nothing if row is already collapsed
       return;
     }
-    const rowId = compareRowsHelpers.getRowId(rowEl);
-    const rowKind = compareRowsHelpers.getRowKind(rowEl);
-    if (!compareRowsHelpers.selectedFirst) {
+    const rowId = CompareRowsHelpers.getRowId(rowEl);
+    const rowKind = CompareRowsHelpers.getRowKind(rowEl);
+    if (!CompareRowsHelpers.selectedFirst) {
       // Nothing selected -- select as first element...
-      compareRowsHelpers.selectRow(rowEl);
-    } else if (compareRowsHelpers.selectedFirst.rowEl === rowEl) {
+      CompareRowsHelpers.selectRow(rowEl);
+    } else if (CompareRowsHelpers.selectedFirst.rowEl === rowEl) {
       // Already selected and clicked again -- deselect...
-      compareRowsHelpers.unselectRow(rowEl);
-    } else if (compareRowsHelpers.selectedFirst.rowKind === rowKind) {
+      CompareRowsHelpers.unselectRow(rowEl);
+    } else if (CompareRowsHelpers.selectedFirst.rowKind === rowKind) {
       // Clicked another node in the same table -- deselect old and select new...
-      compareRowsHelpers.unselectRow(compareRowsHelpers.selectedFirst.rowEl);
-      compareRowsHelpers.selectRow(rowEl);
+      CompareRowsHelpers.unselectRow(CompareRowsHelpers.selectedFirst.rowEl);
+      CompareRowsHelpers.selectRow(rowEl);
     } else {
       // Selected second element -- make both nodes collapsed...
       const selectedSecond = { rowKind, rowEl, rowId };
-      compareRowsHelpers.makeRowsCollapsed(compareRowsHelpers.selectedFirst, selectedSecond);
+      CompareRowsHelpers.makeRowsCollapsed(CompareRowsHelpers.selectedFirst, selectedSecond);
     }
   },
 
@@ -246,15 +246,15 @@ const compareRowsHelpers = {
   clickUncollapseRow: function (firstHandlerEl) {
     // Get first collpased record by id...
     const firstId = firstHandlerEl.getAttribute('for-collapsed-id');
-    const collapsedFirst = compareRowsHelpers.collapsedRows[firstId];
+    const collapsedFirst = CompareRowsHelpers.collapsedRows[firstId];
     if (!collapsedFirst) {
       throw new Error('Cannot find first collapsed element by collapsed-id: ' + firstId);
     }
     // Get seconds collapsed record (compose id from first `pairId`)...
     const { rowKind, pairId } = collapsedFirst;
     const secondRowKind = rowKind === 'source' ? 'target' : 'source';
-    const secondId = compareRowsHelpers.getCollapsedId(secondRowKind, pairId);
-    const collapsedSecond = compareRowsHelpers.collapsedRows[secondId];
+    const secondId = CompareRowsHelpers.getCollapsedId(secondRowKind, pairId);
+    const collapsedSecond = CompareRowsHelpers.collapsedRows[secondId];
     if (!collapsedSecond) {
       throw new Error('Cannot find second collapsed element by collapsed-id: ' + secondId);
     }
@@ -263,7 +263,7 @@ const compareRowsHelpers = {
       throw new Error('Cannot find root dom node (`.compare-tables`)');
     }
     // Uncollapse found rows...
-    compareRowsHelpers.uncollapseRowByRecord(collapsedFirst);
-    compareRowsHelpers.uncollapseRowByRecord(collapsedSecond);
+    CompareRowsHelpers.uncollapseRowByRecord(collapsedFirst);
+    CompareRowsHelpers.uncollapseRowByRecord(collapsedSecond);
   },
 };

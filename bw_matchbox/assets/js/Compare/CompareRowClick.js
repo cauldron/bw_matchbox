@@ -1,5 +1,5 @@
 // global module variable
-const compareRowClick = {
+const CompareRowClick = {
   // Public data...
   disabled: false, // public
 
@@ -10,24 +10,24 @@ const compareRowClick = {
   /** clearRowClickHandler - Clear row click disbale timer handler.
    */
   clearRowClickHandler: function () {
-    if (compareRowClick.releaseHandler) {
-      clearTimeout(compareRowClick.releaseHandler);
-      compareRowClick.releaseHandler = undefined;
+    if (CompareRowClick.releaseHandler) {
+      clearTimeout(CompareRowClick.releaseHandler);
+      CompareRowClick.releaseHandler = undefined;
     }
   },
 
   /** releaseRowClick - Enable processing of `clickRow`
    */
   releaseRowClick: function () {
-    compareRowClick.disabled = false;
-    compareRowClick.clearRowClickHandler();
+    CompareRowClick.disabled = false;
+    CompareRowClick.clearRowClickHandler();
   },
 
   /** disableRowClick - Disable processing of `clickRow` handlers for some time (allow to process clicks on inner elements)
    */
   disableRowClick: function () {
-    compareRowClick.clearRowClickHandler();
-    compareRowClick.disabled = true;
-    setTimeout(compareRowClick.releaseRowClick, compareRowClick.timeout);
+    CompareRowClick.clearRowClickHandler();
+    CompareRowClick.disabled = true;
+    setTimeout(CompareRowClick.releaseRowClick, CompareRowClick.timeout);
   },
 };

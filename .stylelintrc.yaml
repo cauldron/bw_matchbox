@@ -20,19 +20,19 @@ ignoreFiles:
   - '.build*/'
 
 rules:
-  indentation:
-    - 2
-    - severity: warning
+  # indentation:
+  #   - 2
+  #   - severity: warning
   comment-whitespace-inside: null
   block-no-empty: null
   no-duplicate-selectors: null
   no-invalid-double-slash-comments: true
-  declaration-colon-space-before: never
-  declaration-colon-space-after: always
-  media-feature-range-operator-space-before: never
-  media-feature-range-operator-space-after: always
-  media-feature-colon-space-before: never
-  media-feature-colon-space-after: always
+  # declaration-colon-space-before: never
+  # declaration-colon-space-after: always
+  # media-feature-range-operator-space-before: never
+  # media-feature-range-operator-space-after: always
+  # media-feature-colon-space-before: never
+  # media-feature-colon-space-after: always
   no-descending-specificity: null # Got false-positive warnings for independent rules order
   selector-pseudo-class-no-unknown: # https://stylelint.io/user-guide/rules/list/selector-pseudo-class-no-unknown/
     - true

@@ -33,7 +33,6 @@ overrides:
     parser: '@babel/eslint-parser'
     env:
       node: true
-      browser: true # Only from `src/*` modules
       commonjs: true
       # amd: true
     extends:
@@ -59,7 +58,7 @@ overrides:
         - 'always'
 
   - # Raw js project files...
-    files: 'src/**/*.js'
+    files: 'bw_matchbox/**/*.js'
     # parser: '@babel/eslint-parser'
     parser: null
     env:
@@ -73,6 +72,7 @@ overrides:
     plugins:
       - 'prettier' # prettier: Slighly slower (+~0.3s)
     rules:
+      no-var: 'warn'
       prettier/prettier: 'warn'
       no-unused-vars:
         - 'warn'
