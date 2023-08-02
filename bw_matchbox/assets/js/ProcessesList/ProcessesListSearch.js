@@ -23,7 +23,7 @@ const ProcessesListSearch = {
       const urlQuery = commonHelpers.makeQuery(urlParams, { addQuestionSymbol: true });
       const urlBase = searchValue ? searchUrl : '/';
       const url = urlBase + urlQuery;
-      /* console.log('doSearch', {
+      /* console.log('[ProcessesListSearch:doSearch]', {
        *   url,
        *   urlQuery,
        *   urlParams,
@@ -44,7 +44,7 @@ const ProcessesListSearch = {
   },
 
   /** Initialize search field */
-  initSearchBar() {
+  start() {
     // Find the search input...
     const searchBar = ProcessesListNodes.getSearchBarNode();
     if (!searchBar) {

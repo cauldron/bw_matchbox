@@ -6,6 +6,7 @@
  */
 
 // global module variable
+// eslint-disable-next-line no-unused-vars
 const ProcessesListNodes = {
   getSearchBarNode() {
     const node = document.getElementById('query_string');

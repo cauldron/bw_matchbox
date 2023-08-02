@@ -6,7 +6,7 @@
     ProcessesListData,
 */
 
-/* Process list table client code.
+/* @desc Pagination support.
  */
 
 // global module variable
@@ -38,7 +38,7 @@ const ProcessesListPagination = {
       !isLastPage && this.renderNavigationLink('next', 'Next'),
       // TODO: first, last, pages...
     ].filter(Boolean);
-    /* console.log('createPaginationItems', {
+    /* console.log('[ProcessesListPagination:createPaginationItems]', {
      *   items,
      *   pageSize,
      *   currentPage,
@@ -63,7 +63,7 @@ const ProcessesListPagination = {
     // Find all the pagination blocks...
     const rootNode = ProcessesListNodes.getRootNode();
     const paginationNodes = rootNode.getElementsByClassName('table-pagination');
-    console.log('renderAllPaginations', {
+    console.log('[ProcessesListPagination:renderAllPaginations]', {
       contentItems,
       rootNode,
       paginationNodes,
@@ -115,7 +115,7 @@ const ProcessesListPagination = {
   onNavigationClick(target) {
     const id = target.getAttribute('pagination-id');
     const pageNo = this.getNavigationPageNo(id);
-    console.log('onNavigationClick', {
+    console.log('[ProcessesListPagination:onNavigationClick]', {
       pageNo,
       id,
     });

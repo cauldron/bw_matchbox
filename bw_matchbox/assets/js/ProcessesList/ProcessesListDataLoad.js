@@ -6,7 +6,7 @@
     ProcessesListDataRender,
 */
 
-/** @descr Data loading support
+/** @descr Dynamic data loading support
  */
 
 // global module variable
@@ -25,7 +25,7 @@ const ProcessesListDataLoad = {
     };
     const urlQuery = commonHelpers.makeQuery(params, { addQuestionSymbol: true });
     const url = urlBase + urlQuery;
-    console.log('loadData: start', {
+    console.log('[ProcessesListDataLoad:loadData]: start', {
       url,
       params,
       urlQuery,
@@ -44,7 +44,7 @@ const ProcessesListDataLoad = {
           const reason = [statusText, status && 'status: ' + status].filter(Boolean).join(', ');
           const error = new Error('Data loading error:' + reason);
           // eslint-disable-next-line no-console
-          console.error('loadData: error (on then)', {
+          console.error('[ProcessesListDataLoad:loadData]: error (on then)', {
             reason,
             res,
             url,
@@ -62,7 +62,7 @@ const ProcessesListDataLoad = {
       .then((result) => {
         const { data, total_records: totalRecords } = result;
         const hasData = Array.isArray(data) && !!data.length;
-        console.log('loadData: done', {
+        console.log('[ProcessesListDataLoad:loadData]: done', {
           data,
           totalRecords,
           result,
@@ -72,13 +72,13 @@ const ProcessesListDataLoad = {
           urlBase,
         });
         ProcessesListData.totalRecords = totalRecords;
-        ProcessesListDataRender.renderNewData(data);
+        ProcessesListDataRender.renderTableData(data);
         ProcessesListStates.setError(undefined); // Clear the error: all is ok
         ProcessesListStates.setHasData(ProcessesListData.hasData || hasData); // Update 'has data' flag
       })
       .catch((error) => {
         // eslint-disable-next-line no-console
-        console.error('loadData: error (catched)', {
+        console.error('[ProcessesListDataLoad:loadData]: error (catched)', {
           error,
           url,
           params,

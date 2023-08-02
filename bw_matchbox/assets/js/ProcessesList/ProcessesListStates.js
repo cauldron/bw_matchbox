@@ -43,7 +43,7 @@ const ProcessesListStates = {
     // DEBUG
     if (errorText) {
       // eslint-disable-next-line no-console
-      console.error('setError: got the error', {
+      console.error('[ProcessesListStates:setError]: got the error', {
         error,
         errorText,
       });
@@ -66,7 +66,7 @@ const ProcessesListStates = {
         }
       } catch (error) {
         // eslint-disable-next-line no-console
-        console.error('updatePage: error (catched)', {
+        console.error('[ProcessesListStates:updatePage]: error (catched)', {
           error,
           handler,
         });

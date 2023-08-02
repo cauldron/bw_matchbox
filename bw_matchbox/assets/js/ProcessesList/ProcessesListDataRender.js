@@ -3,7 +3,7 @@
     ProcessesListNodes,
 */
 
-/** @descr Process list table client code.
+/** @descr Render table content.
  */
 
 // global module variable
@@ -19,7 +19,7 @@ const ProcessesListDataRender = {
       // match_url, // '/match/726'
       matched, // false
     } = rowData;
-    /* console.log('renderDataRow: start', {
+    /* console.log('[ProcessesListDataRender:renderDataRow]: start', {
      *   details_url, // '/process/726'
      *   id, // 726
      *   location, // 'United States'
@@ -58,7 +58,7 @@ const ProcessesListDataRender = {
         </td>
       </tr>
     */
-    /* console.log('renderDataRow: result', {
+    /* console.log('[ProcessesListDataRender:renderDataRow]: result', {
      *   content,
      *   matchUrl,
      *   matchButton,
@@ -75,8 +75,12 @@ const ProcessesListDataRender = {
     return content;
   },
 
-  /** renderNewData -- Display new data rows at the end of the table. */
-  renderNewData(rows) {
+  /** renderTableData -- Display new data rows at the end of the table.
+   * @param {<TProcessItem[]>} rows
+   * @param {object} [opts] - Options
+   * @param {boolean} [opts.append] - Append data to the end of the table (default behavior: replace)
+   */
+  renderTableData(rows, opts = {}) {
     const tBodyNode = ProcessesListNodes.getTBodyNode();
     /* Data item sample:
      * - details_url: '/process/726'
@@ -89,16 +93,19 @@ const ProcessesListDataRender = {
      */
     const rowsContent = rows.map(this.renderDataRow.bind(this));
     const rowsNodes = commonHelpers.htmlToElements(rowsContent);
-    console.log('renderNewData', {
+    console.log('[ProcessesListDataRender:renderTableData]', {
+      opts,
       rowsNodes,
       rowsContent,
       rows,
       tBodyNode,
     });
-    /* // Append new data (will be used for incremental update)...
-     * tBodyNode.append.apply(tBodyNode, rowsNodes);
-     */
-    // Replace rows...
-    tBodyNode.replaceChildren.apply(tBodyNode, rowsNodes);
+    if (opts.append) {
+      // Append new data (will be used for incremental update)...
+      tBodyNode.append.apply(tBodyNode, rowsNodes);
+    } else {
+      // Replace data...
+      tBodyNode.replaceChildren.apply(tBodyNode, rowsNodes);
+    }
   },
 };

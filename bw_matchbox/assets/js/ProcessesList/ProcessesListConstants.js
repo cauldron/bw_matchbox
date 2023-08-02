@@ -1,6 +1,6 @@
 /* --global commonHelpers */
 
-/* Process list table client code.
+/* @desc Shared constants
  */
 
 // global module variable

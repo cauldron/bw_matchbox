@@ -1,14 +1,26 @@
 /* global
     commonHelpers,
     ProcessesListConstants,
-    ProcessesListNodes,
     ProcessesListData,
-    ProcessesListStates,
     ProcessesListDataLoad,
     ProcessesListDataRender,
-    ProcessesListSearch,
+    ProcessesListNodes,
     ProcessesListPagination,
+    ProcessesListSearch,
+    ProcessesListStates,
 */
+
+// NOTE: Don't forget to call `startAllModules` for all the used modules...
+const allModulesList = [
+  ProcessesListConstants,
+  ProcessesListData,
+  ProcessesListDataRender,
+  ProcessesListNodes,
+  ProcessesListPagination,
+  ProcessesListStates,
+  ProcessesListSearch,
+  ProcessesListDataLoad,
+];
 
 /** @descr Process list table client code.
  */
@@ -19,7 +31,7 @@ const ProcessesList = {
   /** Update value of 'order by' parameter from user */
   onOrderByChange(target) {
     const { value } = target;
-    console.log('onOrderByChange', {
+    console.log('[ProcessesList:onOrderByChange]', {
       value,
       target,
     });
@@ -43,11 +55,35 @@ const ProcessesList = {
    * },
    */
 
+  /** startAllModules -- Start all the modules
+   */
+  startAllModules() {
+    // Start all the modules...
+    allModulesList.forEach((module) => {
+      if (typeof module.start === 'function') {
+        try {
+          module.start();
+          /* // Alternate option: Delayed start...
+           * setTimeout(module.start.bind(module), 0);
+           */
+        } catch (error) {
+          // eslint-disable-next-line no-console
+          console.error('[ProcessesList:startAllModules]: error (catched)', {
+            error,
+            module,
+            start: module.start,
+          });
+          // eslint-disable-next-line no-debugger
+          debugger;
+        }
+      }
+    });
+  },
+
   /** Start entrypoint */
   start(sharedParams) {
     ProcessesListData.sharedParams = sharedParams;
     this.fetchUrlParams();
-    ProcessesListSearch.initSearchBar();
-    ProcessesListDataLoad.start();
+    this.startAllModules();
   },
 };
