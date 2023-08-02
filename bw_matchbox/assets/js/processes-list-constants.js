@@ -5,7 +5,7 @@
 
 // global module variable
 // eslint-disable-next-line no-unused-vars
-const processesListConstants = {
+const ProcessesListConstants = {
   /** Api base */
   processesApiUrl: '/processes',
   /** The number of records to retrieve at once and to display */
