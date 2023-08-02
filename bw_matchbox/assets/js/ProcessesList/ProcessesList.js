@@ -5,7 +5,6 @@
     ProcessesListDataLoad,
     ProcessesListDataRender,
     ProcessesListNodes,
-    ProcessesListPagination,
     ProcessesListSearch,
     ProcessesListStates,
 */
@@ -16,7 +15,7 @@ const allModulesList = [
   ProcessesListData,
   ProcessesListDataRender,
   ProcessesListNodes,
-  ProcessesListPagination,
+  // ProcessesListPagination, // UNUSED: Using incremental data loading
   ProcessesListStates,
   ProcessesListSearch,
   ProcessesListDataLoad,
@@ -35,8 +34,9 @@ const ProcessesList = {
       value,
       target,
     });
+    debugger;
     ProcessesListData.orderBy = value;
-    // TODO: Call re-load data method...
+    // TODO: Clear current data and call re-load data method...
   },
 
   /** Get all the parameters passed in the url query */
@@ -48,12 +48,6 @@ const ProcessesList = {
     ProcessesListData.database = database || ProcessesListData.sharedParams.database;
     ProcessesListData.searchValue = searchValue || '';
   },
-
-  /* // UNUSED: updatePage
-   * updatePage() {
-   *   ProcessesListPagination.renderAllPaginations();
-   * },
-   */
 
   /** startAllModules -- Start all the modules
    */
