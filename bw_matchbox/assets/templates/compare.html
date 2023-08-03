@@ -47,16 +47,14 @@
 </div>
 
 <script>
-
-  /* // Enable debug mode...
-   * const useDebug = true;
-   */
-
   modules.require('CompareCore', (CompareCore) => {
+    /* // Enable debug mode...
+     * const useDebug = true;
+     * // TODO: Expose it to global scope?
+     */
 
     // Global variables for compare tables feature (via global variable `sharedData`)...
     const sharedData = {
-      // TODO: Separate data by shared and local.
       source_data: {{ source_data_json|safe }}, // TDataRecord[]
       target_data: {{ target_data_json|safe }}, // TDataRecord[]
       target_node: {{ target_json|safe}},
@@ -93,10 +91,8 @@
     // Export to global scope (to access from generated html code handlers).
     window.CompareCore = CompareCore;
 
-    // Start module...
+    // Start core module...
     CompareCore.start(sharedData);
   });
-
-
 </script>
 {% include 'footer.html' %}

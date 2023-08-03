@@ -75,12 +75,18 @@
 </div>
 
 <script type="text/javascript">
-  // Initialize page data...
-  const sharedParams = {
-    searchUrl: '{{ url_for("search") }}',
-    database: '{{ database }}',
-  };
-  // Start page routines...
-  ProcessesList.start(sharedParams);
+  modules.require('ProcessesList', (ProcessesList) => {
+    // Initialize page data...
+    const sharedParams = {
+      searchUrl: '{{ url_for("search") }}',
+      database: '{{ database }}',
+    };
+
+    // Export to global scope (to access from generated html code handlers).
+    window.ProcessesList = ProcessesList;
+
+    // Start core module...
+    ProcessesList.start(sharedParams);
+  });
 </script>
 {% include 'footer.html' %}

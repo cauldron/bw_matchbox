@@ -1,11 +1,25 @@
-/* @desc Shared constants
- */
+modules.define(
+  'ProcessesListConstants',
+  [
+    // Required modules...
+  ],
+  function provide_ProcessesListConstants(
+    provide,
+    // Resolved modules...
+  ) {
+    // Define module...
 
-// global module variable
-// eslint-disable-next-line no-unused-vars
-const ProcessesListConstants = {
-  /** Api base */
-  processesApiUrl: '/processes',
-  /** The number of records to retrieve at once and to display */
-  pageSize: 10,
-};
+    /* @desc Shared constants
+     */
+
+    const ProcessesListConstants = {
+      /** Api base */
+      processesApiUrl: '/processes',
+      /** The number of records to retrieve at once and to display */
+      pageSize: 10,
+    };
+
+    // Provide module...
+    provide(ProcessesListConstants);
+  },
+);
