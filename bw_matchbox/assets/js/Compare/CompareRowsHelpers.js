@@ -1,269 +1,284 @@
-/* global CommonHelpers, CompareRowClick */
+modules.define(
+  'CompareRowsHelpers',
+  [
+    // Required modules...
+    'CommonHelpers',
+    'CompareRowClick',
+  ],
+  function provide_CompareRowsHelpers(
+    provide,
+    // Resolved modules...
+    CommonHelpers,
+    CompareRowClick,
+  ) {
+    /* // Compare rows-related feature types (ts-like):
+     * type TRowKind = 'source' | 'target';
+     * type TRowEl = HTMLTableRowElement;
+     * type TRowId = string;
+     * interface TSelectedRow {
+     *   rowKind: TRowKind;
+     *   // TODO: It will be impossible to use elements for paginated tables
+     *   // (because the nodes for the same elements could be different).
+     *   rowEl: TRowEl;
+     *   rowId: TRowId;
+     * };
+     * interface TCollapsedRow extends TSelectedRow { pairId: TRowId };
+     */
 
-/* // Compare rows-related feature types (ts-like):
- * type TRowKind = 'source' | 'target';
- * type TRowEl = HTMLTableRowElement;
- * type TRowId = string;
- * interface TSelectedRow {
- *   rowKind: TRowKind;
- *   // TODO: It will be impossible to use elements for paginated tables
- *   // (because the nodes for the same elements could be different).
- *   rowEl: TRowEl;
- *   rowId: TRowId;
- * };
- * interface TCollapsedRow extends TSelectedRow { pairId: TRowId };
- */
+    // Define module...
 
-// global module variable
-const CompareRowsHelpers = {
-  // Data...
-  sharedData: undefined, // Initializing in `CompareCore.initCompare` from `bw_matchbox/assets/templates/compare.html`
-  rowColumnsCount: 5, // Number of columns in a table row...
-  selectedFirst: undefined, // <undefined | TSelectedRow>
-  collapsedRows: {}, // Record<TRowId, TCollapsedRow> -- Hash of collapsed row
+    const CompareRowsHelpers = {
+      // Data...
+      sharedData: undefined, // Initializing in `CompareCore.initCompare` from `bw_matchbox/assets/templates/compare.html`
+      rowColumnsCount: 5, // Number of columns in a table row...
+      selectedFirst: undefined, // <undefined | TSelectedRow>
+      collapsedRows: {}, // Record<TRowId, TCollapsedRow> -- Hash of collapsed row
 
-  // Methods...
+      // Methods...
 
-  /** getRowData -- Get row data
-   * @param {<TRowKind>} rowKind
-   * @param {<TRowId>} rowId
-   * @return {<TDataRecord>}
-   */
-  getRowData: function (rowKind, rowId) {
-    const { target_data, source_data } = CompareRowsHelpers.sharedData;
-    const data = rowKind === 'source' ? source_data : target_data;
-    const found = data.find((item) => item.row_id === rowId);
-    return found;
-  },
+      /** getRowData -- Get row data
+       * @param {<TRowKind>} rowKind
+       * @param {<TRowId>} rowId
+       * @return {<TDataRecord>}
+       */
+      getRowData: function (rowKind, rowId) {
+        const { target_data, source_data } = CompareRowsHelpers.sharedData;
+        const data = rowKind === 'source' ? source_data : target_data;
+        const found = data.find((item) => item.row_id === rowId);
+        return found;
+      },
 
-  /** getRowId -- Get row id
-   * @param {<TRowEl>} rowEl
-   * @return {<TRowId>}
-   */
-  getRowId(rowEl) {
-    return rowEl.getAttribute('row_id');
-  },
+      /** getRowId -- Get row id
+       * @param {<TRowEl>} rowEl
+       * @return {<TRowId>}
+       */
+      getRowId(rowEl) {
+        return rowEl.getAttribute('row_id');
+      },
 
-  /** getRowKind -- Get row kind (source or target)
-   * @param {<TRowEl>} rowEl
-   * @return {<TRowKind>} (<'source' | 'target'>)
-   */
-  getRowKind(rowEl) {
-    // Find main table (source or target one)
-    const table = rowEl.closest('table');
-    const tableId = table.getAttribute('id');
-    const isSource = tableId === 'source-table';
-    // Row kind (source or target)...
-    return isSource ? 'source' : 'target';
-  },
+      /** getRowKind -- Get row kind (source or target)
+       * @param {<TRowEl>} rowEl
+       * @return {<TRowKind>} (<'source' | 'target'>)
+       */
+      getRowKind(rowEl) {
+        // Find main table (source or target one)
+        const table = rowEl.closest('table');
+        const tableId = table.getAttribute('id');
+        const isSource = tableId === 'source-table';
+        // Row kind (source or target)...
+        return isSource ? 'source' : 'target';
+      },
 
-  /** selectRow -- Make row selected
-   * @param {<TRowEl>} rowEl
-   */
-  selectRow(rowEl) {
-    const rowId = CompareRowsHelpers.getRowId(rowEl);
-    const rowKind = CompareRowsHelpers.getRowKind(rowEl);
-    // Save record...
-    CompareRowsHelpers.selectedFirst = { rowKind, rowEl, rowId };
-    // Add styles...
-    rowEl.classList.add('selected');
-  },
+      /** selectRow -- Make row selected
+       * @param {<TRowEl>} rowEl
+       */
+      selectRow(rowEl) {
+        const rowId = CompareRowsHelpers.getRowId(rowEl);
+        const rowKind = CompareRowsHelpers.getRowKind(rowEl);
+        // Save record...
+        CompareRowsHelpers.selectedFirst = { rowKind, rowEl, rowId };
+        // Add styles...
+        rowEl.classList.add('selected');
+      },
 
-  /** unselectRow -- Make row selected
-   * @param {<TRowEl>} rowEl
-   */
-  unselectRow(rowEl) {
-    // Clear styles...
-    rowEl.classList.remove('selected');
-    // Reset saved selected record (if it's the same)...
-    if (CompareRowsHelpers.selectedFirst && CompareRowsHelpers.selectedFirst.rowEl === rowEl) {
-      CompareRowsHelpers.selectedFirst = undefined;
-    }
-  },
-
-  /** getCollapsedHandlerTooltipText -- Get collpased node tooltip text
-   * @param {<TDataRecord>} data
-   * @return {string}
-   */
-  getCollapsedHandlerTooltipText: function (data) {
-    if (!data) {
-      return 'Data is undefined';
-    }
-    const {
-      // amount, // Eg: 7.135225509515751e-9
-      amount_display, // Eg: '7.1e-09'
-      // input_id, // Eg: 633
-      location, // Eg: 'United States'
-      name, // Eg: 'Clothing; at manufacturer'
-      // row_id, // Eg: '0'
-      unit, // Eg: ''
-      // url, // Eg: '/process/633'
-    } = data;
-    const text = [
-      ['Amount', amount_display], // Eg: '7.1e-09'
-      ['Name', name], // Eg: 'Clothing; at manufacturer'
-      ['Location', location], // Eg: 'United States'
-      ['Unit', unit], // Eg: ''
-    ]
-      .map(([text, value]) => {
-        if (value) {
-          return text + ': ' + value;
+      /** unselectRow -- Make row selected
+       * @param {<TRowEl>} rowEl
+       */
+      unselectRow(rowEl) {
+        // Clear styles...
+        rowEl.classList.remove('selected');
+        // Reset saved selected record (if it's the same)...
+        if (CompareRowsHelpers.selectedFirst && CompareRowsHelpers.selectedFirst.rowEl === rowEl) {
+          CompareRowsHelpers.selectedFirst = undefined;
         }
-      })
-      .filter(Boolean)
-      .join('\n');
-    return 'COLLAPSED ROW\n' + text;
-  },
+      },
 
-  /** getCollapsedId -- Get collapsed id (`{rowKind}-{rowId}`)
-   * @param {<TRowKind>} rowKind
-   * @param {<TRowId>} rowId
-   * @return {string}
-   */
-  getCollapsedId(rowKind, rowId) {
-    return [rowKind, rowId].join('-');
-  },
+      /** getCollapsedHandlerTooltipText -- Get collpased node tooltip text
+       * @param {<TDataRecord>} data
+       * @return {string}
+       */
+      getCollapsedHandlerTooltipText: function (data) {
+        if (!data) {
+          return 'Data is undefined';
+        }
+        const {
+          // amount, // Eg: 7.135225509515751e-9
+          amount_display, // Eg: '7.1e-09'
+          // input_id, // Eg: 633
+          location, // Eg: 'United States'
+          name, // Eg: 'Clothing; at manufacturer'
+          // row_id, // Eg: '0'
+          unit, // Eg: ''
+          // url, // Eg: '/process/633'
+        } = data;
+        const text = [
+          ['Amount', amount_display], // Eg: '7.1e-09'
+          ['Name', name], // Eg: 'Clothing; at manufacturer'
+          ['Location', location], // Eg: 'United States'
+          ['Unit', unit], // Eg: ''
+        ]
+          .map(([text, value]) => {
+            if (value) {
+              return text + ': ' + value;
+            }
+          })
+          .filter(Boolean)
+          .join('\n');
+        return 'COLLAPSED ROW\n' + text;
+      },
 
-  /** buildCollapsedHandlerRow -- Get html content of collapsed handler node.
-   * @param {<TRowKind>} rowKind
-   * @param {<TRowId>} rowId
-   * @param [{<TDataRecord>}] optionalData
-   * @return {string}
-   */
-  buildCollapsedHandlerRow: function (rowKind, rowId, optionalData) {
-    const collapsedId = CompareRowsHelpers.getCollapsedId(rowKind, rowId);
-    const data = optionalData || CompareRowsHelpers.getRowData(rowKind, rowId);
-    const tooltipText = CompareRowsHelpers.getCollapsedHandlerTooltipText(data);
-    const quotedTooltipText = CommonHelpers.quoteHtmlAttr(tooltipText);
-    const start = `<tr
-      class="collapsed-handler"
-      for-collapsed-id="${collapsedId}"
-      title="${quotedTooltipText}"
-      onClick="CompareRowsHelpers.clickUncollapseRow(this)"
-    >`;
-    const content = `<td colspan="${CompareRowsHelpers.rowColumnsCount}"><br/></td>`;
-    const end = `</tr>`;
-    return start + content + end;
-  },
+      /** getCollapsedId -- Get collapsed id (`{rowKind}-{rowId}`)
+       * @param {<TRowKind>} rowKind
+       * @param {<TRowId>} rowId
+       * @return {string}
+       */
+      getCollapsedId(rowKind, rowId) {
+        return [rowKind, rowId].join('-');
+      },
 
-  /** collapseRowByRecord -- Collapse particular row record
-   * @param {<TCollapsedRow>} collapsedRowRecord
-   */
-  collapseRowByRecord: function (collapsedRowRecord) {
-    // TODO: For paginated tables -- don't use saved elements (they would by dynamic)!
-    // See ` uncollapseRowByRecord` for example.
-    const { rowKind, rowId, rowEl } = collapsedRowRecord;
-    const collapsedId = CompareRowsHelpers.getCollapsedId(rowKind, rowId);
-    // Add styles...
-    rowEl.classList.add('collapsed');
-    // Save id in the dom node...
-    rowEl.setAttribute('collapsed-id', collapsedId);
-    // Save record...
-    CompareRowsHelpers.collapsedRows[collapsedId] = collapsedRowRecord;
-    // Add interactive elements and other stuff (to uncollapse it later)...
-    // Create html representation and dom node to append...
-    const handlerRowHtml = CompareRowsHelpers.buildCollapsedHandlerRow(rowKind, rowId);
-    const handlerRowEl = CommonHelpers.htmlToElement(handlerRowHtml);
-    // Find parent node...
-    const parentNode = rowEl.parentNode;
-    // Add handler before current row...
-    parentNode.insertBefore(handlerRowEl, rowEl);
-  },
+      /** buildCollapsedHandlerRow -- Get html content of collapsed handler node.
+       * @param {<TRowKind>} rowKind
+       * @param {<TRowId>} rowId
+       * @param [{<TDataRecord>}] optionalData
+       * @return {string}
+       */
+      buildCollapsedHandlerRow: function (rowKind, rowId, optionalData) {
+        const collapsedId = CompareRowsHelpers.getCollapsedId(rowKind, rowId);
+        const data = optionalData || CompareRowsHelpers.getRowData(rowKind, rowId);
+        const tooltipText = CompareRowsHelpers.getCollapsedHandlerTooltipText(data);
+        const quotedTooltipText = CommonHelpers.quoteHtmlAttr(tooltipText);
+        const start = `<tr
+          class="collapsed-handler"
+          for-collapsed-id="${collapsedId}"
+          title="${quotedTooltipText}"
+          onClick="CompareCore.clickUncollapseRow(this)"
+        >`;
+        const content = `<td colspan="${CompareRowsHelpers.rowColumnsCount}"><br/></td>`;
+        const end = `</tr>`;
+        return start + content + end;
+      },
 
-  /** uncollapseRowByRecord -- Collapse particular row record
-   * @param {<TCollapsedRow>} collapsedRowRecord
-   */
-  uncollapseRowByRecord: function (collapsedRowRecord) {
-    const { rowKind, rowId } = collapsedRowRecord;
-    const collapsedId = CompareRowsHelpers.getCollapsedId(rowKind, rowId);
-    const tableId = rowKind + '-table';
-    const tableNode = document.getElementById(tableId);
-    const handlerEl = tableNode.querySelector('[for-collapsed-id="' + collapsedId + '"]');
-    const rowEl = tableNode.querySelector('[collapsed-id="' + collapsedId + '"]');
-    // Remove collapsed record data...
-    CompareRowsHelpers.collapsedRows[collapsedId] = undefined;
-    if (handlerEl) {
-      // Remove collapsed handler from dom (if exist in dom)...
-      handlerEl.remove();
-    }
-    // Restore row element state (id exist in dom)...
-    if (rowEl) {
-      rowEl.classList.remove('collapsed');
-      rowEl.removeAttribute('collapsed-id');
-    }
-  },
+      /** collapseRowByRecord -- Collapse particular row record
+       * @param {<TCollapsedRow>} collapsedRowRecord
+       */
+      collapseRowByRecord: function (collapsedRowRecord) {
+        // TODO: For paginated tables -- don't use saved elements (they would by dynamic)!
+        // See ` uncollapseRowByRecord` for example.
+        const { rowKind, rowId, rowEl } = collapsedRowRecord;
+        const collapsedId = CompareRowsHelpers.getCollapsedId(rowKind, rowId);
+        // Add styles...
+        rowEl.classList.add('collapsed');
+        // Save id in the dom node...
+        rowEl.setAttribute('collapsed-id', collapsedId);
+        // Save record...
+        CompareRowsHelpers.collapsedRows[collapsedId] = collapsedRowRecord;
+        // Add interactive elements and other stuff (to uncollapse it later)...
+        // Create html representation and dom node to append...
+        const handlerRowHtml = CompareRowsHelpers.buildCollapsedHandlerRow(rowKind, rowId);
+        const handlerRowEl = CommonHelpers.htmlToElement(handlerRowHtml);
+        // Find parent node...
+        const parentNode = rowEl.parentNode;
+        // Add handler before current row...
+        parentNode.insertBefore(handlerRowEl, rowEl);
+      },
 
-  /** makeRowsCollapsed
-   * @param {<TSelectedRow>} selectedFirst
-   * @param {<TSelectedRow>} selectedSecond
-   */
-  makeRowsCollapsed: function (selectedFirst, selectedSecond) {
-    // TODO: To check data validity (both records are defined and well-formed)?
-    // Remove selected status...
-    CompareRowsHelpers.unselectRow(selectedFirst.rowEl);
-    CompareRowsHelpers.unselectRow(selectedSecond.rowEl);
-    // Collapse the rows...
-    const collapsedFirst = { ...selectedFirst, pairId: selectedSecond.rowId };
-    const collapsedSecond = { ...selectedSecond, pairId: selectedFirst.rowId };
-    CompareRowsHelpers.collapseRowByRecord(collapsedFirst);
-    CompareRowsHelpers.collapseRowByRecord(collapsedSecond);
-  },
+      /** uncollapseRowByRecord -- Collapse particular row record
+       * @param {<TCollapsedRow>} collapsedRowRecord
+       */
+      uncollapseRowByRecord: function (collapsedRowRecord) {
+        const { rowKind, rowId } = collapsedRowRecord;
+        const collapsedId = CompareRowsHelpers.getCollapsedId(rowKind, rowId);
+        const tableId = rowKind + '-table';
+        const tableNode = document.getElementById(tableId);
+        const handlerEl = tableNode.querySelector('[for-collapsed-id="' + collapsedId + '"]');
+        const rowEl = tableNode.querySelector('[collapsed-id="' + collapsedId + '"]');
+        // Remove collapsed record data...
+        CompareRowsHelpers.collapsedRows[collapsedId] = undefined;
+        if (handlerEl) {
+          // Remove collapsed handler from dom (if exist in dom)...
+          handlerEl.remove();
+        }
+        // Restore row element state (id exist in dom)...
+        if (rowEl) {
+          rowEl.classList.remove('collapsed');
+          rowEl.removeAttribute('collapsed-id');
+        }
+      },
 
-  /** clickRow
-   * @param {<TRowEl>} rowEl
-   */
-  clickRow: function (rowEl) {
-    if (CompareRowClick.disabled) {
-      // Do nothing if disabled
-      return;
-    }
-    if (rowEl.classList.contains('collapsed')) {
-      // Do nothing if row is already collapsed
-      return;
-    }
-    const rowId = CompareRowsHelpers.getRowId(rowEl);
-    const rowKind = CompareRowsHelpers.getRowKind(rowEl);
-    if (!CompareRowsHelpers.selectedFirst) {
-      // Nothing selected -- select as first element...
-      CompareRowsHelpers.selectRow(rowEl);
-    } else if (CompareRowsHelpers.selectedFirst.rowEl === rowEl) {
-      // Already selected and clicked again -- deselect...
-      CompareRowsHelpers.unselectRow(rowEl);
-    } else if (CompareRowsHelpers.selectedFirst.rowKind === rowKind) {
-      // Clicked another node in the same table -- deselect old and select new...
-      CompareRowsHelpers.unselectRow(CompareRowsHelpers.selectedFirst.rowEl);
-      CompareRowsHelpers.selectRow(rowEl);
-    } else {
-      // Selected second element -- make both nodes collapsed...
-      const selectedSecond = { rowKind, rowEl, rowId };
-      CompareRowsHelpers.makeRowsCollapsed(CompareRowsHelpers.selectedFirst, selectedSecond);
-    }
-  },
+      /** makeRowsCollapsed
+       * @param {<TSelectedRow>} selectedFirst
+       * @param {<TSelectedRow>} selectedSecond
+       */
+      makeRowsCollapsed: function (selectedFirst, selectedSecond) {
+        // TODO: To check data validity (both records are defined and well-formed)?
+        // Remove selected status...
+        CompareRowsHelpers.unselectRow(selectedFirst.rowEl);
+        CompareRowsHelpers.unselectRow(selectedSecond.rowEl);
+        // Collapse the rows...
+        const collapsedFirst = { ...selectedFirst, pairId: selectedSecond.rowId };
+        const collapsedSecond = { ...selectedSecond, pairId: selectedFirst.rowId };
+        CompareRowsHelpers.collapseRowByRecord(collapsedFirst);
+        CompareRowsHelpers.collapseRowByRecord(collapsedSecond);
+      },
 
-  /** clickUncollapseRow -- Uncollapse both rows for this clicked collpase handler
-   * @param {<HTMLTableRowElement>} firstHandlerEl
-   */
-  clickUncollapseRow: function (firstHandlerEl) {
-    // Get first collpased record by id...
-    const firstId = firstHandlerEl.getAttribute('for-collapsed-id');
-    const collapsedFirst = CompareRowsHelpers.collapsedRows[firstId];
-    if (!collapsedFirst) {
-      throw new Error('Cannot find first collapsed element by collapsed-id: ' + firstId);
-    }
-    // Get seconds collapsed record (compose id from first `pairId`)...
-    const { rowKind, pairId } = collapsedFirst;
-    const secondRowKind = rowKind === 'source' ? 'target' : 'source';
-    const secondId = CompareRowsHelpers.getCollapsedId(secondRowKind, pairId);
-    const collapsedSecond = CompareRowsHelpers.collapsedRows[secondId];
-    if (!collapsedSecond) {
-      throw new Error('Cannot find second collapsed element by collapsed-id: ' + secondId);
-    }
-    const rootNode = firstHandlerEl.closest('.compare-tables');
-    if (!rootNode) {
-      throw new Error('Cannot find root dom node (`.compare-tables`)');
-    }
-    // Uncollapse found rows...
-    CompareRowsHelpers.uncollapseRowByRecord(collapsedFirst);
-    CompareRowsHelpers.uncollapseRowByRecord(collapsedSecond);
+      /** clickRow
+       * @param {<TRowEl>} rowEl
+       */
+      clickRow: function (rowEl) {
+        if (CompareRowClick.disabled) {
+          // Do nothing if disabled
+          return;
+        }
+        if (rowEl.classList.contains('collapsed')) {
+          // Do nothing if row is already collapsed
+          return;
+        }
+        const rowId = CompareRowsHelpers.getRowId(rowEl);
+        const rowKind = CompareRowsHelpers.getRowKind(rowEl);
+        if (!CompareRowsHelpers.selectedFirst) {
+          // Nothing selected -- select as first element...
+          CompareRowsHelpers.selectRow(rowEl);
+        } else if (CompareRowsHelpers.selectedFirst.rowEl === rowEl) {
+          // Already selected and clicked again -- deselect...
+          CompareRowsHelpers.unselectRow(rowEl);
+        } else if (CompareRowsHelpers.selectedFirst.rowKind === rowKind) {
+          // Clicked another node in the same table -- deselect old and select new...
+          CompareRowsHelpers.unselectRow(CompareRowsHelpers.selectedFirst.rowEl);
+          CompareRowsHelpers.selectRow(rowEl);
+        } else {
+          // Selected second element -- make both nodes collapsed...
+          const selectedSecond = { rowKind, rowEl, rowId };
+          CompareRowsHelpers.makeRowsCollapsed(CompareRowsHelpers.selectedFirst, selectedSecond);
+        }
+      },
+
+      /** clickUncollapseRow -- Uncollapse both rows for this clicked collpase handler
+       * @param {<HTMLTableRowElement>} firstHandlerEl
+       */
+      clickUncollapseRow: function (firstHandlerEl) {
+        // Get first collpased record by id...
+        const firstId = firstHandlerEl.getAttribute('for-collapsed-id');
+        const collapsedFirst = CompareRowsHelpers.collapsedRows[firstId];
+        if (!collapsedFirst) {
+          throw new Error('Cannot find first collapsed element by collapsed-id: ' + firstId);
+        }
+        // Get seconds collapsed record (compose id from first `pairId`)...
+        const { rowKind, pairId } = collapsedFirst;
+        const secondRowKind = rowKind === 'source' ? 'target' : 'source';
+        const secondId = CompareRowsHelpers.getCollapsedId(secondRowKind, pairId);
+        const collapsedSecond = CompareRowsHelpers.collapsedRows[secondId];
+        if (!collapsedSecond) {
+          throw new Error('Cannot find second collapsed element by collapsed-id: ' + secondId);
+        }
+        const rootNode = firstHandlerEl.closest('.compare-tables');
+        if (!rootNode) {
+          throw new Error('Cannot find root dom node (`.compare-tables`)');
+        }
+        // Uncollapse found rows...
+        CompareRowsHelpers.uncollapseRowByRecord(collapsedFirst);
+        CompareRowsHelpers.uncollapseRowByRecord(collapsedSecond);
+      },
+    };
+    provide(CompareRowsHelpers);
   },
-};
+);

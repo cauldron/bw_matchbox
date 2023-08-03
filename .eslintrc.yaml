@@ -66,6 +66,8 @@ overrides:
       browser: true
       # jest: true
       # jest/globals: true
+    globals:
+      modules: true
     extends:
       - 'eslint:recommended'
       - 'plugin:prettier/recommended'
