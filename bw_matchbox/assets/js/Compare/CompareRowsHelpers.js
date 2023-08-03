@@ -41,7 +41,7 @@ modules.define(
        * @param {<TRowId>} rowId
        * @return {<TDataRecord>}
        */
-      getRowData: function (rowKind, rowId) {
+      getRowData(rowKind, rowId) {
         const { target_data, source_data } = CompareRowsHelpers.sharedData;
         const data = rowKind === 'source' ? source_data : target_data;
         const found = data.find((item) => item.row_id === rowId);
@@ -97,7 +97,7 @@ modules.define(
        * @param {<TDataRecord>} data
        * @return {string}
        */
-      getCollapsedHandlerTooltipText: function (data) {
+      getCollapsedHandlerTooltipText(data) {
         if (!data) {
           return 'Data is undefined';
         }
@@ -142,7 +142,7 @@ modules.define(
        * @param [{<TDataRecord>}] optionalData
        * @return {string}
        */
-      buildCollapsedHandlerRow: function (rowKind, rowId, optionalData) {
+      buildCollapsedHandlerRow(rowKind, rowId, optionalData) {
         const collapsedId = CompareRowsHelpers.getCollapsedId(rowKind, rowId);
         const data = optionalData || CompareRowsHelpers.getRowData(rowKind, rowId);
         const tooltipText = CompareRowsHelpers.getCollapsedHandlerTooltipText(data);
@@ -161,7 +161,7 @@ modules.define(
       /** collapseRowByRecord -- Collapse particular row record
        * @param {<TCollapsedRow>} collapsedRowRecord
        */
-      collapseRowByRecord: function (collapsedRowRecord) {
+      collapseRowByRecord(collapsedRowRecord) {
         // TODO: For paginated tables -- don't use saved elements (they would by dynamic)!
         // See ` uncollapseRowByRecord` for example.
         const { rowKind, rowId, rowEl } = collapsedRowRecord;
@@ -185,7 +185,7 @@ modules.define(
       /** uncollapseRowByRecord -- Collapse particular row record
        * @param {<TCollapsedRow>} collapsedRowRecord
        */
-      uncollapseRowByRecord: function (collapsedRowRecord) {
+      uncollapseRowByRecord(collapsedRowRecord) {
         const { rowKind, rowId } = collapsedRowRecord;
         const collapsedId = CompareRowsHelpers.getCollapsedId(rowKind, rowId);
         const tableId = rowKind + '-table';
@@ -209,7 +209,7 @@ modules.define(
        * @param {<TSelectedRow>} selectedFirst
        * @param {<TSelectedRow>} selectedSecond
        */
-      makeRowsCollapsed: function (selectedFirst, selectedSecond) {
+      makeRowsCollapsed(selectedFirst, selectedSecond) {
         // TODO: To check data validity (both records are defined and well-formed)?
         // Remove selected status...
         CompareRowsHelpers.unselectRow(selectedFirst.rowEl);
@@ -224,7 +224,7 @@ modules.define(
       /** clickRow
        * @param {<TRowEl>} rowEl
        */
-      clickRow: function (rowEl) {
+      clickRow(rowEl) {
         if (CompareRowClick.disabled) {
           // Do nothing if disabled
           return;
@@ -255,7 +255,7 @@ modules.define(
       /** clickUncollapseRow -- Uncollapse both rows for this clicked collpase handler
        * @param {<HTMLTableRowElement>} firstHandlerEl
        */
-      clickUncollapseRow: function (firstHandlerEl) {
+      clickUncollapseRow(firstHandlerEl) {
         // Get first collpased record by id...
         const firstId = firstHandlerEl.getAttribute('for-collapsed-id');
         const collapsedFirst = CompareRowsHelpers.collapsedRows[firstId];
@@ -279,6 +279,8 @@ modules.define(
         CompareRowsHelpers.uncollapseRowByRecord(collapsedSecond);
       },
     };
+
+    //; Provide module...
     provide(CompareRowsHelpers);
   },
 );

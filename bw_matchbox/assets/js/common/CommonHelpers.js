@@ -10,7 +10,7 @@ modules.define(
     // Define module...
 
     const CommonHelpers = {
-      numberSorter: function (a, b) {
+      sortByAmountProperty(a, b) {
         if (a.amount < b.amount) {
           // Reversed because want ascending order
           return -1;
@@ -25,7 +25,7 @@ modules.define(
        * @param {string} str
        * @param [{boolean}] preserveCR
        */
-      quoteHtmlAttr: function (str, preserveCR) {
+      quoteHtmlAttr(str, preserveCR) {
         preserveCR = preserveCR ? '&#13;' : '\n';
         return (
           String(str) // Forces the conversion to string
@@ -46,7 +46,7 @@ modules.define(
        * @param {string} HTML representing a single element
        * @return {HTMLElement}
        */
-      htmlToElement: function (html) {
+      htmlToElement(html) {
         const template = document.createElement('template');
         if (Array.isArray(html)) {
           html = html.join('');
@@ -57,7 +57,7 @@ modules.define(
         return content.firstChild;
       },
 
-      htmlToElements: function (html) {
+      htmlToElements(html) {
         const template = document.createElement('template');
         if (Array.isArray(html)) {
           html = html.join('');

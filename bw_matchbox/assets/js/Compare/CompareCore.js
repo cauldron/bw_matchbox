@@ -46,7 +46,6 @@ modules.define(
      */
 
     // Define module...
-
     const CompareCore = {
       // External data...
       sharedData: undefined, // Initializing in `CompareCore.start` from `bw_matchbox/assets/templates/compare.html`
@@ -57,19 +56,19 @@ modules.define(
 
       // Methods...
 
-      shiftRow: function (event, row, row_id) {
+      shiftRow(event, row, row_id) {
         CompareRowClick.disableRowClick();
         // Add row from source to target array
         event.preventDefault();
         row.parentElement.parentElement.classList.add('shift-right');
-        const obj = CompareCore.sharedData.source_data.find((item) => item.row_id == row_id);
-        CompareCore.sharedData.target_data.push(obj);
-        CompareCore.build_table('target-table', CompareCore.sharedData.target_data, true);
-        CompareCore.comment += `* Added source exchange of ${obj.amount} ${obj.unit} ${obj.name} in ${obj.location}.\n`;
+        const obj = this.sharedData.source_data.find((item) => item.row_id == row_id);
+        this.sharedData.target_data.push(obj);
+        this.buildTable('target-table', this.sharedData.target_data, true);
+        this.comment += `* Added source exchange of ${obj.amount} ${obj.unit} ${obj.name} in ${obj.location}.\n`;
         row.parentElement.innerHTML = `<i class="fa-solid fa-check"></i>`;
       },
 
-      build_row: function (data, is_target) {
+      buildRow(data, is_target) {
         const { collapsedRows } = CompareRowsHelpers;
         const {
           collapsed,
@@ -87,7 +86,7 @@ modules.define(
         if (collapsed && !collapsedRows[collapsedId]) {
           const otherRowKind = !is_target ? 'target' : 'source';
           const otherTableDataKey = otherRowKind + '_data';
-          const otherTableData = CompareCore.sharedData[otherTableDataKey];
+          const otherTableData = this.sharedData[otherTableDataKey];
           const collapsedGroupId = data['collapsed-group'];
           const otherRowId = otherTableData.findIndex(
             (other) => other['collapsed-group'] === collapsedGroupId,
@@ -179,13 +178,32 @@ modules.define(
         return [start, content, end, collapsedRowHtml].filter(Boolean).join('');
       },
 
-      build_table: function (table_id, data, is_target) {
-        data.sort(CommonHelpers.numberSorter);
-        let rows = '';
-        for (const [index, obj] of data.entries()) {
-          obj['row_id'] = `${index}`; // TODO: Is it ok to make server data 'dirty'?
-          rows += CompareCore.build_row(obj, is_target);
+      /** indexTable - Make table indices
+       * @param {<TDataRecord[]>} data
+       */
+      indexTable(data) {
+        for (let i = 0; i < data.length; i++) {
+          const obj = data[i];
+          obj['row_id'] = String(i); // TODO: Is it ok to make server data 'dirty'?
         }
+      },
+
+      /** sortTable - Sort table
+       * @param {<TDataRecord[]>} data
+       */
+      sortTable(data) {
+        data.sort(CommonHelpers.sortByAmountProperty);
+      },
+
+      /** buildTable - Render data table
+       * @param {string} table_id - Table id ('source-table' | 'target-table')
+       * @param {<TDataRecord[]>} data
+       * @param {boolean} is_target
+       */
+      buildTable(table_id, data, is_target) {
+        // this.sortTable(data);
+        this.indexTable(data); // Make `row_id` fake indices (NOTE: They're unstable!)
+        const rowsList = data.map((obj) => this.buildRow(obj, is_target));
         const header = `
           <thead>
             <tr>
@@ -199,22 +217,22 @@ modules.define(
         `;
         const content = `
           <tbody>
-            ${rows}
+            ${rowsList.join('')}
           </tbody>
         `;
         document.getElementById(table_id).innerHTML = header + content;
       },
 
-      createOneToOneProxyFunc: function (event) {
+      createOneToOneProxyFunc(event) {
         event.preventDefault();
 
         const submission_data = {
-          exchanges: [{ input_id: CompareCore.sharedData.target_id, amount: 1.0 }],
-          source: CompareCore.sharedData.source_id,
+          exchanges: [{ input_id: this.sharedData.target_id, amount: 1.0 }],
+          source: this.sharedData.source_id,
           comment: 'One-to-one proxy',
           name:
             'Proxy for ' +
-            CompareCore.sharedData.target_name
+            this.sharedData.target_name
               .replace('Market group for ', '')
               .replace('market group for ', '')
               .replace('Market for ', '')
@@ -234,13 +252,21 @@ modules.define(
         });
       },
 
-      createProxyFunc: function (event) {
+      createProxyFunc(event) {
         event.preventDefault();
+        const {
+          target_name,
+          comment,
+          source_node_unit,
+          source_node_location,
+          target_data,
+          source_id,
+        } = this.sharedData;
         const span = document.getElementById('modal-content-wrapper');
         const title = 'Proxy name';
         const name =
           'Proxy for ' +
-          CompareCore.sharedData.target_name
+          target_name
             .replace('Market group for ', '')
             .replace('market group for ', '')
             .replace('Market for ', '')
@@ -253,8 +279,10 @@ modules.define(
             -->
             <input class="u-full-width" type="text" id="proxy-name" name="proxy-name" value="${name}">
             <label for="proxy-comment">Comment</label>
-            <textarea class="u-full-width" id="proxy-comment" name="proxy-comment">${CompareCore.comment}</textarea>
-            <p><button class="button-primary" id="create-proxy-submit-button">Create Proxy Process</button> | Unit: ${CompareCore.sharedData.source_node_unit} | Location: ${CompareCore.sharedData.source_node_location}</p>
+            <textarea class="u-full-width" id="proxy-comment" name="proxy-comment">${comment}</textarea>
+            <p><button class="button-primary" id="create-proxy-submit-button">Create Proxy Process</button>
+            | Unit: ${source_node_unit}
+            | Location: ${source_node_location}</p>
             <table width="100%">
               <tr>
                 <th>Name</th>
@@ -263,7 +291,7 @@ modules.define(
               </tr>
         `;
 
-        CompareCore.sharedData.target_data.forEach(function (item, _index) {
+        target_data.forEach(function (item, _index) {
           text += `
               <tr input_id=${item.input_id}>
                 <td><div>${item.name}</div></td>
@@ -279,15 +307,14 @@ modules.define(
         `;
         span.innerHTML = text;
 
-        // CompareCore.modal.style.display = 'block';
         this.showModal({ title });
 
         const submit = document.getElementById('create-proxy-submit-button');
         submit.addEventListener('click', async (e) => {
           e.preventDefault();
           const submission_data = {
-            exchanges: CompareCore.sharedData.target_data,
-            source: CompareCore.sharedData.source_id,
+            exchanges: target_data,
+            source: source_id,
             comment: document.getElementById('proxy-comment').value,
             name: document.getElementById('proxy-name').value,
           };
@@ -305,32 +332,33 @@ modules.define(
         });
       },
 
-      replaceWithTarget: function (elem) {
+      replaceWithTarget(elem) {
         CompareRowClick.disableRowClick();
-        CompareCore.sharedData.target_data.push(CompareCore.sharedData.target_node);
-        CompareCore.sharedData.target_data.splice(0, CompareCore.sharedData.target_data.length - 1);
-        CompareCore.comment += `* Collapsed input exchanges to target node\n`;
-        CompareCore.build_table('target-table', CompareCore.sharedData.target_data, true);
+        const { target_node, target_data } = this.sharedData;
+        target_data.push(target_node);
+        target_data.splice(0, target_data.length - 1);
+        this.comment += `* Collapsed input exchanges to target node\n`;
+        this.buildTable('target-table', target_data, true);
         elem.innerHTML = '';
       },
 
-      removeRow: function (element) {
+      removeRow(element) {
         CompareRowClick.disableRowClick();
         const row_id = element.parentElement.getAttribute('row_id');
 
         function removeValue(obj, index, arr) {
           if (obj.row_id == row_id) {
-            CompareCore.comment += `* Removed exchange of ${obj.amount} ${obj.unit} ${obj.name} from ${obj.location}.\n`;
+            this.comment += `* Removed exchange of ${obj.amount} ${obj.unit} ${obj.name} from ${obj.location}.\n`;
             arr.splice(index, 1);
             return true;
           }
           return false;
         }
-        CompareCore.sharedData.target_data.filter(removeValue);
-        CompareCore.build_table('target-table', CompareCore.sharedData.target_data, true);
+        this.sharedData.target_data.filter(removeValue);
+        this.buildTable('target-table', this.sharedData.target_data, true);
       },
 
-      expandRow: function (element) {
+      expandRow(element) {
         CompareRowClick.disableRowClick();
         const url =
           '/expand/' +
@@ -338,10 +366,10 @@ modules.define(
           '/' +
           element.getAttribute('amount') +
           '/';
-        const t = CompareCore.sharedData.target_data.find(
+        const t = this.sharedData.target_data.find(
           (item) => item.input_id == element.getAttribute('input_id'),
         );
-        CompareCore.comment += `* Expanded process inputs of ${t.amount} ${t.unit} from ${t.name} in ${t.location}.\n`;
+        this.comment += `* Expanded process inputs of ${t.amount} ${t.unit} from ${t.name} in ${t.location}.\n`;
         fetch(url)
           .then((response) => {
             if (!response.ok) {
@@ -351,98 +379,109 @@ modules.define(
           })
           .then((data) => {
             data.forEach(function (item, _index) {
-              CompareCore.sharedData.target_data.push(item);
+              this.sharedData.target_data.push(item);
             });
-            CompareCore.sharedData.target_data.sort(CommonHelpers.numberSorter);
-            CompareCore.removeRow(element);
+            this.sharedData.target_data.sort(CommonHelpers.sortByAmountProperty);
+            this.removeRow(element);
           });
       },
 
-      replaceAmountRow: function (elem, target_id) {
+      replaceAmountRow(elem, target_id) {
         CompareRowClick.disableRowClick();
-        const s = CompareCore.sharedData.source_data.find(
+        const s = this.sharedData.source_data.find(
           (item) => item.row_id == elem.getAttribute('source_id'),
         );
-        const t = CompareCore.sharedData.target_data.find((item) => item.row_id == target_id);
-        CompareCore.comment += `* Used source database amount ${s.amount} ${s.unit} from ${s.name} in ${s.location} instead of ${t.amount} ${t.unit} from ${t.name} in ${t.location}.\n`;
+        const t = this.sharedData.target_data.find((item) => item.row_id == target_id);
+        this.comment += `* Used source database amount ${s.amount} ${s.unit} from ${s.name} in ${s.location} instead of ${t.amount} ${t.unit} from ${t.name} in ${t.location}.\n`;
         document.getElementById('number-current-amount').innerText = elem.getAttribute('amount');
       },
 
-      rescaleAmount: function (target_id) {
+      rescaleAmount(target_id) {
         CompareRowClick.disableRowClick();
-        const t = CompareCore.sharedData.target_data.find((item) => item.row_id == target_id);
+        const t = this.sharedData.target_data.find((item) => item.row_id == target_id);
         const scale = Number(document.getElementById('rescale_number').value);
         const node = document.getElementById('number-current-amount');
         if (scale != 1) {
-          CompareCore.comment += `* Rescaled amount ${t.amount} ${t.unit} from ${t.name} in ${t.location} by ${scale}.\n`;
+          this.comment += `* Rescaled amount ${t.amount} ${t.unit} from ${t.name} in ${t.location} by ${scale}.\n`;
         }
         node.innerText = Number(node.innerText) * scale;
       },
 
-      setNewNumber: function (target_id) {
+      setNewNumber(target_id) {
         CompareRowClick.disableRowClick();
-        const t = CompareCore.sharedData.target_data.find((item) => item.row_id == target_id);
+        const t = this.sharedData.target_data.find((item) => item.row_id == target_id);
         const new_value = document.getElementById('new_number').value;
-        CompareCore.comment += `* Set manual exchange value of ${new_value} instead of ${t.amount} ${t.unit} for ${t.name} in ${t.location}.\n`;
+        this.comment += `* Set manual exchange value of ${new_value} instead of ${t.amount} ${t.unit} for ${t.name} in ${t.location}.\n`;
         document.getElementById('number-current-amount').innerText = new_value;
       },
 
-      setNumber: function (elem) {
+      setNumber(elem) {
+        const { target_data } = this.sharedData;
         CompareRowClick.disableRowClick();
-        const row_id = elem.getAttribute('row_id');
+        const rowId = elem.getAttribute('row_id');
         const current = Number(document.getElementById('number-current-amount').innerText);
-        CompareCore.sharedData.target_data.forEach(function (item, _index) {
-          if (item.row_id == row_id) {
-            item.amount = current;
-            item.amount_display = current.toExponential();
-          }
+        const item = target_data.find(({ row_id }) => row_id === rowId);
+        const itemOrig = { ...item };
+        if (item) {
+          item.amount = current;
+          item.amount_display = current.toExponential();
+        }
+        console.log('[CompareCore:setNumber]', {
+          itemOrig,
+          item,
+          rowId,
+          current,
         });
-        // CompareCore.modal.style.display = 'none';
+        debugger;
+        // this.modal.style.display = 'none';
         this.hideModal();
-        CompareCore.build_table('target-table', CompareCore.sharedData.target_data, true);
+        // this.sortTable(target_data);
+        this.buildTable('target-table', target_data, true);
       },
 
-      editNumber: function (link) {
+      editNumber(link) {
+        const { source_data, target_data } = this.sharedData;
         const td = link.closest('td');
         CompareRowClick.disableRowClick();
-        const row = CompareCore.sharedData.target_data.find(
-          (item) => item.row_id == td.getAttribute('row_id'),
-        );
+        const rowId = td.getAttribute('row_id');
+        const row = target_data.find(({ row_id }) => row_id == rowId);
         const span = document.getElementById('modal-content-wrapper');
 
         const title = [row.name, row.location, row.unit].filter(Boolean).join(' | ');
 
         let start = `
-          <!--
-          <h3 class="modal-title">${title}</h3>
-          -->
-          <div class="five columns">
+          <div>
             <p>Click on a row to take that value</p>
-            <table width="100%">
-              <tr>
-                <th>Amount</th>
-                <th>Name</th>
-                <th>Unit</th>
-              </tr>
+            <table class="modal-table" width="100%">
+              <thead>
+                <tr>
+                  <th>Amount</th>
+                  <th>Name</th>
+                  <th>Unit</th>
+                </tr>
+              </thead>
+              <tbody>
         `;
 
-        CompareCore.sharedData.source_data.forEach(function (item, _index) {
+        source_data.forEach((item) => {
           start += `
-            <tr amount="${item.amount}" source_id="${item.row_id}" onClick="CompareCore.replaceAmountRow(this, ${row.row_id})">
-              <td><div>${item.amount_display}</div></td>
-              <td><div>${item.name}</div></td>
-              <td><div>${item.unit}</div></td>
-            </tr>
+                <tr amount="${item.amount}" source_id="${item.row_id}" onClick="CompareCore.replaceAmountRow(this, ${row.row_id})">
+                  <td><div>${item.amount_display}</div></td>
+                  <td><div>${item.name}</div></td>
+                  <td><div>${item.unit}</div></td>
+                </tr>
           `;
         });
 
         const end = `
+              <tbody>
             </table>
           </div>
-          <div class="five columns">
-            <h4>Original amount: ${row.amount}</h4>
-            <h4>Current amount: <span id="number-current-amount">${row.amount}</span></h4>
+          <div>
+            <div class="strong"><strong>Original amount:</strong> ${row.amount}</div>
+            <div class="strong"><strong>Current amount:</strong> <span id="number-current-amount">${row.amount}</span></div>
             <button class="button-primary" id="close-number-editor" row_id="${row.row_id}" onClick="CompareCore.setNumber(this)">Set and close</button>
+            <hr />
             <form>
               <div>
                 <label>Enter new amount</label>
@@ -460,21 +499,16 @@ modules.define(
         `;
 
         span.innerHTML = start + end;
-        document
-          .getElementById('rescale-button')
-          .addEventListener('click', CompareCore.stop, false);
-        document
-          .getElementById('new-number-button')
-          .addEventListener('click', CompareCore.stop, false);
-        document
-          .getElementById('close-number-editor')
-          .addEventListener('click', CompareCore.stop, false);
 
-        // CompareCore.modal.style.display = 'block';
+        const boundStop = this.stop.bind(this);
+        document.getElementById('rescale-button').addEventListener('click', boundStop, false);
+        document.getElementById('new-number-button').addEventListener('click', boundStop, false);
+        document.getElementById('close-number-editor').addEventListener('click', boundStop, false);
+
         this.showModal({ title });
       },
 
-      stop: function (event) {
+      stop(event) {
         event.preventDefault();
       },
 
@@ -482,23 +516,22 @@ modules.define(
        * @param {object} [params] - Modal parameters
        * @param {string} [params.title] - Modal title
        */
-      showModal: function (params = {}) {
+      showModal(params = {}) {
         const { title } = params;
-        // CompareCore.modal.style.display = 'block';
-        CompareCore.modal.classList.toggle('show', true);
+        // this.modal.style.display = 'block';
+        this.modal.classList.toggle('show', true);
         document.body.classList.toggle('has-modal', true);
         // Update title (if passed)...
         if (title) {
-          const titleEl = CompareCore.modal.getElementsByClassName('modal-title')[0];
+          const titleEl = this.modal.getElementsByClassName('modal-title')[0];
           if (titleEl) {
             titleEl.innerHTML = title;
           }
         }
       },
 
-      hideModal: function () {
-        // CompareCore.modal.style.display = 'none';
-        CompareCore.modal.classList.toggle('show', false);
+      hideModal() {
+        this.modal.classList.toggle('show', false);
         document.body.classList.toggle('has-modal', false);
       },
 
@@ -507,30 +540,41 @@ modules.define(
       /** start -- Initialize compare feature (entry point)
        * @param {object} sharedData -- See initialization in `bw_matchbox/assets/templates/compare.html`
        */
-      start: function (sharedData) {
+      start(sharedData) {
         // Save public data...
         this.sharedData = sharedData;
         CompareRowsHelpers.sharedData = sharedData;
 
+        const { source_data, target_data } = this.sharedData;
+        console.log('[CompareCore:start] sharedData', sharedData);
+
+        /*
+         * // Prepare all the tables data...
+         * this.indexTable(source_data);
+         * this.indexTable(target_data);
+         * this.sortTable(source_data);
+         * this.sortTable(target_data);
+         */
+
         // Create tables...
-        CompareCore.build_table('source-table', CompareCore.sharedData.source_data, false);
-        CompareCore.build_table('target-table', CompareCore.sharedData.target_data, true);
+        this.buildTable('source-table', source_data, false);
+        this.buildTable('target-table', target_data, true);
 
         // Button handlers...
         document
           .getElementById('save-mapping-button')
-          .addEventListener('click', CompareCore.createProxyFunc, false);
+          .addEventListener('click', this.createProxyFunc, false);
         document
           .getElementById('one-to-one')
-          .addEventListener('click', CompareCore.createOneToOneProxyFunc, false);
+          .addEventListener('click', this.createOneToOneProxyFunc, false);
 
         // Get modal node...
-        CompareCore.modal = document.getElementById('modal-number-editor');
+        this.modal = document.getElementById('modal-number-editor');
 
         // Link close modal button handler (TODO: To use more specific class name?)...
         const closer = document.getElementsByClassName('close')[0];
         if (closer) {
-          closer.onclick = CompareCore.hideModal;
+          closer.onclick = this.hideModal;
         }
       },
 
@@ -539,14 +583,14 @@ modules.define(
       /** clickRow
        * @param {<TRowEl>} rowEl
        */
-      clickRow: function (rowEl) {
+      clickRow(rowEl) {
         return CompareRowsHelpers.clickRow(rowEl);
       },
 
       /** clickUncollapseRow -- Uncollapse both rows for this clicked collpase handler
        * @param {<HTMLTableRowElement>} firstHandlerEl
        */
-      clickUncollapseRow: function (firstHandlerEl) {
+      clickUncollapseRow(firstHandlerEl) {
         return CompareRowsHelpers.clickUncollapseRow(firstHandlerEl);
       },
 
@@ -555,6 +599,7 @@ modules.define(
       },
     };
 
+    // Provide module...
     provide(CompareCore);
   },
 );
