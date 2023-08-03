@@ -1,8 +1,8 @@
 /* stylelint-disable
-    declaration-block-single-line-max-declarations
-    declaration-colon-space-after
-    rule-empty-line-before
-    comment-empty-line-before
+    declaration-block-single-line-max-declarations,
+    declaration-colon-space-after,
+    rule-empty-line-before,
+    comment-empty-line-before,
 */
 
 /* Root node */
@@ -114,8 +114,8 @@
   cursor: pointer;
   margin: 0 10px;
 }
-.processes-list .bottom-actions-links a + a:before {
-  content: ' | ',
+.processes-list .bottom-actions-links a + a::before {
+  content: ' | ';
   display: inline-block;
 }
 .processes-list .bottom-actions-links a:hover {
@@ -124,9 +124,8 @@
 /* Show 'Reload' (after error) button if error... */
 .processes-list.error .bottom-actions-links a#action-clear-and-reload,
 /* Show 'Load more' button for all 'order by' values except for 'random'... */
-.processes-list:not(.order-random):not(.error) .bottom-actions-links a#action-load-more,
+.processes-list:not(.order-random, .error) .bottom-actions-links a#action-load-more,
 /* Show 'Refresh' button for 'random' 'order by' value... */
 .processes-list.order-random:not(.error) .bottom-actions-links a#action-reload-random {
   display: inline-block;
 }
-
