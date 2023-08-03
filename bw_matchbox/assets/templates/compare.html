@@ -10,17 +10,25 @@
   - `CompareCore` (from `bw_matchbox/assets/js/compare-core.js`)
 #}
 
-<div class="container compare">
-  {% include 'navigation.html' %}
-  <span class="modal-wrapper">
-    <div class="modal" id="number-editor">
-      <div class="modal-content">
-        <span class="close">&times;</span>
-        <span id="modal-content-wrapper">Number Editor</span>
+<div class="modal-wrapper">
+  <div class="modal" id="modal-number-editor">
+    <div class="modal-splash"></div>
+    <div class="modal-window">
+      <div class="modal-header">
+        <h3 class="modal-title">Modal title</h3>
+        <div class="close">&times;</div>
+      </div>
+      <div class="modal-content non-padded non-scrollable">
+        <div id="modal-content-wrapper">
+          Sample content
+        </div>
       </div>
     </div>
-  </span>
+  </div>
+</div>
 
+<div class="container compare">
+  {% include 'navigation.html' %}
   <div class="row">
     <div class="four columns">
       <h4>Location: {% if source_node.location == target_node.location %}Same{% else %}{{ source_node.location }} | {{ target_node.location }}{% endif %}</h4>

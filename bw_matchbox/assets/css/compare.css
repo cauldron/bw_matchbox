@@ -1,8 +1,3 @@
-/* stylelint-disable
-    declaration-block-single-line-max-declarations
-    declaration-colon-space-after
- */
-
 :root {
   /* // UNUSED: Collapsed rows are just hidden.
    * --compare-collapsed-color: #F60;
@@ -59,10 +54,7 @@
 .compare-table tbody td {
   padding: var(--compare-td-padding-v) var(--compare-td-padding-h);
   line-height: 1.3;
-  width: 50px;
-  white-space: nowrap;
   overflow: hidden;
-  text-overflow: ellipsis;
 }
 
 .compare-table thead th > div,
@@ -84,21 +76,19 @@
 /* Particular columns width */
 .compare-table .cell-actions {
   width: 3.5em;
+  white-space: nowrap;
 }
-
 .compare-table .cell-amount {
-  width: 4.5em;
+  width: 5.5em;
+  white-space: nowrap;
 }
-
 .compare-table .cell-name {
   width: 50%;
   white-space: wrap;
 }
-
 .compare-table .cell-location {
   width: 30%;
 }
-
 .compare-table .cell-unit {
   width: 2em;
 }
@@ -206,4 +196,68 @@
 
 .compare-table tr.collapsed-handler td:hover {
   background-color: var(--compare-selected-bg-color2);
+}
+
+/* Modal customizations */
+.modal#modal-number-editor .modal-content {
+  display: flex;
+  overflow: hidden;
+  align-items: stretch;
+  align-content: stretch;
+}
+.modal#modal-number-editor #modal-content-wrapper {
+  display: flex;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  height: 100%;
+  /* padding: 20px 0; */
+}
+
+.modal#modal-number-editor #modal-content-wrapper > div {
+  overflow: auto;
+  /* padding: 0 20px; */
+  padding: 20px;
+  flex: 1;
+  width: 50%;
+}
+.modal#modal-number-editor #modal-content-wrapper > div:first-child {
+}
+
+/* Modal table */
+.modal#modal-number-editor .modal-table {
+  border: 0;
+  table-layout: fixed;
+  width: 100%;
+  border-style: solid;
+}
+.modal#modal-number-editor .modal-table tbody tr {
+  transition: all var(--compare-animation-time) ease;
+}
+.modal#modal-number-editor .modal-table tbody tr:focus,
+.modal#modal-number-editor .modal-table tbody tr:hover {
+  background-color: var(--compare-selected-bg-color1);
+  cursor: pointer;
+}
+.modal#modal-number-editor .modal-table th,
+.modal#modal-number-editor .modal-table td {
+  padding: var(--compare-td-padding-v) var(--compare-td-padding-h);
+  line-height: 1.3;
+  overflow: hidden;
+}
+.modal#modal-number-editor .modal-table tbody td > div {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  width: 100%;
+  position: relative;
+}
+/* Adjust widths */
+.modal#modal-number-editor .modal-table th:last-child {
+  width: 50px;
+}
+.modal#modal-number-editor .modal-table th:first-child {
+  width: 80px;
+}
+/* Adjust content styles */
+.modal#modal-number-editor .strong {
+  margin: 5px 0;
 }

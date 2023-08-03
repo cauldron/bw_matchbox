@@ -57,7 +57,7 @@ modules.define(
         ProcessesListData.isError = isError;
         ProcessesListData.error = error;
         const errorText = error ? error.message || String(error) : '';
-        // DEBUG
+        // DEBUG: Show error in console
         if (errorText) {
           // eslint-disable-next-line no-console
           console.error('[ProcessesListStates:setError]: got the error', {
