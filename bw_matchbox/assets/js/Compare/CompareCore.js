@@ -13,7 +13,6 @@ modules.define(
     CompareRowsHelpers,
     CompareRowClick,
   ) {
-
     /* Compare tables feature code (via global variable `CompareCore`).
      *
      * Mouse handler methods are used:

@@ -1,8 +1,3 @@
-/* stylelint-disable
-    declaration-block-single-line-max-declarations
-    declaration-colon-space-after
- */
-
 :root {
   /* // UNUSED: Collapsed rows are just hidden.
    * --compare-collapsed-color: #F60;
@@ -268,4 +263,3 @@
 .modal#modal-number-editor .strong {
   margin: 5px 0;
 }
-

@@ -1,4 +1,6 @@
-/* stylelint-disable number-max-precision, declaration-block-single-line-max-declarations, comment-empty-line-before, rule-empty-line-before */
+/* stylelint-disable
+    number-max-precision,
+*/
 
 .shift-right {
   position: relative;

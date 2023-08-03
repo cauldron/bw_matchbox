@@ -3,11 +3,6 @@ body.has-modal {
   overflow: hidden;
 }
 
-.modal-wrapper {
-  /* position: absolute; */
-  /* position: relative; */
-}
-
 .modal-wrapper .modal {
   z-index: 1; /* Sit on top */
   display: flex;
@@ -38,7 +33,7 @@ body.has-modal {
   bottom: 0;
 }
 .modal-wrapper .modal-splash {
-  background-color: rgba(0,0,0,0.75);
+  background-color: rgb(0 0 0 / 75%);
 }
 .modal-wrapper .modal-window {
   position: relative;
@@ -50,7 +45,7 @@ body.has-modal {
   background-color: white;
   border: 2px solid #888;
   border-radius: 8px;
-  box-shadow: 4px 4px 8px rgba(0,0,0,.5);
+  box-shadow: 4px 4px 8px rgb(0 0 0 / 50%);
   display: flex;
   flex-direction: column;
   justify-content: center;
@@ -75,7 +70,6 @@ body.has-modal {
 .modal-wrapper .modal-header .modal-title {
   font-size: 24px;
   font-weight: normal;
-  /* margin-right: 36px; */
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
@@ -84,7 +78,6 @@ body.has-modal {
 }
 
 .modal-wrapper .modal-header {
-  /* border: 1px solid red; */
   display: flex;
   flex-direction: row;
   justify-content: stretch;
@@ -98,8 +91,7 @@ body.has-modal {
 /* The Close Button */
 .modal-wrapper .modal-header > .close {
   color: #666;
-  opacity: .5;
-  /* position: absolute; */
+  opacity: 0.5;
   top: 19px;
   right: 20px;
   font-size: 32px;
@@ -113,5 +105,3 @@ body.has-modal {
   text-decoration: none;
   opacity: 1;
 }
-
-
