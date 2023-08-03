@@ -7,15 +7,15 @@
 <script src="{{ url_for('static', filename='js/ProcessesList/ProcessesListDataLoad.js') }}"></script>
 <script src="{{ url_for('static', filename='js/ProcessesList/ProcessesListDataRender.js') }}"></script>
 <script src="{{ url_for('static', filename='js/ProcessesList/ProcessesListNodes.js') }}"></script>
-{# UNUSED ProcessesListPagination -- Using incremental data loading
-<script src="{{ url_for('static', filename='js/ProcessesList/ProcessesListPagination.js') }}"></script>
-#}
 <script src="{{ url_for('static', filename='js/ProcessesList/ProcessesListSearch.js') }}"></script>
 <script src="{{ url_for('static', filename='js/ProcessesList/ProcessesListStates.js') }}"></script>
 <script src="{{ url_for('static', filename='js/ProcessesList/ProcessesList.js') }}"></script>
+{# UNUSED ProcessesListPagination -- Using incremental data loading
+<script src="{{ url_for('static', filename='js/ProcessesList/ProcessesListPagination.js') }}"></script>
+#}
 
-{# Globals:
-  - `ProcessesList` (from `bw_matchbox/assets/js/processes-list.js`)
+{# Core module:
+  - `ProcessesList` (from `bw_matchbox/assets/js/ProcessesList.js`)
 #}
 
 <div id="processes-list-root" class="container processes-list empty loading order-random">
