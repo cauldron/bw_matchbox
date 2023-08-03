@@ -132,13 +132,6 @@ modules.define(
           row_id="${rowId}"
           onClick="CompareCore.clickRow(this)"
         >`;
-        /* // DEBUG: TODO: To move to tests?
-         * if (useDebug && !rowId && !is_target) {
-         *   // Emulate long-long unfittable/unbreakable line...
-         *   name += ' extra_long_unwrappable_text_line_1';
-         *   // name += ' extra_long_unwrappable_text_line_1_extra_long_unwrappable_text_line_2';
-         * }
-         */
         const end = `<td class="cell-name"><div><a
             onClick="CompareCore.disableRowClick(this)"
             href="${url}">${name}</a></div></td>
