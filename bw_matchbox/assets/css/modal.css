@@ -1,0 +1,115 @@
+body.has-modal {
+  /* Hide scrollbars when active modals are exist. */
+  overflow: hidden;
+}
+
+.modal-wrapper {
+  /* position: absolute; */
+  /* position: relative; */
+}
+
+.modal-wrapper .modal {
+  z-index: 1; /* Sit on top */
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  align-content: center;
+  /* By default is hidden and inactive, see `show` state below */
+  pointer-events: none;
+  opacity: 0;
+  transition: all var(--common-animation-time);
+  /* Emulate show effect */
+  margin-top: -50px;
+  margin-bottom: 50px;
+}
+.modal-wrapper .modal.show {
+  opacity: 1;
+  pointer-events: all;
+  margin-top: 0;
+  margin-bottom: 0;
+}
+/* .modal-wrapper, */
+.modal-wrapper .modal,
+.modal-wrapper .modal-splash {
+  position: fixed;
+  left: 0;
+  top: 0;
+  right: 0;
+  bottom: 0;
+}
+.modal-wrapper .modal-splash {
+  background-color: rgba(0,0,0,0.75);
+}
+.modal-wrapper .modal-window {
+  position: relative;
+  z-index: 1;
+  width: 80%;
+  height: 80%;
+  max-width: 800px;
+  overflow: hidden;
+  background-color: white;
+  border: 2px solid #888;
+  border-radius: 8px;
+  box-shadow: 4px 4px 8px rgba(0,0,0,.5);
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: stretch;
+  align-content: stretch;
+}
+
+/* Modal Content/Box */
+.modal-wrapper .modal-content {
+  margin: auto; /* 15% from the top and centered */
+  padding: 20px;
+  flex: 1;
+  overflow: hidden;
+}
+.modal-wrapper .modal-content.scrollable {
+  overflow: auto;
+}
+
+/* Title */
+.modal-wrapper .modal-header .modal-title {
+  font-size: 24px;
+  font-weight: normal;
+  /* margin-right: 36px; */
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  flex: 1;
+  margin-bottom: 0; /* Fix skeleton styles */
+}
+
+.modal-wrapper .modal-header {
+  /* border: 1px solid red; */
+  display: flex;
+  flex-direction: row;
+  justify-content: stretch;
+  align-items: center;
+  align-content: center;
+  gap: 20px;
+  padding: 15px 20px;
+  background-color: #ddd;
+}
+
+/* The Close Button */
+.modal-wrapper .modal-header > .close {
+  color: #666;
+  opacity: .5;
+  /* position: absolute; */
+  top: 19px;
+  right: 20px;
+  font-size: 32px;
+  line-height: 1;
+  font-weight: light;
+  transition: all var(--common-animation-time);
+  cursor: pointer;
+}
+.modal-wrapper .modal-header > .close:hover,
+.modal-wrapper .modal-header > .close:focus {
+  text-decoration: none;
+  opacity: 1;
+}
+
+
