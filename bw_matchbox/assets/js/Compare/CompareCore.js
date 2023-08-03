@@ -13,6 +13,7 @@ modules.define(
     CompareRowsHelpers,
     CompareRowClick,
   ) {
+
     /* Compare tables feature code (via global variable `CompareCore`).
      *
      * Mouse handler methods are used:
@@ -50,6 +51,9 @@ modules.define(
       // External data...
       sharedData: undefined, // Initializing in `CompareCore.start` from `bw_matchbox/assets/templates/compare.html`
 
+      // Counter for making unique records (see `replaceWithTarget`)
+      targetNodesCounter: 0,
+
       // Local data...
       comment: '',
       modal: undefined, // HTMLDivElement -- modal window node
@@ -61,9 +65,13 @@ modules.define(
         // Add row from source to target array
         event.preventDefault();
         row.parentElement.parentElement.classList.add('shift-right');
-        const obj = this.sharedData.source_data.find((item) => item.row_id == row_id);
-        this.sharedData.target_data.push(obj);
-        this.buildTable('target-table', this.sharedData.target_data, true);
+        const { source_data, target_data } = this.sharedData;
+        const obj = source_data.find((item) => item.row_id == row_id);
+        // Creating new object with unique (?) row_id
+        const newObj = { ...obj, row_id: 'source-' + obj.row_id };
+        target_data.push(newObj);
+        this.sortTable(target_data);
+        this.buildTable('target-table', target_data, true);
         this.comment += `* Added source exchange of ${obj.amount} ${obj.unit} ${obj.name} in ${obj.location}.\n`;
         row.parentElement.innerHTML = `<i class="fa-solid fa-check"></i>`;
       },
@@ -83,7 +91,7 @@ modules.define(
         } = data;
         const rowKind = is_target ? 'target' : 'source';
         const collapsedId = CompareRowsHelpers.getCollapsedId(rowKind, rowId);
-        if (collapsed && !collapsedRows[collapsedId]) {
+        if (collapsed && !collapsedRows[collapsedId] && collapsedRows[collapsedId] !== false) {
           const otherRowKind = !is_target ? 'target' : 'source';
           const otherTableDataKey = otherRowKind + '_data';
           const otherTableData = this.sharedData[otherTableDataKey];
@@ -201,8 +209,10 @@ modules.define(
        * @param {boolean} is_target
        */
       buildTable(table_id, data, is_target) {
-        // this.sortTable(data);
-        this.indexTable(data); // Make `row_id` fake indices (NOTE: They're unstable!)
+        /* // NOTE: Sorting and indexing only on initialization or data changing.
+         * this.sortTable(data);
+         * this.indexTable(data); // Make `row_id` fake indices (NOTE: They're unstable!)
+         */
         const rowsList = data.map((obj) => this.buildRow(obj, is_target));
         const header = `
           <thead>
@@ -335,9 +345,14 @@ modules.define(
       replaceWithTarget(elem) {
         CompareRowClick.disableRowClick();
         const { target_node, target_data } = this.sharedData;
-        target_data.push(target_node);
+        // Trying to make unique row_id...
+        const uniqueCounter = ++this.targetNodesCounter;
+        const newNode = { ...target_node, row_id: 'replaced-' + uniqueCounter };
+        target_data.push(newNode);
+        // TODO: Is it required to create (update?) unique row_id
         target_data.splice(0, target_data.length - 1);
         this.comment += `* Collapsed input exchanges to target node\n`;
+        // TODO: Is sorting required here?
         this.buildTable('target-table', target_data, true);
         elem.innerHTML = '';
       },
@@ -345,7 +360,6 @@ modules.define(
       removeRow(element) {
         CompareRowClick.disableRowClick();
         const row_id = element.parentElement.getAttribute('row_id');
-
         function removeValue(obj, index, arr) {
           if (obj.row_id == row_id) {
             this.comment += `* Removed exchange of ${obj.amount} ${obj.unit} ${obj.name} from ${obj.location}.\n`;
@@ -432,10 +446,9 @@ modules.define(
           rowId,
           current,
         });
-        debugger;
         // this.modal.style.display = 'none';
         this.hideModal();
-        // this.sortTable(target_data);
+        this.sortTable(target_data);
         this.buildTable('target-table', target_data, true);
       },
 
@@ -546,15 +559,14 @@ modules.define(
         CompareRowsHelpers.sharedData = sharedData;
 
         const { source_data, target_data } = this.sharedData;
-        console.log('[CompareCore:start] sharedData', sharedData);
 
-        /*
-         * // Prepare all the tables data...
-         * this.indexTable(source_data);
-         * this.indexTable(target_data);
-         * this.sortTable(source_data);
-         * this.sortTable(target_data);
-         */
+        // console.log('[CompareCore:start] sharedData', sharedData);
+
+        // Prepare all the tables data...
+        this.indexTable(source_data);
+        this.indexTable(target_data);
+        this.sortTable(source_data);
+        this.sortTable(target_data);
 
         // Create tables...
         this.buildTable('source-table', source_data, false);
@@ -572,9 +584,9 @@ modules.define(
         this.modal = document.getElementById('modal-number-editor');
 
         // Link close modal button handler (TODO: To use more specific class name?)...
-        const closer = document.getElementsByClassName('close')[0];
+        const closer = this.modal.getElementsByClassName('close')[0];
         if (closer) {
-          closer.onclick = this.hideModal;
+          closer.onclick = this.hideModal.bind(this);
         }
       },
 

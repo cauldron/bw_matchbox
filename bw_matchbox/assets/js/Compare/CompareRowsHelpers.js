@@ -91,6 +91,7 @@ modules.define(
         if (CompareRowsHelpers.selectedFirst && CompareRowsHelpers.selectedFirst.rowEl === rowEl) {
           CompareRowsHelpers.selectedFirst = undefined;
         }
+        // TODO: Update `collapsed` field in original data?
       },
 
       /** getCollapsedHandlerTooltipText -- Get collpased node tooltip text
@@ -193,7 +194,7 @@ modules.define(
         const handlerEl = tableNode.querySelector('[for-collapsed-id="' + collapsedId + '"]');
         const rowEl = tableNode.querySelector('[collapsed-id="' + collapsedId + '"]');
         // Remove collapsed record data...
-        CompareRowsHelpers.collapsedRows[collapsedId] = undefined;
+        CompareRowsHelpers.collapsedRows[collapsedId] = false;
         if (handlerEl) {
           // Remove collapsed handler from dom (if exist in dom)...
           handlerEl.remove();
