@@ -23,8 +23,9 @@ bw_matchbox.egg-info
 docs
 tests
 
-# Don't prettify data files...
+# Don't prettify data and library files...
 /bw_matchbox/data
+/bw_matchbox/assets/js/libs/
 
 # Don't prettify compexly-formatted html modules...
 *.html

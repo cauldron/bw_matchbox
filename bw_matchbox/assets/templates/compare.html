@@ -6,7 +6,7 @@
 <script src="{{ url_for('static', filename='js/Compare/CompareRowClick.js') }}"></script>
 <script src="{{ url_for('static', filename='js/Compare/CompareCore.js') }}"></script>
 
-{# Globals:
+{# Core js module:
   - `CompareCore` (from `bw_matchbox/assets/js/compare-core.js`)
 #}
 
@@ -47,66 +47,52 @@
 </div>
 
 <script>
+  modules.require('CompareCore', (CompareCore) => {
+    /* // Enable debug mode...
+     * const useDebug = true;
+     * // TODO: Expose it to global scope?
+     */
 
-  /* // Enable debug mode...
-   * const useDebug = true;
-   */
+    // Global variables for compare tables feature (via global variable `sharedData`)...
+    const sharedData = {
+      source_data: {{ source_data_json|safe }}, // TDataRecord[]
+      target_data: {{ target_data_json|safe }}, // TDataRecord[]
+      target_node: {{ target_json|safe}},
+      source_id: {{ source_node.id }},
+      target_id: {{ target_node.id }},
+      target_name: '{{ target_node.name|safe }}',
+      source_node_unit: '{{source_node.unit}}',
+      source_node_location: '{{source_node.location}}',
+    };
 
-  /* // Common types (ts-like):
-   *
-   * Data record item (for `source_data` and `target_data` tables):
-   *
-   * interface TDataRecord {
-   *   amount: number; // Eg: 7.135225509515751e-9
-   *   amount_display: string; // Eg: '7.1e-09'
-   *   input_id: number; // Eg: 633
-   *   location: string; // Eg: 'United States'
-   *   name: string; // Eg: 'Clothing; at manufacturer'
-   *   row_id: string; // "0" (auto increment primary key; initilizes dynamically on the client from the first iteration)
-   *   unit: string; // Eg: ''
-   *   url: string; // Eg: '/process/633'
-   *   collapsed: boolean; // true
-   *   collapsed-group: string; // "Collapsed-XXX-YYYYYY" -- unique key to locate corresponding pair.
-   * }
-   */
+    /* // DEBUG: Crop data table to easier debugging...
+     * if (useDebug) {
+     *   sharedData.source_data.length = 2;
+     *   sharedData.target_data.length = 2;
+     * }
+     */
 
-  // Global variables for compare tables feature (via global variable `sharedData`)...
-  const sharedData = {
-    // TODO: Separate data by shared and local.
-    source_data: {{ source_data_json|safe }}, // TDataRecord[]
-    target_data: {{ target_data_json|safe }}, // TDataRecord[]
-    target_node: {{ target_json|safe}},
-    source_id: {{ source_node.id }},
-    target_id: {{ target_node.id }},
-    target_name: '{{ target_node.name|safe }}',
-    source_node_unit: '{{source_node.unit}}',
-    source_node_location: '{{source_node.location}}',
-  };
+    /* // DEBUG: Emulate pre-collapsed elements data...
+     * if (useDebug) {
+     *   // Link first columns...
+     *   const collapsedGroupId = 'Collapsed-0-abcdef'
+     *   sharedData.source_data[0].collapsed = true
+     *   sharedData.source_data[0]['collapsed-group'] = collapsedGroupId;
+     *   sharedData.target_data[0].collapsed = true
+     *   sharedData.target_data[0]['collapsed-group'] = collapsedGroupId;
+     *   console.log('DEBUG: Emulate pre-collapsed elements data', {
+     *     source_data: sharedData.source_data,
+     *     target_data: sharedData.target_data,
+     *   });
+     *   debugger;
+     * }
+     */
 
-  /* // DEBUG: Crop data table to easier debugging...
-   * if (useDebug) {
-   *   sharedData.source_data.length = 2;
-   *   sharedData.target_data.length = 2;
-   * }
-   */
+    // Export to global scope (to access from generated html code handlers).
+    window.CompareCore = CompareCore;
 
-  /* // DEBUG: Emulate pre-collapsed elements data...
-   * if (useDebug) {
-   *   // Link first columns...
-   *   const collapsedGroupId = 'Collapsed-0-abcdef'
-   *   sharedData.source_data[0].collapsed = true
-   *   sharedData.source_data[0]['collapsed-group'] = collapsedGroupId;
-   *   sharedData.target_data[0].collapsed = true
-   *   sharedData.target_data[0]['collapsed-group'] = collapsedGroupId;
-   *   console.log('DEBUG: Emulate pre-collapsed elements data', {
-   *     source_data: sharedData.source_data,
-   *     target_data: sharedData.target_data,
-   *   });
-   *   debugger;
-   * }
-   */
-
-  CompareCore.initCompare(sharedData);
-
+    // Start core module...
+    CompareCore.start(sharedData);
+  });
 </script>
 {% include 'footer.html' %}

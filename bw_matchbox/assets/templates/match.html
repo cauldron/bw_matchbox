@@ -9,7 +9,7 @@
         <li>Unit: {{ds.unit}}</li>
         <li>Comment: {{ds.comment}}</li>
       </ul>
-      <p><input class="u-full-width" placeholder="{{ query_string }}" id="query_string"></p>
+      <p><input type="text" class="u-full-width" placeholder="Enter value to search" value="{{ query_string }}" id="query_string" /></p>
       <table id="result-table">
         <tr>
           <th>Activity</th>
@@ -31,28 +31,28 @@
 </div>
 
 <script type="text/javascript">
-var search_bar = document.getElementById("query_string");
-search_bar.focus();
+var searchBar = document.getElementById('query_string');
+searchBar.focus();
 
-var result_table = document.getElementById("result-table");
+var result_table = document.getElementById('result-table');
 function search_result_updater() {
   result_table.innerHTML = this.responseText;
 }
 
-var do_search = function () {
-  var qs = encodeURIComponent(document.getElementById("query_string").value);
+var doSearch = function () {
+  var qs = encodeURIComponent(searchBar.value);
   if (qs) {
     const req = new XMLHttpRequest();
-    req.addEventListener("load", search_result_updater);
-    req.open("GET", "{{ url_for('search') }}?e=1&source={{ ds.id }}&database=ecoinvent-3.9-cutoff&q=" + qs);
+    req.addEventListener('load', search_result_updater);
+    req.open('GET', '{{ url_for('search') }}?e=1&source={{ ds.id }}&database=ecoinvent-3.9-cutoff&q=' + qs);
     req.send();
   };
 };
 
-search_bar.addEventListener("click", do_search);
-search_bar.addEventListener("keypress", function(event) {
-  if (event.key === "Enter") {
-    do_search();
+searchBar.addEventListener('focusout', doSearch);
+searchBar.addEventListener('keypress', function(event) {
+  if (event.key === 'Enter') {
+    doSearch();
   }
 });
 </script>

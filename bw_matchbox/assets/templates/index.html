@@ -7,15 +7,15 @@
 <script src="{{ url_for('static', filename='js/ProcessesList/ProcessesListDataLoad.js') }}"></script>
 <script src="{{ url_for('static', filename='js/ProcessesList/ProcessesListDataRender.js') }}"></script>
 <script src="{{ url_for('static', filename='js/ProcessesList/ProcessesListNodes.js') }}"></script>
-{# UNUSED ProcessesListPagination -- Using incremental data loading
-<script src="{{ url_for('static', filename='js/ProcessesList/ProcessesListPagination.js') }}"></script>
-#}
 <script src="{{ url_for('static', filename='js/ProcessesList/ProcessesListSearch.js') }}"></script>
 <script src="{{ url_for('static', filename='js/ProcessesList/ProcessesListStates.js') }}"></script>
 <script src="{{ url_for('static', filename='js/ProcessesList/ProcessesList.js') }}"></script>
+{# UNUSED ProcessesListPagination -- Using incremental data loading
+<script src="{{ url_for('static', filename='js/ProcessesList/ProcessesListPagination.js') }}"></script>
+#}
 
-{# Globals:
-  - `ProcessesList` (from `bw_matchbox/assets/js/processes-list.js`)
+{# Core module:
+  - `ProcessesList` (from `bw_matchbox/assets/js/ProcessesList.js`)
 #}
 
 <div id="processes-list-root" class="container processes-list empty loading order-random">
@@ -30,7 +30,7 @@
         </h1>
       </div>
       <div class="page-search">
-        <p><input class="u-full-width" placeholder="Enter value to search" value="{{ query_string }}" id="query_string"></p>
+        <p><input type="text" class="u-full-width" placeholder="Enter value to search" value="{{ query_string }}" id="query_string" /></p>
       </div>
       <div class="page-filters">
         {# Controls for `order_by` parameter (name, location, product; default
@@ -75,12 +75,18 @@
 </div>
 
 <script type="text/javascript">
-  // Initialize page data...
-  const sharedParams = {
-    searchUrl: '{{ url_for("search") }}',
-    database: '{{ database }}',
-  };
-  // Start page routines...
-  ProcessesList.start(sharedParams);
+  modules.require('ProcessesList', (ProcessesList) => {
+    // Initialize page data...
+    const sharedParams = {
+      searchUrl: '{{ url_for("search") }}',
+      database: '{{ database }}',
+    };
+
+    // Export to global scope (to access from generated html code handlers).
+    window.ProcessesList = ProcessesList;
+
+    // Start core module...
+    ProcessesList.start(sharedParams);
+  });
 </script>
 {% include 'footer.html' %}
