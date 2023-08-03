@@ -237,6 +237,7 @@ modules.define(
       createProxyFunc: function (event) {
         event.preventDefault();
         const span = document.getElementById('modal-content-wrapper');
+        const title = 'Proxy name';
         const name =
           'Proxy for ' +
           CompareCore.sharedData.target_name
@@ -247,7 +248,9 @@ modules.define(
             .trim();
         let text = `
           <form>
-            <label for="proxy-name">Proxy name</label>
+            <!--
+            <label for="proxy-name">${title}</label>
+            -->
             <input class="u-full-width" type="text" id="proxy-name" name="proxy-name" value="${name}">
             <label for="proxy-comment">Comment</label>
             <textarea class="u-full-width" id="proxy-comment" name="proxy-comment">${CompareCore.comment}</textarea>
@@ -275,7 +278,9 @@ modules.define(
           </form>
         `;
         span.innerHTML = text;
-        CompareCore.modal.style.display = 'block';
+
+        // CompareCore.modal.style.display = 'block';
+        this.showModal({ title });
 
         const submit = document.getElementById('create-proxy-submit-button');
         submit.addEventListener('click', async (e) => {
@@ -392,7 +397,8 @@ modules.define(
             item.amount_display = current.toExponential();
           }
         });
-        CompareCore.modal.style.display = 'none';
+        // CompareCore.modal.style.display = 'none';
+        this.hideModal();
         CompareCore.build_table('target-table', CompareCore.sharedData.target_data, true);
       },
 
@@ -404,8 +410,12 @@ modules.define(
         );
         const span = document.getElementById('modal-content-wrapper');
 
+        const title = [row.name, row.location, row.unit].filter(Boolean).join(' | ');
+
         let start = `
-          <h3>${row.name} | ${row.location} | ${row.unit}</h3>
+          <!--
+          <h3 class="modal-title">${title}</h3>
+          -->
           <div class="five columns">
             <p>Click on a row to take that value</p>
             <table width="100%">
@@ -415,6 +425,7 @@ modules.define(
                 <th>Unit</th>
               </tr>
         `;
+
         CompareCore.sharedData.source_data.forEach(function (item, _index) {
           start += `
             <tr amount="${item.amount}" source_id="${item.row_id}" onClick="CompareCore.replaceAmountRow(this, ${row.row_id})">
@@ -458,15 +469,37 @@ modules.define(
         document
           .getElementById('close-number-editor')
           .addEventListener('click', CompareCore.stop, false);
-        CompareCore.modal.style.display = 'block';
+
+        // CompareCore.modal.style.display = 'block';
+        this.showModal({ title });
       },
 
       stop: function (event) {
         event.preventDefault();
       },
 
+      /** showModal -- Show modal window
+       * @param {object} [params] - Modal parameters
+       * @param {string} [params.title] - Modal title
+       */
+      showModal: function (params = {}) {
+        const { title } = params;
+        // CompareCore.modal.style.display = 'block';
+        CompareCore.modal.classList.toggle('show', true);
+        document.body.classList.toggle('has-modal', true);
+        // Update title (if passed)...
+        if (title) {
+          const titleEl = CompareCore.modal.getElementsByClassName('modal-title')[0];
+          if (titleEl) {
+            titleEl.innerHTML = title;
+          }
+        }
+      },
+
       hideModal: function () {
-        CompareCore.modal.style.display = 'none';
+        // CompareCore.modal.style.display = 'none';
+        CompareCore.modal.classList.toggle('show', false);
+        document.body.classList.toggle('has-modal', false);
       },
 
       // Start...
@@ -492,7 +525,7 @@ modules.define(
           .addEventListener('click', CompareCore.createOneToOneProxyFunc, false);
 
         // Get modal node...
-        CompareCore.modal = document.getElementById('number-editor');
+        CompareCore.modal = document.getElementById('modal-number-editor');
 
         // Link close modal button handler (TODO: To use more specific class name?)...
         const closer = document.getElementsByClassName('close')[0];
