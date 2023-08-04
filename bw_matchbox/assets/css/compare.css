@@ -133,6 +133,9 @@
   flex: 1;
   width: 50%;
 }
+.common-modal-content#set-number-modal .common-modal-content-wrapper > div > *:last-child {
+  margin-bottom: 0;
+}
 
 /* Adjust 'edit number' modal table columns widths */
 .common-modal-content#set-number-modal #edit-number-table th:last-child {
@@ -146,7 +149,7 @@
   margin: 5px 0;
 }
 
-/* Adjust 'proxy' modal content styles */
+/* Adjust 'proxy-dialog-modal' modal content styles */
 .common-modal-content#proxy-dialog-modal #proxy-table th:first-child {
   width: 50%;
 }

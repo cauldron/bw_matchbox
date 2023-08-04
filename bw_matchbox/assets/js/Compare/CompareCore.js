@@ -15,21 +15,23 @@ modules.define(
     CompareRowClick,
     CompareRowsHelpers,
   ) {
+
     /* Compare tables feature code (via global variable `CompareCore`).
      *
      * Mouse handler methods are used:
-     * - CompareRowsHelpers.clickRow -- Click on regular row to select or collapse selected rows.
-     * - CompareRowsHelpers.clickUncollapseRow -- Click on collapsed row handler to uncollapse.
-     * - CompareRowClick.disableRowClick -- To disable row click effect (if we have some nested interactive elements).
-     * - CompareCore.removeRow
-     * - CompareCore.expandRow
-     * - CompareCore.editNumber
-     * - CompareCore.shiftRow
-     * - CompareCore.replaceAmountRow
-     * - CompareCore.setNumber
-     * - CompareCore.setNewNumber
-     * - CompareCore.rescaleAmount
-     * - CompareCore.replaceWithTarget
+     * - CompareRowsHelpers.clickRowHandler -- Click on regular row to select or collapse selected rows.
+     * - CompareRowsHelpers.clickUncollapseRowHandler -- Click on collapsed row handler to uncollapse.
+     * - CompareRowClick.disableRowClickHandler -- To disable row click effect (if we have some nested interactive elements).
+     * - CompareCore.removeRowHandler
+     * - CompareCore.expandRowHandler
+     * - CompareCore.editNumberHandler
+     * - CompareCore.shiftRowHandler
+     * - CompareCore.replaceAmountRowHandler
+     * - CompareCore.setNumberHandler
+     * - CompareCore.setNewNumberHandler
+     * - CompareCore.resetNumberHandler
+     * - CompareCore.rescaleAmountHandler
+     * - CompareCore.replaceWithTargetHandler
      *
      * Data table record types:
      *
@@ -52,16 +54,16 @@ modules.define(
       // External data...
       sharedData: undefined, // Initializing in `CompareCore.start` from `bw_matchbox/assets/templates/compare.html`
 
-      // Counter for making unique records (see `replaceWithTarget`)
+      // Counter for making unique records (see `replaceWithTargetHandler`)
       targetNodesCounter: 0,
 
-      // Local data...
+      // Local data: construct comment field for the `set-number-modal` modal dialog...
       comment: '',
 
       // Methods...
 
-      shiftRow(event, row, row_id) {
-        CompareRowClick.disableRowClick();
+      shiftRowHandler(event, row, row_id) {
+        CompareRowClick.disableRowClickHandler();
         // Add row from source to target array
         event.preventDefault();
         row.parentElement.parentElement.classList.add('shift-right');
@@ -147,10 +149,10 @@ modules.define(
         const start = `<tr
           ${attrs}
           row_id="${rowId}"
-          onClick="CompareCore.clickRow(this)"
+          onClick="CompareCore.clickRowHandler(this)"
         >`;
         const end = `<td class="cell-name"><div><a
-            onClick="CompareCore.disableRowClick(this)"
+            onClick="CompareCore.disableRowClickHandler(this)"
             href="${url}">${name}</a></div></td>
           <td class="cell-location"><div>${location}</div></td>
           <td class="cell-unit"><div>${unit}</div></td>
@@ -161,7 +163,7 @@ modules.define(
             <td class="cell-actions" row_id="${rowId}"><div>
               <a
                 id="row-trash-${rowId}"
-                onClick="CompareCore.removeRow(this)"
+                onClick="CompareCore.removeRowHandler(this)"
                 title="Remove row"
               ><i
                 class="fa-solid fa-trash-can"></i></a>
@@ -169,20 +171,20 @@ modules.define(
               <a
                 input_id="${input_id}"
                 amount="${amount}"
-                onClick="CompareCore.expandRow(this)"
+                onClick="CompareCore.expandRowHandler(this)"
                 title="Expand row"
               ><i
                 class="fa-solid fa-diamond fa-spin"></i></a>
             </div></td>
             <td
               class="cell-amount"
-              row_id="${rowId}"><div><a onClick="CompareCore.editNumber(this)">${amount_display}</a></div></td>
+              row_id="${rowId}"><div><a onClick="CompareCore.editNumberHandler(this)">${amount_display}</a></div></td>
         `;
         } else {
           content = `
             <td class="cell-actions">
               <div><a
-                onClick="CompareCore.shiftRow(event, this, ${rowId})"
+                onClick="CompareCore.shiftRowHandler(event, this, ${rowId})"
                 title="Shift row"
               ><i
               class="fa-solid fa-arrow-right"></i></a></div>
@@ -362,8 +364,8 @@ modules.define(
         });
       },
 
-      replaceWithTarget(elem) {
-        CompareRowClick.disableRowClick();
+      replaceWithTargetHandler(elem) {
+        CompareRowClick.disableRowClickHandler();
         const { target_node, target_data } = this.sharedData;
         // Trying to make unique row_id...
         const uniqueCounter = ++this.targetNodesCounter;
@@ -377,8 +379,8 @@ modules.define(
         elem.innerHTML = '';
       },
 
-      removeRow(element) {
-        CompareRowClick.disableRowClick();
+      removeRowHandler(element) {
+        CompareRowClick.disableRowClickHandler();
         const rowId = element.closest('td').getAttribute('row_id');
         const { target_data } = this.sharedData;
         function removeValue(obj, index, arr) {
@@ -393,14 +395,14 @@ modules.define(
         this.buildTable('target-table', target_data, true);
       },
 
-      expandRow(element) {
+      expandRowHandler(element) {
         const { target_data } = this.sharedData;
-        CompareRowClick.disableRowClick();
+        CompareRowClick.disableRowClickHandler();
         const elInputId = element.getAttribute('input_id');
         const elAmount = element.getAttribute('amount');
         const url = '/expand/' + elInputId + '/' + elAmount + '/';
         const node = target_data.find((item) => item.input_id == elInputId);
-        /* console.log('[CompareCore:expandRow]', {
+        /* console.log('[CompareCore:expandRowHandler]', {
          *   elInputId,
          *   elAmount,
          *   url,
@@ -423,12 +425,12 @@ modules.define(
               target_data.push(newNode);
             });
             this.sortTable(target_data);
-            this.removeRow(element);
+            this.removeRowHandler(element);
           });
       },
 
-      replaceAmountRow(elem, target_id) {
-        CompareRowClick.disableRowClick();
+      replaceAmountRowHandler(elem, target_id) {
+        CompareRowClick.disableRowClickHandler();
         const s = this.sharedData.source_data.find(
           (item) => item.row_id == elem.getAttribute('source_id'),
         );
@@ -437,8 +439,8 @@ modules.define(
         document.getElementById('number-current-amount').innerText = elem.getAttribute('amount');
       },
 
-      rescaleAmount(target_id) {
-        CompareRowClick.disableRowClick();
+      rescaleAmountHandler(target_id) {
+        CompareRowClick.disableRowClickHandler();
         const t = this.sharedData.target_data.find((item) => item.row_id == target_id);
         const scale = Number(document.getElementById('rescale_number').value);
         const node = document.getElementById('number-current-amount');
@@ -448,17 +450,17 @@ modules.define(
         node.innerText = Number(node.innerText) * scale;
       },
 
-      setNewNumber(target_id) {
-        CompareRowClick.disableRowClick();
+      setNewNumberHandler(target_id) {
+        CompareRowClick.disableRowClickHandler();
         const t = this.sharedData.target_data.find((item) => item.row_id == target_id);
         const new_value = document.getElementById('new_number').value;
         this.comment += `* Set manual exchange value of ${new_value} instead of ${t.amount} ${t.unit} for ${t.name} in ${t.location}.\n`;
         document.getElementById('number-current-amount').innerText = new_value;
       },
 
-      setNumber(elem) {
+      setNumberHandler(elem) {
         const { target_data } = this.sharedData;
-        CompareRowClick.disableRowClick();
+        CompareRowClick.disableRowClickHandler();
         const rowId = elem.getAttribute('row_id');
         const current = Number(document.getElementById('number-current-amount').innerText);
         const item = target_data.find(({ row_id }) => row_id === rowId);
@@ -467,7 +469,7 @@ modules.define(
           item.amount_display = current.toExponential();
         }
         // TODO: Number formatting is weird here. It would be nice to fix it.
-        /* console.log('[CompareCore:setNumber]', {
+        /* console.log('[CompareCore:setNumberHandler]', {
          *   // itemOrig,
          *   item,
          *   rowId,
@@ -480,8 +482,24 @@ modules.define(
         this.buildTable('target-table', target_data, true);
       },
 
-      editNumber(link) {
-        CompareRowClick.disableRowClick();
+      resetNumberHandler(elem) {
+        const { target_data } = this.sharedData;
+        CompareRowClick.disableRowClickHandler();
+        // Get target row item data...
+        const rowId = elem.getAttribute('row_id');
+        // Get original amount value to restore...
+        const item = target_data.find(({ row_id }) => row_id === rowId);
+        const { amount } = item;
+        // Find dom nodes...
+        const showNumber = document.getElementById('number-current-amount');
+        const inputNumber = document.getElementById('new_number');
+        // Update data...
+        showNumber.innerText = amount;
+        inputNumber.value = amount;
+      },
+
+      editNumberHandler(link) {
+        CompareRowClick.disableRowClickHandler();
         const { source_data, target_data } = this.sharedData;
         const td = link.closest('td');
         const rowId = td.getAttribute('row_id');
@@ -503,7 +521,7 @@ modules.define(
 
         source_data.forEach((item) => {
           start += `
-                <tr amount="${item.amount}" source_id="${item.row_id}" onClick="CompareCore.replaceAmountRow(this, ${row.row_id})">
+                <tr amount="${item.amount}" source_id="${item.row_id}" onClick="CompareCore.replaceAmountRowHandler(this, ${row.row_id})">
                   <td><div>${item.amount_display}</div></td>
                   <td><div>${item.name}</div></td>
                   <td><div>${item.unit}</div></td>
@@ -518,19 +536,21 @@ modules.define(
           <div>
             <div class="strong"><strong>Original amount:</strong> ${row.amount}</div>
             <div class="strong"><strong>Current amount:</strong> <span id="number-current-amount">${row.amount}</span></div>
-            <button class="button-primary" id="close-number-editor" row_id="${row.row_id}" onClick="CompareCore.setNumber(this)">Set and close</button>
+            <hr />
+            <button class="button-primary" id="close-number-editor" row_id="${row.row_id}" onClick="CompareCore.setNumberHandler(this)">Set and close</button>
+            <button id="reset-number" row_id="${row.row_id}" onClick="CompareCore.resetNumberHandler(this)">Reset number</button>
             <hr />
             <form>
               <div>
                 <label>Enter new amount</label>
                 <input type="number" id="new_number" value="${row.amount}">
-                <button onClick="CompareCore.setNewNumber(${row.row_id})" id="new-number-button">Set</button>
+                <button onClick="CompareCore.setNewNumberHandler(${row.row_id})" id="new-number-button">Set</button>
               </div>
               <hr />
               <div>
                 <label>Rescale current amount</label>
                 <input type="number" id="rescale_number" value="1.0">
-                <button onClick="CompareCore.rescaleAmount(${row.row_id})" id="rescale-button">Rescale</button>
+                <button onClick="CompareCore.rescaleAmountHandler(${row.row_id})" id="rescale-button">Rescale</button>
               </div>
             </form>
           </div>
@@ -548,16 +568,6 @@ modules.define(
           })
           .setContent(content)
           .showModal();
-
-        // Set modal handlers...
-        const boundStop = this.stop.bind(this);
-        document.getElementById('rescale-button').addEventListener('click', boundStop, false);
-        document.getElementById('new-number-button').addEventListener('click', boundStop, false);
-        document.getElementById('close-number-editor').addEventListener('click', boundStop, false);
-        // TODO: To integrate this code (`event.preventDefault()`) into the
-        // handlers (`rescaleAmount`, `setNewNumber`, `setNumber`), by refactor
-        // handlers to get stored `row_id`, and get event object from arguments
-        // instead.
       },
 
       stop(event) {
@@ -605,22 +615,22 @@ modules.define(
 
       // Re-exported handlers for access from the html code (only core module is exposed as global)...
 
-      /** clickRow
+      /** clickRowHandler
        * @param {<TRowEl>} rowEl
        */
-      clickRow(rowEl) {
-        return CompareRowsHelpers.clickRow(rowEl);
+      clickRowHandler(rowEl) {
+        return CompareRowsHelpers.clickRowHandler(rowEl);
       },
 
-      /** clickUncollapseRow -- Uncollapse both rows for this clicked collpase handler
+      /** clickUncollapseRowHandler -- Uncollapse both rows for this clicked collpase handler
        * @param {<HTMLTableRowElement>} firstHandlerEl
        */
-      clickUncollapseRow(firstHandlerEl) {
-        return CompareRowsHelpers.clickUncollapseRow(firstHandlerEl);
+      clickUncollapseRowHandler(firstHandlerEl) {
+        return CompareRowsHelpers.clickUncollapseRowHandler(firstHandlerEl);
       },
 
-      disableRowClick() {
-        return CompareRowClick.disableRowClick();
+      disableRowClickHandler() {
+        return CompareRowClick.disableRowClickHandler();
       },
     };
 

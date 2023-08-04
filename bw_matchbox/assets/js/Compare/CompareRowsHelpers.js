@@ -179,7 +179,7 @@ modules.define(
           class="collapsed-handler"
           for-collapsed-id="${collapsedId}"
           title="${quotedTooltipText}"
-          onClick="CompareCore.clickUncollapseRow(this)"
+          onClick="CompareCore.clickUncollapseRowHandler(this)"
         >`;
         const content = `<td colspan="${CompareRowsHelpers.rowColumnsCount}"><br/></td>`;
         const end = `</tr>`;
@@ -257,10 +257,10 @@ modules.define(
         CompareRowsHelpers.collapseRowByRecord(collapsedSecond);
       },
 
-      /** clickRow
+      /** clickRowHandler
        * @param {<TRowEl>} rowEl
        */
-      clickRow(rowEl) {
+      clickRowHandler(rowEl) {
         if (CompareRowClick.disabled) {
           // Do nothing if disabled
           return;
@@ -288,10 +288,10 @@ modules.define(
         }
       },
 
-      /** clickUncollapseRow -- Uncollapse both rows for this clicked collpase handler
+      /** clickUncollapseRowHandler -- Uncollapse both rows for this clicked collpase handler
        * @param {<HTMLTableRowElement>} firstHandlerEl
        */
-      clickUncollapseRow(firstHandlerEl) {
+      clickUncollapseRowHandler(firstHandlerEl) {
         // Get first collpased record by id...
         const firstId = firstHandlerEl.getAttribute('for-collapsed-id');
         const collapsedFirst = CompareRowsHelpers.collapsedRows[firstId];
