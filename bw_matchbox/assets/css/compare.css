@@ -8,14 +8,18 @@
   --compare-selected-animation-time: 3s;
 }
 
+/* Root node */
+.compare.has-collapsed {
+  /* border: 1px solid red; */
+}
+
+/* Compare tables layout */
 .compare .compare-tables {
   width: 100%;
 }
-
 .compare .compare-tables > .column {
   position: relative;
 }
-
 .compare .compare-tables > .column + .column {
   /* Tables spacing */
   margin-left: 15px;

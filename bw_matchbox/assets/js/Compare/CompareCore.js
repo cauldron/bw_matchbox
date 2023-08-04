@@ -241,6 +241,7 @@ modules.define(
           </tbody>
         `;
         document.getElementById(table_id).innerHTML = header + content;
+        CompareRowsHelpers.updateCollapsedState();
       },
 
       createOneToOneProxyFunc(event) {

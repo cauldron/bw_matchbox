@@ -16,7 +16,7 @@
   - `CompareCore` (from `bw_matchbox/assets/js/compare-core.js`)
 #}
 
-<div class="container compare">
+<div id="compare-root" class="container compare">
   {% include 'navigation.html' %}
   <div class="row">
     <div class="four columns">
@@ -31,6 +31,9 @@
     <button class="button-primary" id="save-mapping-button">{% if proxy and proxy != "None" %}Create Proxy</button>
     <button class="button-primary" id="one-to-one">1-to-1 Proxy</button>{% else %}Save{% endif %}</button>
     </div>
+  </div>
+  <div class="row collapsed-tools">
+    collapsed-tools
   </div>
   <div class="row compare-tables">
     <div class="column one-half">
@@ -49,10 +52,9 @@
 
 <script>
   modules.require('CompareCore', (CompareCore) => {
-    /* // Enable debug mode...
-     * const useDebug = true;
-     * // TODO: Expose it to global scope?
-     */
+    // Enable debug mode...
+    const useDebug = true;
+    // TODO: Expose it to global scope?
 
     // Global variables for compare tables feature (via global variable `sharedData`)...
     const sharedData = {
@@ -66,12 +68,11 @@
       source_node_location: '{{source_node.location}}',
     };
 
-    /* // DEBUG: Crop data table to easier debugging...
-     * if (useDebug) {
-     *   sharedData.source_data.length = 2;
-     *   sharedData.target_data.length = 2;
-     * }
-     */
+    // DEBUG: Crop data table to easier debugging...
+    if (useDebug) {
+      sharedData.source_data.length = 2;
+      sharedData.target_data.length = 2;
+    }
 
     /* // DEBUG: Emulate pre-collapsed elements data...
      * if (useDebug) {

@@ -36,6 +36,22 @@ modules.define(
 
       // Methods...
 
+      updateCollapsedState() {
+        const rootNode = this.getRootNode();
+        const { collapsedRows } = this;
+        const collapsedCount = Object.values(collapsedRows).filter(Boolean).length;
+        // reduce((count, val) => {
+        //   return val ? ++count : count;
+        // }, 0);
+        const hasCollapsed = !!collapsedCount;
+        rootNode.classList.toggle('has-collapsed', hasCollapsed);
+      },
+
+      getRootNode() {
+        const rootNode = document.getElementById('compare-root');
+        return rootNode;
+      },
+
       /** getRowData -- Get row data
        * @param {<TRowKind>} rowKind
        * @param {<TRowId>} rowId
@@ -164,7 +180,7 @@ modules.define(
        */
       collapseRowByRecord(collapsedRowRecord) {
         // TODO: For paginated tables -- don't use saved elements (they would by dynamic)!
-        // See ` uncollapseRowByRecord` for example.
+        // See `uncollapseRowByRecord` for example.
         const { rowKind, rowId, rowEl } = collapsedRowRecord;
         const collapsedId = CompareRowsHelpers.getCollapsedId(rowKind, rowId);
         // Add styles...
@@ -181,6 +197,7 @@ modules.define(
         const parentNode = rowEl.parentNode;
         // Add handler before current row...
         parentNode.insertBefore(handlerRowEl, rowEl);
+        this.updateCollapsedState();
       },
 
       /** uncollapseRowByRecord -- Collapse particular row record
@@ -204,6 +221,7 @@ modules.define(
           rowEl.classList.remove('collapsed');
           rowEl.removeAttribute('collapsed-id');
         }
+        this.updateCollapsedState();
       },
 
       /** makeRowsCollapsed
