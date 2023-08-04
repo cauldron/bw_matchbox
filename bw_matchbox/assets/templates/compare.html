@@ -16,7 +16,7 @@
   - `CompareCore` (from `bw_matchbox/assets/js/compare-core.js`)
 #}
 
-<div class="container compare">
+<div id="compare-root" class="container compare">
   {% include 'navigation.html' %}
   <div class="row">
     <div class="four columns">
@@ -31,6 +31,9 @@
     <button class="button-primary" id="save-mapping-button">{% if proxy and proxy != "None" %}Create Proxy</button>
     <button class="button-primary" id="one-to-one">1-to-1 Proxy</button>{% else %}Save{% endif %}</button>
     </div>
+  </div>
+  <div class="row collapsed-tools">
+    <button class="button-primary" id="expand-all-collapsed" onClick="">Expand all collapsed rows</button>
   </div>
   <div class="row compare-tables">
     <div class="column one-half">

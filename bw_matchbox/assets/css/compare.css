@@ -8,14 +8,21 @@
   --compare-selected-animation-time: 3s;
 }
 
+/* Collapsed tools (shown only if collapsed rows are extist */
+.compare .collapsed-tools {
+  display: none;
+}
+.compare.has-collapsed .collapsed-tools {
+  display: block;
+}
+
+/* Compare tables layout */
 .compare .compare-tables {
   width: 100%;
 }
-
 .compare .compare-tables > .column {
   position: relative;
 }
-
 .compare .compare-tables > .column + .column {
   /* Tables spacing */
   margin-left: 15px;
@@ -140,6 +147,12 @@
 }
 
 /* Adjust 'proxy' modal content styles */
+.common-modal-content#proxy-dialog-modal #proxy-table th:first-child {
+  width: 50%;
+}
+.common-modal-content#proxy-dialog-modal #proxy-table th:nth-child(2) {
+  width: 7em;
+}
 .common-modal-content#proxy-dialog-modal #proxy-table td:last-child div textarea {
   display: block;
   width: 100%;
