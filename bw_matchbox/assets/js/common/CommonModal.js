@@ -43,7 +43,7 @@ modules.define(
        * @param {string} title
        */
       setTitle(title) {
-        const titleEl = this.getModalNodeElementByClass('modal-title');
+        const titleEl = this.getModalNodeElementByClass('common-modal-title');
         CommonHelpers.updateNodeContent(titleEl, title);
         return this;
       },
@@ -52,7 +52,7 @@ modules.define(
        * @param {string|HTMLElement|HTMLElement[]} content
        */
       setContent(content) {
-        const wrapperEl = this.getModalNodeElementByClass('modal-content-wrapper');
+        const wrapperEl = this.getModalNodeElementByClass('common-modal-content-wrapper');
         CommonHelpers.updateNodeContent(wrapperEl, content);
         return this;
       },
@@ -62,7 +62,7 @@ modules.define(
        * @param {boolean} [optionValue]
        */
       setModalContentOption(optionName, optionValue) {
-        const contentEl = this.getModalNodeElementByClass('modal-content');
+        const contentEl = this.getModalNodeElementByClass('common-modal-content');
         contentEl.classList.toggle(optionName, !!optionValue);
         return this;
       },
@@ -98,7 +98,7 @@ modules.define(
        * @param {string} id
        */
       setModalContentId(id) {
-        const contentEl = this.getModalNodeElementByClass('modal-content');
+        const contentEl = this.getModalNodeElementByClass('common-modal-content');
         contentEl.setAttribute('id', id);
         return this;
       },
@@ -148,13 +148,13 @@ modules.define(
 
       activateEvents() {
         document.addEventListener('keydown', this.boundOnActiveKeyPress);
-        const outerEl = this.getModalNodeElementByClass('modal-splash');
+        const outerEl = this.getModalNodeElementByClass('common-modal-splash');
         outerEl.addEventListener('mousedown', this.boundHideModal);
       },
 
       deactivateEvents() {
         document.removeEventListener('keydown', this.boundOnActiveKeyPress);
-        const outerEl = this.getModalNodeElementByClass('modal-splash');
+        const outerEl = this.getModalNodeElementByClass('common-modal-splash');
         outerEl.removeEventListener('mousedown', this.boundHideModal);
       },
 

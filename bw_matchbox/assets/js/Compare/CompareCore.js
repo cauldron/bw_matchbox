@@ -461,7 +461,6 @@ modules.define(
         const td = link.closest('td');
         const rowId = td.getAttribute('row_id');
         const row = target_data.find(({ row_id }) => row_id == rowId);
-        // const span = document.getElementById('modal-content-wrapper');
 
         let start = `
           <div>
