@@ -431,16 +431,12 @@ def add_attribute(id):
     attr = flask.request.args.get("attr")
     value = flask.request.args.get("value")
 
-    print(attr, value)
-
     if attr is None or value is None:
         flask.abort(400)
     if attr in ("highlighted", "matched"):
         if value not in ("0", "1"):
             flask.abort(400)
         value = {"0": False, "1": True}[value]
-
-    print(attr, value)
 
     node[attr] = value
     node.save()
