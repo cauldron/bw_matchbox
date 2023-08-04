@@ -52,9 +52,10 @@
 
 <script>
   modules.require('CompareCore', (CompareCore) => {
-    // Enable debug mode...
-    const useDebug = true;
-    // TODO: Expose it to global scope?
+    /* // Enable debug mode...
+     * const useDebug = true;
+     * // TODO: Expose it to global scope?
+     */
 
     // Global variables for compare tables feature (via global variable `sharedData`)...
     const sharedData = {
@@ -68,11 +69,12 @@
       source_node_location: '{{source_node.location}}',
     };
 
-    // DEBUG: Crop data table to easier debugging...
-    if (useDebug) {
-      sharedData.source_data.length = 2;
-      sharedData.target_data.length = 2;
-    }
+    /* // DEBUG: Crop data table to easier debugging...
+     * if (useDebug) {
+     *   sharedData.source_data.length = 2;
+     *   sharedData.target_data.length = 2;
+     * }
+     */
 
     /* // DEBUG: Emulate pre-collapsed elements data...
      * if (useDebug) {
