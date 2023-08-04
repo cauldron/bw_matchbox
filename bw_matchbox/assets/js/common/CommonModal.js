@@ -12,6 +12,9 @@ modules.define(
     // Define module...
 
     const CommonModal = {
+      /** Initialized flag (see `inited` method) */
+      initied: false,
+
       /** getModalNode -- Get root modal node
        * @return {HTMLElement|undefined}
        */
@@ -119,11 +122,13 @@ modules.define(
         if (title) {
           this.setTitle(title);
         }
+        this.activateEvents();
         return this;
       },
 
       /** Hide modal window */
       hideModal() {
+        this.deactivateEvents();
         const modal = this.getModalNode();
         if (!modal.classList.contains('show')) {
           throw new Error('Trying to hide already hidden modal');
@@ -133,19 +138,37 @@ modules.define(
         return this;
       },
 
-      initied: false,
+      // Active events...
 
-      /** init -- Initialize the modal.
+      onActiveKeyPress(event) {
+        if (event.key === 'Escape') {
+          this.hideModal();
+        }
+      },
+
+      activateEvents() {
+        document.addEventListener('keydown', this.boundOnActiveKeyPress);
+        const outerEl = this.getModalNodeElementByClass('modal-splash');
+        outerEl.addEventListener('mousedown', this.boundHideModal);
+      },
+
+      deactivateEvents() {
+        document.removeEventListener('keydown', this.boundOnActiveKeyPress);
+        const outerEl = this.getModalNodeElementByClass('modal-splash');
+        outerEl.removeEventListener('mousedown', this.boundHideModal);
+      },
+
+      /** init -- Initialize the modal. Should be called before first actiovation, see call inside `showModal`.
        */
       init() {
         if (!this.inited) {
+          // Create bound event handlers...
+          this.boundHideModal = this.hideModal.bind(this);
+          this.boundOnActiveKeyPress = this.onActiveKeyPress.bind(this);
+
           // Link close modal button handler (TODO: To use more specific class name?)...
           const closeEl = this.getModalNodeElementByClass('close');
-          closeEl.onclick = this.hideModal.bind(this);
-
-          // TODO: Other initializations:
-          //  - Keyboard handler?
-          //  - Outer clickng handler?
+          closeEl.onclick = this.boundHideModal;
 
           // Set initied flag...
           this.inited = true;
