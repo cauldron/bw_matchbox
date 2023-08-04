@@ -26,16 +26,16 @@ modules.define(
         }
       },
 
-      /** releaseRowClick - Enable processing of `clickRow`
+      /** releaseRowClick - Enable processing of `clickRowHandler`
        */
       releaseRowClick: function () {
         CompareRowClick.disabled = false;
         CompareRowClick.clearRowClickHandler();
       },
 
-      /** disableRowClick - Disable processing of `clickRow` handlers for some time (allow to process clicks on inner elements)
+      /** disableRowClickHandler - Disable processing of `clickRow` handlers for some time (allow to process clicks on inner elements)
        */
-      disableRowClick: function () {
+      disableRowClickHandler: function () {
         CompareRowClick.clearRowClickHandler();
         CompareRowClick.disabled = true;
         setTimeout(CompareRowClick.releaseRowClick, CompareRowClick.timeout);

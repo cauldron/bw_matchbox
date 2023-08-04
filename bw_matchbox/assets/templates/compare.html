@@ -43,7 +43,7 @@
     </div>
     <div class="column one-half">
       <h3><a href="{{ url_for('process_detail', id=target_node.id) }}">{{ target_node.name }}</a>
-      <span onclick="CompareCore.replaceWithTarget(this)"><a><i class="fa-solid fa-arrow-up"></i></a></span></h3>
+      <span onclick="CompareCore.replaceWithTargetHandler(this)"><a><i class="fa-solid fa-arrow-up"></i></a></span></h3>
       <table class="fixed-table fixed-table-active compare-table" id="target-table" width="100%">
       </table>
     </div>
