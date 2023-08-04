@@ -140,6 +140,12 @@
 }
 
 /* Adjust 'proxy' modal content styles */
+.common-modal-content#proxy-dialog-modal #proxy-table th:first-child {
+  width: 50%;
+}
+.common-modal-content#proxy-dialog-modal #proxy-table th:nth-child(2) {
+  width: 7em;
+}
 .common-modal-content#proxy-dialog-modal #proxy-table td:last-child div textarea {
   display: block;
   width: 100%;
