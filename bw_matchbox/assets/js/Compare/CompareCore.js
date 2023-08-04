@@ -393,17 +393,20 @@ modules.define(
       },
 
       expandRow(element) {
+        const { target_data } = this.sharedData;
         CompareRowClick.disableRowClick();
-        const url =
-          '/expand/' +
-          element.getAttribute('input_id') +
-          '/' +
-          element.getAttribute('amount') +
-          '/';
-        const t = this.sharedData.target_data.find(
-          (item) => item.input_id == element.getAttribute('input_id'),
-        );
-        this.comment += `* Expanded process inputs of ${t.amount} ${t.unit} from ${t.name} in ${t.location}.\n`;
+        const elInputId = element.getAttribute('input_id');
+        const elAmount = element.getAttribute('amount');
+        const url = '/expand/' + elInputId + '/' + elAmount + '/';
+        const node = target_data.find((item) => item.input_id == elInputId);
+        console.log('[CompareCore:expandRow]', {
+          elInputId,
+          elAmount,
+          url,
+          node,
+        })
+        debugger;
+        this.comment += `* Expanded process inputs of ${node.amount} ${node.unit} from ${node.name} in ${node.location}.\n`;
         fetch(url)
           .then((response) => {
             if (!response.ok) {
@@ -412,10 +415,13 @@ modules.define(
             return response.json();
           })
           .then((data) => {
-            data.forEach(function (item, _index) {
-              this.sharedData.target_data.push(item);
+            const { target_data } = this.sharedData;
+            data.forEach((node) => {
+              const uniqueCounter = ++this.targetNodesCounter;
+              const newNode = { ...node, row_id: 'expanded-' + uniqueCounter };
+              target_data.push(newNode);
             });
-            this.sharedData.target_data.sort(CommonHelpers.sortByAmountProperty);
+            this.sortTable(target_data);
             this.removeRow(element);
           });
       },
