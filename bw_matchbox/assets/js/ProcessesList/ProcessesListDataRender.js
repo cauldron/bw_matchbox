@@ -53,40 +53,12 @@ modules.define(
             }"><i class="fa-solid fa-circle-xmark"></i> ADD</a>`;
         const content = `
           <tr>
-            <td><a href="/process/${id || ''}">${name || ''}</a></td>
-            <td>${location || ''}</td>
-            <td>${unit || ''}</td>
-            <td>${matchButton || ''}</td>
+            <td><div><a href="/process/${id || ''}">${name || ''}</a></div></td>
+            <td><div>${location || ''}</div></td>
+            <td><div>${unit || ''}</div></td>
+            <td><div>${matchButton || ''}</div></td>
           </tr>
         `;
-        /* // Original server-side template code:
-          <tr>
-            <td><a href="{{ url_for('process_detail', id=row.id) }}">{{row.name}}</a></td>
-            <td>{{row.location}}</td>
-            <td>{{row.unit}}</td>
-            <td>
-              {% if row.matched %}
-                <a class="button" href="{{ url_for("match", source=row.id)}}"><i class="fa-solid fa-check"></i> EDIT</a>
-              {% else %}
-                <a class="button button-primary" href="{{ url_for("match", source=row.id)}}"><i class="fa-solid fa-circle-xmark"></i> ADD</a>
-              {% endif %}
-            </td>
-          </tr>
-        */
-        /* console.log('[ProcessesListDataRender:renderDataRow]: result', {
-         *   content,
-         *   matchUrl,
-         *   matchButton,
-         *   details_url, // '/process/726'
-         *   id, // 726
-         *   location, // 'United States'
-         *   match_url, // '/match/726'
-         *   matched, // false
-         *   name, // 'Electronic capacitors, resistors, coils, transformers, connectors and other components (except  semiconductors and printed circuit assemblies); at manufacturer'
-         *   unit, // ''
-         *   rowData,
-         * });
-         */
         return content;
       },
 

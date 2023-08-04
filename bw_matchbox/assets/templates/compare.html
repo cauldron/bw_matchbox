@@ -1,5 +1,11 @@
 {% include 'header.html' %}
 
+{# Common dependencies... #}
+
+{% include 'common-modal.html' %}
+
+{# Module-specific dependencies... #}
+
 <link rel="stylesheet" href="{{ url_for('static', filename='css/compare.css') }}">
 
 <script src="{{ url_for('static', filename='js/Compare/CompareRowsHelpers.js') }}"></script>
@@ -10,45 +16,32 @@
   - `CompareCore` (from `bw_matchbox/assets/js/compare-core.js`)
 #}
 
-<div class="modal-wrapper">
-  <div class="modal" id="modal-number-editor">
-    <div class="modal-splash"></div>
-    <div class="modal-window">
-      <div class="modal-header">
-        <h3 class="modal-title">Modal title</h3>
-        <div class="close">&times;</div>
-      </div>
-      <div class="modal-content non-padded non-scrollable">
-        <div id="modal-content-wrapper">
-          Sample content
-        </div>
-      </div>
-    </div>
-  </div>
-</div>
-
 <div class="container compare">
   {% include 'navigation.html' %}
   <div class="row">
     <div class="four columns">
-      <h4>Location: {% if source_node.location == target_node.location %}Same{% else %}{{ source_node.location }} | {{ target_node.location }}{% endif %}</h4>
+      <h4>Location: {% if source_node.location == target_node.location %}Same{% else %}{{ source_node.location }}
+        | {{ target_node.location }}{% endif %}</h4>
     </div>
     <div class="three columns">
-      <h4>Unit: {% if source_node.unit == target_node.unit %}Same{% else %}{{ source_node.unit }} | {{ target_node.unit }}{% endif %}</h4>
+      <h4>Unit: {% if source_node.unit == target_node.unit %}Same{% else %}{{ source_node.unit }}
+        | {{ target_node.unit }}{% endif %}</h4>
     </div>
     <div class="five columns">
-      <button class="button-primary" id="save-mapping-button">{% if proxy and proxy != "None" %}Create Proxy</button> <button class="button-primary" id="one-to-one">1-to-1 Proxy</button>{% else %}Save{% endif %}</button>
+    <button class="button-primary" id="save-mapping-button">{% if proxy and proxy != "None" %}Create Proxy</button>
+    <button class="button-primary" id="one-to-one">1-to-1 Proxy</button>{% else %}Save{% endif %}</button>
     </div>
   </div>
   <div class="row compare-tables">
     <div class="column one-half">
       <h3><a href="{{ url_for('process_detail', id=source_node.id) }}">{{ source_node.name }}</a></h3>
-      <table class="compare-table" id="source-table" width="100%">
+      <table class="fixed-table fixed-table-active compare-table" id="source-table" width="100%">
       </table>
     </div>
     <div class="column one-half">
-      <h3><a href="{{ url_for('process_detail', id=target_node.id) }}">{{ target_node.name }}</a> <span onclick="CompareCore.replaceWithTarget(this)"><a><i class="fa-solid fa-arrow-up"></i></a></span></h3>
-      <table class="compare-table" id="target-table" width="100%">
+      <h3><a href="{{ url_for('process_detail', id=target_node.id) }}">{{ target_node.name }}</a>
+      <span onclick="CompareCore.replaceWithTarget(this)"><a><i class="fa-solid fa-arrow-up"></i></a></span></h3>
+      <table class="fixed-table fixed-table-active compare-table" id="target-table" width="100%">
       </table>
     </div>
   </div>

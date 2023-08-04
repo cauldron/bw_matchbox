@@ -16,7 +16,7 @@ modules.define(
       /** Api base */
       processesApiUrl: '/processes',
       /** The number of records to retrieve at once and to display */
-      pageSize: 10,
+      pageSize: 25,
     };
 
     // Provide module...

@@ -1,5 +1,7 @@
 {% include 'header.html' %}
 
+{# Module-specific dependencies... #}
+
 <link rel="stylesheet" href="{{ url_for('static', filename='css/processes-list.css') }}">
 
 <script src="{{ url_for('static', filename='js/ProcessesList/ProcessesListConstants.js') }}"></script>
@@ -49,13 +51,13 @@
       <div id="processes-list-error" class="error">
         <!-- Error text comes here -->
       </div>
-      <table id="processes-list-table" class="processes-list-table" width="100%">
+      <table id="processes-list-table" class="fixed-table processes-list-table" width="100%">
         <thead>
           <tr>
-            <th>Name</th>
-            <th>Location</th>
-            <th>Unit</th>
-            <th>Matched</th>
+            <th><div>Name</div></th>
+            <th><div>Location</div></th>
+            <th><div>Unit</div></th>
+            <th><div>Matched</div></th>
           </tr>
         </thead>
         <tbody id="processes-list-table-body">

@@ -1,0 +1,138 @@
+body.has-modal {
+  /* Hide scrollbars when active modals are exist. */
+  overflow: hidden;
+}
+
+.common-modal-wrapper .common-modal {
+  z-index: 1; /* Sit on top */
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  align-content: center;
+  /* By default is hidden and inactive, see `show` state below */
+  pointer-events: none;
+  opacity: 0;
+  transition: all var(--common-animation-time);
+  /* Emulate show effect */
+  margin-top: -100px;
+  margin-bottom: 100px;
+}
+.common-modal-wrapper .common-modal.show {
+  opacity: 1;
+  pointer-events: all;
+  margin-top: 0;
+  margin-bottom: 0;
+}
+.common-modal-wrapper .common-modal,
+.common-modal-wrapper .common-modal-splash {
+  position: fixed;
+  left: 0;
+  top: 0;
+  right: 0;
+  bottom: 0;
+}
+.common-modal-wrapper .common-modal-splash {
+  background-color: rgb(0 0 0 / 75%);
+}
+.common-modal-wrapper .common-modal-window {
+  position: relative;
+  z-index: 1;
+  overflow: hidden;
+  background-color: white;
+  border: 2px solid #888;
+  box-shadow: 4px 4px 12px rgb(0 0 0 / 50%);
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: stretch;
+  align-content: stretch;
+}
+/* Window geometry... */
+.common-modal-wrapper .common-modal-window {
+  /* Default, narrow-screen: show in a full-screen mode */
+  width: 100%;
+  height: 100%;
+}
+@media (width >= 600px) and (height >= 400px) {
+  .common-modal-wrapper .common-modal-window {
+    /* Wide-screen: show as a window */
+    border-radius: 8px;
+    width: 80%;
+    height: 80%;
+    max-width: 1200px;
+  }
+}
+
+/* Modal Content/Box */
+.common-modal-wrapper .common-modal-content {
+  margin: auto; /* 15% from the top and centered */
+  flex: 1;
+  overflow: hidden;
+  display: flex;
+  /* flex-direction: column; */
+  justify-content: stretch;
+  align-items: stretch;
+  align-content: stretch;
+}
+.common-modal-wrapper .common-modal-content.padded .common-modal-content-wrapper {
+  padding: 20px;
+}
+.common-modal-wrapper .common-modal-content.scrollable {
+  overflow: auto;
+  width: 100%;
+  height: 100%;
+}
+.common-modal-wrapper .common-modal-content.scrollable {
+}
+
+/* Disable vertical textarea resizing */
+.common-modal-wrapper .common-modal-content textarea {
+  resize: vertical;
+}
+
+/* Content wrapper */
+.common-modal-wrapper .common-modal-content:not(.scrollable) .common-modal-content-wrapper {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  height: 100%;
+}
+
+/* Title */
+.common-modal-wrapper .common-modal-header .common-modal-title {
+  font-size: 24px;
+  font-weight: normal;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  flex: 1;
+  margin-bottom: 0; /* Fix skeleton styles */
+}
+
+.common-modal-wrapper .common-modal-header {
+  display: flex;
+  flex-direction: row;
+  justify-content: stretch;
+  align-items: center;
+  align-content: center;
+  gap: 20px;
+  padding: 15px 20px;
+  background-color: #ddd;
+}
+
+/* The Close Button */
+.common-modal-wrapper .common-modal-header > .close {
+  color: #666;
+  opacity: 0.5;
+  top: 19px;
+  right: 20px;
+  font-size: 32px;
+  line-height: 1;
+  font-weight: light;
+  transition: all var(--common-animation-time);
+  cursor: pointer;
+}
+.common-modal-wrapper .common-modal-header > .close:hover,
+.common-modal-wrapper .common-modal-header > .close:focus {
+  text-decoration: none;
+  opacity: 1;
+}
