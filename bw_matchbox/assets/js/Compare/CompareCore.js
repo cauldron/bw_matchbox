@@ -57,7 +57,6 @@ modules.define(
 
       // Local data...
       comment: '',
-      // modal: undefined, // HTMLDivElement -- modal window node
 
       // Methods...
 
@@ -97,10 +96,27 @@ modules.define(
           const otherTableDataKey = otherRowKind + '_data';
           const otherTableData = this.sharedData[otherTableDataKey];
           const collapsedGroupId = data['collapsed-group'];
-          const otherRowId = otherTableData.findIndex(
+          /* // ORIGONAL BUG: Don't use indices as row_id's!
+           * const otherRowId = otherTableData.findIndex(
+           *   (other) => other['collapsed-group'] === collapsedGroupId,
+           * );
+           */
+          const otherRowData = otherTableData.find(
             (other) => other['collapsed-group'] === collapsedGroupId,
           );
-          // const otherRowData = otherRowId !== -1 && otherTableData[otherRowId]; // UNUSED
+          if (!otherRowData) {
+            throw new Error('Cannot find other collapsed record');
+          }
+          const otherRowId = otherRowData.row_id;
+          /* console.log('[CompareCore:buildRow] check', {
+           *   otherRowId,
+           *   otherRowKind,
+           *   otherTableDataKey,
+           *   otherTableData,
+           *   collapsedGroupId,
+           *   otherRowData,
+           * });
+           */
           const otherCollapsedId = CompareRowsHelpers.getCollapsedId(otherRowKind, otherRowId);
           collapsedRows[collapsedId] = {
             rowKind,
