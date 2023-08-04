@@ -83,7 +83,7 @@
 
 <script type="text/javascript">
 function markMatched (button) {
-  var url = "/mark-matched/{{ ds.id }}";
+  var url = "{{ url_for('add_attribute', id=ds.id, attr='matched', value='1')|safe }}";
   fetch(url).then((response) => {
     if (!response.ok) {
         throw new Error(`HTTP error ${response.status}`);
