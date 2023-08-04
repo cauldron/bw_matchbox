@@ -30,26 +30,37 @@ modules.define(
     const CompareRowsHelpers = {
       // Data...
       sharedData: undefined, // Initializing in `CompareCore.initCompare` from `bw_matchbox/assets/templates/compare.html`
-      rowColumnsCount: 5, // Number of columns in a table row...
+      rowColumnsCount: 5, // Number of columns in a table row (ATTENTION: It could be changed)...
       selectedFirst: undefined, // <undefined | TSelectedRow>
       collapsedRows: {}, // Record<TRowId, TCollapsedRow> -- Hash of collapsed row
 
       // Methods...
 
+      getRootNode() {
+        const rootNode = document.getElementById('compare-root');
+        return rootNode;
+      },
+
       updateCollapsedState() {
         const rootNode = this.getRootNode();
         const { collapsedRows } = this;
         const collapsedCount = Object.values(collapsedRows).filter(Boolean).length;
-        // reduce((count, val) => {
-        //   return val ? ++count : count;
-        // }, 0);
         const hasCollapsed = !!collapsedCount;
         rootNode.classList.toggle('has-collapsed', hasCollapsed);
       },
 
-      getRootNode() {
-        const rootNode = document.getElementById('compare-root');
-        return rootNode;
+      expandAllCollapsedRows() {
+        const { collapsedRows } = this;
+        // Uncollapse all collapsed rows...
+        Object.values(collapsedRows)
+          .filter(Boolean)
+          .forEach((collapsedItem) => {
+            CompareRowsHelpers.uncollapseRowByRecord(collapsedItem, {
+              omitUpdateCollapsedState: true,
+            });
+          });
+        // Update collapsed state...
+        this.updateCollapsedState();
       },
 
       /** getRowData -- Get row data
@@ -202,8 +213,12 @@ modules.define(
 
       /** uncollapseRowByRecord -- Collapse particular row record
        * @param {<TCollapsedRow>} collapsedRowRecord
+       * @param {object} [opts] - Options
+       * @param {boolean} [opts.omitUpdateCollapsedState] - Do not call
+       * `updateCollapsedState` function (will be called later, in case of a
+       * bulk operation, for example).
        */
-      uncollapseRowByRecord(collapsedRowRecord) {
+      uncollapseRowByRecord(collapsedRowRecord, opts = {}) {
         const { rowKind, rowId } = collapsedRowRecord;
         const collapsedId = CompareRowsHelpers.getCollapsedId(rowKind, rowId);
         const tableId = rowKind + '-table';
@@ -221,7 +236,9 @@ modules.define(
           rowEl.classList.remove('collapsed');
           rowEl.removeAttribute('collapsed-id');
         }
-        this.updateCollapsedState();
+        if (!opts.omitUpdateCollapsedState) {
+          this.updateCollapsedState();
+        }
       },
 
       /** makeRowsCollapsed
@@ -294,8 +311,14 @@ modules.define(
           throw new Error('Cannot find root dom node (`.compare-tables`)');
         }
         // Uncollapse found rows...
-        CompareRowsHelpers.uncollapseRowByRecord(collapsedFirst);
-        CompareRowsHelpers.uncollapseRowByRecord(collapsedSecond);
+        CompareRowsHelpers.uncollapseRowByRecord(collapsedFirst, {
+          omitUpdateCollapsedState: true,
+        });
+        CompareRowsHelpers.uncollapseRowByRecord(collapsedSecond, {
+          omitUpdateCollapsedState: true,
+        });
+        // Update collapsed state...
+        this.updateCollapsedState();
       },
     };
 

@@ -8,9 +8,12 @@
   --compare-selected-animation-time: 3s;
 }
 
-/* Root node */
-.compare.has-collapsed {
-  /* border: 1px solid red; */
+/* Collapsed tools (shown only if collapsed rows are extist */
+.compare .collapsed-tools {
+  display: none;
+}
+.compare.has-collapsed .collapsed-tools {
+  display: block;
 }
 
 /* Compare tables layout */

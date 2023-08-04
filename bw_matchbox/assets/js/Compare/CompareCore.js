@@ -589,6 +589,12 @@ modules.define(
         document
           .getElementById('one-to-one')
           .addEventListener('click', this.createOneToOneProxyFunc.bind(this), false);
+
+        const expandAll = document.getElementById('expand-all-collapsed');
+        expandAll.addEventListener(
+          'click',
+          CompareRowsHelpers.expandAllCollapsedRows.bind(CompareRowsHelpers),
+        );
       },
 
       // Re-exported handlers for access from the html code (only core module is exposed as global)...
