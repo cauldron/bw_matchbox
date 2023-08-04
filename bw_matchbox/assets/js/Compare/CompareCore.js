@@ -3,15 +3,17 @@ modules.define(
   [
     // Required modules...
     'CommonHelpers',
-    'CompareRowsHelpers',
+    'CommonModal',
     'CompareRowClick',
+    'CompareRowsHelpers',
   ],
   function provide_CompareCore(
     provide,
     // Resolved modules...
     CommonHelpers,
-    CompareRowsHelpers,
+    CommonModal,
     CompareRowClick,
+    CompareRowsHelpers,
   ) {
     /* Compare tables feature code (via global variable `CompareCore`).
      *
@@ -55,7 +57,7 @@ modules.define(
 
       // Local data...
       comment: '',
-      modal: undefined, // HTMLDivElement -- modal window node
+      // modal: undefined, // HTMLDivElement -- modal window node
 
       // Methods...
 
@@ -258,14 +260,15 @@ modules.define(
         event.preventDefault();
         const {
           target_name,
-          comment,
+          // comment,
           source_node_unit,
           source_node_location,
           target_data,
           source_id,
         } = this.sharedData;
-        const span = document.getElementById('modal-content-wrapper');
-        const title = 'Proxy name';
+        const {
+          comment,
+        } = this;
         const name =
           'Proxy for ' +
           target_name
@@ -274,14 +277,12 @@ modules.define(
             .replace('Market for ', '')
             .replace('market for ', '')
             .trim();
-        let text = `
+
+        const begin = `
           <form>
-            <!--
-            <label for="proxy-name">${title}</label>
-            -->
             <input class="u-full-width" type="text" id="proxy-name" name="proxy-name" value="${name}">
             <label for="proxy-comment">Comment</label>
-            <textarea class="u-full-width" id="proxy-comment" name="proxy-comment">${comment}</textarea>
+            <textarea class="u-full-width" id="proxy-comment" name="proxy-comment">${comment || ''}</textarea>
             <p><button class="button-primary" id="create-proxy-submit-button">Create Proxy Process</button>
             | Unit: ${source_node_unit}
             | Location: ${source_node_location}</p>
@@ -293,8 +294,8 @@ modules.define(
               </tr>
         `;
 
-        target_data.forEach(function (item, _index) {
-          text += `
+        const rows = target_data.map(function (item, _index) {
+          return `
               <tr input_id=${item.input_id}>
                 <td><div>${item.name}</div></td>
                 <td><div>${item.amount_display}</div></td>
@@ -303,13 +304,22 @@ modules.define(
           `;
         });
 
-        text += `
+        const end = `
             </table>
           </form>
         `;
-        span.innerHTML = text;
 
-        this.showModal({ title });
+        const title = 'Proxy name';
+        const content = begin + rows.join('') + end;
+
+        CommonModal.setModalContentId('proxy-dialog-modal')
+          .setTitle(title)
+          .setModalContentOptions({
+            scrollable: true,
+            padded: true,
+          })
+          .setContent(content)
+          .showModal();
 
         const submit = document.getElementById('create-proxy-submit-button');
         submit.addEventListener('click', async (e) => {
@@ -427,32 +437,31 @@ modules.define(
         const rowId = elem.getAttribute('row_id');
         const current = Number(document.getElementById('number-current-amount').innerText);
         const item = target_data.find(({ row_id }) => row_id === rowId);
-        const itemOrig = { ...item };
         if (item) {
           item.amount = current;
           item.amount_display = current.toExponential();
         }
-        console.log('[CompareCore:setNumber]', {
-          itemOrig,
-          item,
-          rowId,
-          current,
-        });
+        // TODO: Number formatting is weird here. It would be nice to fix it.
+        /* console.log('[CompareCore:setNumber]', {
+         *   // itemOrig,
+         *   item,
+         *   rowId,
+         *   current,
+         * });
+         */
         // this.modal.style.display = 'none';
-        this.hideModal();
+        CommonModal.hideModal();
         this.sortTable(target_data);
         this.buildTable('target-table', target_data, true);
       },
 
       editNumber(link) {
+        CompareRowClick.disableRowClick();
         const { source_data, target_data } = this.sharedData;
         const td = link.closest('td');
-        CompareRowClick.disableRowClick();
         const rowId = td.getAttribute('row_id');
         const row = target_data.find(({ row_id }) => row_id == rowId);
-        const span = document.getElementById('modal-content-wrapper');
-
-        const title = [row.name, row.location, row.unit].filter(Boolean).join(' | ');
+        // const span = document.getElementById('modal-content-wrapper');
 
         let start = `
           <div>
@@ -503,41 +512,32 @@ modules.define(
           </div>
         `;
 
-        span.innerHTML = start + end;
+        const title = [row.name, row.location, row.unit].filter(Boolean).join(' | ');
+        const content = start + end;
 
+        CommonModal.setModalContentId('set-number-modal')
+          .setTitle(title)
+          .setModalContentOptions({
+            // Scrollings and paddings will be set for inner components particaluary.
+            scrollable: false,
+            padded: false,
+          })
+          .setContent(content)
+          .showModal();
+
+        // Set modal handlers...
         const boundStop = this.stop.bind(this);
         document.getElementById('rescale-button').addEventListener('click', boundStop, false);
         document.getElementById('new-number-button').addEventListener('click', boundStop, false);
         document.getElementById('close-number-editor').addEventListener('click', boundStop, false);
-
-        this.showModal({ title });
+        // TODO: To integrate this code (`event.preventDefault()`) into the
+        // handlers (`rescaleAmount`, `setNewNumber`, `setNumber`), by refactor
+        // handlers to get stored `row_id`, and get event object from arguments
+        // instead.
       },
 
       stop(event) {
         event.preventDefault();
-      },
-
-      /** showModal -- Show modal window
-       * @param {object} [params] - Modal parameters
-       * @param {string} [params.title] - Modal title
-       */
-      showModal(params = {}) {
-        const { title } = params;
-        // this.modal.style.display = 'block';
-        this.modal.classList.toggle('show', true);
-        document.body.classList.toggle('has-modal', true);
-        // Update title (if passed)...
-        if (title) {
-          const titleEl = this.modal.getElementsByClassName('modal-title')[0];
-          if (titleEl) {
-            titleEl.innerHTML = title;
-          }
-        }
-      },
-
-      hideModal() {
-        this.modal.classList.toggle('show', false);
-        document.body.classList.toggle('has-modal', false);
       },
 
       // Start...
@@ -567,19 +567,10 @@ modules.define(
         // Button handlers...
         document
           .getElementById('save-mapping-button')
-          .addEventListener('click', this.createProxyFunc, false);
+          .addEventListener('click', this.createProxyFunc.bind(this), false);
         document
           .getElementById('one-to-one')
-          .addEventListener('click', this.createOneToOneProxyFunc, false);
-
-        // Get modal node...
-        this.modal = document.getElementById('modal-number-editor');
-
-        // Link close modal button handler (TODO: To use more specific class name?)...
-        const closer = this.modal.getElementsByClassName('close')[0];
-        if (closer) {
-          closer.onclick = this.hideModal.bind(this);
-        }
+          .addEventListener('click', this.createOneToOneProxyFunc.bind(this), false);
       },
 
       // Re-exported handlers for access from the html code (only core module is exposed as global)...

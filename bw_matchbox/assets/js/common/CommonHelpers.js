@@ -67,6 +67,27 @@ modules.define(
         const content = template.content;
         return content.children;
       },
+
+      /** updateNodeContent -- Replace all inner dom node content.
+       * @param {HTMLElement} node
+       * @param {string|HTMLElement|HTMLElement[]} content
+       */
+      updateNodeContent(node, content) {
+        if (!node) {
+          throw new Error('Undefined node to update content');
+        }
+        if (typeof content === 'string') {
+          // Replace with string content...
+          node.innerHTML = content;
+        } else if (Array.isArray(content)) {
+          // Replace multiple elements...
+          node.replaceChildren.apply(node, content);
+        } else {
+          // Replace single element...
+          node.replaceChildren(content);
+        }
+      },
+
       /** decodeQuery
        * @param {string | string[]} qs
        * @param {string} sep

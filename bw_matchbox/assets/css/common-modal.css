@@ -38,19 +38,26 @@ body.has-modal {
 .modal-wrapper .modal-window {
   position: relative;
   z-index: 1;
-  width: 80%;
-  height: 80%;
-  max-width: 1200px;
   overflow: hidden;
   background-color: white;
   border: 2px solid #888;
-  border-radius: 8px;
   box-shadow: 4px 4px 8px rgb(0 0 0 / 50%);
   display: flex;
   flex-direction: column;
   justify-content: center;
   align-items: stretch;
   align-content: stretch;
+  /* Geometry... */
+  /* Default, narrow-screen: show in a full-screen mode */
+  width: 100%;
+  height: 100%;
+  @media (min-width: 600px) and (min-height: 400px) {
+    /* Wide-screen: show as a window */
+    border-radius: 8px;
+    width: 80%;
+    height: 80%;
+    max-width: 1200px;
+  }
 }
 
 /* Modal Content/Box */
@@ -58,12 +65,28 @@ body.has-modal {
   margin: auto; /* 15% from the top and centered */
   flex: 1;
   overflow: hidden;
+  display: flex;
+  /* flex-direction: column; */
+  justify-content: stretch;
+  align-items: stretch;
+  align-content: stretch;
 }
-.modal-wrapper .modal-content.padded {
+.modal-wrapper .modal-content.padded .modal-content-wrapper {
   padding: 20px;
 }
 .modal-wrapper .modal-content.scrollable {
   overflow: auto;
+  width: 100%;
+  height: 100%;
+}
+.modal-wrapper .modal-content.scrollable {
+}
+
+/* Content wrapper */
+.modal-wrapper .modal-content:not(.scrollable) .modal-content-wrapper {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  height: 100%;
 }
 
 /* Title */
