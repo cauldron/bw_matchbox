@@ -266,9 +266,7 @@ modules.define(
           target_data,
           source_id,
         } = this.sharedData;
-        const {
-          comment,
-        } = this;
+        const { comment } = this;
         const name =
           'Proxy for ' +
           target_name
@@ -282,16 +280,19 @@ modules.define(
           <form>
             <input class="u-full-width" type="text" id="proxy-name" name="proxy-name" value="${name}">
             <label for="proxy-comment">Comment</label>
-            <textarea class="u-full-width" id="proxy-comment" name="proxy-comment">${comment || ''}</textarea>
+            <textarea class="u-full-width" id="proxy-comment" name="proxy-comment">${comment}</textarea>
             <p><button class="button-primary" id="create-proxy-submit-button">Create Proxy Process</button>
             | Unit: ${source_node_unit}
             | Location: ${source_node_location}</p>
-            <table width="100%">
-              <tr>
-                <th>Name</th>
-                <th>Amount</th>
-                <th>Comment</th>
-              </tr>
+            <table id="proxy-table" class="fixed-table" width="100%">
+              <thead>
+                <tr>
+                  <th>Name</th>
+                  <th>Amount</th>
+                  <th>Comment</th>
+                </tr>
+              </thead>
+              <tbody>
         `;
 
         const rows = target_data.map(function (item, _index) {
@@ -305,6 +306,7 @@ modules.define(
         });
 
         const end = `
+              </tbody>
             </table>
           </form>
         `;
@@ -465,7 +467,7 @@ modules.define(
         let start = `
           <div>
             <p>Click on a row to take that value</p>
-            <table class="modal-table" width="100%">
+            <table id="edit-number-table" class="fixed-table modal-table" width="100%">
               <thead>
                 <tr>
                   <th>Amount</th>

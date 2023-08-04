@@ -1,0 +1,62 @@
+:root {
+  --fixed-table-bg-color1: rgb(30 174 219 / 10%);
+  --fixed-table-td-padding-h-at-edges: 8px;
+  --fixed-table-td-padding-h: 4px;
+  --fixed-table-td-padding-v: 8px;
+}
+
+.fixed-table {
+  width: 100%;
+  border: 0;
+  table-layout: fixed;
+  border-style: solid;
+}
+.fixed-table tbody tr {
+  transition: all var(--common-animation-time) ease;
+}
+
+.fixed-table-active tbody tr {
+  cursor: pointer; /* All rows are always interactive. */
+}
+
+.fixed-table tbody tr:hover {
+  background-color: var(--fixed-table-bg-color1);
+}
+
+.fixed-table th,
+.fixed-table td {
+  padding: 0 var(--fixed-table-td-padding-h);
+  /* padding: var(--fixed-table-td-padding-v) var(--fixed-table-td-padding-h); */
+  line-height: 1.3;
+  overflow: hidden;
+}
+/* First and last columns fixups... */
+.fixed-table th:first-child,
+.fixed-table td:first-child {
+  padding-left: var(--fixed-table-td-padding-h-at-edges);
+}
+
+.fixed-table th > div,
+.fixed-table td > div {
+  padding: var(--fixed-table-td-padding-v) 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  width: 100%;
+  position: relative;
+}
+
+/* Fix skeleton styles for inner elements: bottom margins under last elements */
+.fixed-table td div textarea:last-child {
+  margin-bottom: 0;
+}
+/* TODO: Use `block` display type for single inner element? */
+
+.fixed-table tbody td a {
+  text-decoration: none;
+}
+
+.fixed-table tbody td a:hover {
+  text-decoration: underline;
+}
+
+

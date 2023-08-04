@@ -85,6 +85,11 @@ body.has-modal {
 .common-modal-wrapper .common-modal-content.scrollable {
 }
 
+/* Disable vertical textarea resizing */
+.common-modal-wrapper .common-modal-content textarea {
+  resize: vertical;
+}
+
 /* Content wrapper */
 .common-modal-wrapper .common-modal-content:not(.scrollable) .common-modal-content-wrapper {
   overflow: hidden;
