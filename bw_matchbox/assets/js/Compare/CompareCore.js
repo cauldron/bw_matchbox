@@ -15,7 +15,6 @@ modules.define(
     CompareRowClick,
     CompareRowsHelpers,
   ) {
-
     /* Compare tables feature code (via global variable `CompareCore`).
      *
      * Mouse handler methods are used:
@@ -429,6 +428,8 @@ modules.define(
           });
       },
 
+      // Edit number modal dialog (TODO: Extract all this code into it's own dedicated module?)
+
       replaceAmountRowHandler(elem, target_id) {
         CompareRowClick.disableRowClickHandler();
         const s = this.sharedData.source_data.find(
@@ -439,9 +440,13 @@ modules.define(
         document.getElementById('number-current-amount').innerText = elem.getAttribute('amount');
       },
 
-      rescaleAmountHandler(target_id) {
+      rescaleAmountHandler(event) {
+        event.preventDefault();
+        const { target } = event;
+        const formRootElem = target.closest('.set-number-modal-form');
+        const rowId = formRootElem.getAttribute('row_id');
         CompareRowClick.disableRowClickHandler();
-        const t = this.sharedData.target_data.find((item) => item.row_id == target_id);
+        const t = this.sharedData.target_data.find((item) => item.row_id == rowId);
         const scale = Number(document.getElementById('rescale_number').value);
         const node = document.getElementById('number-current-amount');
         if (scale != 1) {
@@ -450,18 +455,25 @@ modules.define(
         node.innerText = Number(node.innerText) * scale;
       },
 
-      setNewNumberHandler(target_id) {
+      setNewNumberHandler(event) {
+        event.preventDefault();
+        const { target } = event;
+        const formRootElem = target.closest('.set-number-modal-form');
+        const rowId = formRootElem.getAttribute('row_id');
         CompareRowClick.disableRowClickHandler();
-        const t = this.sharedData.target_data.find((item) => item.row_id == target_id);
+        const t = this.sharedData.target_data.find((item) => item.row_id == rowId);
         const new_value = document.getElementById('new_number').value;
         this.comment += `* Set manual exchange value of ${new_value} instead of ${t.amount} ${t.unit} for ${t.name} in ${t.location}.\n`;
         document.getElementById('number-current-amount').innerText = new_value;
       },
 
-      setNumberHandler(elem) {
+      setNumberHandler(event) {
+        event.preventDefault();
+        const { target } = event;
+        const formRootElem = target.closest('.set-number-modal-form');
+        const rowId = formRootElem.getAttribute('row_id');
         const { target_data } = this.sharedData;
         CompareRowClick.disableRowClickHandler();
-        const rowId = elem.getAttribute('row_id');
         const current = Number(document.getElementById('number-current-amount').innerText);
         const item = target_data.find(({ row_id }) => row_id === rowId);
         if (item) {
@@ -469,24 +481,18 @@ modules.define(
           item.amount_display = current.toExponential();
         }
         // TODO: Number formatting is weird here. It would be nice to fix it.
-        /* console.log('[CompareCore:setNumberHandler]', {
-         *   // itemOrig,
-         *   item,
-         *   rowId,
-         *   current,
-         * });
-         */
-        // this.modal.style.display = 'none';
         CommonModal.hideModal();
         this.sortTable(target_data);
         this.buildTable('target-table', target_data, true);
       },
 
-      resetNumberHandler(elem) {
+      resetNumberHandler(event) {
+        event.preventDefault();
+        const { target } = event;
+        const formRootElem = target.closest('.set-number-modal-form');
+        const rowId = formRootElem.getAttribute('row_id');
         const { target_data } = this.sharedData;
         CompareRowClick.disableRowClickHandler();
-        // Get target row item data...
-        const rowId = elem.getAttribute('row_id');
         // Get original amount value to restore...
         const item = target_data.find(({ row_id }) => row_id === rowId);
         const { amount } = item;
@@ -506,7 +512,7 @@ modules.define(
         const row = target_data.find(({ row_id }) => row_id == rowId);
 
         let start = `
-          <div>
+          <div class="set-number-modal-table">
             <p>Click on a row to take that value</p>
             <table id="edit-number-table" class="fixed-table modal-table" width="100%">
               <thead>
@@ -533,24 +539,24 @@ modules.define(
               <tbody>
             </table>
           </div>
-          <div>
+          <div class="set-number-modal-form" row_id="${rowId}">
             <div class="strong"><strong>Original amount:</strong> ${row.amount}</div>
             <div class="strong"><strong>Current amount:</strong> <span id="number-current-amount">${row.amount}</span></div>
             <hr />
-            <button class="button-primary" id="close-number-editor" row_id="${row.row_id}" onClick="CompareCore.setNumberHandler(this)">Set and close</button>
-            <button id="reset-number" row_id="${row.row_id}" onClick="CompareCore.resetNumberHandler(this)">Reset number</button>
+            <button class="button-primary" id="close-number-editor">Set and close</button>
+            <button id="reset-number">Reset number</button>
             <hr />
             <form>
               <div>
                 <label>Enter new amount</label>
                 <input type="number" id="new_number" value="${row.amount}">
-                <button onClick="CompareCore.setNewNumberHandler(${row.row_id})" id="new-number-button">Set</button>
+                <button id="new-number-button">Set</button>
               </div>
               <hr />
               <div>
                 <label>Rescale current amount</label>
                 <input type="number" id="rescale_number" value="1.0">
-                <button onClick="CompareCore.rescaleAmountHandler(${row.row_id})" id="rescale-button">Rescale</button>
+                <button id="rescale-button">Rescale</button>
               </div>
             </form>
           </div>
@@ -568,6 +574,20 @@ modules.define(
           })
           .setContent(content)
           .showModal();
+
+        // Set modal handlers...
+        document
+          .getElementById('rescale-button')
+          .addEventListener('click', this.rescaleAmountHandler.bind(this));
+        document
+          .getElementById('new-number-button')
+          .addEventListener('click', this.setNewNumberHandler.bind(this));
+        document
+          .getElementById('close-number-editor')
+          .addEventListener('click', this.setNumberHandler.bind(this));
+        document
+          .getElementById('reset-number')
+          .addEventListener('click', this.resetNumberHandler.bind(this));
       },
 
       stop(event) {
