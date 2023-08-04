@@ -159,21 +159,20 @@ modules.define(
         if (is_target) {
           content = `
             <td class="cell-actions" row_id="${rowId}"><div>
-              <span
+              <a
                 id="row-trash-${rowId}"
-              ><a
                 onClick="CompareCore.removeRow(this)"
                 title="Remove row"
               ><i
-                class="fa-solid fa-trash-can"></i></a></span>
+                class="fa-solid fa-trash-can"></i></a>
               &nbsp;
-              <span
+              <a
                 input_id="${input_id}"
-                amount="${amount}"><a
-                  onClick="CompareCore.expandRow(this)"
-                  title="Expand row"
-                ><i
-                class="fa-solid fa-diamond fa-spin"></i></a></span>
+                amount="${amount}"
+                onClick="CompareCore.expandRow(this)"
+                title="Expand row"
+              ><i
+                class="fa-solid fa-diamond fa-spin"></i></a>
             </div></td>
             <td
               class="cell-amount"
@@ -379,17 +378,18 @@ modules.define(
 
       removeRow(element) {
         CompareRowClick.disableRowClick();
-        const row_id = element.parentElement.getAttribute('row_id');
+        const rowId = element.closest('td').getAttribute('row_id');
+        const { target_data } = this.sharedData;
         function removeValue(obj, index, arr) {
-          if (obj.row_id == row_id) {
+          if (obj.row_id == rowId) {
             this.comment += `* Removed exchange of ${obj.amount} ${obj.unit} ${obj.name} from ${obj.location}.\n`;
             arr.splice(index, 1);
             return true;
           }
           return false;
         }
-        this.sharedData.target_data.filter(removeValue);
-        this.buildTable('target-table', this.sharedData.target_data, true);
+        target_data.filter(removeValue);
+        this.buildTable('target-table', target_data, true);
       },
 
       expandRow(element) {
@@ -399,13 +399,13 @@ modules.define(
         const elAmount = element.getAttribute('amount');
         const url = '/expand/' + elInputId + '/' + elAmount + '/';
         const node = target_data.find((item) => item.input_id == elInputId);
-        console.log('[CompareCore:expandRow]', {
-          elInputId,
-          elAmount,
-          url,
-          node,
-        })
-        debugger;
+        /* console.log('[CompareCore:expandRow]', {
+         *   elInputId,
+         *   elAmount,
+         *   url,
+         *   node,
+         * })
+         */
         this.comment += `* Expanded process inputs of ${node.amount} ${node.unit} from ${node.name} in ${node.location}.\n`;
         fetch(url)
           .then((response) => {
