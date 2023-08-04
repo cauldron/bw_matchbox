@@ -53,7 +53,7 @@ body.has-modal {
   width: 100%;
   height: 100%;
 }
-@media (min-width: 600px) and (min-height: 400px) {
+@media (width >= 600px) and (height >= 400px) {
   .common-modal-wrapper .common-modal-window {
     /* Wide-screen: show as a window */
     border-radius: 8px;

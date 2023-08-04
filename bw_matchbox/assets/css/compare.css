@@ -22,11 +22,24 @@
 }
 
 /* Particular columns width */
-.compare-table .cell-actions { width: 3.5em; white-space: nowrap; }
-.compare-table .cell-amount { width: 5.5em; white-space: nowrap; }
-.compare-table .cell-name { width: 50%; white-space: wrap; }
-.compare-table .cell-location { width: 30%; }
-.compare-table .cell-unit { width: 2em; }
+.compare-table .cell-actions {
+  width: 3.5em;
+  white-space: nowrap;
+}
+.compare-table .cell-amount {
+  width: 5.5em;
+  white-space: nowrap;
+}
+.compare-table .cell-name {
+  width: 50%;
+  white-space: wrap;
+}
+.compare-table .cell-location {
+  width: 30%;
+}
+.compare-table .cell-unit {
+  width: 2em;
+}
 
 /* Action cell icons */
 .compare-table td.cell-actions {
