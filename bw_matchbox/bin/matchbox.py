@@ -61,8 +61,9 @@ CHANGES_TEMPLATE = {
 def create_setup_files(filename, output_dir):
     if not filename.lower().endswith(".toml"):
         filename += ".toml"
-    with open(CWD / filename, "w") as f:
-        f.write(CONFIG_TEMPLATE.format(str(output_dir)))
+    with open(CWD / filename, "w", newline="\n") as f:
+        data = CONFIG_TEMPLATE.format(str(output_dir).replace('\\', '/'))
+        f.write(data)
         print("Created config file {}".format(CWD / filename))
 
 
