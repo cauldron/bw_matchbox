@@ -5,7 +5,9 @@
     <div class="column">
       <h1>{{ ds.name }}
         {% if ds.database == source %}
-          {% if not ds.matched %}<button onclick="markMatched(this)" style="vertical-align: middle" class="button-primary" id="manual-match">No match needed</button> <a style="vertical-align: middle" class="button button-primary" href="{{ url_for('match', source=ds.id)}}">Match</a>{% else %}<button id="manual-match" style="vertical-align: middle">Matched</button>{% endif %}
+          {% if not ds.matched %}<button onclick="markMatched(this)" style="vertical-align: middle" class="button-primary" id="manual-match">No match needed</button>
+          {% if same_name_count %}<button onclick="markAllMatched(this)" style="vertical-align: middle" class="button-primary" id="manual-multi-match">Mark all matched</button>{% endif %}
+          <a style="vertical-align: middle" class="button button-primary" href="{{ url_for('match', source=ds.id)}}">Match</a>{% else %}<button id="match-button" style="vertical-align: middle">Matched</button>{% endif %}
         {% endif %}
       </h1>
       <ul>
@@ -18,7 +20,7 @@
           <li>Authors: {{ authors }}</li>
           <li>Comment: {{ds.comment }}</li>
           {% if same_name_count %}
-              <li>Datasets with same name: {{ same_name_count }}: {% for obj in same_name %}<a href="{{ url_for('process_detail', id=obj.id) }}">{{obj.location}}</a> {% endfor %}</li>
+              <li>Datasets with same name: {{ same_name_count }}: {% for obj in same_name %}<a href="{{ url_for('process_detail', id=obj.id) }}">{% if obj.data.matched %}<i class="fa-solid fa-check"></i> {% endif %}{{obj.location}}</a> {% endfor %}</li>
           {% endif %}
           {% if proxy_node %}
               <li>Proxy: <a href="{{ url_for('process_detail', id=proxy_node.id) }}">{{ proxy_node }}</a></li>
@@ -90,6 +92,7 @@
 
 <script type="text/javascript">
 function markMatched (button) {
+  fetch("{{ url_for('add_attribute', id=ds.id, attr='no_match_needed', value='1')|safe }}");
   var url = "{{ url_for('add_attribute', id=ds.id, attr='matched', value='1')|safe }}";
   fetch(url).then((response) => {
     if (!response.ok) {
@@ -97,7 +100,24 @@ function markMatched (button) {
     };
     button.innerText = "Matched";
     button.classList.remove("button-primary");
+    document.getElementById('match-button').style.display = 'none';
+    {% if multimatch %}document.getElementById('manual-multi-match').style.display = 'none';{% endif %}
   });
 };
+
+{% if same_name_count %}
+function markAllMatched (button) {
+  var url = "{{ url_for('multi_match', id=ds.id)|safe }}";
+  fetch(url).then((response) => {
+    if (!response.ok) {
+        throw new Error(`HTTP error ${response.status}`);
+    };
+    button.innerText = "Matched";
+    button.classList.remove("button-primary");
+    document.getElementById('manual-match').style.display = 'none';
+    document.getElementById('match-button').style.display = 'none';
+  });
+};
+{% endif %}
 </script>
 {% include 'footer.html' %}
