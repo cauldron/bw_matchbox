@@ -59,7 +59,7 @@ To use `bw_matchbox`, you need to do the following:
 Configuration is done via a `toml` file. See [`config_example.toml`](https://github.com/cauldron/bw_matchbox/blob/main/config_example.toml) for the structure of this file. It needs to provide the following:
 
 * `[users]` section: Authentication, via a set of usernames and passwords
-* `changes_file`: Location of the file where we will save your matching selections.
+* `output_dir`: Location of the directory where output files will be written. Must be writable.
 * `directories`: (Optional) Location of existing [randonneur](https://github.com/cmutel/randonneur) matching files to use, if any.
 
 The easiest way to set this up is with:
