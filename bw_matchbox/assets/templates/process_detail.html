@@ -20,6 +20,9 @@
           {% if same_name_count %}
               <li>Datasets with same name: {{ same_name_count }}: {% for obj in same_name %}<a href="{{ url_for('process_detail', id=obj.id) }}">{{obj.location}}</a> {% endfor %}</li>
           {% endif %}
+          {% if proxy_node %}
+              <li>Proxy: <a href="{{ url_for('process_detail', id=proxy_node.id) }}">{{ proxy_node }}</a></li>
+          {% endif %}
 
       </ul>
       <h2>Technosphere Inputs</h2>

@@ -437,6 +437,8 @@ def process_detail(id):
     bd.projects.set_current(proj)
 
     node = bd.get_node(id=id)
+    proxy_node = bd.get_node(id=node['proxy_id']) if node.get('proxy_id') else None
+
     same_name = AD.select().where(
         AD.name == node["name"], AD.database == node["database"], AD.id != node.id
     )
@@ -451,6 +453,7 @@ def process_detail(id):
         authors=",".join([obj.get('name', 'Unknown') for obj in node.get('authors', [])]),
         project=proj,
         proxy=proxy,
+        proxy_node=proxy_node,
         source=s,
         target=t,
         file_number=sum(1 for obj in files if obj["enabled"]),
@@ -645,6 +648,7 @@ def create_proxy():
         ).save()
 
     source["matched"] = True
+    source['proxy_id'] = process.id
     source.save()
 
     return flask.redirect(flask.url_for("process_detail", id=process.id))
