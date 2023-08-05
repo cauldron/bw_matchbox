@@ -67,6 +67,9 @@
       target_name: '{{ target_node.name|safe }}',
       source_node_unit: '{{source_node.unit}}',
       source_node_location: '{{source_node.location}}',
+      source_db_label: '{{ source }}',
+      target_db_label: '{{ target }}',
+      proxy_db_label: '{{ proxy }}',
     };
 
     /* // DEBUG: Crop data table to easier debugging...

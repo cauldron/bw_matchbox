@@ -2,10 +2,12 @@ modules.define(
   'ProcessesListData',
   [
     // Required modules...
+    'ProcessesListConstants',
   ],
   function provide_ProcessesListData(
     provide,
     // Resolved modules...
+    ProcessesListConstants,
   ) {
     // Define module...
 
@@ -19,7 +21,10 @@ modules.define(
       sharedParams: undefined,
 
       // Data params...
-      orderBy: 'random', // Control for `order_by` parameter (name, location, product; default (empty) -- random.
+
+      // Control for `order_by` parameter (name, location, product; default (empty) -- random.
+      orderBy: ProcessesListConstants.defaultOrderBy, // 'random' | 'name' | 'location' | 'product'
+      filterBy: ProcessesListConstants.defaultFilterBy, // 'matched' | 'unmatched' | 'waitlist'
       database: '',
       searchValue: '',
 
