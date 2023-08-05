@@ -3,7 +3,7 @@
 """bw_matchbox scripts.
 
 Usage:
-  matchbox setup
+  matchbox setup [<output_dir>]
   matchbox example_project [<project_name>]
   matchbox webapp <config> [--port=<port>] [--localhost]
 
@@ -12,8 +12,6 @@ Options:
   --version     Show version.
 
 """
-import datetime
-import json
 from pathlib import Path
 
 import bw2data as bd
@@ -29,7 +27,7 @@ johnny = "mnemonic"
 
 [files]
 directories = []
-changes_file = "{}"
+output_dir = "{}"
 """
 
 CHANGES_TEMPLATE = {
@@ -60,25 +58,20 @@ CHANGES_TEMPLATE = {
 }
 
 
-def create_setup_files(filename, changesfile):
+def create_setup_files(filename, output_dir):
     if not filename.lower().endswith(".toml"):
         filename += ".toml"
-    if not changesfile.lower().endswith(".json"):
-        changesfile += ".json"
     with open(CWD / filename, "w") as f:
-        f.write(CONFIG_TEMPLATE.format(CWD / changesfile))
+        f.write(CONFIG_TEMPLATE.format(str(output_dir)))
         print("Created config file {}".format(CWD / filename))
-    with open(CWD / changesfile, "w") as f:
-        CHANGES_TEMPLATE["created"] = datetime.datetime.now().isoformat()
-        json.dump(CHANGES_TEMPLATE, f, ensure_ascii=False, indent=2)
-        print("Created changes file {}".format(CWD / changesfile))
 
 
 def main():
     args = docopt(__doc__, version="bw_matchbox app 1.0")
 
     if args["setup"]:
-        create_setup_files("config.toml", "changes.json")
+        output_dir = args["<output_dir>"] or CWD
+        create_setup_files("config.toml", Path(output_dir).resolve())
     elif args["example_project"]:
         name = args["<project_name>"] or "matchbox-example"
         bi.install_project("USEEIO-1.1", name)
