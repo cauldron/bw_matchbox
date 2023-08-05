@@ -24,13 +24,6 @@
   {% include 'navigation.html' %}
   <div class="row">
     <div class="column">
-      <div class="page-header">
-        <h1>
-          {% if unmatched_link %}Source Database <a href="{{ url_for('unmatched') }}">(Only unmatched)</a>
-          {% else %}Unmatched in Source Database
-          {% endif %}
-        </h1>
-      </div>
       <div class="page-search">
         <p><input type="text" class="u-full-width" placeholder="Enter value to search" value="{{ query_string }}" id="query_string" /></p>
       </div>
