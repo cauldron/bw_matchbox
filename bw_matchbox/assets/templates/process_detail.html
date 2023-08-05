@@ -101,6 +101,7 @@ function markMatched (button) {
     button.innerText = "Matched";
     button.classList.remove("button-primary");
     document.getElementById('match-button').style.display = 'none';
+    document.getElementById('manual-multi-match').style.display = 'none';
     {% if multimatch %}document.getElementById('manual-multi-match').style.display = 'none';{% endif %}
   });
 };
