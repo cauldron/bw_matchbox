@@ -53,11 +53,10 @@ def configure_app(filepath, app):
         user: generate_password_hash(password)
         for user, password in config["users"].items()
     }
-    app.config["mb_changes_file"] = config["files"]["changes_file"]
-    try:
-        json.load(open(app.config["mb_changes_file"], "rb"))
-    except:
-        raise ValueError("Can't read changes file")
+    app.config["mb_output_dir"] = Path(config["files"]["output_dir"])
+    if not (app.config["mb_output_dir"].is_dir() and os.access(app.config["mb_output_dir"], os.W_OK)):
+        raise ValueError("`output_dir` is invalid")
+
     return app
 
 
@@ -109,7 +108,6 @@ def select_project():
                 file_number=sum(1 for obj in files if obj["enabled"]),
                 projects=[o for o in bd.projects],
                 user=auth.current_user(),
-                changes_file=Path(matchbox_app.config["mb_changes_file"]).name,
             )
         )
         resp.delete_cookie("project")
@@ -131,22 +129,19 @@ def select_databases():
     if flask.request.method == "POST":
         source = flask.request.form["source"]
         target = flask.request.form["target"]
-        use_proxy = "use-proxy" in flask.request.form
         proxy_existing = flask.request.form["proxy-existing"]
         proxy_new = flask.request.form["proxy-new"].strip()
+
         if source != target:
             resp = flask.make_response(flask.redirect(flask.url_for("index")))
             resp.set_cookie("source", source)
             resp.set_cookie("target", target)
 
-            if use_proxy:
-                if proxy_new:
-                    bd.Database(proxy_new).register()
-                    resp.set_cookie("proxy", proxy_new)
-                else:
-                    resp.set_cookie("proxy", proxy_existing)
+            if proxy_new:
+                bd.Database(proxy_new).register()
+                resp.set_cookie("proxy", proxy_new)
             else:
-                resp.set_cookie("proxy", "")
+                resp.set_cookie("proxy", proxy_existing)
 
             return resp
 
@@ -156,7 +151,6 @@ def select_databases():
             project=project,
             file_number=sum(1 for obj in files if obj["enabled"]),
             user=auth.current_user(),
-            changes_file=Path(matchbox_app.config["mb_changes_file"]).name,
             databases=bd.databases,
         )
     )
@@ -210,7 +204,6 @@ def select_matching_files():
             source=s,
             target=t,
             user=auth.current_user(),
-            changes_file=Path(matchbox_app.config["mb_changes_file"]).name,
         )
     )
     resp.set_cookie("files", json.dumps(files))
@@ -241,7 +234,6 @@ def index():
         database=s,
         proxy=proxy,
         user=auth.current_user(),
-        changes_file=Path(matchbox_app.config["mb_changes_file"]).name,
     )
 
 
@@ -345,7 +337,6 @@ def unmatched():
         query_string="",
         database=s,
         user=auth.current_user(),
-        changes_file=Path(matchbox_app.config["mb_changes_file"]).name,
     )
 
 
@@ -471,7 +462,6 @@ def process_detail(id):
         target=t,
         file_number=sum(1 for obj in files if obj["enabled"]),
         user=auth.current_user(),
-        changes_file=Path(matchbox_app.config["mb_changes_file"]).name,
         same_name_count=same_name_count,
         same_name=same_name,
         technosphere=technosphere,
@@ -504,7 +494,6 @@ def match(source):
         target=t,
         file_number=sum(1 for obj in files if obj["enabled"]),
         user=auth.current_user(),
-        changes_file=Path(matchbox_app.config["mb_changes_file"]).name,
         query_string=node["name"] + " " + node.get("location", ""),
         matches=matches,
     )
@@ -591,7 +580,6 @@ def compare(source, target):
         target=t,
         target_json=json.dumps(target_itself),
         user=auth.current_user(),
-        changes_file=Path(matchbox_app.config["mb_changes_file"]).name,
         file_number=sum(1 for obj in files if obj["enabled"]),
         source_node=source,
         source_data_json=json.dumps(source_technosphere),

@@ -2,8 +2,7 @@
     <div class="two columns"><a href="{{ url_for('index') }}">home</a></div>
     <div class="two columns"><a href="{{ url_for('select_matching_files') }}">Input files ({{ file_number or 0}})</a></div>
     <div class="two columns">User: {{ user }}</div>
-    <div class="two columns">Editing: {{ changes_file }}</div>
-    <div class="four columns">Proxy: {{ proxy or "None" }}</div>
+    <div class="six columns">Proxy: {{ proxy or "None" }}</div>
 </div>
 <div class="row">
     {% if project %}<div class="four columns">Project: {{ project }} | <a href="{{ url_for('select_project') }}">Change</a></div>{% endif %}
