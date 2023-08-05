@@ -14,8 +14,6 @@
 }
 
 /* Empty state: hode some elements... */
-/* .processes-list.empty .page-filters, */
-/* UNUSED: .processes-list.empty .table-pagination, */
 .processes-list.empty .processes-list-table {
   display: none;
 }
@@ -26,13 +24,28 @@
 }
 .processes-list.loading .page-search,
 .processes-list.loading .page-filters,
-/* UNUSED: .processes-list.loading .table-pagination, */
 .processes-list.loading .bottom-actions-links {
   opacity: 0.5;
   pointer-events: none;
 }
 .processes-list.loading .bottom-actions-links {
   opacity: 0;
+}
+
+/* Top radio groups... */
+.processes-list .page-filters {
+  line-height: 1;
+}
+.processes-list .page-filters > span,
+.processes-list .page-filters > span > span {
+  display: inline-block;
+  margin-right: 10px;
+}
+.processes-list .page-filters .radio-group-item {
+  white-space: nowrap;
+}
+.processes-list .page-filters .radio-group-item > label {
+  font-weight: normal;
 }
 
 /* Table */
@@ -126,8 +139,14 @@
 /* Show 'Reload' (after error) button if error... */
 .processes-list.error .bottom-actions-links a#action-clear-and-reload,
 /* Show 'Load more' button for all 'order by' values except for 'random'... */
-.processes-list:not(.order-random, .error) .bottom-actions-links a#action-load-more,
+.processes-list.has-more-data:not(.order-random, .error) .bottom-actions-links a#action-load-more,
 /* Show 'Refresh' button for 'random' 'order by' value... */
 .processes-list.order-random:not(.error) .bottom-actions-links a#action-reload-random {
   display: inline-block;
+}
+.processes-list .bottom-actions-links #available-records-info {
+  display: inline-block;
+}
+.processes-list .bottom-actions-links #available-records-info:not(:empty) {
+  margin-left: 0.5em;
 }

@@ -55,6 +55,14 @@ modules.define(
         ProcessesListDataLoad.loadData();
       },
 
+      /** Update value of 'filterBy' parameter from user */
+      onFilterByChange(target) {
+        // TODO: Move to Handlers module?
+        const { value } = target;
+        ProcessesListStates.setFilterBy(value);
+        ProcessesListDataLoad.loadData();
+      },
+
       /** clearAndReloadData -- Reload entire data (clear and load only first chunk)
        */
       clearAndReloadData() {

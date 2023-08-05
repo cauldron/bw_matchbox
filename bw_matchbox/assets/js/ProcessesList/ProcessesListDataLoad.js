@@ -30,12 +30,14 @@ modules.define(
        * @param {boolean} [opts.update] - Update current data chunk.
        */
       loadData(_opts = true) {
+        const { defaultOrderBy } = ProcessesListConstants;
         const { pageSize, processesApiUrl: urlBase } = ProcessesListConstants;
-        const { currentPage, database, orderBy } = ProcessesListData;
+        const { currentPage, database, orderBy, filterBy } = ProcessesListData;
         const offset = currentPage * pageSize; // TODO!
         const params = {
           database,
-          order_by: orderBy,
+          order_by: orderBy !== defaultOrderBy ? orderBy : '',
+          filter: filterBy,
           offset,
           limit: pageSize,
         };
@@ -50,6 +52,7 @@ modules.define(
          *   pageSize,
          *   offset,
          *   orderBy,
+         *   filterBy,
          * });
          */
         ProcessesListStates.setLoading(true);
@@ -84,30 +87,26 @@ modules.define(
             const loadedRecords = hasData ? data.length : 0;
             const currentRecords = offset + loadedRecords;
             const hasMoreData = hasData && currentRecords < totalRecords;
-            /* console.log('[ProcessesListDataLoad:loadData]: start', {
-             *   hasMoreData,
-             *   currentRecords,
+            const availableCount = hasMoreData ? totalRecords - currentRecords : 0;
+            /* console.log('[ProcessesListDataLoad:loadData]: success', {
+             *   availableCount,
              *   totalRecords,
+             *   hasData,
              *   loadedRecords,
-             *   offset,
-             *   url,
-             *   params,
-             *   urlQuery,
-             *   urlBase,
-             *   currentPage,
-             *   pageSize,
-             *   orderBy,
-             *   json,
+             *   currentRecords,
+             *   hasMoreData,
+             *   data,
              * });
              */
             // Update total records number...
             ProcessesListData.totalRecords = totalRecords;
             // Append data to current table...
-            // TODO: Use `opts.update` to update last data chunk.
+            // TODO: Use `opts.update` to update last data chunk (?).
             ProcessesListDataRender.renderTableData(data, { append: true });
             ProcessesListStates.setError(undefined); // Clear the error: all is ok
             ProcessesListStates.setHasData(ProcessesListData.hasData || hasData); // Update 'has data' flag
             ProcessesListStates.setHasMoreData(hasMoreData); // Update 'has more data' flag
+            ProcessesListStates.updateAvailableRecordsInfo(availableCount);
           })
           .catch((error) => {
             // eslint-disable-next-line no-console

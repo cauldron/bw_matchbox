@@ -2,6 +2,7 @@ modules.define(
   'ProcessesListStates',
   [
     // Required modules...
+    'ProcessesListConstants',
     'ProcessesListData',
     'ProcessesListDataRender',
     'ProcessesListNodes',
@@ -9,6 +10,7 @@ modules.define(
   function provide_ProcessesListStates(
     provide,
     // Resolved modules...
+    ProcessesListConstants,
     ProcessesListData,
     ProcessesListDataRender,
     ProcessesListNodes,
@@ -33,6 +35,20 @@ modules.define(
         const rootNode = ProcessesListNodes.getRootNode();
         rootNode.classList.toggle('empty', !hasData);
         ProcessesListData.hasData = hasData;
+      },
+
+      getAvailableRecordsContent(availableCount) {
+        const { pageSize } = ProcessesListConstants;
+        if (!availableCount) {
+          return '';
+        }
+        return `(next ${pageSize} out of ${availableCount} available)`;
+      },
+
+      updateAvailableRecordsInfo(availableCount) {
+        const node = document.getElementById('available-records-info');
+        const content = this.getAvailableRecordsContent(availableCount);
+        node.innerHTML = content;
       },
 
       setHasMoreData(hasMoreData) {
@@ -74,20 +90,74 @@ modules.define(
       clearData() {
         this.setHasData(false);
         this.setHasMoreData(true);
+        this.updateAvailableRecordsInfo(0);
         ProcessesListDataRender.clearTableData();
       },
 
-      setOrderBy(orderBy) {
+      /** setOrderBy -- Set 'order by' parameter.
+       * @param {'random' | 'name' | 'location' | 'product'} [orderBy]
+       * @param {object} [opts]
+       * @param {boolean} [opts.omitClearData] - Don't clear data.
+       */
+      setOrderBy(orderBy, opts = {}) {
+        const { defaultOrderBy } = ProcessesListConstants;
         const rootNode = ProcessesListNodes.getRootNode();
-        const prevClass = ['order', ProcessesListData.orderBy || 'random']
+        const prevClass = ['order', ProcessesListData.orderBy || defaultOrderBy]
           .filter(Boolean)
           .join('-');
-        const nextClass = ['order', orderBy || 'random'].filter(Boolean).join('-');
-        rootNode.classList.toggle(prevClass, false);
+        const nextClass = ['order', orderBy || defaultOrderBy].filter(Boolean).join('-');
+        if (prevClass !== nextClass) {
+          rootNode.classList.toggle(prevClass, false);
+        }
         rootNode.classList.toggle(nextClass, true);
-        ProcessesListData.orderBy = orderBy;
-        // Clear current dataod...
-        this.clearData();
+        ProcessesListData.orderBy = orderBy || defaultOrderBy;
+        // Clear current data...
+        if (!opts.omitClearData) {
+          this.clearData();
+        }
+      },
+
+      /** setFilterBy -- Set 'filter by' parameter.
+       * @param {'matched' | 'unmatched' | 'waitlist'} [filterBy]
+       * @param {object} [opts]
+       * @param {boolean} [opts.omitClearData] - Don't clear data.
+       */
+      setFilterBy(filterBy, opts = {}) {
+        const { defaultFilterBy } = ProcessesListConstants;
+        const rootNode = ProcessesListNodes.getRootNode();
+        const prevClass = ['filter', ProcessesListData.filterBy || defaultFilterBy]
+          .filter(Boolean)
+          .join('-');
+        const nextClass = ['filter', filterBy || defaultFilterBy].filter(Boolean).join('-');
+        if (prevClass !== nextClass) {
+          rootNode.classList.toggle(prevClass, false);
+        }
+        rootNode.classList.toggle(nextClass, true);
+        ProcessesListData.filterBy = filterBy || defaultFilterBy;
+        // Clear current data...
+        if (!opts.omitClearData) {
+          this.clearData();
+        }
+      },
+
+      /** updateDomOrderBy -- Update actual 'order by' dom node.
+       * @param {'random' | 'name' | 'location' | 'product'} [orderByValue]
+       */
+      updateDomOrderBy(orderByValue) {
+        const { defaultOrderBy } = ProcessesListConstants;
+        const orderBy = orderByValue || defaultOrderBy;
+        const elems = document.querySelectorAll('input[type="radio"][name="order_by"]');
+        elems.forEach((elem) => (elem.checked = elem.value === orderBy));
+      },
+
+      /** updateDomFilterBy -- Update actual 'filter by' dom node.
+       * @param {'random' | 'name' | 'location' | 'product'} [filterByValue]
+       */
+      updateDomFilterBy(filterByValue) {
+        const { defaultFilterBy } = ProcessesListConstants;
+        const filterBy = filterByValue || defaultFilterBy;
+        const elems = document.querySelectorAll('input[type="radio"][name="filter_by"]');
+        elems.forEach((elem) => (elem.checked = elem.value === filterBy));
       },
 
       /** updatePage -- Update all the page dynamic elements
@@ -110,6 +180,15 @@ modules.define(
             debugger;
           }
         });
+      },
+
+      start() {
+        // Update parameters...
+        this.updateDomOrderBy();
+        this.updateDomFilterBy();
+        this.setOrderBy();
+        this.setFilterBy();
+        // TODO: Update correspond dom radio groups?
       },
     };
 
