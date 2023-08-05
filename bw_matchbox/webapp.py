@@ -131,22 +131,19 @@ def select_databases():
     if flask.request.method == "POST":
         source = flask.request.form["source"]
         target = flask.request.form["target"]
-        use_proxy = "use-proxy" in flask.request.form
         proxy_existing = flask.request.form["proxy-existing"]
         proxy_new = flask.request.form["proxy-new"].strip()
+
         if source != target:
             resp = flask.make_response(flask.redirect(flask.url_for("index")))
             resp.set_cookie("source", source)
             resp.set_cookie("target", target)
 
-            if use_proxy:
-                if proxy_new:
-                    bd.Database(proxy_new).register()
-                    resp.set_cookie("proxy", proxy_new)
-                else:
-                    resp.set_cookie("proxy", proxy_existing)
+            if proxy_new:
+                bd.Database(proxy_new).register()
+                resp.set_cookie("proxy", proxy_new)
             else:
-                resp.set_cookie("proxy", "")
+                resp.set_cookie("proxy", proxy_existing)
 
             return resp
 
