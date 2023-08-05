@@ -66,6 +66,7 @@ modules.define(
         // Add row from source to target array
         event.preventDefault();
         row.parentElement.parentElement.classList.add('shift-right');
+        document.getElementById('replace-with-target-arrow').style.display = 'none';
         const { source_data, target_data } = this.sharedData;
         const obj = source_data.find((item) => item.row_id == row_id);
         // Creating new object with unique (?) row_id
@@ -390,6 +391,7 @@ modules.define(
           }
           return false;
         }
+        document.getElementById('replace-with-target-arrow').style.display = 'none';
         target_data.filter(removeValue);
         this.buildTable('target-table', target_data, true);
       },
@@ -401,6 +403,8 @@ modules.define(
         const elAmount = element.getAttribute('amount');
         const url = '/expand/' + elInputId + '/' + elAmount + '/';
         const node = target_data.find((item) => item.input_id == elInputId);
+
+        document.getElementById('replace-with-target-arrow').style.display = 'none';
         /* console.log('[CompareCore:expandRowHandler]', {
          *   elInputId,
          *   elAmount,
