@@ -9,6 +9,7 @@ from pathlib import Path
 import bw2data as bd
 import flask
 import tomli
+import whoosh
 from bw2data.backends import ActivityDataset as AD
 from flask_httpauth import HTTPBasicAuth
 from peewee import fn
@@ -416,13 +417,19 @@ def add_attribute(id):
 
     if attr is None or value is None:
         flask.abort(400)
-    if attr in ("highlighted", "matched"):
+    if attr in ("highlighted", "matched", "no_match_needed"):
         if value not in ("0", "1"):
             flask.abort(400)
         value = {"0": False, "1": True}[value]
 
     node[attr] = value
-    node.save()
+
+    try:
+        node.save()
+    except whoosh.index.LockError:
+        # MAIN_WRITELOCK not being released. Can ignore as we don't
+        # change anything that is in the index anyway.
+        pass
     return ""
 
 
@@ -464,6 +471,28 @@ def process_detail(id):
         biosphere=biosphere,
         show_matching=False,
     )
+
+
+@matchbox_app.route("/multi-match/<id>", methods=["GET"])
+@auth.login_required
+def multi_match(id):
+    context = get_context()
+    proj, s, t, proxy = context
+    bd.projects.set_current(proj)
+
+    node = bd.get_node(id=id)
+    node['matched'] = True
+    node['no_match_needed'] = True
+    node.save()
+
+    for ds in AD.select().where(
+        AD.name == node["name"], AD.database == node["database"], AD.id != node.id
+    ):
+        if not ds.data.get('matched'):
+            ds.data['matched'] = True
+            ds.data['no_match_needed'] = True
+            ds.save()
+    return ""
 
 
 @matchbox_app.route("/match/<source>", methods=["GET"])
