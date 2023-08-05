@@ -456,6 +456,7 @@ def process_detail(id):
         "process_detail.html",
         title="bw_matchbox Detail Page",
         ds=node,
+        authors=",".join([obj.get('name', 'Unknown') for obj in node.get('authors', [])]),
         project=proj,
         proxy=proxy,
         source=s,
