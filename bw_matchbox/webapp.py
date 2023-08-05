@@ -332,33 +332,6 @@ def processes():
     return flask.jsonify(payload)
 
 
-@matchbox_app.route("/unmatched", methods=["GET"])
-@auth.login_required
-def unmatched():
-    context = get_context()
-    if isinstance(context, flask.Response):
-        return context
-    proj, s, t, proxy = context
-
-    files = get_files()
-
-    bd.projects.set_current(proj)
-    return flask.render_template(
-        "index.html",
-        title="Unmatched Processes",
-        unmatched_link=False,
-        project=proj,
-        proxy=proxy,
-        source=s,
-        target=t,
-        file_number=sum(1 for obj in files if obj["enabled"]),
-        table_data=[obj for obj, _ in zip(bd.Database(s), range(50))],
-        query_string="",
-        database=s,
-        user=auth.current_user(),
-    )
-
-
 # @matchbox_app.route("/match-status", methods=["GET"])
 # @auth.login_required
 # def match_status():
