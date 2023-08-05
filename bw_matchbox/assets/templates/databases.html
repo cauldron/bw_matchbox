@@ -22,8 +22,10 @@
           </select>
         </div>
         <div class="two columns">
+<!--
           <label id="use_proxy_toggle" for="use_proxy">Use proxy</label>
           <input type="checkbox" onclick="showProxySection(this,'proxy-row')" name="use-proxy" checked>
+-->
         </div>
       </div>
       <div class="row">
@@ -51,16 +53,17 @@
 </div>
 
 <script>
-function showProxySection(checkbox, section_div) {
-   if( checkbox.checked == true ) {
-      document.getElementById(section_div).style.display = "block";
-   } else {
-      document.getElementById(section_div).style.display = "none";
-   }
-};
+// function showProxySection(checkbox, section_div) {
+//    if( checkbox.checked == true ) {
+//       document.getElementById(section_div).style.display = "block";
+//    } else {
+//       document.getElementById(section_div).style.display = "none";
+//    }
+// };
 
 // var select_cache = "";
 
+// Greys out "Use existing database" values to show that a new database will be used
 document.getElementById("proxy-new").addEventListener("keyup", function() {
   var db_select = document.getElementById("proxy-existing");
   if (this.value.trim().length) {
