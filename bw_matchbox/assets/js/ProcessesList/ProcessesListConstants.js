@@ -20,7 +20,7 @@ modules.define(
       /** Default order value */
       defaultOrderBy: 'random',
       /** Default filter value */
-      defaultFilterBy: 'matched',
+      defaultFilterBy: 'unmatched',
     };
 
     // Provide module...
