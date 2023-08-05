@@ -246,13 +246,14 @@ def processes():
 
     * database (str): Name of database to draw processes from. Defaults to source
                       database (stored in cookie) if not given.
-    * order_by (str): Parameter to sort by. Random if not provided. Valid parameters:
+    * limit (int): Number of results to return
+    * order_by (str, optional): Parameter to sort by. Random if not provided. Valid parameters:
         * name (will be used 99% of the time)
         * location
         * product (short name for reference product)
-    * offset (int): Offset from beginning of sorted values. Zero-indexed.
+    * offset (int, optional): Offset from beginning of sorted values. Zero-indexed.
                     Only used if sorting.
-    * limit (int): Number of results to return
+    * filter (string, optional): Optional attribute filter. Should be one of `matched`, `unmatched`, or `waitlist`.
 
     Response data format (JSON):
 
@@ -262,6 +263,7 @@ def processes():
                 'details_url': 'URL for `process_detail` page for this activity',
                 'match_url': 'URL for `match` page for this activity',
                 'matched': 'Boolean. Whether or not process is already matched.',
+                'waitlist': 'Boolean. Whether or not process has attribute `waitlist`.',
                 'id': 'Integer process ID',
                 'name': 'Process name',
                 'location': 'Process location',
@@ -277,23 +279,39 @@ def processes():
     database_label = flask.request.args.get("database") or s
     qs = AD.select().where(AD.database == database_label)
 
-    total_records = qs.count()
-
     order_by = flask.request.args.get("order_by")
     if order_by and order_by in ("name", "location", "product"):
         qs = qs.order_by(getattr(AD, order_by))
     else:
         qs = qs.order_by(fn.Random())
 
-    offset = flask.request.args.get("offset")
-    if offset:
-        qs = qs.offset(int(offset))
+    offset = int(flask.request.args.get("offset"))
+    limit = int(flask.request.args.get("limit"))
 
-    limit = flask.request.args.get("limit")
-    if limit:
-        qs = qs.limit(int(limit))
+    filter_arg = flask.request.args.get("filter")
+    if filter_arg is None:
+        total_records = qs.count()
+
+        if offset:
+            qs = qs.offset(int(offset))
+        if limit:
+            qs = qs.limit(int(limit))
+        else:
+            qs = qs.limit(50)
     else:
-        qs = qs.limit(50)
+        if filter_arg == "unmatched":
+            qs = [node for node in qs if not node.data.get('matched')]
+        else:
+            qs = [node for node in qs if node.data.get(filter_arg)]
+
+        total_records = len(qs)
+
+        if offset:
+            qs = qs[offset:]
+        if limit:
+            qs = qs[:limit]
+        else:
+            qs = qs[:50]
 
     payload = {
         "total_records": total_records,
@@ -302,6 +320,7 @@ def processes():
                 "details_url": flask.url_for("process_detail", id=obj.id),
                 "match_url": flask.url_for("match", source=obj.id),
                 "matched": bool(obj.data.get("matched")),
+                "waitlist": bool(obj.data.get("waitlist")),
                 "id": obj.id,
                 "name": obj.name,
                 "location": obj.location,
