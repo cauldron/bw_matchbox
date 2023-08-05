@@ -9,6 +9,7 @@ from pathlib import Path
 import bw2data as bd
 import flask
 import tomli
+import whoosh
 from bw2data.backends import ActivityDataset as AD
 from flask_httpauth import HTTPBasicAuth
 from peewee import fn
@@ -422,7 +423,13 @@ def add_attribute(id):
         value = {"0": False, "1": True}[value]
 
     node[attr] = value
-    node.save()
+
+    try:
+        node.save()
+    except whoosh.index.LockError:
+        # MAIN_WRITELOCK not being released. Can ignore as we don't
+        # change anything that is in the index anyway.
+        pass
     return ""
 
 
