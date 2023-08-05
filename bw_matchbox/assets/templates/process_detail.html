@@ -12,6 +12,10 @@
           <li>Database: {{ ds.database }}</li>
           <li>Location: {{ ds.location }}</li>
           <li>Unit: {{ ds.unit }}</li>
+          <li>ID: {{ ds.id }}</li>
+          <li>Production amount: {{ ds['production amount'] }}</li>
+          <li>Reference product: {{ ds['reference product'] }}</li>
+          <li>Authors: {{ authors }}</li>
           <li>Comment: {{ds.comment }}</li>
           {% if same_name_count %}
               <li>Datasets with same name: {{ same_name_count }}: {% for obj in same_name %}<a href="{{ url_for('process_detail', id=obj.id) }}">{{obj.location}}</a> {% endfor %}</li>
