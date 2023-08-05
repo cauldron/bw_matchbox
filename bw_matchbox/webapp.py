@@ -289,7 +289,7 @@ def processes():
     limit = int(flask.request.args.get("limit"))
 
     filter_arg = flask.request.args.get("filter")
-    if filter_arg is None:
+    if not filter_arg:
         total_records = qs.count()
 
         if offset:
