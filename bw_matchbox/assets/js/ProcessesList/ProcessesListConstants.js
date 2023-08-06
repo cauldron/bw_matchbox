@@ -15,8 +15,8 @@ modules.define(
     const ProcessesListConstants = {
       __id: 'ProcessesListConstants',
 
-      // DEBUG
-      useDebug: false, // Don't use it for production!
+      // DEBUG: useDebug -- specify debug mode. Don't use it for production!
+      useDebug: false,
 
       /** Api base */
       processesApiUrl: '/processes',

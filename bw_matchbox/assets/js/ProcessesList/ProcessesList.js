@@ -44,7 +44,6 @@ modules.define(
     ];
 
     // global module variable
-    // eslint-disable-next-line no-unused-vars
     const ProcessesList = {
       // Proxy handlers...
 
@@ -96,9 +95,13 @@ modules.define(
       fetchUrlParams() {
         // Get & store the database value form the url query...
         const urlParams = CommonHelpers.parseQuery(window.location.search);
-        const { database, q: searchValue } = urlParams;
-        // Get database from url or from server-passed data... (Used only for `searchUrl` requests.)
-        ProcessesListData.database = database || ProcessesListData.sharedParams.database;
+        const {
+          // database, // UNUSED: #41: Using `databases` and `userDb`
+          q: searchValue,
+        } = urlParams;
+        /* // UNUSED: Get database from url or from server-passed data... (Used only for `searchUrl` requests.)
+         * ProcessesListData.database = database || ProcessesListData.sharedParams.database;
+         */
         ProcessesListData.searchValue = searchValue || '';
       },
 

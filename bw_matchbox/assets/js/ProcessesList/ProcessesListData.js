@@ -15,7 +15,6 @@ modules.define(
      */
 
     // global module variable
-    // eslint-disable-next-line no-unused-vars
     const ProcessesListData = {
       __id: 'ProcessesListData',
 
@@ -28,7 +27,7 @@ modules.define(
       orderBy: ProcessesListConstants.defaultOrderBy, // 'random' | 'name' | 'location' | 'product'
       filterBy: ProcessesListConstants.defaultFilterBy, // 'none', 'matched' | 'unmatched' | 'waitlist'
       userDb: ProcessesListConstants.defaultUserDb, // 'source' | 'target', 'proxy'
-      database: '', // Server provided database value (Used only for `searchUrl` requests.)
+      // database: '', // UNUSED: #41: Using `databases` and `userDb`. Server provided database value (Used only for `searchUrl` requests.)
       searchValue: '',
 
       // Stored dom nodes...

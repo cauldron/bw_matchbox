@@ -23,7 +23,6 @@ modules.define(
      */
 
     // global module variable
-    // eslint-disable-next-line no-unused-vars
     const ProcessesListDataLoad = {
       __id: 'ProcessesListDataLoad',
 
@@ -34,7 +33,10 @@ modules.define(
       loadData(/* opts = {} */) {
         const { currentPage, orderBy, filterBy, userDb, searchValue, sharedParams, hasSearch } =
           ProcessesListData;
-        const { databases, database } = sharedParams;
+        const {
+          databases,
+          // database, // UNUSED: #41: Using `databases` and `userDb`.
+        } = sharedParams;
         const {
           pageSize,
           processesApiUrl: urlBase,
@@ -61,7 +63,7 @@ modules.define(
           userDbValue,
           useDebug,
           userDb,
-          database,
+          // database, // UNUSED: #41: Using `databases` and `userDb`.
           url,
           params,
           urlQuery,

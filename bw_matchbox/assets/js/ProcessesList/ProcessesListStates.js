@@ -21,7 +21,6 @@ modules.define(
      */
 
     // global module variable
-    // eslint-disable-next-line no-unused-vars
     const ProcessesListStates = {
       __id: 'ProcessesListStates',
 
