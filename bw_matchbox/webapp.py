@@ -55,7 +55,10 @@ def configure_app(filepath, app):
         for user, password in config["users"].items()
     }
     app.config["mb_output_dir"] = Path(config["files"]["output_dir"])
-    if not (app.config["mb_output_dir"].is_dir() and os.access(app.config["mb_output_dir"], os.W_OK)):
+    if not (
+        app.config["mb_output_dir"].is_dir()
+        and os.access(app.config["mb_output_dir"], os.W_OK)
+    ):
         raise ValueError("`output_dir` is invalid")
 
     return app
@@ -246,15 +249,17 @@ def processes():
     GET args:
 
     * database (str): Name of database to draw processes from. Defaults to source
-                      database (stored in cookie) if not given.
+                    database (stored in cookie) if not given.
     * limit (int): Number of results to return
-    * order_by (str, optional): Parameter to sort by. Random if not provided. Valid parameters:
+    * order_by (str, optional): Parameter to sort by. Random if not provided.
+                    Valid parameters:
         * name (will be used 99% of the time)
         * location
         * product (short name for reference product)
     * offset (int, optional): Offset from beginning of sorted values. Zero-indexed.
                     Only used if sorting.
-    * filter (string, optional): Optional attribute filter. Should be one of `matched`, `unmatched`, or `waitlist`.
+    * filter (string, optional): Optional attribute filter. Should be one of
+                    `matched`, `unmatched`, or `waitlist`.
 
     Response data format (JSON):
 
@@ -301,7 +306,7 @@ def processes():
             qs = qs.limit(50)
     else:
         if filter_arg == "unmatched":
-            qs = [node for node in qs if not node.data.get('matched')]
+            qs = [node for node in qs if not node.data.get("matched")]
         else:
             qs = [node for node in qs if node.data.get(filter_arg)]
 
@@ -380,15 +385,16 @@ def search():
 
     q = flask.request.args.get("q")
     embed = flask.request.args.get("e")
+    search_db = flask.request.args.get("database")
+
     if embed:
         source = bd.get_activity(id=int(flask.request.args.get("source")))
         return flask.render_template(
             "search-embedded.html",
             source=source,
-            table_data=bd.Database(t).search(q, limit=100),
+            table_data=bd.Database(search_db or t).search(q, limit=100),
         )
     else:
-        search_db = flask.request.args.get("database")
         return flask.render_template(
             "index.html",
             project=proj,
@@ -444,7 +450,7 @@ def process_detail(id):
     bd.projects.set_current(proj)
 
     node = bd.get_node(id=id)
-    proxy_node = bd.get_node(id=node['proxy_id']) if node.get('proxy_id') else None
+    proxy_node = bd.get_node(id=node["proxy_id"]) if node.get("proxy_id") else None
 
     same_name = AD.select().where(
         AD.name == node["name"], AD.database == node["database"], AD.id != node.id
@@ -457,7 +463,9 @@ def process_detail(id):
         "process_detail.html",
         title="bw_matchbox Detail Page",
         ds=node,
-        authors=",".join([obj.get('name', 'Unknown') for obj in node.get('authors', [])]),
+        authors=",".join(
+            [obj.get("name", "Unknown") for obj in node.get("authors", [])]
+        ),
         project=proj,
         proxy=proxy,
         proxy_node=proxy_node,
@@ -481,16 +489,16 @@ def multi_match(id):
     bd.projects.set_current(proj)
 
     node = bd.get_node(id=id)
-    node['matched'] = True
-    node['no_match_needed'] = True
+    node["matched"] = True
+    node["no_match_needed"] = True
     node.save()
 
     for ds in AD.select().where(
         AD.name == node["name"], AD.database == node["database"], AD.id != node.id
     ):
-        if not ds.data.get('matched'):
-            ds.data['matched'] = True
-            ds.data['no_match_needed'] = True
+        if not ds.data.get("matched"):
+            ds.data["matched"] = True
+            ds.data["no_match_needed"] = True
             ds.save()
     return ""
 
@@ -677,7 +685,7 @@ def create_proxy():
         ).save()
 
     source["matched"] = True
-    source['proxy_id'] = process.id
+    source["proxy_id"] = process.id
     source.save()
 
     return flask.redirect(flask.url_for("process_detail", id=process.id))
