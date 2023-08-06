@@ -104,7 +104,11 @@
     // Initialize page data...
     const sharedParams = {
       searchUrl: '{{ url_for("search") }}',
+      // TODO: Remove this when #41 is closed
       database: '{{ database }}',
+      source_db_label: '{{ source }}',
+      target_db_label: '{{ target }}',
+      proxy_db_label: '{{ proxy }}',
     };
 
     // Export to global scope (to access from generated html code handlers).
