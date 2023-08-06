@@ -463,6 +463,15 @@ def add_attribute(id):
     return ""
 
 
+def get_authors(authors):
+    if not authors:
+        return "Unknown"
+    elif isinstance(authors, list):
+        return ",".join({obj.get("name", "Unknown") for obj in authors})
+    else:
+        return ",".join({obj.get("name", "Unknown") for obj in authors.values()})
+
+
 @matchbox_app.route("/process/<id>", methods=["GET"])
 @auth.login_required
 def process_detail(id):
@@ -475,6 +484,7 @@ def process_detail(id):
 
     node = bd.get_node(id=id)
     proxy_node = bd.get_node(id=node["proxy_id"]) if node.get("proxy_id") else None
+    reference_node = bd.get_node(id=node["original_id"]) if node.get("original_id") else None
 
     same_name = AD.select().where(
         AD.name == node["name"], AD.database == node["database"], AD.id != node.id
@@ -487,12 +497,11 @@ def process_detail(id):
         "process_detail.html",
         title="bw_matchbox Detail Page",
         ds=node,
-        authors=",".join(
-            [obj.get("name", "Unknown") for obj in node.get("authors", [])]
-        ),
+        authors=get_authors(node.get("authors")),
         project=proj,
         proxy=proxy,
         proxy_node=proxy_node,
+        reference_node=reference_node,
         source=s,
         target=t,
         file_number=sum(1 for obj in files if obj["enabled"]),
