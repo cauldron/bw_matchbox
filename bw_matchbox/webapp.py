@@ -467,9 +467,9 @@ def get_authors(authors):
     if not authors:
         return "Unknown"
     elif isinstance(authors, list):
-        return ",".join({obj.get("name", "Unknown") for obj in authors})
+        return ", ".join({obj.get("name", "Unknown") for obj in authors})
     else:
-        return ",".join({obj.get("name", "Unknown") for obj in authors.values()})
+        return ", ".join({obj.get("name", "Unknown") for obj in authors.values()})
 
 
 @matchbox_app.route("/process/<id>", methods=["GET"])
