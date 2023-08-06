@@ -347,6 +347,7 @@ modules.define(
           const submission_data = {
             exchanges: target_data,
             source: source_id,
+            match_type: document.getElementById('match_type_select').value,
             comment: document.getElementById('proxy-comment').value,
             name: document.getElementById('proxy-name').value,
           };
