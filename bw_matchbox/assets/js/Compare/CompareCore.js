@@ -235,8 +235,9 @@ modules.define(
         const rowId = element.closest('td').getAttribute('row_id');
         const { target_data } = this.sharedData;
         function removeValue(obj, index, arr) {
+          console.log(this.CompareCore.sharedData);
           if (obj.row_id == rowId) {
-            this.sharedData.comment += `* Removed exchange of ${obj.amount} ${obj.unit} ${obj.name} from ${obj.location}.\n`;
+            this.CompareCore.sharedData.comment += `* Removed exchange of ${obj.amount} ${obj.unit} ${obj.name} from ${obj.location}.\n`;
             arr.splice(index, 1);
             return true;
           }
