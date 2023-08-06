@@ -125,7 +125,7 @@
     const sharedParams = {
       searchUrl: '{{ url_for("search") }}',
       // TODO: Remove this when #41 is closed
-      database: '{{ database }}', // Used only for `searchUrl` requests.
+      // database: '{{ database }}', // UNUSED: #41: Using `databases` and `userDb`.
       databases: {
         source: '{{ source }}',
         target: '{{ target }}',

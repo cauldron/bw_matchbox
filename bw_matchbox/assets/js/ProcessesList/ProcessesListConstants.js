@@ -20,6 +20,7 @@ modules.define(
 
       /** Api base */
       processesApiUrl: '/processes',
+
       /** The number of records to retrieve at once and to display */
       pageSize: 25,
       /** Default order value */
