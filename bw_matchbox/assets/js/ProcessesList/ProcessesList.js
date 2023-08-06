@@ -36,11 +36,10 @@ modules.define(
     const allModulesList = [
       ProcessesListConstants,
       ProcessesListData,
-      ProcessesListDataRender,
       ProcessesListNodes,
-      // ProcessesListPagination, // UNUSED: Using incremental data loading
       ProcessesListStates,
       ProcessesListSearch,
+      ProcessesListDataRender,
       ProcessesListDataLoad,
     ];
 
@@ -96,7 +95,7 @@ modules.define(
       startAllModules() {
         // Start all the modules...
         allModulesList.forEach((module) => {
-          if (typeof module.start === 'function') {
+          if (module && typeof module.start === 'function') {
             try {
               module.start();
               /* // Alternate option: Delayed start...
@@ -121,6 +120,8 @@ modules.define(
         ProcessesListData.sharedParams = sharedParams;
         this.fetchUrlParams();
         this.startAllModules();
+        // Load data...
+        ProcessesListDataLoad.loadData();
       },
     };
 

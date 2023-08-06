@@ -23,6 +23,8 @@ modules.define(
     // global module variable
     // eslint-disable-next-line no-unused-vars
     const ProcessesListStates = {
+      __id: 'ProcessesListStates',
+
       setLoading(isLoading) {
         // Set css class for id="processes-list-root" --> loading, set local status
         const rootNode = ProcessesListNodes.getRootNode();
@@ -141,23 +143,23 @@ modules.define(
       },
 
       /** updateDomOrderBy -- Update actual 'order by' dom node.
-       * @param {'random' | 'name' | 'location' | 'product'} [orderByValue]
+       * @param {'random' | 'name' | 'location' | 'product'} [orderBy]
        */
-      updateDomOrderBy(orderByValue) {
+      updateDomOrderBy(orderBy) {
         const { defaultOrderBy } = ProcessesListConstants;
-        const orderBy = orderByValue || defaultOrderBy;
+        const value = orderBy || defaultOrderBy;
         const elems = document.querySelectorAll('input[type="radio"][name="order_by"]');
-        elems.forEach((elem) => (elem.checked = elem.value === orderBy));
+        elems.forEach((elem) => (elem.checked = elem.value === value));
       },
 
       /** updateDomFilterBy -- Update actual 'filter by' dom node.
-       * @param {'random' | 'name' | 'location' | 'product'} [filterByValue]
+       * @param {'random' | 'name' | 'location' | 'product'} [filterBy]
        */
-      updateDomFilterBy(filterByValue) {
+      updateDomFilterBy(filterBy) {
         const { defaultFilterBy } = ProcessesListConstants;
-        const filterBy = filterByValue || defaultFilterBy;
+        const value = filterBy || defaultFilterBy;
         const elems = document.querySelectorAll('input[type="radio"][name="filter_by"]');
-        elems.forEach((elem) => (elem.checked = elem.value === filterBy));
+        elems.forEach((elem) => (elem.checked = elem.value === value));
       },
 
       /** updatePage -- Update all the page dynamic elements

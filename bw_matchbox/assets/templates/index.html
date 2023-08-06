@@ -58,6 +58,10 @@
             <label class="radio-group-title">Filter by:</label>
           </span>
           <span class="radio-group-item">
+            <input type="radio" name="filter_by" id="filter_by_none" value="none" onChange="ProcessesList.onFilterByChange(this)">
+            <label for="filter_by_none">None</label>
+          </span>
+          <span class="radio-group-item">
             <input type="radio" name="filter_by" id="filter_by_matched" value="matched" onChange="ProcessesList.onFilterByChange(this)">
             <label for="filter_by_matched">Matched</label>
           </span>

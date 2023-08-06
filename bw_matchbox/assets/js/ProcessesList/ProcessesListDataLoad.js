@@ -25,36 +25,37 @@ modules.define(
     // global module variable
     // eslint-disable-next-line no-unused-vars
     const ProcessesListDataLoad = {
+      __id: 'ProcessesListDataLoad',
+
       /** Load next/current (?) data chunk
        * @param {object} [opts] - Options.
        * @param {boolean} [opts.update] - Update current data chunk.
        */
       loadData(_opts = true) {
-        const { defaultOrderBy } = ProcessesListConstants;
+        const { defaultOrderBy, defaultFilterBy } = ProcessesListConstants;
         const { pageSize, processesApiUrl: urlBase } = ProcessesListConstants;
         const { currentPage, database, orderBy, filterBy } = ProcessesListData;
         const offset = currentPage * pageSize; // TODO!
         const params = {
           database,
           order_by: orderBy !== defaultOrderBy ? orderBy : '',
-          filter: filterBy,
+          filter: filterBy !== defaultFilterBy ? filterBy : '',
           offset,
           limit: pageSize,
         };
         const urlQuery = CommonHelpers.makeQuery(params, { addQuestionSymbol: true });
         const url = urlBase + urlQuery;
-        /* console.log('[ProcessesListDataLoad:loadData]: start', {
-         *   url,
-         *   params,
-         *   urlQuery,
-         *   urlBase,
-         *   currentPage,
-         *   pageSize,
-         *   offset,
-         *   orderBy,
-         *   filterBy,
-         * });
-         */
+        console.log('[ProcessesListDataLoad:loadData]: start', {
+          url,
+          params,
+          urlQuery,
+          urlBase,
+          currentPage,
+          pageSize,
+          offset,
+          orderBy,
+          filterBy,
+        });
         ProcessesListStates.setLoading(true);
         fetch(url)
           .then((res) => {
@@ -127,11 +128,6 @@ modules.define(
             // Update all the page dynamic elements?
             ProcessesListStates.updatePage();
           });
-      },
-
-      /** Load first portion of data to display */
-      start() {
-        this.loadData();
       },
     };
 

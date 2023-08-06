@@ -13,6 +13,8 @@ modules.define(
      */
 
     const ProcessesListConstants = {
+      __id: 'ProcessesListConstants',
+
       /** Api base */
       processesApiUrl: '/processes',
       /** The number of records to retrieve at once and to display */
@@ -20,7 +22,7 @@ modules.define(
       /** Default order value */
       defaultOrderBy: 'random',
       /** Default filter value */
-      defaultFilterBy: 'unmatched',
+      defaultFilterBy: 'none', // 'None'
     };
 
     // Provide module...

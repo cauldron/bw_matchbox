@@ -17,6 +17,8 @@ modules.define(
     // global module variable
     // eslint-disable-next-line no-unused-vars
     const ProcessesListData = {
+      __id: 'ProcessesListData',
+
       // Owner page's provided data...
       sharedParams: undefined,
 
