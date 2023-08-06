@@ -66,6 +66,17 @@
       source_node_location: '{{source_node.location}}',
       match_types: {{ match_types|safe }},
       match_type_default: "3",
+      /* // #52: match_types sample:
+       * {
+       *   '1': 'No direct match available',
+       *   '2': 'Direct match with near-identical data',
+       *   '3': 'Match with updated data',
+       *   '4': 'Match with updated data and adding source transport',
+       *   '5': 'Match with market and replace or remove transport',
+       *   '6': 'Match with market and replace or remove transport and loss factor',
+       *   '7': 'Equivalent datasets after modification',
+       * }
+       */
     };
 
     // Export to global scope (to access from generated html code handlers).
