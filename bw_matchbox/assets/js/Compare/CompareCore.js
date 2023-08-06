@@ -19,21 +19,6 @@ modules.define(
   ) {
     /* Compare tables feature code (via global variable `CompareCore`).
      *
-     * Mouse handler methods are used:
-     * - CompareRowsHelpers.clickRowHandler -- Click on regular row to select or collapse selected rows.
-     * - CompareRowsHelpers.clickUncollapseRowHandler -- Click on collapsed row handler to uncollapse.
-     * - CompareRowClick.disableRowClickHandler -- To disable row click effect (if we have some nested interactive elements).
-     * - CompareCore.removeRowHandler
-     * - CompareCore.expandRowHandler
-     * - CompareCore.editNumberHandler
-     * - CompareCore.shiftRowHandler
-     * - CompareCore.replaceAmountRowHandler
-     * - CompareCore.setNumberHandler
-     * - CompareCore.setNewNumberHandler
-     * - CompareCore.resetNumberHandler
-     * - CompareCore.rescaleAmountHandler
-     * - CompareCore.replaceWithTargetHandler
-     *
      * Data table record types:
      *
      * interface TDataRecord {
@@ -57,10 +42,6 @@ modules.define(
 
       // Counter for making unique records (see `replaceWithTargetHandler`)
       targetNodesCounter: 0,
-
-      /* // UNUSED: Local data: construct comment field for the `set-number-modal` modal dialog...
-       * comment: '',
-       */
 
       // Methods...
 
@@ -101,11 +82,6 @@ modules.define(
           const otherTableDataKey = otherRowKind + '_data';
           const otherTableData = this.sharedData[otherTableDataKey];
           const collapsedGroupId = data['collapsed-group'];
-          /* // ORIGONAL BUG: Don't use indices as row_id's!
-           * const otherRowId = otherTableData.findIndex(
-           *   (other) => other['collapsed-group'] === collapsedGroupId,
-           * );
-           */
           const otherRowData = otherTableData.find(
             (other) => other['collapsed-group'] === collapsedGroupId,
           );
@@ -113,15 +89,6 @@ modules.define(
             throw new Error('Cannot find other collapsed record');
           }
           const otherRowId = otherRowData.row_id;
-          /* console.log('[CompareCore:buildRow] check', {
-           *   otherRowId,
-           *   otherRowKind,
-           *   otherTableDataKey,
-           *   otherTableData,
-           *   collapsedGroupId,
-           *   otherRowData,
-           * });
-           */
           const otherCollapsedId = CompareRowsHelpers.getCollapsedId(otherRowKind, otherRowId);
           collapsedRows[collapsedId] = {
             rowKind,

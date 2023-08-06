@@ -12,7 +12,7 @@ body.has-modal {
   /* By default is hidden and inactive, see `show` state below */
   pointer-events: none;
   opacity: 0;
-  transition: all var(--common-effect-time) ease-in-out;
+  transition: all var(--common-effect-time) ease-out;
   /* Emulate show effect */
   margin-top: -100px;
   margin-bottom: 100px;

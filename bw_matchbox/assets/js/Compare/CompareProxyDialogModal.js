@@ -2,18 +2,12 @@ modules.define(
   'CompareProxyDialogModal',
   [
     // Required modules...
-    // 'CommonHelpers',
     'CommonModal',
-    // 'CompareRowClick',
-    // 'CompareRowsHelpers',
   ],
   function provide_CompareProxyDialogModal(
     provide,
     // Resolved modules...
-    // CommonHelpers,
     CommonModal,
-    // CompareRowClick,
-    // CompareRowsHelpers,
   ) {
     // Define module...
     const CompareProxyDialogModal = {
@@ -25,10 +19,6 @@ modules.define(
 
       // Match type...
       selectedMatchType: undefined,
-
-      /* // UNUSED: Local data: construct comment field for the `set-number-modal` modal dialog...
-       * comment: '',
-       */
 
       // Methods...
 
@@ -53,16 +43,6 @@ modules.define(
           source: this.sharedData.source_id,
           comment: 'One-to-one proxy',
           name: this.getTargetProxyName(),
-          /* // ORIGINAL CODE
-           * name:
-           *   'Proxy for ' +
-           *   this.sharedData.target_name
-           *     .replace('Market group for ', '')
-           *     .replace('market group for ', '')
-           *     .replace('Market for ', '')
-           *     .replace('market for ', '')
-           *     .trim(),
-           */
         };
         const url = '/create-proxy/';
         fetch(url, {
@@ -87,42 +67,21 @@ modules.define(
        * @return {string}
        */
       renderProxyModalContent() {
-        const {
-          source_node_unit,
-          source_node_location,
-          target_data,
-          match_types,
-          // match_type_default,
-          comment,
-        } = this.sharedData;
+        const { source_node_unit, source_node_location, target_data, match_types, comment } =
+          this.sharedData;
         const selectedMatchType = this.getSelectedMatchType();
 
         const name = this.getTargetProxyName();
-        /* // ORIGINAL CODE
-         * const name =
-         *   'Proxy for ' +
-         *   target_name
-         *     .replace('Market group for ', '')
-         *     .replace('market group for ', '')
-         *     .replace('Market for ', '')
-         *     .replace('market for ', '')
-         *     .trim();
-         */
 
         const matchModalItems = Object.entries(match_types).map(([id, text]) => {
           const isSelected = id === selectedMatchType;
-          // const plus = isSelected ? ' selected' : '';
-          return `<option value="${id}"${isSelected && ' selected'}>${text}</option>`;
+          return `<option value="${id}"${isSelected ? ' selected' : ''}>${text}</option>`;
         });
         const matchModalSelect = `
           <select id="match-type-select">
             ${matchModalItems.join('\n')}
           </select>
         `;
-        console.log('[CompareProxyDialogModal:renderProxyModalContent]: matchModalSelect', {
-          matchModalItems,
-          matchModalSelect,
-        });
 
         const begin = `
           <form>
@@ -131,7 +90,7 @@ modules.define(
             <textarea class="u-full-width" id="proxy-comment" name="proxy-comment">${comment}</textarea>
             <p><button class="button-primary" id="create-proxy-submit-button">Create Proxy Process</button>
             ${matchModalSelect}
-            | Unit: ${source_node_unit}
+            Unit: ${source_node_unit}
             | Location: ${source_node_location}</p>
             <table id="proxy-table" class="fixed-table" width="100%">
               <thead>
@@ -187,7 +146,6 @@ modules.define(
           name,
           submissionData,
         });
-        debugger;
         fetch(url, {
           method: 'POST',
           redirect: 'follow',
@@ -202,12 +160,8 @@ modules.define(
 
       onMatchTypeSelectChange(event) {
         const { target } = event;
-        console.log('[CompareProxyDialogModal:onMatchTypeSelectChange]', {
-          target,
-          arguments,
-          event,
-        });
-        debugger;
+        const { value } = target;
+        this.selectedMatchType = value;
       },
 
       openProxyDialogModal(event) {
@@ -230,7 +184,7 @@ modules.define(
         submit.addEventListener('click', this.onSubmitButtonClick.bind(this));
 
         const matchTypeSelect = document.getElementById('match-type-select');
-        matchTypeSelect.addEventListener('change', this.onMatchTypeSelectChange.binf(this));
+        matchTypeSelect.addEventListener('change', this.onMatchTypeSelectChange.bind(this));
       },
     };
 
