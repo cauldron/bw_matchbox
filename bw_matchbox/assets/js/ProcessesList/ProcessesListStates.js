@@ -39,6 +39,12 @@ modules.define(
         ProcessesListData.hasData = hasData;
       },
 
+      setHasSearch(hasSearch) {
+        // Set css class for root node, update local state
+        const rootNode = ProcessesListNodes.getRootNode();
+        rootNode.classList.toggle('has-search', hasSearch);
+      },
+
       // setError -- Shorthand for `setHasData`
       setEmpty(isEmpty) {
         this.setHasData(!isEmpty);
@@ -227,18 +233,18 @@ modules.define(
         });
       },
 
-      /* // Issue #41: Disable for obviousity.
-       * initUserDbData() {
-       *   const { sharedParams } = ProcessesListData;
-       *   const { databases } = sharedParams;
-       *   if (!databases.proxy) {
-       *     const proxyDbOption = document.getElementById('user-db-proxy');
-       *     proxyDbOption.setAttribute('disabled', true);
-       *     const proxyDbOptionParent = proxyDbOption.parentNode;
-       *     proxyDbOptionParent.classList.toggle('radio-group-item-disabled', true);
-       *   }
-       * },
+      /* initUserDbData -- Initialize proxy db option
        */
+      initUserDbData() {
+        const { sharedParams } = ProcessesListData;
+        const { databases } = sharedParams;
+        if (!databases.proxy) {
+          const proxyDbOption = document.getElementById('user-db-proxy');
+          proxyDbOption.setAttribute('disabled', true);
+          const proxyDbOptionParent = proxyDbOption.parentNode;
+          proxyDbOptionParent.classList.toggle('radio-group-item-disabled', true);
+        }
+      },
 
       start() {
         // Update all the dynamic parameters...
@@ -251,6 +257,7 @@ modules.define(
         // Database selector...
         this.updateDomUserDb(undefined);
         this.setUserDb(undefined, { omitClearData: true });
+        // Initialize proxy db option
         this.initUserDbData();
       },
     };

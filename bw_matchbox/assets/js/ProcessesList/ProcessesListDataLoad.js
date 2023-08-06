@@ -31,15 +31,15 @@ modules.define(
        * @param {object} [opts] - Options.
        * @param {boolean} [opts.update] - Update current data chunk.
        */
-      loadData(_opts = true) {
-        const { sharedParams } = ProcessesListData;
+      loadData(/* opts = {} */) {
+        const { currentPage, orderBy, filterBy, userDb, searchValue, sharedParams } = ProcessesListData;
         const { databases, database } = sharedParams;
         const { useDebug, defaultOrderBy, defaultFilterBy } = ProcessesListConstants;
         const { pageSize, processesApiUrl: urlBase } = ProcessesListConstants;
-        const { currentPage, orderBy, filterBy, userDb } = ProcessesListData;
         const userDbValue = databases[userDb]; // Could it be empty? Eg, to use: `|| database`
         const offset = currentPage * pageSize; // TODO!
         const params = {
+          search: searchValue, // TODO: Should the `order_by` parameter be disabled if the `search` parameter has used?
           database: userDbValue, // useDebug ? database : userDb || defaultUserDb,
           order_by: orderBy !== defaultOrderBy ? orderBy : '',
           filter: filterBy !== defaultFilterBy ? filterBy : '',
@@ -49,6 +49,7 @@ modules.define(
         const urlQuery = CommonHelpers.makeQuery(params, { addQuestionSymbol: true });
         const url = urlBase + urlQuery;
         console.log('[ProcessesListDataLoad:loadData]: start', {
+          searchValue,
           databases,
           userDbValue,
           useDebug,
@@ -111,7 +112,7 @@ modules.define(
             // Update total records number...
             ProcessesListData.totalRecords = totalRecords;
             // Append data to current table...
-            // TODO: Use `opts.update` to update last data chunk (?).
+            // TODO: Use `opts.update` to update (replace rows) last loaded data set.
             ProcessesListDataRender.renderTableData(data, { append: true });
             ProcessesListStates.setError(undefined); // Clear the error: all is ok
             ProcessesListStates.setHasData(ProcessesListData.hasData || hasData); // Update 'has data' flag

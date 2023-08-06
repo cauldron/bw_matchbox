@@ -61,6 +61,10 @@
 .processes-list .page-filters .radio-group-item > label {
   font-weight: normal;
 }
+.processes-list.has-search .radio-group.order-by {
+  pointer-events: none;
+  opacity: 0.5;
+}
 
 /* Table */
 .processes-list-table {

@@ -4,14 +4,18 @@ modules.define(
     // Required modules...
     'CommonHelpers',
     'ProcessesListData',
+    'ProcessesListDataLoad',
     'ProcessesListNodes',
+    'ProcessesListStates',
   ],
   function provide_ProcessesListSearch(
     provide,
     // Resolved modules...
     CommonHelpers,
     ProcessesListData,
+    ProcessesListDataLoad,
     ProcessesListNodes,
+    ProcessesListStates,
   ) {
     // Define module...
 
@@ -21,8 +25,10 @@ modules.define(
     // global module variable
     // eslint-disable-next-line no-unused-vars
     const ProcessesListSearch = {
-      /** Go to the search page (TODO: to refactor?) */
-      doSearch() {
+      __id: 'ProcessesListSearch',
+
+      /** UNUSED (old approach): Go to the search page (TODO: to refactor?) */
+      doSearchRedirect() {
         const { database } = ProcessesListData;
         const { searchUrl } = ProcessesListData.sharedParams;
         const searchBar = ProcessesListNodes.getSearchBarNode();
@@ -48,6 +54,28 @@ modules.define(
            * });
            */
           location.assign(url);
+        }
+        return false;
+      },
+
+      /** Apply search */
+      doSearch() {
+        // const { database } = ProcessesListData;
+        const { searchUrl } = ProcessesListData.sharedParams;
+        const searchBar = ProcessesListNodes.getSearchBarNode();
+        const searchValue = searchBar.value;
+        // TODO: pare search value with previous (if exists)?
+        if (searchValue !== ProcessesListData.searchValue) {
+          const hasSearch = !!searchValue;
+          ProcessesListStates.setHasSearch(hasSearch);
+          ProcessesListData.searchValue = searchValue; // Useless due to following redirect
+          console.log('[ProcessesListSearch:doSearch]', {
+            hasSearch,
+            searchValue,
+            searchUrl,
+          });
+          debugger;
+          ProcessesListDataLoad.loadData();
         }
         return false;
       },
