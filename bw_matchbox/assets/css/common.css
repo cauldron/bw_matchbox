@@ -8,6 +8,7 @@
   --layout-theme-error-color: #c33;
   /* Animations */
   --common-animation-time: 250ms;
+  --common-effect-time: 500ms;
 }
 
 /* Basic layout */

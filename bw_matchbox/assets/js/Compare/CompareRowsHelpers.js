@@ -26,10 +26,11 @@ modules.define(
      */
 
     // Define module...
-
     const CompareRowsHelpers = {
+      // Shared Data...
+      sharedData: undefined, // Initializing in `CompareCore.start` from `bw_matchbox/assets/templates/compare.html`
+
       // Data...
-      sharedData: undefined, // Initializing in `CompareCore.initCompare` from `bw_matchbox/assets/templates/compare.html`
       rowColumnsCount: 5, // Number of columns in a table row (ATTENTION: It could be changed)...
       selectedFirst: undefined, // <undefined | TSelectedRow>
       collapsedRows: {}, // Record<TRowId, TCollapsedRow> -- Hash of collapsed row

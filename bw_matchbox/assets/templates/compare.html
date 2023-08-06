@@ -9,6 +9,7 @@
 <link rel="stylesheet" href="{{ url_for('static', filename='css/compare.css') }}">
 
 <script src="{{ url_for('static', filename='js/Compare/CompareRowsHelpers.js') }}"></script>
+<script src="{{ url_for('static', filename='js/Compare/CompareProxyDialogModal.js') }}"></script>
 <script src="{{ url_for('static', filename='js/Compare/CompareRowClick.js') }}"></script>
 <script src="{{ url_for('static', filename='js/Compare/CompareCore.js') }}"></script>
 
@@ -65,7 +66,19 @@
       source_node_unit: '{{source_node.unit}}',
       source_node_location: '{{source_node.location}}',
       match_types: {{ match_types|safe }},
-      match_type_default: "3",
+      match_type_default: '3',
+      comment: '', // Shared comments accumulator
+      /* // #52: match_types sample:
+       * {
+       *   '1': 'No direct match available',
+       *   '2': 'Direct match with near-identical data',
+       *   '3': 'Match with updated data',
+       *   '4': 'Match with updated data and adding source transport',
+       *   '5': 'Match with market and replace or remove transport',
+       *   '6': 'Match with market and replace or remove transport and loss factor',
+       *   '7': 'Equivalent datasets after modification',
+       * }
+       */
     };
 
     // Export to global scope (to access from generated html code handlers).
