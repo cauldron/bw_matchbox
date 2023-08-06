@@ -25,6 +25,9 @@
           {% if proxy_node %}
               <li>Proxy: <a href="{{ url_for('process_detail', id=proxy_node.id) }}">{{ proxy_node }}</a></li>
           {% endif %}
+          {% if reference_node %}
+              <li>Proxy for: <a href="{{ url_for('process_detail', id=reference_node.id) }}">{{ reference_node }}</a></li>
+          {% endif %}
 
       </ul>
       <h2>Technosphere Inputs</h2>
