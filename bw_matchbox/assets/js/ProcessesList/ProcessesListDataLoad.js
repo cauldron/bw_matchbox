@@ -34,16 +34,10 @@ modules.define(
       loadData(_opts = true) {
         const { sharedParams } = ProcessesListData;
         const { databases, database } = sharedParams;
-        const { useDebug, defaultOrderBy, defaultFilterBy, defaultUserDb } = ProcessesListConstants;
+        const { useDebug, defaultOrderBy, defaultFilterBy } = ProcessesListConstants;
         const { pageSize, processesApiUrl: urlBase } = ProcessesListConstants;
-        const {
-          currentPage,
-          orderBy,
-          filterBy,
-          userDb,
-          // database, // UNUSED: Used for debug only?
-        } = ProcessesListData;
-        const userDbValue = databases[userDb] || database;
+        const { currentPage, orderBy, filterBy, userDb } = ProcessesListData;
+        const userDbValue = databases[userDb]; // Could it be empty? Eg, to use: `|| database`
         const offset = currentPage * pageSize; // TODO!
         const params = {
           database: userDbValue, // useDebug ? database : userDb || defaultUserDb,

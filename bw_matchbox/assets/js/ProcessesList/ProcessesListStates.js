@@ -227,16 +227,18 @@ modules.define(
         });
       },
 
-      initUserDbData() {
-        const { sharedParams } = ProcessesListData;
-        const { databases, database } = sharedParams;
-        if (!databases.proxy) {
-          const proxyDbOption = document.getElementById('user-db-proxy');
-          proxyDbOption.setAttribute('disabled', true);
-          const proxyDbOptionParent = proxyDbOption.parentNode;
-          proxyDbOptionParent.classList.toggle('radio-group-item-disabled', true);
-        }
-      },
+      /* // Issue #41: Disable for obviousity.
+       * initUserDbData() {
+       *   const { sharedParams } = ProcessesListData;
+       *   const { databases } = sharedParams;
+       *   if (!databases.proxy) {
+       *     const proxyDbOption = document.getElementById('user-db-proxy');
+       *     proxyDbOption.setAttribute('disabled', true);
+       *     const proxyDbOptionParent = proxyDbOption.parentNode;
+       *     proxyDbOptionParent.classList.toggle('radio-group-item-disabled', true);
+       *   }
+       * },
+       */
 
       start() {
         // Update all the dynamic parameters...
