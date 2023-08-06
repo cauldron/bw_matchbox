@@ -40,11 +40,19 @@ modules.define(
       },
 
       getAvailableRecordsContent(availableCount) {
-        const { pageSize } = ProcessesListConstants;
-        if (!availableCount) {
+        if (!availableCount || availableCount < 0) {
           return '';
         }
-        return `(next ${pageSize} out of ${availableCount} available)`;
+        const { pageSize } = ProcessesListConstants;
+        const moreThanAPage = pageSize < availableCount;
+        const text = [
+          // prettier-ignore
+          moreThanAPage && pageSize,
+          `${availableCount} available`,
+        ]
+          .filter(Boolean)
+          .join(' out of ');
+        return ` (next ${text})`;
       },
 
       updateAvailableRecordsInfo(availableCount) {

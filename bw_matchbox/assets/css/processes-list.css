@@ -17,6 +17,16 @@
 .processes-list.empty .processes-list-table {
   display: none;
 }
+.processes-list.loading .processes-list-table-empty,
+.processes-list:not(.empty) .processes-list-table-empty {
+  display: none;
+}
+.processes-list .processes-list-table-empty {
+  padding: 10px;
+  margin: 10px auto;
+  text-align: center;
+  opacity: 0.5;
+}
 
 /* Loading state: disable some elements... */
 .processes-list > * {
@@ -50,7 +60,7 @@
 
 /* Table */
 .processes-list-table {
-  margin-bottom: 0;
+  margin: 20px 0;
 }
 .processes-list-table tr td:last-child div > .button {
   display: block;
@@ -113,7 +123,7 @@
 /* Bottom actions */
 .processes-list .bottom-actions {
   position: relative;
-  min-height: 80px;
+  min-height: 60px;
   text-align: center;
   display: flex;
   justify-content: center;
@@ -145,8 +155,8 @@
   display: inline-block;
 }
 .processes-list .bottom-actions-links #available-records-info {
-  display: inline-block;
+  /* display: inline-block; */
 }
 .processes-list .bottom-actions-links #available-records-info:not(:empty) {
-  margin-left: 0.5em;
+  /* margin-left: 0.5em; */
 }
