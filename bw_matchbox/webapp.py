@@ -695,7 +695,6 @@ def expand(id, scale):
 def create_proxy():
     content = flask.request.get_json()
     proj, s, t, proxy = get_context()
-    # files = get_files()
     bd.projects.set_current(proj)
 
     source = bd.get_activity(id=content["source"])
@@ -707,6 +706,7 @@ def create_proxy():
         location=source["location"],
         original_name=source["name"],
         original_id=source.id,
+        match_type=content.get("match_type", "0"),
         **{"reference product": source.get("reference product")}
     )
     process.save()
