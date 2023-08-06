@@ -64,7 +64,8 @@
       target_name: '{{ target_node.name|safe }}',
       source_node_unit: '{{source_node.unit}}',
       source_node_location: '{{source_node.location}}',
-      match_types: {{ match_types|safe }}
+      match_types: {{ match_types|safe }},
+      match_type_default: "3",
     };
 
     // Export to global scope (to access from generated html code handlers).
