@@ -649,8 +649,10 @@ def compare(source, target):
         file_number=sum(1 for obj in files if obj["enabled"]),
         source_node=source,
         source_data_json=json.dumps(source_technosphere),
+        source_biosphere_number=len(source.biosphere()),
         target_node=target,
         target_data_json=json.dumps(target_technosphere),
+        target_biosphere_number=len(target.biosphere()),
     )
 
 

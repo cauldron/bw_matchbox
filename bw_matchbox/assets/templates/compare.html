@@ -40,12 +40,14 @@
       <h3><a href="{{ url_for('process_detail', id=source_node.id) }}">{{ source_node.name }}</a></h3>
       <table class="fixed-table fixed-table-active compare-table" id="source-table" width="100%">
       </table>
+      <p>{{ source_biosphere_number }} biosphere exchanges</p>
     </div>
     <div class="column one-half">
       <h3><a href="{{ url_for('process_detail', id=target_node.id) }}">{{ target_node.name }}</a>
       <span onclick="CompareCore.replaceWithTargetHandler(this)" id="replace-with-target-arrow"><a><i class="fa-solid fa-arrow-up"></i></a></span></h3>
       <table class="fixed-table fixed-table-active compare-table" id="target-table" width="100%">
       </table>
+      <p>{{ target_biosphere_number }} biosphere exchanges</p>
     </div>
   </div>
 </div>
