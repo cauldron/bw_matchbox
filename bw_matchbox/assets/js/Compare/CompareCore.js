@@ -284,7 +284,7 @@ modules.define(
           (item) => item.row_id == elem.getAttribute('source_id'),
         );
         const t = this.sharedData.target_data.find((item) => item.row_id == target_id);
-        this.sharedData.sharedData.comment += `* Used source database amount ${s.amount} ${s.unit} from ${s.name} in ${s.location} instead of ${t.amount} ${t.unit} from ${t.name} in ${t.location}.\n`;
+        this.sharedData.comment += `* Used source database amount ${s.amount} ${s.unit} from ${s.name} in ${s.location} instead of ${t.amount} ${t.unit} from ${t.name} in ${t.location}.\n`;
         document.getElementById('number-current-amount').innerText = elem.getAttribute('amount');
       },
 
