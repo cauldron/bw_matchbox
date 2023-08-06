@@ -33,6 +33,7 @@ modules.define(
 
       // Stored dom nodes...
       searchBar: undefined,
+      hasSearch: false,
 
       // Page state...
       totalRecords: 0,

@@ -143,14 +143,16 @@
 .processes-list .bottom-actions-links {
   transition: all var(--common-animation-time);
 }
-.processes-list .bottom-actions-links a {
+.processes-list .bottom-actions-links > * {
   display: none;
-  color: var(-layout-theme-primary-color-dark1);
-  cursor: pointer;
   margin: 0 10px;
 }
+.processes-list .bottom-actions-links > a {
+  color: var(--layout-theme-primary-color-dark1);
+  cursor: pointer;
+}
 .processes-list .bottom-actions-links a + a::before {
-  display: inline-block;
+  /* display: inline-block; */
 }
 .processes-list .bottom-actions-links a:hover {
   text-decoration: underline;
@@ -158,8 +160,10 @@
 /* Show 'Reload' (after error) button if error... */
 .processes-list.error .bottom-actions-links a#action-clear-and-reload,
 /* Show 'Load more' button for all 'order by' values except for 'random'... */
+.processes-list.has-more-data.has-search:not(.error) .bottom-actions-links a#action-load-more,
 .processes-list.has-more-data:not(.order-random, .error) .bottom-actions-links a#action-load-more,
+.processes-list:not(.has-more-data, .empty, .error) .bottom-actions-links span#show-total-records-number,
 /* Show 'Refresh' button for 'random' 'order by' value... */
-.processes-list.order-random:not(.error) .bottom-actions-links a#action-reload-random {
+.processes-list.order-random:not(.error, .has-search) .bottom-actions-links a#action-reload-random {
   display: inline-block;
 }

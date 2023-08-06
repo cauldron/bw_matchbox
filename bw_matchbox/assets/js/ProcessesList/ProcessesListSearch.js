@@ -60,21 +60,14 @@ modules.define(
 
       /** Apply search */
       doSearch() {
-        // const { database } = ProcessesListData;
-        const { searchUrl } = ProcessesListData.sharedParams;
         const searchBar = ProcessesListNodes.getSearchBarNode();
         const searchValue = searchBar.value;
-        // TODO: pare search value with previous (if exists)?
+        // If value had changed...
         if (searchValue !== ProcessesListData.searchValue) {
           const hasSearch = !!searchValue;
           ProcessesListStates.setHasSearch(hasSearch);
           ProcessesListData.searchValue = searchValue; // Useless due to following redirect
-          console.log('[ProcessesListSearch:doSearch]', {
-            hasSearch,
-            searchValue,
-            searchUrl,
-          });
-          debugger;
+          ProcessesListStates.clearData();
           ProcessesListDataLoad.loadData();
         }
         return false;

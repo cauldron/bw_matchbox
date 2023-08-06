@@ -43,6 +43,17 @@ modules.define(
         // Set css class for root node, update local state
         const rootNode = ProcessesListNodes.getRootNode();
         rootNode.classList.toggle('has-search', hasSearch);
+        ProcessesListData.hasSearch = hasSearch;
+      },
+
+      setTotalRecordsCount(totalRecords) {
+        ProcessesListData.totalRecords = totalRecords;
+        // Set css class for root node, update local state
+        const rootNode = ProcessesListNodes.getRootNode();
+        const elems = rootNode.querySelectorAll('#total-records-number');
+        elems.forEach((node) => {
+          node.innerHTML = String(totalRecords);
+        });
       },
 
       // setError -- Shorthand for `setHasData`
