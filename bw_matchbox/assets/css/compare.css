@@ -122,41 +122,46 @@
 }
 
 /* Modal customizations for `set-number-modal`: inner layout with inner scrolls */
-.common-modal-content#set-number-modal .common-modal-content-wrapper {
+#set-number-modal .common-modal-content-wrapper {
   /* Made wrapper clipping */
   display: flex;
 }
-.common-modal-content#set-number-modal .common-modal-content-wrapper > div {
+#set-number-modal .common-modal-content-wrapper > div {
   /* Both inner columns are scrollable */
   overflow: auto;
   padding: 20px;
   flex: 1;
   width: 50%;
 }
-.common-modal-content#set-number-modal .common-modal-content-wrapper > div > *:last-child {
+#set-number-modal .common-modal-content-wrapper > div > *:last-child {
   margin-bottom: 0;
 }
 
 /* Adjust 'edit number' modal table columns widths */
-.common-modal-content#set-number-modal #edit-number-table th:last-child {
+#set-number-modal #edit-number-table th:last-child {
   width: 50px;
 }
-.common-modal-content#set-number-modal #edit-number-table th:first-child {
+#set-number-modal #edit-number-table th:first-child {
   width: 80px;
 }
 /* Adjust 'edit number' modal content styles */
-.common-modal-content#set-number-modal .strong {
+#set-number-modal .strong {
   margin: 5px 0;
 }
 
 /* Adjust 'proxy-dialog-modal' modal content styles */
-.common-modal-content#proxy-dialog-modal #proxy-table th:first-child {
+#proxy-dialog-modal #proxy-table th:first-child {
   width: 50%;
 }
-.common-modal-content#proxy-dialog-modal #proxy-table th:nth-child(2) {
+#proxy-dialog-modal #proxy-table th:nth-child(2) {
   width: 7em;
 }
-.common-modal-content#proxy-dialog-modal #proxy-table td:last-child div textarea {
+#proxy-dialog-modal #proxy-table td:last-child div textarea {
   display: block;
   width: 100%;
+}
+#proxy-dialog-modal #match-type-select {
+  max-width: 250px;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }

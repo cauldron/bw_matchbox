@@ -4,6 +4,7 @@ modules.define(
     // Required modules...
     'CommonHelpers',
     'CommonModal',
+    'CompareProxyDialogModal',
     'CompareRowClick',
     'CompareRowsHelpers',
   ],
@@ -12,6 +13,7 @@ modules.define(
     // Resolved modules...
     CommonHelpers,
     CommonModal,
+    CompareProxyDialogModal,
     CompareRowClick,
     CompareRowsHelpers,
   ) {
@@ -56,8 +58,9 @@ modules.define(
       // Counter for making unique records (see `replaceWithTargetHandler`)
       targetNodesCounter: 0,
 
-      // Local data: construct comment field for the `set-number-modal` modal dialog...
-      comment: '',
+      /* // UNUSED: Local data: construct comment field for the `set-number-modal` modal dialog...
+       * comment: '',
+       */
 
       // Methods...
 
@@ -74,7 +77,7 @@ modules.define(
         target_data.push(newObj);
         this.sortTable(target_data);
         this.buildTable('target-table', target_data, true);
-        this.comment += `* Added source exchange of ${obj.amount} ${obj.unit} ${obj.name} in ${obj.location}.\n`;
+        this.sharedData.comment += `* Added source exchange of ${obj.amount} ${obj.unit} ${obj.name} in ${obj.location}.\n`;
         row.parentElement.innerHTML = `<i class="fa-solid fa-check"></i>`;
       },
 
@@ -245,126 +248,6 @@ modules.define(
         CompareRowsHelpers.updateCollapsedState();
       },
 
-      createOneToOneProxyFunc(event) {
-        event.preventDefault();
-
-        const submission_data = {
-          exchanges: [{ input_id: this.sharedData.target_id, amount: 1.0 }],
-          source: this.sharedData.source_id,
-          comment: 'One-to-one proxy',
-          name:
-            'Proxy for ' +
-            this.sharedData.target_name
-              .replace('Market group for ', '')
-              .replace('market group for ', '')
-              .replace('Market for ', '')
-              .replace('market for ', '')
-              .trim(),
-        };
-        const url = '/create-proxy/';
-        fetch(url, {
-          method: 'POST',
-          redirect: 'follow',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify(submission_data),
-        }).then((response) => {
-          if (response.redirected) {
-            window.location.href = response.url;
-          }
-        });
-      },
-
-      createProxyFunc(event) {
-        event.preventDefault();
-        const {
-          target_name,
-          // comment,
-          source_node_unit,
-          source_node_location,
-          target_data,
-          source_id,
-        } = this.sharedData;
-        const { comment } = this;
-        const name =
-          'Proxy for ' +
-          target_name
-            .replace('Market group for ', '')
-            .replace('market group for ', '')
-            .replace('Market for ', '')
-            .replace('market for ', '')
-            .trim();
-
-        const begin = `
-          <form>
-            <input class="u-full-width" type="text" id="proxy-name" name="proxy-name" value="${name}">
-            <label for="proxy-comment">Comment</label>
-            <textarea class="u-full-width" id="proxy-comment" name="proxy-comment">${comment}</textarea>
-            <p><button class="button-primary" id="create-proxy-submit-button">Create Proxy Process</button>
-            | Unit: ${source_node_unit}
-            | Location: ${source_node_location}</p>
-            <table id="proxy-table" class="fixed-table" width="100%">
-              <thead>
-                <tr>
-                  <th>Name</th>
-                  <th>Amount</th>
-                  <th>Comment</th>
-                </tr>
-              </thead>
-              <tbody>
-        `;
-
-        const rows = target_data.map(function (item, _index) {
-          return `
-              <tr input_id=${item.input_id}>
-                <td><div>${item.name}</div></td>
-                <td><div>${item.amount_display}</div></td>
-                <td><div><textarea type="text" id="proxy-name-${item.input_id}" name="proxy-name-${item.input_id}"></textarea></div></td>
-              </tr>
-          `;
-        });
-
-        const end = `
-              </tbody>
-            </table>
-          </form>
-        `;
-
-        const title = 'Proxy name';
-        const content = begin + rows.join('') + end;
-
-        CommonModal.setModalContentId('proxy-dialog-modal')
-          .setTitle(title)
-          .setModalContentOptions({
-            scrollable: true,
-            padded: true,
-          })
-          .setContent(content)
-          .showModal();
-
-        const submit = document.getElementById('create-proxy-submit-button');
-        submit.addEventListener('click', async (e) => {
-          e.preventDefault();
-          const submission_data = {
-            exchanges: target_data,
-            source: source_id,
-            match_type: document.getElementById('match_type_select').value,
-            comment: document.getElementById('proxy-comment').value,
-            name: document.getElementById('proxy-name').value,
-          };
-          const url = '/create-proxy/';
-          fetch(url, {
-            method: 'POST',
-            redirect: 'follow',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify(submission_data),
-          }).then((response) => {
-            if (response.redirected) {
-              window.location.href = response.url;
-            }
-          });
-        });
-      },
-
       replaceWithTargetHandler(elem) {
         CompareRowClick.disableRowClickHandler();
         const { target_node, target_data } = this.sharedData;
@@ -374,7 +257,7 @@ modules.define(
         target_data.push(newNode);
         // TODO: Is it required to create (update?) unique row_id
         target_data.splice(0, target_data.length - 1);
-        this.comment += `* Collapsed input exchanges to target node\n`;
+        this.sharedData.comment += `* Collapsed input exchanges to target node\n`;
         // TODO: Is sorting required here?
         this.buildTable('target-table', target_data, true);
         elem.innerHTML = '';
@@ -386,7 +269,7 @@ modules.define(
         const { target_data } = this.sharedData;
         function removeValue(obj, index, arr) {
           if (obj.row_id == rowId) {
-            this.comment += `* Removed exchange of ${obj.amount} ${obj.unit} ${obj.name} from ${obj.location}.\n`;
+            this.sharedData.comment += `* Removed exchange of ${obj.amount} ${obj.unit} ${obj.name} from ${obj.location}.\n`;
             arr.splice(index, 1);
             return true;
           }
@@ -406,14 +289,7 @@ modules.define(
         const node = target_data.find((item) => item.input_id == elInputId);
 
         document.getElementById('replace-with-target-arrow').style.display = 'none';
-        /* console.log('[CompareCore:expandRowHandler]', {
-         *   elInputId,
-         *   elAmount,
-         *   url,
-         *   node,
-         * })
-         */
-        this.comment += `* Expanded process inputs of ${node.amount} ${node.unit} from ${node.name} in ${node.location}.\n`;
+        this.sharedData.comment += `* Expanded process inputs of ${node.amount} ${node.unit} from ${node.name} in ${node.location}.\n`;
         fetch(url)
           .then((response) => {
             if (!response.ok) {
@@ -441,7 +317,7 @@ modules.define(
           (item) => item.row_id == elem.getAttribute('source_id'),
         );
         const t = this.sharedData.target_data.find((item) => item.row_id == target_id);
-        this.comment += `* Used source database amount ${s.amount} ${s.unit} from ${s.name} in ${s.location} instead of ${t.amount} ${t.unit} from ${t.name} in ${t.location}.\n`;
+        this.sharedData.sharedData.comment += `* Used source database amount ${s.amount} ${s.unit} from ${s.name} in ${s.location} instead of ${t.amount} ${t.unit} from ${t.name} in ${t.location}.\n`;
         document.getElementById('number-current-amount').innerText = elem.getAttribute('amount');
       },
 
@@ -455,7 +331,7 @@ modules.define(
         const scale = Number(document.getElementById('rescale_number').value);
         const node = document.getElementById('number-current-amount');
         if (scale != 1) {
-          this.comment += `* Rescaled amount ${t.amount} ${t.unit} from ${t.name} in ${t.location} by ${scale}.\n`;
+          this.sharedData.comment += `* Rescaled amount ${t.amount} ${t.unit} from ${t.name} in ${t.location} by ${scale}.\n`;
         }
         node.innerText = Number(node.innerText) * scale;
       },
@@ -468,7 +344,7 @@ modules.define(
         CompareRowClick.disableRowClickHandler();
         const t = this.sharedData.target_data.find((item) => item.row_id == rowId);
         const new_value = document.getElementById('new_number').value;
-        this.comment += `* Set manual exchange value of ${new_value} instead of ${t.amount} ${t.unit} for ${t.name} in ${t.location}.\n`;
+        this.sharedData.comment += `* Set manual exchange value of ${new_value} instead of ${t.amount} ${t.unit} for ${t.name} in ${t.location}.\n`;
         document.getElementById('number-current-amount').innerText = new_value;
       },
 
@@ -608,6 +484,7 @@ modules.define(
         // Save public data...
         this.sharedData = sharedData;
         CompareRowsHelpers.sharedData = sharedData;
+        CompareProxyDialogModal.sharedData = sharedData;
 
         const { source_data, target_data } = this.sharedData;
 
@@ -626,10 +503,18 @@ modules.define(
         // Button handlers...
         document
           .getElementById('save-mapping-button')
-          .addEventListener('click', this.createProxyFunc.bind(this), false);
+          .addEventListener(
+            'click',
+            CompareProxyDialogModal.openProxyDialogModal.bind(CompareProxyDialogModal),
+            false,
+          );
         document
           .getElementById('one-to-one')
-          .addEventListener('click', this.createOneToOneProxyFunc.bind(this), false);
+          .addEventListener(
+            'click',
+            CompareProxyDialogModal.createOneToOneProxyFunc.bind(CompareProxyDialogModal),
+            false,
+          );
 
         const expandAll = document.getElementById('expand-all-collapsed');
         expandAll.addEventListener(
