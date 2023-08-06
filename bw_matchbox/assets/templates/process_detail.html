@@ -5,6 +5,7 @@
     <div class="column">
       <h1>{{ ds.name }}
         {% if ds.database == source %}
+          <button onclick="markWaitlist(this)" style="vertical-align: middle" class="button-primary" id="mark-waitlist">Waitlist</button>
           {% if not ds.matched %}<button onclick="markMatched(this)" style="vertical-align: middle" class="button-primary" id="manual-match">No match needed</button>
           {% if same_name_count %}<button onclick="markAllMatched(this)" style="vertical-align: middle" class="button-primary" id="manual-multi-match">Mark all matched</button>{% endif %}
           <a style="vertical-align: middle" id="match-button" class="button button-primary" href="{{ url_for('match', source=ds.id)}}">Match</a>{% elif ds.match_type == "1" %}<button id="match-button" style="vertical-align: middle">No match needed</button>{% else %}<button id="match-button" style="vertical-align: middle">Matched</button>{% endif %}
@@ -94,6 +95,17 @@
 </div>
 
 <script type="text/javascript">
+function markWaitlist (button) {
+  var url = "{{ url_for('add_attribute', id=ds.id, attr='waitlist', value='1')|safe }}";
+  fetch(url).then((response) => {
+    if (!response.ok) {
+        throw new Error(`HTTP error ${response.status}`);
+    };
+    button.innerText = "Waitlisted";
+    button.classList.remove("button-primary");
+  });
+};
+
 function markMatched (button) {
   fetch("{{ url_for('add_attribute', id=ds.id, attr='match_type', value='1')|safe }}");
   var url = "{{ url_for('add_attribute', id=ds.id, attr='matched', value='1')|safe }}";

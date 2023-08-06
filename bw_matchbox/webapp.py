@@ -449,7 +449,7 @@ def add_attribute(id):
 
     if attr is None or value is None:
         flask.abort(400)
-    if attr in ("highlighted", "matched"):
+    if attr in ("waitlist", "matched"):
         if value not in ("0", "1"):
             flask.abort(400)
         value = {"0": False, "1": True}[value]
@@ -526,6 +526,7 @@ def multi_match(id):
     node = bd.get_node(id=id)
     node["matched"] = True
     node["match_type"] = "1"
+    node["waitlist"] = False
     node.save()
 
     for ds in AD.select().where(
@@ -534,6 +535,7 @@ def multi_match(id):
         if not ds.data.get("matched"):
             ds.data["matched"] = True
             ds.data["match_type"] = "1"
+            ds.data["waitlist"] = False
             ds.save()
     return ""
 
@@ -723,6 +725,7 @@ def create_proxy():
         ).save()
 
     source["matched"] = True
+    source["waitlist"] = False
     source["proxy_id"] = process.id
     source.save()
 
