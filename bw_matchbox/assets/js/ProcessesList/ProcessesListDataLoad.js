@@ -32,12 +32,21 @@ modules.define(
        * @param {boolean} [opts.update] - Update current data chunk.
        */
       loadData(_opts = true) {
-        const { defaultOrderBy, defaultFilterBy } = ProcessesListConstants;
+        const { sharedParams } = ProcessesListData;
+        const { databases, database } = sharedParams;
+        const { useDebug, defaultOrderBy, defaultFilterBy, defaultUserDb } = ProcessesListConstants;
         const { pageSize, processesApiUrl: urlBase } = ProcessesListConstants;
-        const { currentPage, database, orderBy, filterBy } = ProcessesListData;
+        const {
+          currentPage,
+          orderBy,
+          filterBy,
+          userDb,
+          // database, // UNUSED: Used for debug only?
+        } = ProcessesListData;
+        const userDbValue = databases[userDb] || database;
         const offset = currentPage * pageSize; // TODO!
         const params = {
-          database,
+          database: userDbValue, // useDebug ? database : userDb || defaultUserDb,
           order_by: orderBy !== defaultOrderBy ? orderBy : '',
           filter: filterBy !== defaultFilterBy ? filterBy : '',
           offset,
@@ -46,6 +55,11 @@ modules.define(
         const urlQuery = CommonHelpers.makeQuery(params, { addQuestionSymbol: true });
         const url = urlBase + urlQuery;
         console.log('[ProcessesListDataLoad:loadData]: start', {
+          databases,
+          userDbValue,
+          useDebug,
+          userDb,
+          database,
           url,
           params,
           urlQuery,
@@ -56,6 +70,7 @@ modules.define(
           orderBy,
           filterBy,
         });
+        debugger;
         ProcessesListStates.setLoading(true);
         fetch(url)
           .then((res) => {

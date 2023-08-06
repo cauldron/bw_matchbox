@@ -54,6 +54,10 @@
 .processes-list .page-filters .radio-group-item {
   white-space: nowrap;
 }
+.processes-list .page-filters .radio-group-item-disabled {
+  opacity: 0.5;
+  pointer-events: none;
+}
 .processes-list .page-filters .radio-group-item > label {
   font-weight: normal;
 }
@@ -123,7 +127,8 @@
 /* Bottom actions */
 .processes-list .bottom-actions {
   position: relative;
-  min-height: 60px;
+  margin: 10px 0;
+  min-height: 40px;
   text-align: center;
   display: flex;
   justify-content: center;
@@ -153,10 +158,4 @@
 /* Show 'Refresh' button for 'random' 'order by' value... */
 .processes-list.order-random:not(.error) .bottom-actions-links a#action-reload-random {
   display: inline-block;
-}
-.processes-list .bottom-actions-links #available-records-info {
-  /* display: inline-block; */
-}
-.processes-list .bottom-actions-links #available-records-info:not(:empty) {
-  /* margin-left: 0.5em; */
 }

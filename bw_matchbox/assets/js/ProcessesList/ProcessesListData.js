@@ -26,8 +26,9 @@ modules.define(
 
       // Control for `order_by` parameter (name, location, product; default (empty) -- random.
       orderBy: ProcessesListConstants.defaultOrderBy, // 'random' | 'name' | 'location' | 'product'
-      filterBy: ProcessesListConstants.defaultFilterBy, // 'matched' | 'unmatched' | 'waitlist'
-      database: '',
+      filterBy: ProcessesListConstants.defaultFilterBy, // 'none', 'matched' | 'unmatched' | 'waitlist'
+      userDb: ProcessesListConstants.defaultUserDb, // 'source' | 'target', 'proxy'
+      database: '', // Server provided database value (Used only for `searchUrl` requests.)
       searchValue: '',
 
       // Stored dom nodes...
