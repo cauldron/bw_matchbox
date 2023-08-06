@@ -17,7 +17,6 @@ modules.define(
      */
 
     // global module variable
-    // eslint-disable-next-line no-unused-vars
     const ProcessesListDataRender = {
       clearTableData() {
         const tBodyNode = ProcessesListNodes.getTBodyNode();

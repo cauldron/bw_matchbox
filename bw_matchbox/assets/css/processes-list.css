@@ -17,6 +17,16 @@
 .processes-list.empty .processes-list-table {
   display: none;
 }
+.processes-list.loading .processes-list-table-empty,
+.processes-list:not(.empty) .processes-list-table-empty {
+  display: none;
+}
+.processes-list .processes-list-table-empty {
+  padding: 10px;
+  margin: 10px auto;
+  text-align: center;
+  opacity: 0.5;
+}
 
 /* Loading state: disable some elements... */
 .processes-list > * {
@@ -44,13 +54,21 @@
 .processes-list .page-filters .radio-group-item {
   white-space: nowrap;
 }
+.processes-list .page-filters .radio-group-item-disabled {
+  opacity: 0.5;
+  pointer-events: none;
+}
 .processes-list .page-filters .radio-group-item > label {
   font-weight: normal;
+}
+.processes-list.has-search .radio-group.order-by {
+  pointer-events: none;
+  opacity: 0.5;
 }
 
 /* Table */
 .processes-list-table {
-  margin-bottom: 0;
+  margin: 20px 0;
 }
 .processes-list-table tr td:last-child div > .button {
   display: block;
@@ -113,7 +131,8 @@
 /* Bottom actions */
 .processes-list .bottom-actions {
   position: relative;
-  min-height: 80px;
+  margin: 10px 0;
+  min-height: 40px;
   text-align: center;
   display: flex;
   justify-content: center;
@@ -124,14 +143,16 @@
 .processes-list .bottom-actions-links {
   transition: all var(--common-animation-time);
 }
-.processes-list .bottom-actions-links a {
+.processes-list .bottom-actions-links > * {
   display: none;
-  color: var(-layout-theme-primary-color-dark1);
-  cursor: pointer;
   margin: 0 10px;
 }
+.processes-list .bottom-actions-links > a {
+  color: var(--layout-theme-primary-color-dark1);
+  cursor: pointer;
+}
 .processes-list .bottom-actions-links a + a::before {
-  display: inline-block;
+  /* display: inline-block; */
 }
 .processes-list .bottom-actions-links a:hover {
   text-decoration: underline;
@@ -139,14 +160,10 @@
 /* Show 'Reload' (after error) button if error... */
 .processes-list.error .bottom-actions-links a#action-clear-and-reload,
 /* Show 'Load more' button for all 'order by' values except for 'random'... */
+.processes-list.has-more-data.has-search:not(.error) .bottom-actions-links a#action-load-more,
 .processes-list.has-more-data:not(.order-random, .error) .bottom-actions-links a#action-load-more,
+.processes-list:not(.has-more-data, .empty, .error) .bottom-actions-links span#show-total-records-number,
 /* Show 'Refresh' button for 'random' 'order by' value... */
-.processes-list.order-random:not(.error) .bottom-actions-links a#action-reload-random {
+.processes-list.order-random:not(.error, .has-search) .bottom-actions-links a#action-reload-random {
   display: inline-block;
-}
-.processes-list .bottom-actions-links #available-records-info {
-  display: inline-block;
-}
-.processes-list .bottom-actions-links #available-records-info:not(:empty) {
-  margin-left: 0.5em;
 }

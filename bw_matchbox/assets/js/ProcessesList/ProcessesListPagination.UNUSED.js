@@ -28,7 +28,6 @@ modules.define(
      */
 
     // global module variable
-    // eslint-disable-next-line no-unused-vars
     const ProcessesListPagination = {
       // TODO: `ProcessesListPagination` should be exposed to global scope or `onNavigationClick` should be proxied.
       renderNavigationLink(id, text) {

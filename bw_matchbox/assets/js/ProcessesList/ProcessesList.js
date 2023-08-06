@@ -36,17 +36,17 @@ modules.define(
     const allModulesList = [
       ProcessesListConstants,
       ProcessesListData,
-      ProcessesListDataRender,
       ProcessesListNodes,
-      // ProcessesListPagination, // UNUSED: Using incremental data loading
       ProcessesListStates,
       ProcessesListSearch,
+      ProcessesListDataRender,
       ProcessesListDataLoad,
     ];
 
     // global module variable
-    // eslint-disable-next-line no-unused-vars
     const ProcessesList = {
+      // Proxy handlers...
+
       /** Update value of 'order by' parameter from user */
       onOrderByChange(target) {
         // TODO: Move to Handlers module?
@@ -62,6 +62,16 @@ modules.define(
         ProcessesListStates.setFilterBy(value);
         ProcessesListDataLoad.loadData();
       },
+
+      /** Update value of 'userDb' parameter from user */
+      onUserDbChange(target) {
+        // TODO: Move to Handlers module?
+        const { value } = target;
+        ProcessesListStates.setUserDb(value);
+        ProcessesListDataLoad.loadData();
+      },
+
+      // Data methods...
 
       /** clearAndReloadData -- Reload entire data (clear and load only first chunk)
        */
@@ -85,9 +95,13 @@ modules.define(
       fetchUrlParams() {
         // Get & store the database value form the url query...
         const urlParams = CommonHelpers.parseQuery(window.location.search);
-        const { database, q: searchValue } = urlParams;
-        // Get database from url or from server-passed data...
-        ProcessesListData.database = database || ProcessesListData.sharedParams.database;
+        const {
+          // database, // UNUSED: #41: Using `databases` and `userDb`
+          q: searchValue,
+        } = urlParams;
+        /* // UNUSED: Get database from url or from server-passed data... (Used only for `searchUrl` requests.)
+         * ProcessesListData.database = database || ProcessesListData.sharedParams.database;
+         */
         ProcessesListData.searchValue = searchValue || '';
       },
 
@@ -96,7 +110,7 @@ modules.define(
       startAllModules() {
         // Start all the modules...
         allModulesList.forEach((module) => {
-          if (typeof module.start === 'function') {
+          if (module && typeof module.start === 'function') {
             try {
               module.start();
               /* // Alternate option: Delayed start...
@@ -118,9 +132,14 @@ modules.define(
 
       /** Start entrypoint */
       start(sharedParams) {
+        // Save shared data for future use...
         ProcessesListData.sharedParams = sharedParams;
+        // Fetch url query parameters...
         this.fetchUrlParams();
+        // Initialize all the modules...
         this.startAllModules();
+        // Load data...
+        ProcessesListDataLoad.loadData();
       },
     };
 

@@ -13,14 +13,22 @@ modules.define(
      */
 
     const ProcessesListConstants = {
+      __id: 'ProcessesListConstants',
+
+      // DEBUG: useDebug -- specify debug mode. Don't use it for production!
+      useDebug: false,
+
       /** Api base */
       processesApiUrl: '/processes',
+
       /** The number of records to retrieve at once and to display */
       pageSize: 25,
       /** Default order value */
       defaultOrderBy: 'random',
       /** Default filter value */
-      defaultFilterBy: 'unmatched',
+      defaultFilterBy: 'none',
+      /** Default userDb value */
+      defaultUserDb: 'source', // `Source` is the same as the server provided data
     };
 
     // Provide module...

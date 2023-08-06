@@ -52,11 +52,6 @@
 
 <script>
   modules.require('CompareCore', (CompareCore) => {
-    /* // Enable debug mode...
-     * const useDebug = true;
-     * // TODO: Expose it to global scope?
-     */
-
     // Global variables for compare tables feature (via global variable `sharedData`)...
     const sharedData = {
       source_data: {{ source_data_json|safe }}, // TDataRecord[]
@@ -67,35 +62,14 @@
       target_name: '{{ target_node.name|safe }}',
       source_node_unit: '{{source_node.unit}}',
       source_node_location: '{{source_node.location}}',
-      // TODO: Remove when #41 is closed
-      // Not used anyway?
-      source_db_label: '{{ source }}',
-      target_db_label: '{{ target }}',
-      proxy_db_label: '{{ proxy }}',
+      /* XXX: Probably these labels should be added in `index.html`? Is it required here?
+       * // TODO: Remove when #41 is closed
+       * // Not used anyway?
+       * source_db_label: '{{ source }}',
+       * target_db_label: '{{ target }}',
+       * proxy_db_label: '{{ proxy }}',
+       */
     };
-
-    /* // DEBUG: Crop data table to easier debugging...
-     * if (useDebug) {
-     *   sharedData.source_data.length = 2;
-     *   sharedData.target_data.length = 2;
-     * }
-     */
-
-    /* // DEBUG: Emulate pre-collapsed elements data...
-     * if (useDebug) {
-     *   // Link first columns...
-     *   const collapsedGroupId = 'Collapsed-0-abcdef'
-     *   sharedData.source_data[0].collapsed = true
-     *   sharedData.source_data[0]['collapsed-group'] = collapsedGroupId;
-     *   sharedData.target_data[0].collapsed = true
-     *   sharedData.target_data[0]['collapsed-group'] = collapsedGroupId;
-     *   console.log('DEBUG: Emulate pre-collapsed elements data', {
-     *     source_data: sharedData.source_data,
-     *     target_data: sharedData.target_data,
-     *   });
-     *   debugger;
-     * }
-     */
 
     // Export to global scope (to access from generated html code handlers).
     window.CompareCore = CompareCore;

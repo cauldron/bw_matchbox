@@ -23,38 +23,57 @@ modules.define(
      */
 
     // global module variable
-    // eslint-disable-next-line no-unused-vars
     const ProcessesListDataLoad = {
+      __id: 'ProcessesListDataLoad',
+
       /** Load next/current (?) data chunk
        * @param {object} [opts] - Options.
        * @param {boolean} [opts.update] - Update current data chunk.
        */
-      loadData(_opts = true) {
-        const { defaultOrderBy } = ProcessesListConstants;
-        const { pageSize, processesApiUrl: urlBase } = ProcessesListConstants;
-        const { currentPage, database, orderBy, filterBy } = ProcessesListData;
+      loadData(/* opts = {} */) {
+        const { currentPage, orderBy, filterBy, userDb, searchValue, sharedParams, hasSearch } =
+          ProcessesListData;
+        const {
+          databases,
+          // database, // UNUSED: #41: Using `databases` and `userDb`.
+        } = sharedParams;
+        const {
+          pageSize,
+          processesApiUrl: urlBase,
+          useDebug,
+          defaultOrderBy,
+          defaultFilterBy,
+        } = ProcessesListConstants;
+        const userDbValue = databases[userDb]; // Could it be empty? Eg, to use: `|| database`
         const offset = currentPage * pageSize; // TODO!
         const params = {
-          database,
-          order_by: orderBy !== defaultOrderBy ? orderBy : '',
-          filter: filterBy,
+          search: searchValue, // TODO: Should the `order_by` parameter be disabled if the `search` parameter has used?
+          database: userDbValue, // useDebug ? database : userDb || defaultUserDb,
+          order_by: !hasSearch && orderBy !== defaultOrderBy ? orderBy : '',
+          filter: filterBy !== defaultFilterBy ? filterBy : '',
           offset,
           limit: pageSize,
         };
         const urlQuery = CommonHelpers.makeQuery(params, { addQuestionSymbol: true });
         const url = urlBase + urlQuery;
-        /* console.log('[ProcessesListDataLoad:loadData]: start', {
-         *   url,
-         *   params,
-         *   urlQuery,
-         *   urlBase,
-         *   currentPage,
-         *   pageSize,
-         *   offset,
-         *   orderBy,
-         *   filterBy,
-         * });
-         */
+        // DEBUG: Using temporarily while working with requests (issues #41, #45, etc)...
+        console.log('[ProcessesListDataLoad:loadData]: start', {
+          searchValue,
+          databases,
+          userDbValue,
+          useDebug,
+          userDb,
+          // database, // UNUSED: #41: Using `databases` and `userDb`.
+          url,
+          params,
+          urlQuery,
+          urlBase,
+          currentPage,
+          pageSize,
+          offset,
+          orderBy,
+          filterBy,
+        });
         ProcessesListStates.setLoading(true);
         fetch(url)
           .then((res) => {
@@ -99,9 +118,10 @@ modules.define(
              * });
              */
             // Update total records number...
-            ProcessesListData.totalRecords = totalRecords;
+            // ProcessesListData.totalRecords = totalRecords;
+            ProcessesListStates.setTotalRecordsCount(totalRecords);
             // Append data to current table...
-            // TODO: Use `opts.update` to update last data chunk (?).
+            // TODO: Use `opts.update` to update (replace rows) last loaded data set.
             ProcessesListDataRender.renderTableData(data, { append: true });
             ProcessesListStates.setError(undefined); // Clear the error: all is ok
             ProcessesListStates.setHasData(ProcessesListData.hasData || hasData); // Update 'has data' flag
@@ -127,11 +147,6 @@ modules.define(
             // Update all the page dynamic elements?
             ProcessesListStates.updatePage();
           });
-      },
-
-      /** Load first portion of data to display */
-      start() {
-        this.loadData();
       },
     };
 
