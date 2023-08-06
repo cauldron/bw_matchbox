@@ -64,13 +64,7 @@
       target_name: '{{ target_node.name|safe }}',
       source_node_unit: '{{source_node.unit}}',
       source_node_location: '{{source_node.location}}',
-      /* XXX: Probably these labels should be added in `index.html`? Is it required here?
-       * // TODO: Remove when #41 is closed
-       * // Not used anyway?
-       * source_db_label: '{{ source }}',
-       * target_db_label: '{{ target }}',
-       * proxy_db_label: '{{ proxy }}',
-       */
+      match_types: {{ match_types|safe }}
     };
 
     // Export to global scope (to access from generated html code handlers).

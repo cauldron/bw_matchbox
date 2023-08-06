@@ -15,7 +15,7 @@ from flask_httpauth import HTTPBasicAuth
 from peewee import fn
 from werkzeug.security import check_password_hash, generate_password_hash
 
-from .utils import name_close_enough, similar_location
+from .utils import name_close_enough, similar_location, get_match_types
 
 BASE_DIR = Path(__file__).resolve().parent
 DATA_DIR = BASE_DIR / "data"
@@ -60,6 +60,8 @@ def configure_app(filepath, app):
         and os.access(app.config["mb_output_dir"], os.W_OK)
     ):
         raise ValueError("`output_dir` is invalid")
+
+    app.config["mb_match_types"] = get_match_types(app.config["mb_output_dir"])
 
     return app
 
@@ -447,7 +449,7 @@ def add_attribute(id):
 
     if attr is None or value is None:
         flask.abort(400)
-    if attr in ("highlighted", "matched", "no_match_needed"):
+    if attr in ("highlighted", "matched"):
         if value not in ("0", "1"):
             flask.abort(400)
         value = {"0": False, "1": True}[value]
@@ -523,7 +525,7 @@ def multi_match(id):
 
     node = bd.get_node(id=id)
     node["matched"] = True
-    node["no_match_needed"] = True
+    node["match_type"] = "1"
     node.save()
 
     for ds in AD.select().where(
@@ -531,7 +533,7 @@ def multi_match(id):
     ):
         if not ds.data.get("matched"):
             ds.data["matched"] = True
-            ds.data["no_match_needed"] = True
+            ds.data["match_type"] = "1"
             ds.save()
     return ""
 
@@ -653,6 +655,7 @@ def compare(source, target):
         target_node=target,
         target_data_json=json.dumps(target_technosphere),
         target_biosphere_number=len(target.biosphere()),
+        match_types=matchbox_app.config["mb_match_types"],
     )
 
 

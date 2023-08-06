@@ -7,7 +7,7 @@
         {% if ds.database == source %}
           {% if not ds.matched %}<button onclick="markMatched(this)" style="vertical-align: middle" class="button-primary" id="manual-match">No match needed</button>
           {% if same_name_count %}<button onclick="markAllMatched(this)" style="vertical-align: middle" class="button-primary" id="manual-multi-match">Mark all matched</button>{% endif %}
-          <a style="vertical-align: middle" id="match-button" class="button button-primary" href="{{ url_for('match', source=ds.id)}}">Match</a>{% elif ds.no_match_needed %}<button id="match-button" style="vertical-align: middle">No match needed</button>{% else %}<button id="match-button" style="vertical-align: middle">Matched</button>{% endif %}
+          <a style="vertical-align: middle" id="match-button" class="button button-primary" href="{{ url_for('match', source=ds.id)}}">Match</a>{% elif ds.match_type == "1" %}<button id="match-button" style="vertical-align: middle">No match needed</button>{% else %}<button id="match-button" style="vertical-align: middle">Matched</button>{% endif %}
         {% endif %}
       </h1>
       <ul>
@@ -95,7 +95,7 @@
 
 <script type="text/javascript">
 function markMatched (button) {
-  fetch("{{ url_for('add_attribute', id=ds.id, attr='no_match_needed', value='1')|safe }}");
+  fetch("{{ url_for('add_attribute', id=ds.id, attr='match_type', value='1')|safe }}");
   var url = "{{ url_for('add_attribute', id=ds.id, attr='matched', value='1')|safe }}";
   fetch(url).then((response) => {
     if (!response.ok) {

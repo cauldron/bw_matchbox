@@ -1,4 +1,6 @@
+import json
 import importlib.metadata
+from pathlib import Path
 from typing import Optional, Union
 
 from Levenshtein import distance
@@ -54,3 +56,24 @@ def similar_location(a: str, b: str) -> bool:
             (b == "RER" and a in ("GLO", "RoW", "RoE")),
         ]
     )
+
+
+BASE_MATCH_TYPES = {
+    "1": "No direct match available",
+    "2": "Direct match with near-identical data",
+    "3": "Match with updated data",
+    "4": "Match with updated data and adding source transport",
+    "5": "Match with market and replace or remove transport",
+    "6": "Match with market and replace or remove transport and loss factor",
+    "7": "Equivalent datasets after modification",
+}
+
+
+def get_match_types(output_dir: Path) -> dict:
+    match_types_file = output_dir / "match_types.json"
+    try:
+        return json.load(open(match_types_file))
+    except:
+        with open(match_types_file, "w") as f:
+            json.dump(BASE_MATCH_TYPES, f, indent=2, ensure_ascii=False)
+        return BASE_MATCH_TYPES
