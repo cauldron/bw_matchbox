@@ -29,6 +29,9 @@
           {% if reference_node %}
               <li>Proxy for: <a href="{{ url_for('process_detail', id=reference_node.id) }}">{{ reference_node }}</a></li>
           {% endif %}
+          {% if match_type %}
+              <li>Match type: {{ match_type }}</li>
+          {% endif %}
 
       </ul>
       <h2>Technosphere Inputs</h2>

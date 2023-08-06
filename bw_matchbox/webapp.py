@@ -15,7 +15,7 @@ from flask_httpauth import HTTPBasicAuth
 from peewee import fn
 from werkzeug.security import check_password_hash, generate_password_hash
 
-from .utils import name_close_enough, similar_location, get_match_types
+from .utils import get_match_types, name_close_enough, similar_location
 
 BASE_DIR = Path(__file__).resolve().parent
 DATA_DIR = BASE_DIR / "data"
@@ -486,7 +486,9 @@ def process_detail(id):
 
     node = bd.get_node(id=id)
     proxy_node = bd.get_node(id=node["proxy_id"]) if node.get("proxy_id") else None
-    reference_node = bd.get_node(id=node["original_id"]) if node.get("original_id") else None
+    reference_node = (
+        bd.get_node(id=node["original_id"]) if node.get("original_id") else None
+    )
 
     same_name = AD.select().where(
         AD.name == node["name"], AD.database == node["database"], AD.id != node.id
@@ -513,6 +515,7 @@ def process_detail(id):
         technosphere=technosphere,
         biosphere=biosphere,
         show_matching=False,
+        match_type=matchbox_app.config["mb_match_types"].get(node.get("match_type")),
     )
 
 
