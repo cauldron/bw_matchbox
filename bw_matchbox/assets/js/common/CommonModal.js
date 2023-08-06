@@ -13,7 +13,7 @@ modules.define(
 
     const CommonModal = {
       /** Initialized flag (see `inited` method) */
-      initied: false,
+      inited: false,
 
       /** getModalNode -- Get root modal node
        * @return {HTMLElement|undefined}
