@@ -241,6 +241,28 @@ def index():
     )
 
 
+def apply_filter_to_qs(qs, filter_arg):
+    if filter_arg == "unmatched":
+        return [node for node in qs if not node.data.get("matched")]
+    else:
+        return [node for node in qs if node.data.get(filter_arg)]
+
+
+def apply_limit_offset(qs, limit, offset):
+    if offset:
+        qs = qs[offset:]
+    if limit:
+        qs = qs[:limit]
+    return qs
+
+
+def maybe_int(value):
+    if value in (None, ""):
+        return None
+    else:
+        return int(value)
+
+
 @matchbox_app.route("/processes", methods=["GET"])
 @auth.login_required
 def processes():
@@ -260,6 +282,8 @@ def processes():
                     Only used if sorting.
     * filter (string, optional): Optional attribute filter. Should be one of
                     `matched`, `unmatched`, or `waitlist`.
+    * search (string, optional): Optional parameter to pass to search index.
+                    Note that this overrides `order_by`.
 
     Response data format (JSON):
 
@@ -283,41 +307,41 @@ def processes():
     bd.projects.set_current(proj)
 
     database_label = flask.request.args.get("database") or s
-    qs = AD.select().where(AD.database == database_label)
-
-    order_by = flask.request.args.get("order_by")
-    if order_by and order_by in ("name", "location", "product"):
-        qs = qs.order_by(getattr(AD, order_by))
-    else:
-        qs = qs.order_by(fn.Random())
-
-    offset = int(flask.request.args.get("offset"))
-    limit = int(flask.request.args.get("limit"))
-
+    limit = maybe_int(flask.request.args.get("limit"))
+    offset = maybe_int(flask.request.args.get("offset"))
     filter_arg = flask.request.args.get("filter")
-    if not filter_arg:
-        total_records = qs.count()
 
-        if offset:
-            qs = qs.offset(int(offset))
-        if limit:
-            qs = qs.limit(int(limit))
-        else:
-            qs = qs.limit(50)
-    else:
-        if filter_arg == "unmatched":
-            qs = [node for node in qs if not node.data.get("matched")]
-        else:
-            qs = [node for node in qs if node.data.get(filter_arg)]
-
+    search_query = flask.request.args.get("search")
+    if search_query:
+        # Override default very small search limit
+        qs = [
+            x._document
+            for x in bd.Database(database_label).search(search_query, limit=1000)
+        ]
+        if filter_arg:
+            qs = apply_filter_to_qs(qs, filter_arg)
         total_records = len(qs)
+        qs = apply_limit_offset(qs, limit, offset)
+    else:
+        qs = AD.select().where(AD.database == database_label)
 
-        if offset:
-            qs = qs[offset:]
-        if limit:
-            qs = qs[:limit]
+        order_by = flask.request.args.get("order_by")
+        if order_by and order_by in ("name", "location", "product"):
+            qs = qs.order_by(getattr(AD, order_by))
         else:
-            qs = qs[:50]
+            qs = qs.order_by(fn.Random())
+
+        if not filter_arg:
+            total_records = qs.count()
+
+            if offset:
+                qs = qs.offset(offset)
+            if limit:
+                qs = qs.limit(limit)
+        else:
+            qs = apply_filter_to_qs(qs, filter_arg)
+            total_records = len(qs)
+            qs = apply_limit_offset(qs, limit, offset)
 
     payload = {
         "total_records": total_records,
