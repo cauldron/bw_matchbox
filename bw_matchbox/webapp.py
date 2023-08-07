@@ -386,13 +386,23 @@ MATCH_TYPE_ABBREVIATIONS = {
 
 def get_match_type_for_source_process(node):
     if hasattr(node, "data"):
-        if node.data.get("proxy_id"):
+        if "match_type" in node.data:
+            return MATCH_TYPE_ABBREVIATIONS[
+                matchbox_app.config["mb_match_types"].get(
+                    node.data["match_type"], "Unknown"
+                )
+            ]
+        elif node.data.get("proxy_id"):
             mt = bd.get_node(id=node.data["proxy_id"]).get("match_type")
             return MATCH_TYPE_ABBREVIATIONS[
                 matchbox_app.config["mb_match_types"].get(mt, "Unknown")
             ]
         else:
             return "Unknown"
+    elif "match_type" in node:
+        return MATCH_TYPE_ABBREVIATIONS[
+            matchbox_app.config["mb_match_types"].get(node["match_type"], "Unknown")
+        ]
     else:
         mt = bd.get_node(id=node["proxy_id"]).get("match_type")
         if not mt or mt == "0":
