@@ -514,7 +514,6 @@ def process_detail(id):
         same_name=same_name,
         technosphere=technosphere,
         biosphere=biosphere,
-        show_matching=False,
         match_type=matchbox_app.config["mb_match_types"].get(node.get("match_type")),
         total_consumers=len(node.upstream()),
         consumers=list(node.upstream())[:50],
