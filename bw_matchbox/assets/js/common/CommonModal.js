@@ -15,6 +15,49 @@ modules.define(
       /** Initialized flag (see `inited` method) */
       inited: false,
 
+      onHideHandlers: [],
+
+      onHide(cb) {
+        if (cb && typeof cb === 'function') {
+          this.onHideHandlers.push(cb);
+        }
+        return this;
+      },
+
+      clearOnHideHandlers() {
+        // Clear handlers list...
+        if (this.onHideHandlers.length) {
+          this.onHideHandlers.length = 0; //  = [];
+        }
+        return this;
+      },
+
+      invokeOnHideHandlers() {
+        if (this.onHideHandlers.length) {
+          // Invoke all the hide handlers and empty the list...
+          let cb;
+          while ((cb = this.onHideHandlers.shift()) != undefined) {
+            if (cb && typeof cb === 'function') {
+              try {
+                cb();
+                /* // Alternate option: Delayed start...
+                 * setTimeout(cb, 0);
+                 */
+              } catch (error) {
+                // eslint-disable-next-line no-console
+                console.error('[CommonModal:invokeOnHideHandlers]: error (catched)', {
+                  error,
+                  cb,
+                });
+                // eslint-disable-next-line no-debugger
+                debugger;
+              }
+            }
+          }
+        }
+        return this;
+      },
+
       /** getModalNode -- Get root modal node
        * @return {HTMLElement|undefined}
        */
@@ -67,6 +110,31 @@ modules.define(
         return this;
       },
 
+      /** setModalWindowOption -- Set one (boolean) modal content option.
+       * @param {string} optionName
+       * @param {boolean} [optionValue]
+       */
+      setModalWindowOption(optionName, optionValue) {
+        const literalOptions = {
+          width: ['sm', 'md', 'lg'],
+        };
+        const contentEl = this.getModalNodeElementByClass('common-modal-window');
+        const literals = literalOptions[optionName];
+        if (literals) {
+          // Literal option...
+          literals.forEach((val) => {
+            // Remove all the other and set current option...
+            const isOn = val === optionValue;
+            const name = optionName + '-' + val;
+            contentEl.classList.toggle(name, isOn);
+          });
+        } else {
+          // Boolean option...
+          contentEl.classList.toggle(optionName, !!optionValue);
+        }
+        return this;
+      },
+
       /** setModalContentScrollable -- Enable/disable scrollable mode for modal content.
        * @param {boolean} [scrollable]
        */
@@ -90,6 +158,22 @@ modules.define(
         const names = Object.keys(options);
         names.forEach((name) => {
           this.setModalContentOption(name, options[name]);
+        });
+        return this;
+      },
+
+      /** setModalWindowOptions -- Set one (boolean) modal content option.
+       * @param {<Record<string, [boolean]>>}} options - Options (`width`, `autoWidth`, `autoHeight`, `fullWindowHeight`, `fullWindowHeightt`)
+       * @param {string} [options.width] - Custom window size (sm, md, lg)
+       * @param {boolean} [options.autoWidth]
+       * @param {boolean} [options.autoHeight]
+       * @param {boolean} [options.fullWindowWidth] (UNUSED)
+       * @param {boolean} [options.fullWindowHeight] (UNUSED)
+       */
+      setModalWindowOptions(options) {
+        const names = Object.keys(options);
+        names.forEach((name) => {
+          this.setModalWindowOption(name, options[name]);
         });
         return this;
       },
@@ -126,8 +210,11 @@ modules.define(
         return this;
       },
 
-      /** Hide modal window */
-      hideModal() {
+      /** Hide modal window
+       * @param {object} [opts] - Options.
+       * @param {boolean} [opts.dontNotify] - Options.
+       */
+      hideModal(opts = {}) {
         this.deactivateEvents();
         const modal = this.getModalNode();
         if (!modal.classList.contains('show')) {
@@ -135,6 +222,11 @@ modules.define(
         }
         modal.classList.toggle('show', false);
         document.body.classList.toggle('has-modal', false);
+        if (opts.dontNotify) {
+          this.clearOnHideHandlers();
+        } else {
+          this.invokeOnHideHandlers();
+        }
         return this;
       },
 

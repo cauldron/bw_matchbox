@@ -1,0 +1,4 @@
+#mark-waitlist-dialog-modal #mark-waitlist-ok.disabled {
+  opacity: 0.5;
+  pointer-events: none;
+}
