@@ -234,17 +234,15 @@ modules.define(
         CompareRowClick.disableRowClickHandler();
         const rowId = element.closest('td').getAttribute('row_id');
         const { target_data } = this.sharedData;
-        function removeValue(obj, index, arr) {
-          console.log(this.CompareCore.sharedData);
+        document.getElementById('replace-with-target-arrow').style.display = 'none';
+        target_data.filter((obj, index, arr) => {
           if (obj.row_id == rowId) {
-            this.CompareCore.sharedData.comment += `* Removed exchange of ${obj.amount} ${obj.unit} ${obj.name} from ${obj.location}.\n`;
+            this.sharedData.comment += `* Removed exchange of ${obj.amount} ${obj.unit} ${obj.name} from ${obj.location}.\n`;
             arr.splice(index, 1);
             return true;
           }
           return false;
-        }
-        document.getElementById('replace-with-target-arrow').style.display = 'none';
-        target_data.filter(removeValue);
+        });
         this.buildTable('target-table', target_data, true);
       },
 
