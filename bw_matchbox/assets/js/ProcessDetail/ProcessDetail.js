@@ -112,7 +112,7 @@ modules.define(
         const url1 = urlBase + urlQuery1;
         const url2 = urlBase + urlQuery2;
         // DEBUG: For the test time
-        console.log('[ProcessDetail:doMarkWaitlist]', {
+        console.log('[ProcessDetail:doMarkWaitlist] start', {
           comment,
           userAction,
           addAttributeUrl,
@@ -122,25 +122,36 @@ modules.define(
           urlQuery1,
           urlQuery2,
         });
-        const promises = [fetch(url1), fetch(url2)];
-        return Promise.all(promises).then(([res1, res2]) => {
+        // Call both requests at once...
+        const allPromises = [fetch(url1), fetch(url2)];
+        return Promise.all(allPromises).then((resList) => {
+          const errorsList = resList
+            .map((res) => {
+              if (!res.ok) {
+                return new Error(`HTTP error ${res.status}`);
+              }
+            })
+            .filter(Boolean);
+          const hasErrors = !!errorsList.length;
           // DEBUG: For the test time
-          console.log('[ProcessDetail:doMarkWaitlist]', {
-            res1,
-            res2,
+          console.log('[ProcessDetail:doMarkWaitlist] success', {
+            hasErrors,
+            resList,
+            errorsList,
           });
-          if (res1.ok && res2.ok) {
+          debugger;
+          if (!hasErrors) {
+            // All is ok...
             button.innerText = 'Waitlisted';
             button.classList.remove('button-primary');
           } else {
             // Some errors?
+            // eslint-disable-next-line no-console
+            console.error('[ProcessDetail:doMarkWaitlist] Got errors', errorsList);
+            // eslint-disable-next-line no-debugger
+            debugger;
             // TODO: To show errors on the page?
-            if (!res1.ok) {
-              throw new Error(`HTTP error ${res1.status}`);
-            }
-            if (!res2.ok) {
-              throw new Error(`HTTP error ${res2.status}`);
-            }
+            // TODO: Throw some error?
           }
         });
       },
@@ -149,7 +160,7 @@ modules.define(
        * @param {<HTMLButtonElement>} button
        */
       markWaitlist(button) {
-        this.promiseMarkWaitlistDialog().then((userAction) => {
+        return this.promiseMarkWaitlistDialog().then((userAction) => {
           if (userAction) {
             return this.doMarkWaitlist(button, userAction);
           }
