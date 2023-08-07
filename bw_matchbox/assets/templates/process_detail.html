@@ -93,6 +93,30 @@
         {% endfor %}
       {% endif %}
       </table>
+      <h2>Consuming processes ({{ total_consumers }})</h2>
+      {% if not total_consumers %}
+      <p>No consuming processes</p>
+      {% elif total_consumers > 50 %}
+      <p>Showing 50 of {{ total_consumers }}</p>
+      {% endif %}
+      {% if total_consumers %}
+      <table width="100%">
+        <tr>
+          <th>Amount</th>
+          <th>Name</th>
+          <th>Location</th>
+          <th>Unit</th>
+        </tr>
+        {% for exc in consumers %}
+          <tr>
+            <td>{{ exc.amount }}</td>
+            <td>{{ exc.output.name }}</td>
+            <td>{{ exc.output.location }}</td>
+            <td>{{ exc.output.unit }}</td>
+          </tr>
+        {% endfor %}
+      {% endif %}
+      </table>
     </div>
   </div>
 </div>
