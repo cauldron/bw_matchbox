@@ -1,3 +1,5 @@
+/* stylelint-disable selector-class-pattern */
+
 body.has-modal {
   /* Hide scrollbars when active modals are exist. */
   overflow: hidden;
@@ -53,6 +55,19 @@ body.has-modal {
   width: 100%;
   height: 100%;
 }
+/* Full width and height... */
+.common-modal-wrapper .common-modal-content-wrapper {
+  /* Make full window width default */
+  width: 100%;
+}
+/*
+.common-modal-wrapper .common-modal-window.fullWindowWidth .common-modal-content-wrapper {
+  width: 100%;
+}
+.common-modal-wrapper .common-modal-window.fullWindowHeight .common-modal-content-wrapper {
+  height: 100%;
+}
+*/
 @media (width >= 600px) and (height >= 400px) {
   .common-modal-wrapper .common-modal-window {
     /* Wide-screen: show as a window */
@@ -60,6 +75,29 @@ body.has-modal {
     width: 80%;
     height: 80%;
     max-width: 1200px;
+  }
+  /* Auto width and height... */
+  .common-modal-wrapper .common-modal-window.autoWidth {
+    width: auto;
+  }
+  .common-modal-wrapper .common-modal-window.autoHeight {
+    height: auto;
+  }
+}
+/* Adjust custom window sizes (sm, md, lg) */
+@media (width >= 600px) {
+  .common-modal-wrapper .common-modal-window.width-sm {
+    width: 400px;
+  }
+}
+@media (width >= 800px) {
+  .common-modal-wrapper .common-modal-window.width-md {
+    width: 700px;
+  }
+}
+@media (width >= 1120px) {
+  .common-modal-wrapper .common-modal-window.width-lg {
+    width: 900px;
   }
 }
 
