@@ -107,7 +107,7 @@
         {% for exc in consumers %}
           <tr>
             <td>{{ exc.amount }}</td>
-            <td>{{ exc.output.name }}</td>
+            <td><a href="{{ url_for('process_detail', id=exc.output.id) }}">{{ exc.output.name }}</a></td>
             <td>{{ exc.output.location }}</td>
             <td>{{ exc.output.unit }}</td>
           </tr>
