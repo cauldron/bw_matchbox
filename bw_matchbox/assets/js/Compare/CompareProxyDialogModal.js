@@ -138,14 +138,16 @@ modules.define(
           name,
         };
         const url = '/create-proxy/';
-        console.log('[CompareProxyDialogModal:onSubmitButtonClick]', {
-          target_data,
-          source_id,
-          match_type,
-          comment,
-          name,
-          submissionData,
-        });
+        /* // DEBUG
+         * console.log('[CompareProxyDialogModal:onSubmitButtonClick]', {
+         *   target_data,
+         *   source_id,
+         *   match_type,
+         *   comment,
+         *   name,
+         *   submissionData,
+         * });
+         */
         fetch(url, {
           method: 'POST',
           redirect: 'follow',
