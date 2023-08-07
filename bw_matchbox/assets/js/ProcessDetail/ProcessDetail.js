@@ -25,7 +25,7 @@ modules.define(
             <textarea class="u-full-width" id="mark-waitlist-comment" name="mark-waitlist-comment"></textarea>
           </div>
           <div class="mark-waitlist-actions">
-            <button class="button-primary disabled" id="mark-waitlist-ok">Ok</button>
+            <button class="button-primary" id="mark-waitlist-ok">Ok</button>
             <button id="mark-waitlist-cancel">Cancel</button>
           </div>
         `;
@@ -62,18 +62,18 @@ modules.define(
             })
             .showModal();
           let comment = '';
-          let hasComment = false;
+          // let hasComment = false;
           const commentEl = document.getElementById('mark-waitlist-comment');
           const okButtonEl = document.getElementById('mark-waitlist-ok');
           commentEl.addEventListener('input', (event) => {
             const { target } = event;
             const { value } = target;
             comment = value;
-            const hasValue = !!value;
-            if (hasValue !== hasComment) {
-              okButtonEl.classList.toggle('disabled', !hasValue);
-              hasComment = hasValue;
-            }
+            // const hasValue = !!value;
+            // if (hasValue !== hasComment) {
+            //   okButtonEl.classList.toggle('disabled', !hasValue);
+            //   hasComment = hasValue;
+            // }
           });
           // TODO: Add handlers for modal actions
           okButtonEl.addEventListener('click', () => {
@@ -112,16 +112,16 @@ modules.define(
         const url1 = urlBase + urlQuery1;
         const url2 = urlBase + urlQuery2;
         // DEBUG: For the test time
-        console.log('[ProcessDetail:doMarkWaitlist] start', {
-          comment,
-          userAction,
-          addAttributeUrl,
-          urlBase,
-          url1,
-          url2,
-          urlQuery1,
-          urlQuery2,
-        });
+        // console.log('[ProcessDetail:doMarkWaitlist] start', {
+        //   comment,
+        //   userAction,
+        //   addAttributeUrl,
+        //   urlBase,
+        //   url1,
+        //   url2,
+        //   urlQuery1,
+        //   urlQuery2,
+        // });
         // Call both requests at once...
         const allPromises = [fetch(url1), fetch(url2)];
         return Promise.all(allPromises).then((resList) => {
