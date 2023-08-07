@@ -1,5 +1,5 @@
-import json
 import importlib.metadata
+import json
 from pathlib import Path
 from typing import Optional, Union
 
@@ -66,6 +66,7 @@ BASE_MATCH_TYPES = {
     "5": "Match with market and replace or remove transport",
     "6": "Match with market and replace or remove transport and loss factor",
     "7": "Equivalent datasets after modification",
+    "8": "Replace aggregated with unit process",
 }
 
 
