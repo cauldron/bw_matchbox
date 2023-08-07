@@ -172,12 +172,12 @@ modules.define(
        */
       markMatched(button) {
         const { sharedData } = this;
-        fetch(sharedData.markMatchTypeUrl);
         const url = sharedData.markMatchedUrl;
         fetch(url).then((response) => {
           if (!response.ok) {
             throw new Error(`HTTP error ${response.status}`);
           }
+          fetch(sharedData.markMatchTypeUrl);
           button.innerText = 'Matched';
           button.classList.remove('button-primary');
           document.getElementById('match-button').style.display = 'none';
