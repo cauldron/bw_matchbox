@@ -345,10 +345,6 @@ def processes():
             total_records = len(qs)
             qs = apply_limit_offset(qs, limit, offset)
 
-    for obj in qs:
-        print("match_type", obj.data.get("match_type"))
-        print("data:", obj.data)
-
     payload = {
         "total_records": total_records,
         "data": [
