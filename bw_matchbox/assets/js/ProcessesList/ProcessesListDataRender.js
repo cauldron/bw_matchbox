@@ -31,6 +31,7 @@ modules.define(
           unit, // ''
           // details_url, // '/process/726'
           // match_url, // '/match/726'
+          match_type, // 'No direct match available'
           matched, // false
         } = rowData;
         /* console.log('[ProcessesListDataRender:renderDataRow]: start', {
@@ -46,7 +47,7 @@ modules.define(
          */
         const matchUrl = '/match/' + id;
         const matchButton = matched
-          ? `<a class="button" href="${matchUrl || ''}"><i class="fa-solid fa-check"></i> EDIT</a>`
+          ? `<a class="button" href="${matchUrl || ''}"><i class="fa-solid fa-check"></i> ${match_type || 'EDIT'}</a>`
           : `<a class="button button-primary" href="${
               matchUrl || ''
             }"><i class="fa-solid fa-circle-xmark"></i> ADD</a>`;

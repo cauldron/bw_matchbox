@@ -345,6 +345,10 @@ def processes():
             total_records = len(qs)
             qs = apply_limit_offset(qs, limit, offset)
 
+    for obj in qs:
+        print("match_type", obj.data.get("match_type"))
+        print("data:", obj.data)
+
     payload = {
         "total_records": total_records,
         "data": [
@@ -352,6 +356,7 @@ def processes():
                 "details_url": flask.url_for("process_detail", id=obj.id),
                 "match_url": flask.url_for("match", source=obj.id),
                 "matched": bool(obj.data.get("matched")),
+                "match_type": get_match_type_for_source_process(obj),
                 "waitlist": bool(obj.data.get("waitlist")),
                 "id": obj.id,
                 "name": obj.name,
@@ -362,6 +367,40 @@ def processes():
         ],
     }
     return flask.jsonify(payload)
+
+
+mwmarortalf = "Match with market and replace or remove transport and loss factor"
+
+MATCH_TYPE_ABBREVIATIONS = {
+    "No direct match available": "No direct match",
+    "Direct match with near-identical data": "Near-identical data",
+    "Match with updated data": "Updated data",
+    "Match with updated data and adding source transport": "Updated data w/ src trans",
+    "Match with market and replace or remove transport": "Market w/ diff trans",
+    mwmarortalf: "Market w/ diff trans loss",
+    "Equivalent datasets after modification": "Modifications",
+    "Replace aggregated with unit process": "Replace aggregated",
+    "Unknown": "Unknown",
+}
+
+
+def get_match_type_for_source_process(node):
+    if hasattr(node, "data"):
+        if node.data.get("proxy_id"):
+            mt = bd.get_node(id=node.data["proxy_id"]).get("match_type")
+            return MATCH_TYPE_ABBREVIATIONS[
+                matchbox_app.config["mb_match_types"].get(mt, "Unknown")
+            ]
+        else:
+            return "Unknown"
+    else:
+        mt = bd.get_node(id=node["proxy_id"]).get("match_type")
+        if not mt or mt == "0":
+            return "Unknown"
+        else:
+            return MATCH_TYPE_ABBREVIATIONS[
+                matchbox_app.config["mb_match_types"].get(mt, "Unknown")
+            ]
 
 
 # @matchbox_app.route("/match-status", methods=["GET"])
