@@ -1,13 +1,29 @@
 {% include 'header.html' %}
-<div class="container">
+
+{# Common dependencies... #}
+
+{# Modal windows are used #}
+{% include 'common-modal.html' %}
+
+{# Module-specific dependencies... #}
+
+<link rel="stylesheet" href="{{ url_for('static', filename='css/process-detail.css') }}">
+
+<script src="{{ url_for('static', filename='js/ProcessDetail/ProcessDetail.js') }}"></script>
+
+{# Core js module:
+  - `ProcessDetail` (from `bw_matchbox/assets/js/ProcessDetail/ProcessDetail.js`)
+#}
+
+<div class="process-detail container">
   {% include 'navigation.html' %}
   <div class="row">
     <div class="column">
       <h1>{{ ds.name }}
         {% if ds.database == source %}
-          <button onclick="markWaitlist(this)" style="vertical-align: middle" class="button-primary" id="mark-waitlist">Waitlist</button>
-          {% if not ds.matched %}<button onclick="markMatched(this)" style="vertical-align: middle" class="button-primary" id="manual-match">No match needed</button>
-          {% if same_name_count %}<button onclick="markAllMatched(this)" style="vertical-align: middle" class="button-primary" id="manual-multi-match">Mark all matched</button>{% endif %}
+          <button onClick="ProcessDetail.markWaitlist(this)" style="vertical-align: middle" class="button-primary" id="mark-waitlist">Waitlist</button>
+          {% if not ds.matched %}<button onClick="ProcessDetail.markMatched(this)" style="vertical-align: middle" class="button-primary" id="manual-match">No match needed</button>
+          {% if same_name_count %}<button onClick="ProcessDetail.markAllMatched(this)" style="vertical-align: middle" class="button-primary" id="manual-multi-match">Mark all matched</button>{% endif %}
           <a style="vertical-align: middle" id="match-button" class="button button-primary" href="{{ url_for('match', source=ds.id)}}">Match</a>{% elif ds.match_type == "1" %}<button id="match-button" style="vertical-align: middle">No match needed</button>{% else %}<button id="match-button" style="vertical-align: middle">Matched</button>{% endif %}
         {% endif %}
       </h1>
@@ -103,45 +119,25 @@
 </div>
 
 <script type="text/javascript">
-function markWaitlist (button) {
-  var url = "{{ url_for('add_attribute', id=ds.id, attr='waitlist', value='1')|safe }}";
-  fetch(url).then((response) => {
-    if (!response.ok) {
-        throw new Error(`HTTP error ${response.status}`);
-    };
-    button.innerText = "Waitlisted";
-    button.classList.remove("button-primary");
+modules.require('ProcessDetail', function requireProcessDetail(ProcessDetail) {
+  // Global variables for compare tables feature (via global variable `sharedData`)...
+  const sharedData = {
+    addAttributeUrl: "{{ url_for('add_attribute', id=ds.id)|safe }}",
+    // markWaitlistUrl: "{{ url_for('add_attribute', id=ds.id, attr='waitlist', value='1')|safe }}",
+    markMatchTypeUrl: "{{ url_for('add_attribute', id=ds.id, attr='match_type', value='1')|safe }}",
+    markMatchedUrl: "{{ url_for('add_attribute', id=ds.id, attr='matched', value='1')|safe }}",
+    markAllMatchedUrl: "{{ url_for('multi_match', id=ds.id)|safe }}",
+    multimatch: "{{ multimatch or '' }}", // TODO: What type of variable is here? Is it string or boolean?
+  };
+  console.log('[process_detail:requireProcessDetail]', {
+    sharedData,
   });
-};
 
-function markMatched (button) {
-  fetch("{{ url_for('add_attribute', id=ds.id, attr='match_type', value='1')|safe }}");
-  var url = "{{ url_for('add_attribute', id=ds.id, attr='matched', value='1')|safe }}";
-  fetch(url).then((response) => {
-    if (!response.ok) {
-        throw new Error(`HTTP error ${response.status}`);
-    };
-    button.innerText = "Matched";
-    button.classList.remove("button-primary");
-    document.getElementById('match-button').style.display = 'none';
-    document.getElementById('manual-multi-match').style.display = 'none';
-    {% if multimatch %}document.getElementById('manual-multi-match').style.display = 'none';{% endif %}
-  });
-};
+  // Export to global scope (to access from generated html code handlers).
+  window.ProcessDetail = ProcessDetail;
 
-{% if same_name_count %}
-function markAllMatched (button) {
-  var url = "{{ url_for('multi_match', id=ds.id)|safe }}";
-  fetch(url).then((response) => {
-    if (!response.ok) {
-        throw new Error(`HTTP error ${response.status}`);
-    };
-    button.innerText = "Matched";
-    button.classList.remove("button-primary");
-    document.getElementById('manual-match').style.display = 'none';
-    document.getElementById('match-button').style.display = 'none';
-  });
-};
-{% endif %}
+  // Start core module...
+  ProcessDetail.start(sharedData);
+});
 </script>
 {% include 'footer.html' %}
