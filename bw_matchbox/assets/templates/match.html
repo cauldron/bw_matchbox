@@ -44,7 +44,7 @@ var doSearch = function () {
   if (qs) {
     const req = new XMLHttpRequest();
     req.addEventListener('load', search_result_updater);
-    req.open('GET', '{{ url_for('search') }}?e=1&source={{ ds.id }}&database={{ t }}&q=' + qs);
+    req.open('GET', '{{ url_for('search') }}?e=1&source={{ ds.id }}&database={{ target }}&q=' + qs);
     req.send();
   };
 };
