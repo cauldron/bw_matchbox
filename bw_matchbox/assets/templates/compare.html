@@ -39,13 +39,14 @@
   </div>
   <div class="row compare-tables">
     <div class="column one-half">
-      <h3><a href="{{ url_for('process_detail', id=source_node.id) }}">{{ source_node.name }}</a></h3>
+      <h3><a href="{{ url_for('process_detail', id=source_node.id) }}">{{ source_node.name }}</a> <i onclick="copySourceMarkdown()" class="fa-solid fa-copy"></i></h3>
       <table class="fixed-table fixed-table-active compare-table" id="source-table" width="100%">
       </table>
       <p>{{ source_biosphere_number }} biosphere exchanges</p>
     </div>
     <div class="column one-half">
       <h3><a href="{{ url_for('process_detail', id=target_node.id) }}">{{ target_node.name }}</a>
+      <i onclick="copyTargetMarkdown()" class="fa-solid fa-copy"></i>
       <span onclick="CompareCore.replaceWithTargetHandler(this)" id="replace-with-target-arrow"><a><i class="fa-solid fa-arrow-up"></i></a></span></h3>
       <table class="fixed-table fixed-table-active compare-table" id="target-table" width="100%">
       </table>
@@ -55,6 +56,23 @@
 </div>
 
 <script>
+  const sourceText = "[{{ source_node.name }}]({{ base_url}}{{ url_for('process_detail', id=source_node.id) }})";
+  const targetText = "[{{ target_node.name }}]({{ base_url}}{{ url_for('process_detail', id=target_node.id) }})";
+  const copySourceMarkdown = async () => {
+    try {
+      await navigator.clipboard.writeText(sourceText);
+    } catch (err) {
+      console.error('Failed to copy: ', err);
+    }
+  }
+  const copyTargetMarkdown = async () => {
+    try {
+      await navigator.clipboard.writeText(targetText);
+    } catch (err) {
+      console.error('Failed to copy: ', err);
+    }
+  }
+
   modules.require('CompareCore', (CompareCore) => {
     // Global variables for compare tables feature (via global variable `sharedData`)...
     const sharedData = {

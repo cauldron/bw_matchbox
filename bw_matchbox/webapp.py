@@ -688,6 +688,9 @@ def compare(source, target):
         # Modifies in place
         check_similar(obj, source_technosphere)
 
+    base_url = flask.request.base_url.replace(flask.request.path, "")
+    print(base_url)
+
     return flask.render_template(
         "compare.html",
         title="Database Comparison Page",
@@ -705,6 +708,7 @@ def compare(source, target):
         target_data_json=json.dumps(target_technosphere),
         target_biosphere_number=len(target.biosphere()),
         match_types=matchbox_app.config["mb_match_types"],
+        base_url=base_url,
     )
 
 
