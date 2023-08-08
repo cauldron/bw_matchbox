@@ -260,7 +260,7 @@ def index():
         source=s,
         target=t,
         file_number=sum(1 for obj in files if obj["enabled"]),
-        table_data=[obj for obj, _ in zip(bd.Database(s), range(50))],
+        table_data=[],
         query_string="",
         database=s,
         proxy=proxy,
