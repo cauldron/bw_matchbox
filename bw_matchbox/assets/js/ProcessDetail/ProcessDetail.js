@@ -43,7 +43,6 @@ modules.define(
           CommonModal.setModalContentId('mark-waitlist-dialog-modal')
             .setTitle(title)
             .setModalWindowOptions({
-              // fullWindowWidth: true, // UNUSED (Default behavior)
               autoHeight: true,
               width: 'md',
             })
@@ -61,26 +60,16 @@ modules.define(
               }
             })
             .showModal();
-          let comment = '';
-          // let hasComment = false;
-          const commentEl = document.getElementById('mark-waitlist-comment');
+          // Store comment value...
           const okButtonEl = document.getElementById('mark-waitlist-ok');
-          commentEl.addEventListener('input', (event) => {
-            const { target } = event;
-            const { value } = target;
-            comment = value;
-            // const hasValue = !!value;
-            // if (hasValue !== hasComment) {
-            //   okButtonEl.classList.toggle('disabled', !hasValue);
-            //   hasComment = hasValue;
-            // }
-          });
           // TODO: Add handlers for modal actions
           okButtonEl.addEventListener('click', () => {
             if (isOpened) {
               isOpened = false;
               CommonModal.hideModal({ dontNotify: true });
               // Success: proceed with comment text
+              const commentEl = document.getElementById('mark-waitlist-comment');
+              const comment = commentEl.value;
               resolve({ comment });
             }
           });
@@ -99,29 +88,18 @@ modules.define(
         const { sharedData } = this;
         const { addAttributeUrl } = sharedData;
         const urlBase = addAttributeUrl;
-        // ?attr=match_type&value=1
+        // Eg: ?attr=match_type&value=1
         const urlQuery1 = CommonHelpers.makeQuery(
           { attr: 'match_type', value: 1 },
           { addQuestionSymbol: true },
         );
-        // ?attr=waitlist_comment&value=<comment text>
+        // Eg: ?attr=waitlist_comment&value=<comment text>
         const urlQuery2 = CommonHelpers.makeQuery(
           { attr: 'waitlist_comment', value: comment },
           { addQuestionSymbol: true },
         );
         const url1 = urlBase + urlQuery1;
         const url2 = urlBase + urlQuery2;
-        // DEBUG: For the test time
-        // console.log('[ProcessDetail:doMarkWaitlist] start', {
-        //   comment,
-        //   userAction,
-        //   addAttributeUrl,
-        //   urlBase,
-        //   url1,
-        //   url2,
-        //   urlQuery1,
-        //   urlQuery2,
-        // });
         // Call both requests at once...
         const allPromises = [fetch(url1), fetch(url2)];
         return Promise.all(allPromises).then((resList) => {
@@ -133,13 +111,6 @@ modules.define(
             })
             .filter(Boolean);
           const hasErrors = !!errorsList.length;
-          // DEBUG: For the test time
-          console.log('[ProcessDetail:doMarkWaitlist] success', {
-            hasErrors,
-            resList,
-            errorsList,
-          });
-          debugger;
           if (!hasErrors) {
             // All is ok...
             button.innerText = 'Waitlisted';
