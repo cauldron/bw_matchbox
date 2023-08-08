@@ -437,14 +437,26 @@ def search():
 
     q = flask.request.args.get("q")
     embed = flask.request.args.get("e")
+    json = flask.request.args.get("json")  # Return the data as json
     search_db = flask.request.args.get("database")
 
-    if embed:
+    table_data = bd.Database(search_db or t).search(q, limit=100)
+
+    if json:
+        MAPPING = {'reference product': 'referenceProduct'}
+        FIELDS = {'name', 'id', 'location', 'unit', 'reference product'}
+
+        payload = [
+            {MAPPING.get(key, key): ds.get(key) for key in FIELDS}
+            for ds in table_data
+        ]
+        return flask.jsonify(payload)
+    elif embed:
         source = bd.get_activity(id=int(flask.request.args.get("source")))
         return flask.render_template(
             "search-embedded.html",
             source=source,
-            table_data=bd.Database(search_db or t).search(q, limit=100),
+            table_data=table_data,  # bd.Database(search_db or t).search(q, limit=100),
         )
     else:
         return flask.render_template(
@@ -456,7 +468,7 @@ def search():
             proxy=proxy,
             user=auth.current_user(),
             title="bw_matchbox Search Result",
-            table_data=bd.Database(search_db).search(q, limit=100),
+            table_data=table_data,  # =bd.Database(search_db).search(q, limit=100),
             query_string=q,
             database=s,
         )
@@ -584,6 +596,13 @@ def match(source):
 
     matches = bd.Database(t).search(node["name"] + " " + node.get("location", ""))
 
+    MAPPING = {'reference product': 'referenceProduct'}
+    FIELDS = {'name', 'id', 'location', 'unit', 'reference product'}
+    matches_payload = [
+        {MAPPING.get(key, key): ds.get(key) for key in FIELDS}
+        for ds in matches
+    ]
+
     return flask.render_template(
         "match.html",
         title="Database Matching Page",
@@ -596,6 +615,7 @@ def match(source):
         user=auth.current_user(),
         query_string=node["name"] + " " + node.get("location", ""),
         matches=matches,
+        matches_json=json.dumps(matches_payload),
     )
 
 

@@ -88,3 +88,27 @@
     transform: rotate(360deg);
   }
 }
+
+/* Multicolumn process detail list */
+.details-list {
+  column-gap: 20px;
+  column-rule: 1px solid #eee;
+  column-width: 300px;
+  list-style-type: none;
+  line-height: 1.25;
+}
+.details-list li {
+  margin: 5px 0;
+}
+/* // UNUSED? Using the same width on the all scren widths?
+ * @media (width >= 1300px) {
+ *   .details-list {
+ *     column-width: 350px;
+ *   }
+ * }
+ */
+.details-list label {
+  display: inline;
+  opacity: 0.5;
+  font-weight: normal;
+}

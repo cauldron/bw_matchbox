@@ -5,36 +5,6 @@
   position: relative;
 }
 
-/* Multicolumn process detail list */
-.process-detail .details-list {
-  column-gap: 20px;
-  column-rule: 1px solid #eee;
-  column-width: 300px;
-  list-style-type: none;
-  line-height: 1.25;
-}
-/* // UNUSED? Using the same width on the all scren widths?
- * @media (width >= 1300px) {
- *   .process-detail .details-list {
- *     column-width: 350px;
- *   }
- * }
- */
-.process-detail .details-list label {
-  display: inline;
-  opacity: 0.5;
-  font-weight: normal;
-}
-
-/* Loading status: disable some elements... */
-.process-detail {
-  /* pointer-events: none; */
-}
-.process-detail.loading {
-  /* opacity: 0.5; */
-  /* pointer-events: none; */
-}
-
 /* Info section */
 .process-detail .info-tableau {
   position: relative;
@@ -61,7 +31,6 @@
 /* Loader splash */
 .process-detail .info-tableau .loader-splash {
   padding: 20px;
-  /* position: fixed; */
 }
 .process-detail:not(.loading) .info-tableau .loader-splash {
   /* Inherited from `.loader-splash.hidden`, see `bw_matchbox/assets/css/common.css` */
