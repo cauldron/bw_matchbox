@@ -67,6 +67,7 @@ BASE_MATCH_TYPES = {
     "6": "Match with market and replace or remove transport and loss factor",
     "7": "Equivalent datasets after modification",
     "8": "Replace aggregated with unit process",
+    "9": "Rescaled direct correspondence",
 }
 
 

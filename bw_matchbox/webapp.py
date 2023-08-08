@@ -376,6 +376,7 @@ MATCH_TYPE_ABBREVIATIONS = {
     mwmarortalf: "Market w/ diff trans loss",
     "Equivalent datasets after modification": "Modifications",
     "Replace aggregated with unit process": "Replace aggregated",
+    "Rescaled direct correspondence": "Rescaled",
     "Unknown": "Unknown",
 }
 
