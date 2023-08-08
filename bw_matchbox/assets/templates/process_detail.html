@@ -65,7 +65,7 @@
           <td><a href="{{ url_for('process_detail', id=row.input.id) }}">{{row.input.name}}</a></td>
           <td>{{row.input.location}}</td>
           <td>{{row.input.unit}}</td>
-          <td>{% if row.matched %}<i class="fa-solid fa-check"></i>{% else %}<i class="fa-solid fa-circle-xmark"></i>{% endif %}</td>
+          <td>{% if row.input.matched %}<i class="fa-solid fa-check"></i>{% else %}<i class="fa-solid fa-circle-xmark"></i>{% endif %}</td>
         </tr>
         {% endfor %}
       </table>
