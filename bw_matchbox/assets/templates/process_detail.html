@@ -15,13 +15,13 @@
   - `ProcessDetail` (from `bw_matchbox/assets/js/ProcessDetail/ProcessDetail.js`)
 #}
 
-<div class="process-detail container {{ 'waitlist' if ds.get('waitlist') }}">
+<div id="process-detail" class="process-detail container{{ ' waitlist' if ds.get('waitlist') }}">
   {% include 'navigation.html' %}
   <div class="row">
     <div class="column">
       <h1>{{ ds.name }}
         {% if ds.database == source %}
-          <button onClick="ProcessDetail.markWaitlist(this)" style="vertical-align: middle" class="button-primary" id="mark-waitlist">Waitlist</button>
+          <button onClick="ProcessDetail.markWaitlist(this)" style="vertical-align: middle" class="{{ 'button-primary' if not ds.get('waitlist') }}" id="mark-waitlist">{{ 'Waitlisted' if ds.get('waitlist') else 'Waitlist' }}</button>
           {% if not ds.matched %}<button onClick="ProcessDetail.markMatched(this)" style="vertical-align: middle" class="button-primary" id="manual-match">No match needed</button>
           {% if same_name_count %}<button onClick="ProcessDetail.markAllMatched(this)" style="vertical-align: middle" class="button-primary" id="manual-multi-match">Mark all matched</button>{% endif %}
           <a style="vertical-align: middle" id="match-button" class="button button-primary" href="{{ url_for('match', source=ds.id)}}">Match</a>{% elif ds.match_type == "1" %}<button id="match-button" style="vertical-align: middle">No match needed</button>{% else %}<button id="match-button" style="vertical-align: middle">Matched</button>{% endif %}
@@ -48,8 +48,11 @@
           {% if match_type %}
               <li><label>Match type:</label> {{ match_type }}</li>
           {% endif %}
-
       </ul>
+      <div class="info-tableau">
+        <div class="error" id="error">Sample error text</div>
+        <div id="loader-splash" class="loader-splash bg-white full-cover"><div class="loader-spinner"></div></div>
+      </div>
       <h2>Technosphere Inputs</h2>
       <table width="100%">
         <tr>
@@ -129,31 +132,8 @@ modules.require('ProcessDetail', function requireProcessDetail(ProcessDetail) {
     markAllMatchedUrl: "{{ url_for('multi_match', id=ds.id)|safe }}",
     multimatch: "{{ multimatch or '' }}", // TODO: What type of variable is here? Is it string or boolean?
     // Waitlist record status...
-    waitlist: {{ 'true' if ds.get('waitlist') else 'false' }},
+    isWaitlist: {{ 'true' if ds.get('waitlist') else 'false' }},
   };
-  console.log('[process_detail:requireProcessDetail]', {
-    sharedData,
-    {# // DEBUG: Unused server variables...
-      ds: '{{ ds.items() }}', // node
-      authors: '{{ authors }}', // get_authors(node.get("authors"))
-      project: '{{ project }}', // proj
-      proxy: '{{ proxy }}', // proxy
-      proxy_node: '{{ proxy_node }}', // proxy_node
-      reference_node: '{{ reference_node }}', // reference_node
-      source: '{{ source }}', // s
-      target: '{{ target }}', // t
-      file_number: '{{ file_number }}', // sum(1 for obj in files if obj["enabled"])
-      user: '{{ user }}', // auth.current_user()
-      same_name_count: '{{ same_name_count }}', // same_name_count
-      same_name: '{{ same_name }}', // same_name
-      technosphere: '{{ technosphere }}', // technosphere
-      match_type: '{{ match_type }}', // matchbox_app.config["mb_match_types"].get(node.get("match_type"))
-      total_consumers: '{{ total_consumers }}', // len(node.upstream())
-      consumers: '{{ consumers }}', // list(node.upstream())[:50]
-      biosphere: '{{ biosphere }}', // biosphere
-    #}
-  });
-  // debugger;
 
   // Export to global scope (to access from generated html code handlers).
   window.ProcessDetail = ProcessDetail;

@@ -1,3 +1,10 @@
+/* Basic styles */
+.process-detail {
+  /* Animation... */
+  transition: all var(--common-animation-time);
+  position: relative;
+}
+
 /* Multicolumn process detail list */
 .process-detail .details-list {
   column-gap: 20px;
@@ -17,6 +24,49 @@
   display: inline;
   opacity: 0.5;
   font-weight: normal;
+}
+
+/* Loading status: disable some elements... */
+.process-detail {
+  /* pointer-events: none; */
+}
+.process-detail.loading {
+  /* opacity: 0.5; */
+  /* pointer-events: none; */
+}
+
+/* Info section */
+.process-detail .info-tableau {
+  position: relative;
+  /* margin: 10px 0; */
+  transition: all var(--common-animation-time);
+  min-height: 0;
+}
+.process-detail.loading .info-tableau {
+  min-height: 50px;
+}
+
+/* Error */
+.process-detail .info-tableau .error {
+  border-radius: 4px;
+  background-color: var(--layout-theme-error-color);
+  color: #fff;
+  margin: 20px auto;
+  padding: 10px 20px;
+}
+.process-detail:not(.has-error) .info-tableau .error {
+  display: none;
+}
+
+/* Loader splash */
+.process-detail .info-tableau .loader-splash {
+  padding: 20px;
+  /* position: fixed; */
+}
+.process-detail:not(.loading) .info-tableau .loader-splash {
+  /* Inherited from `.loader-splash.hidden`, see `bw_matchbox/assets/css/common.css` */
+  opacity: 0;
+  pointer-events: none;
 }
 
 /* // UNUSED: Disabled button (it's always enabled)

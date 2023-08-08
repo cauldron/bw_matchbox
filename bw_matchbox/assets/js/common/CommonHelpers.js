@@ -10,6 +10,31 @@ modules.define(
     // Define module...
 
     const CommonHelpers = {
+      /** getErrorText - Return plain text for error.
+       * @param {string|error|string[]|error[]} error - Error or errors list.
+       * @return {string}
+       */
+      getErrorText(error) {
+        if (!error) {
+          return;
+        }
+        if (Array.isArray(error)) {
+          return error.map(this.getErrorText.bind(this)).join('\n');
+        }
+        if (error instanceof Error) {
+          error = error.message;
+        } else if (typeof error !== 'string') {
+          // TODO?
+          error = String(error);
+        }
+        return error;
+      },
+
+      /** sortByAmountProperty -- Sort by numeric amount propery helper
+       * @param {TDataRecord} a
+       * @param {TDataRecord} b
+       * @return {-1,0,1}
+       */
       sortByAmountProperty(a, b) {
         if (a.amount < b.amount) {
           // Reversed because want ascending order
@@ -154,17 +179,20 @@ modules.define(
 
       /** makeQuery
        * @param {Record<string, string | number | boolean>} params
-       * @param {{ addQuestionSymbol?: boolean; useEmptyValues?: boolean }} opts
+       * @param {{ addQuestionSymbol?: boolean; useEmptyStrings?: boolean; useUndefinedValues?: boolean }} opts
        * @returns {string}
        */
       makeQuery(params, opts = {}) {
         let url = Object.entries(params)
           .map(([id, val]) => {
             const valStr = String(val);
-            if ((val == undefined || valStr === '') && !opts.useEmptyValues) {
+            if (val == undefined && !opts.useUndefinedValues) {
               return undefined;
             }
-            return encodeURI(id) + '=' + encodeURI(String(val));
+            if (valStr === '' && !opts.useEmptyStrings) {
+              return undefined;
+            }
+            return encodeURI(id) + '=' + encodeURI(String(val == undefined ? '' : val));
           })
           .filter(Boolean)
           .join('&');
