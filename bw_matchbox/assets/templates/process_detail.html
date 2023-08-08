@@ -27,26 +27,26 @@
           <a style="vertical-align: middle" id="match-button" class="button button-primary" href="{{ url_for('match', source=ds.id)}}">Match</a>{% elif ds.match_type == "1" %}<button id="match-button" style="vertical-align: middle">No match needed</button>{% else %}<button id="match-button" style="vertical-align: middle">Matched</button>{% endif %}
         {% endif %}
       </h1>
-      <ul>
-          <li>Database: {{ ds.database }}</li>
-          <li>Location: {{ ds.location }}</li>
-          <li>Unit: {{ ds.unit }}</li>
-          <li>ID: {{ ds.id }}</li>
-          <li>Production amount: {{ ds['production amount'] }}</li>
-          <li>Reference product: {{ ds['reference product'] }}</li>
-          <li>Authors: {{ authors }}</li>
-          <li>Comment: {{ds.comment }}</li>
+      <ul class="details-list">
+          <li><label>Database:</label> {{ ds.database }}</li>
+          <li><label>Location:</label> {{ ds.location }}</li>
+          <li><label>Unit:</label> {{ ds.unit }}</li>
+          <li><label>ID:</label> {{ ds.id }}</li>
+          <li><label>Production amount:</label> {{ ds['production amount'] }}</li>
+          <li><label>Reference product:</label> {{ ds['reference product'] }}</li>
+          <li><label>Authors:</label> {{ authors }}</li>
+          <li><label>Comment:</label> {{ds.comment }}</li>
           {% if same_name_count %}
-              <li>Datasets with same name: {{ same_name_count }}: {% for obj in same_name %}<a href="{{ url_for('process_detail', id=obj.id) }}">{% if obj.data.matched %}<i class="fa-solid fa-check"></i> {% endif %}{{obj.location}}</a> {% endfor %}</li>
+              <li><label>Datasets with same name:</label> {{ same_name_count }}: {% for obj in same_name %}<a href="{{ url_for('process_detail', id=obj.id) }}">{% if obj.data.matched %}<i class="fa-solid fa-check"></i> {% endif %}{{obj.location}}</a> {% endfor %}</li>
           {% endif %}
           {% if proxy_node %}
-              <li>Proxy: <a href="{{ url_for('process_detail', id=proxy_node.id) }}">{{ proxy_node }}</a></li>
+              <li><label>Proxy:</label> <a href="{{ url_for('process_detail', id=proxy_node.id) }}">{{ proxy_node }}</a></li>
           {% endif %}
           {% if reference_node %}
-              <li>Proxy for: <a href="{{ url_for('process_detail', id=reference_node.id) }}">{{ reference_node }}</a></li>
+              <li><label>Proxy for:</label> <a href="{{ url_for('process_detail', id=reference_node.id) }}">{{ reference_node }}</a></li>
           {% endif %}
           {% if match_type %}
-              <li>Match type: {{ match_type }}</li>
+              <li><label>Match type:</label> {{ match_type }}</li>
           {% endif %}
 
       </ul>
