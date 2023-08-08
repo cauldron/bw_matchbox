@@ -59,6 +59,20 @@ modules.define(
         this.setError(undefined);
       },
 
+      /** processMultipleRequestErrors
+       * @param {Response[]} resList
+       * @return {Error[]}
+       */
+      processMultipleRequestErrors(resList) {
+        return resList
+          .map((res) => {
+            if (!res.ok) {
+              return new Error(`Can't load url '${res.url}': ${res.statusText}, ${res.status}`);
+            }
+          })
+          .filter(Boolean);
+      },
+
       getMarkWaitlistDialogContent() {
         const content = `
           <div class="mark-waitlist-form">
@@ -142,27 +156,20 @@ modules.define(
             CommonHelpers.makeQuery({ attr: 'waitlist_comment', value: comment }, makeUrlParams),
         ].filter(Boolean);
         // Call both requests at once...
-        const requests = urls.map((url) => fetch(url));
+        const callbacks = urls.map((url) => () => fetch(url));
         // DEBUG: While #57 is in progress or in testing...
         console.log('[ProcessDetail:doMarkWaitlist]', {
           setWaitlist,
           urls,
-          requests,
+          callbacks,
           userAction,
         });
         this.setLoading(true);
-        // Run requests one by one...
-        return CommonHelpers.runAllPromisesSequentially(requests)
+        // Run callbacks one by one...
+        return CommonHelpers.runAsyncCallbacksSequentially(callbacks)
           .then((resList) => {
-            const errorsList = resList
-              .map((res) => {
-                if (!res.ok) {
-                  return new Error(`Can't load url '${res.url}': ${res.statusText}, ${res.status}`);
-                }
-              })
-              .filter(Boolean);
-            const hasErrors = !!errorsList.length;
-            if (hasErrors) {
+            const errorsList = this.processMultipleRequestErrors(resList);
+            if (errorsList.length) {
               // Some errors?
               // eslint-disable-next-line no-console
               console.error('[ProcessDetail:doMarkWaitlist] Got errors', errorsList);
@@ -184,7 +191,7 @@ modules.define(
       /** markWaitlist -- Handler for 'Waitlist' button.
        * @param {<HTMLButtonElement>} button
        */
-      markWaitlist(button) {
+      markWaitlist() {
         const { sharedData } = this;
         const { isWaitlist } = sharedData;
         const setWaitlist = !isWaitlist;
@@ -204,25 +211,18 @@ modules.define(
       markMatched(button) {
         const { sharedData } = this;
         const urls = [sharedData.markMatchedUrl, sharedData.markMatchTypeUrl];
-        const requests = urls.map((url) => fetch(url));
+        const callbacks = urls.map((url) => () => fetch(url));
         // DEBUG: While #57 is in progress or in testing...
         console.log('[ProcessDetail:markMatched]', {
           urls,
-          requests,
+          callbacks,
         });
         this.setLoading(true);
-        // Run requests one by one...
-        return CommonHelpers.runAllPromisesSequentially(requests)
+        // Run callbacks one by one...
+        return CommonHelpers.runAsyncCallbacksSequentially(callbacks)
           .then((resList) => {
-            const errorsList = resList
-              .map((res) => {
-                if (!res.ok) {
-                  return new Error(`Can't load url '${res.url}': ${res.statusText}, ${res.status}`);
-                }
-              })
-              .filter(Boolean);
-            const hasErrors = !!errorsList.length;
-            if (hasErrors) {
+            const errorsList = this.processMultipleRequestErrors(resList);
+            if (errorsList.length) {
               // Some errors?
               // eslint-disable-next-line no-console
               console.error('[ProcessDetail:markMatched] Got errors', errorsList);
@@ -245,30 +245,6 @@ modules.define(
           .finally(() => {
             this.setLoading(false);
           });
-        /* // DEBUG: ORIGINAL CODE: While #57 is in progress or in testing...
-        fetch(url)
-          .then((res) => {
-            if (!res.ok) {
-              const error = new Error(`HTTP error ${res.status}`);
-              // eslint-disable-next-line no-console
-              console.error('[ProcessDetail:markMatchedUrl] Got error', error);
-              // eslint-disable-next-line no-debugger
-              debugger;
-              // Show errors on the page...
-              this.setError(error);
-            } else {
-              fetch(sharedData.markMatchTypeUrl);
-              button.innerText = 'Matched';
-              button.classList.remove('button-primary');
-              document.getElementById('match-button').style.display = 'none';
-              document.getElementById('manual-multi-match').style.display = 'none';
-              if (sharedData.multimatchi) {
-                document.getElementById('manual-multi-match').style.display = 'none';
-              }
-              this.clearError();
-            }
-          })
-          */
       },
 
       /** markAllMatched -- Handler for 'Mark all matched' button.

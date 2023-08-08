@@ -10,11 +10,39 @@ modules.define(
     // Define module...
 
     const CommonHelpers = {
-      /** runAllPromisesSequentially -- Wait for all the promises sequentially, one after another
+      /** runAsyncCallbacksSequentially -- Run all the promised callbacks sequentially, one after another
+       * @param {<() => Promise>[]} callbacks - List of non-empty (!) callbacks
+       * @return {Promise}
+       */
+      runAsyncCallbacksSequentially(callbacks) {
+        return new Promise((resolve, reject) => {
+          const results = [];
+          const doPromise = (cb) => {
+            if (!cb) {
+              // No more callbacks: return results...
+              return resolve(results);
+            }
+            return (
+              Promise.resolve(cb())
+                .then((res) => {
+                  // Store result...
+                  results.push(res);
+                  // Do next promise...
+                  return doPromise(callbacks.shift());
+                })
+                // Reject promise on the first error...
+                .catch(reject)
+            );
+          };
+          doPromise(callbacks.shift());
+        });
+      },
+
+      /** runPromisesSequentially -- Wait for all the promises sequentially, one after another
        * @param {Promise[]} promises - List of non-empty (!) promises
        * @return {Promise}
        */
-      runAllPromisesSequentially(promises) {
+      runPromisesSequentially(promises) {
         return new Promise((resolve, reject) => {
           const results = [];
           const doPromise = (promise) => {
