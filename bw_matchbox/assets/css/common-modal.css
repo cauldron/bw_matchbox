@@ -14,16 +14,19 @@ body.has-modal {
   /* By default is hidden and inactive, see `show` state below */
   pointer-events: none;
   opacity: 0;
-  transition: all var(--common-effect-time) ease-out;
-  /* Emulate show effect */
-  margin-top: -100px;
-  margin-bottom: 100px;
+  transition: all var(--common-animation-time) ease-out;
+  /* [> Emulate show effect <]
+   * margin-top: -100px;
+   * margin-bottom: 100px;
+   */
 }
 .common-modal-wrapper .common-modal.show {
   opacity: 1;
   pointer-events: all;
-  margin-top: 0;
-  margin-bottom: 0;
+  /* [> Emulate show effect <]
+   * margin-top: 0;
+   * margin-bottom: 0;
+   */
 }
 .common-modal-wrapper .common-modal,
 .common-modal-wrapper .common-modal-splash {
@@ -60,15 +63,18 @@ body.has-modal {
   /* Make full window width default */
   width: 100%;
 }
-/*
-.common-modal-wrapper .common-modal-window.fullWindowWidth .common-modal-content-wrapper {
-  width: 100%;
-}
-.common-modal-wrapper .common-modal-window.fullWindowHeight .common-modal-content-wrapper {
-  height: 100%;
-}
-*/
 @media (width >= 600px) and (height >= 400px) {
+  .common-modal-wrapper .common-modal {
+    /* Emulate slide show effect */
+    margin-top: -100px;
+    margin-bottom: 100px;
+  }
+  .common-modal-wrapper .common-modal.show {
+    margin-top: 0;
+    margin-bottom: 0;
+  }
+
+  /* Update non-full-screen window styles... */
   .common-modal-wrapper .common-modal-window {
     /* Wide-screen: show as a window */
     border-radius: 8px;
