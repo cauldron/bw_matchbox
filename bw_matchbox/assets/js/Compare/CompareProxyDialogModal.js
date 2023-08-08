@@ -43,6 +43,7 @@ modules.define(
           source: this.sharedData.source_id,
           comment: 'One-to-one proxy',
           name: this.getTargetProxyName(),
+          match_type: "2",
         };
         const url = '/create-proxy/';
         fetch(url, {
