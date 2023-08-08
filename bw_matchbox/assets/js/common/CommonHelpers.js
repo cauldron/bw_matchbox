@@ -10,6 +10,34 @@ modules.define(
     // Define module...
 
     const CommonHelpers = {
+      /** runAllPromisesSequentially -- Wait for all the promises sequentially, one after another
+       * @param {Promise[]} promises - List of non-empty (!) promises
+       * @return {Promise}
+       */
+      runAllPromisesSequentially(promises) {
+        return new Promise((resolve, reject) => {
+          const results = [];
+          const doPromise = (promise) => {
+            if (!promise) {
+              // No more promises: return results...
+              return resolve(results);
+            }
+            return (
+              promise
+                .then((res) => {
+                  // Store result...
+                  results.push(res);
+                  // Do next promise...
+                  return doPromise(promises.shift());
+                })
+                // Reject promise on the first error...
+                .catch(reject)
+            );
+          };
+          doPromise(promises.shift());
+        });
+      },
+
       /** getErrorText - Return plain text for error.
        * @param {string|error|string[]|error[]} error - Error or errors list.
        * @return {string}

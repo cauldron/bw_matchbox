@@ -69,9 +69,10 @@
   pointer-events: none;
 }
 
-/* // UNUSED: Disabled button (it's always enabled)
- * #mark-waitlist-dialog-modal #mark-waitlist-ok.disabled {
- *   opacity: 0.5;
- *   pointer-events: none;
- * }
- */
+/* Disabled buttons */
+.process-detail button.disabled,
+#mark-waitlist-dialog-modal button.disabled {
+  opacity: 0.5;
+  pointer-events: none;
+  cursor: default;
+}

@@ -151,7 +151,8 @@ modules.define(
           userAction,
         });
         this.setLoading(true);
-        return Promise.all(requests)
+        // Run requests one by one...
+        return CommonHelpers.runAllPromisesSequentially(requests)
           .then((resList) => {
             const errorsList = resList
               .map((res) => {
@@ -161,11 +162,7 @@ modules.define(
               })
               .filter(Boolean);
             const hasErrors = !!errorsList.length;
-            if (!hasErrors) {
-              // All is ok...
-              this.setWaitlist(setWaitlist);
-              this.clearError();
-            } else {
+            if (hasErrors) {
               // Some errors?
               // eslint-disable-next-line no-console
               console.error('[ProcessDetail:doMarkWaitlist] Got errors', errorsList);
@@ -173,6 +170,10 @@ modules.define(
               debugger;
               // Show errors on the page...
               this.setError(errorsList);
+            } else {
+              // Success...
+              this.setWaitlist(setWaitlist);
+              this.clearError();
             }
           })
           .finally(() => {
@@ -202,20 +203,72 @@ modules.define(
        */
       markMatched(button) {
         const { sharedData } = this;
-        const url = sharedData.markMatchedUrl;
-        fetch(url).then((response) => {
-          if (!response.ok) {
-            throw new Error(`HTTP error ${response.status}`);
-          }
-          fetch(sharedData.markMatchTypeUrl);
-          button.innerText = 'Matched';
-          button.classList.remove('button-primary');
-          document.getElementById('match-button').style.display = 'none';
-          document.getElementById('manual-multi-match').style.display = 'none';
-          if (sharedData.multimatchi) {
-            document.getElementById('manual-multi-match').style.display = 'none';
-          }
+        const urls = [sharedData.markMatchedUrl, sharedData.markMatchTypeUrl];
+        const requests = urls.map((url) => fetch(url));
+        // DEBUG: While #57 is in progress or in testing...
+        console.log('[ProcessDetail:markMatched]', {
+          urls,
+          requests,
         });
+        this.setLoading(true);
+        // Run requests one by one...
+        return CommonHelpers.runAllPromisesSequentially(requests)
+          .then((resList) => {
+            const errorsList = resList
+              .map((res) => {
+                if (!res.ok) {
+                  return new Error(`Can't load url '${res.url}': ${res.statusText}, ${res.status}`);
+                }
+              })
+              .filter(Boolean);
+            const hasErrors = !!errorsList.length;
+            if (hasErrors) {
+              // Some errors?
+              // eslint-disable-next-line no-console
+              console.error('[ProcessDetail:markMatched] Got errors', errorsList);
+              // eslint-disable-next-line no-debugger
+              debugger;
+              // Show errors on the page...
+              this.setError(errorsList);
+            } else {
+              // Success...
+              button.innerText = 'Matched';
+              button.classList.remove('button-primary');
+              document.getElementById('match-button').style.display = 'none';
+              document.getElementById('manual-multi-match').style.display = 'none';
+              if (sharedData.multimatchi) {
+                document.getElementById('manual-multi-match').style.display = 'none';
+              }
+              this.clearError();
+            }
+          })
+          .finally(() => {
+            this.setLoading(false);
+          });
+        /* // DEBUG: ORIGINAL CODE: While #57 is in progress or in testing...
+        fetch(url)
+          .then((res) => {
+            if (!res.ok) {
+              const error = new Error(`HTTP error ${res.status}`);
+              // eslint-disable-next-line no-console
+              console.error('[ProcessDetail:markMatchedUrl] Got error', error);
+              // eslint-disable-next-line no-debugger
+              debugger;
+              // Show errors on the page...
+              this.setError(error);
+            } else {
+              fetch(sharedData.markMatchTypeUrl);
+              button.innerText = 'Matched';
+              button.classList.remove('button-primary');
+              document.getElementById('match-button').style.display = 'none';
+              document.getElementById('manual-multi-match').style.display = 'none';
+              if (sharedData.multimatchi) {
+                document.getElementById('manual-multi-match').style.display = 'none';
+              }
+              this.clearError();
+            }
+          })
+          */
       },
 
       /** markAllMatched -- Handler for 'Mark all matched' button.
@@ -224,15 +277,30 @@ modules.define(
       markAllMatched(button) {
         const { sharedData } = this;
         const url = sharedData.markAllMatchedUrl;
-        fetch(url).then((response) => {
-          if (!response.ok) {
-            throw new Error(`HTTP error ${response.status}`);
-          }
-          button.innerText = 'Matched';
-          button.classList.remove('button-primary');
-          document.getElementById('manual-match').style.display = 'none';
-          document.getElementById('match-button').style.display = 'none';
-        });
+        this.setLoading(true);
+        fetch(url)
+          .then((res) => {
+            if (!res.ok) {
+              const error = new Error(
+                `Can't load url '${res.url}': ${res.statusText}, ${res.status}`,
+              );
+              // eslint-disable-next-line no-console
+              console.error('[ProcessDetail:markAllMatched] Got error', error);
+              // eslint-disable-next-line no-debugger
+              debugger;
+              // Show errors on the page...
+              this.setError(error);
+            } else {
+              button.innerText = 'Matched';
+              button.classList.remove('button-primary');
+              document.getElementById('manual-match').style.display = 'none';
+              document.getElementById('match-button').style.display = 'none';
+              this.clearError();
+            }
+          })
+          .finally(() => {
+            this.setLoading(false);
+          });
       },
 
       start(sharedData) {

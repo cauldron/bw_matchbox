@@ -21,10 +21,10 @@
     <div class="column">
       <h1>{{ ds.name }}
         {% if ds.database == source %}
-          <button onClick="ProcessDetail.markWaitlist(this)" style="vertical-align: middle" class="{{ 'button-primary' if not ds.get('waitlist') }}" id="mark-waitlist">{{ 'Waitlisted' if ds.get('waitlist') else 'Waitlist' }}</button>
-          {% if not ds.matched %}<button onClick="ProcessDetail.markMatched(this)" style="vertical-align: middle" class="button-primary" id="manual-match">No match needed</button>
+          <button onClick="ProcessDetail.markWaitlist(this)" style="vertical-align: middle" class="{{ 'button-primary' if not ds.get('waitlist') }}" id="mark-waitlist">{{ 'Waitlisted' if ds.waitlist else 'Waitlist' }}</button>
+          {% if not ds.matched %}<button onClick="ProcessDetail.markMatched(this)" style="vertical-align: middle" class="button-primary disabled" id="manual-match">No match needed</button>
           {% if same_name_count %}<button onClick="ProcessDetail.markAllMatched(this)" style="vertical-align: middle" class="button-primary" id="manual-multi-match">Mark all matched</button>{% endif %}
-          <a style="vertical-align: middle" id="match-button" class="button button-primary" href="{{ url_for('match', source=ds.id)}}">Match</a>{% elif ds.match_type == "1" %}<button id="match-button" style="vertical-align: middle">No match needed</button>{% else %}<button id="match-button" style="vertical-align: middle">Matched</button>{% endif %}
+          <a style="vertical-align: middle" id="match-button" class="button button-primary" href="{{ url_for('match', source=ds.id)}}">Match</a>{% elif ds.match_type == "1" %}<button id="match-button" style="vertical-align: middle" class="disabled">No match needed</button>{% else %}<button id="match-button" style="vertical-align: middle">Matched</button>{% endif %}
         {% endif %}
       </h1>
       <ul class="details-list">
@@ -132,7 +132,7 @@ modules.require('ProcessDetail', function requireProcessDetail(ProcessDetail) {
     markAllMatchedUrl: "{{ url_for('multi_match', id=ds.id)|safe }}",
     multimatch: "{{ multimatch or '' }}", // TODO: What type of variable is here? Is it string or boolean?
     // Waitlist record status...
-    isWaitlist: {{ 'true' if ds.get('waitlist') else 'false' }},
+    isWaitlist: {{ 'true' if ds.waitlist else 'false' }},
   };
 
   // Export to global scope (to access from generated html code handlers).
