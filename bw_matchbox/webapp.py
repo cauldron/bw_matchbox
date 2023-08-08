@@ -437,14 +437,24 @@ def search():
 
     q = flask.request.args.get("q")
     embed = flask.request.args.get("e")
+    json = flask.request.args.get("json")  # Return the data as json
     search_db = flask.request.args.get("database")
 
-    if embed:
+    table_data = bd.Database(search_db or t).search(q, limit=100),
+
+    if json:
+        data = [
+            # TODO: To fix, issue #56: On the client, we need only this data: id, name, referenceProduct, location, unit.
+            dict(x._data, **{'referenceProduct': x.get("reference product")})
+            for x in table_data[0]
+        ]
+        return flask.jsonify(data)
+    elif embed:
         source = bd.get_activity(id=int(flask.request.args.get("source")))
         return flask.render_template(
             "search-embedded.html",
             source=source,
-            table_data=bd.Database(search_db or t).search(q, limit=100),
+            table_data=table_data,  # bd.Database(search_db or t).search(q, limit=100),
         )
     else:
         return flask.render_template(
@@ -456,7 +466,7 @@ def search():
             proxy=proxy,
             user=auth.current_user(),
             title="bw_matchbox Search Result",
-            table_data=bd.Database(search_db).search(q, limit=100),
+            table_data=table_data,  # =bd.Database(search_db).search(q, limit=100),
             query_string=q,
             database=s,
         )
@@ -583,6 +593,11 @@ def match(source):
     node = bd.get_node(id=source)
 
     matches = bd.Database(t).search(node["name"] + " " + node.get("location", ""))
+    matches_data = [
+        # TODO: To fix, issue #56: On the client, we need only this data: id, name, referenceProduct, location, unit.
+        dict(x._data, **{'referenceProduct': x.get("reference product")})
+        for x in matches
+    ]
 
     return flask.render_template(
         "match.html",
@@ -596,6 +611,7 @@ def match(source):
         user=auth.current_user(),
         query_string=node["name"] + " " + node.get("location", ""),
         matches=matches,
+        matches_json=json.dumps(matches_data),
     )
 
 

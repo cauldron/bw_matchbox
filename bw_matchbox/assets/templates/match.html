@@ -1,59 +1,76 @@
 {% include 'header.html' %}
-<div class="container">
+
+{# Module-specific dependencies... #}
+
+<link rel="stylesheet" href="{{ url_for('static', filename='css/match.css') }}">
+
+{# Core js module #}
+<script src="{{ url_for('static', filename='js/Match/Match.js') }}"></script>
+
+<div id="match-root" class="container match-root">
   {% include 'navigation.html' %}
   <div class="row">
     <div class="column">
       <h2>{{ ds.name }}</h2>
-      <ul>
-        <li>Location: {{ds.location}}</li>
-        <li>Unit: {{ds.unit}}</li>
-        <li>Comment: {{ds.comment}}</li>
+      <ul class="details-list">
+        <li><label>Location:</label> {{ds.location}}</li>
+        <li><label>Unit:</label> {{ds.unit}}</li>
+        <li><label>Comment:</label> {{ds.comment}}</li>
       </ul>
-      <p><input type="text" class="u-full-width" placeholder="Enter value to search" value="{{ query_string }}" id="query_string" /></p>
-      <table id="result-table">
-        <tr>
-          <th>Activity</th>
-          <th>Product</th>
-          <th>Location</th>
-          <th>Unit</th>
-        </tr>
-        {% for obj in matches %}
-        <tr>
-          <td><a href="{{ url_for('compare', source=ds.id, target=obj.id) }}">{{obj.name}}</a></td>
-          <td>{{ obj["reference product"]}}</td>
-          <td>{{ obj.location }}</td>
-          <td>{{ obj.unit }}</td>
-        </tr>
-        {% endfor %}
+      <div><input type="text" class="u-full-width" placeholder="Enter value to search" value="{{ query_string }}" id="query-string" /></div>
+      <div class="info-tableau">
+        <div class="error" id="error">Sample error text</div>
+        <div id="loader-splash" class="loader-splash bg-white full-cover"><div class="loader-spinner"></div></div>
+      </div>
+      <table id="result-table" class="fixed-table">
+        <thead>
+          <tr>
+            <th class="cell-name"><div>Activity</div></th>
+            <th class="cell-referenceProduct"><div>Product</div></th>
+            <th class="cell-location"><div>Location</div></th>
+            <th class="cell-unit"><div>Unit</div></th>
+          </tr>
+        </thead>
+        <tbody id="result-table-body">
+          <!-- ** Generated content - to remove when tested **
+          {% for obj in matches %}
+          <tr>
+            <td class="cell-name"><a href="{{ url_for('compare', source=ds.id, target=obj.id) }}">{{obj.name}}</a></td>
+            <td class="cell-referenceProduct>{{ obj["reference product"] }}</td>
+            <td class="cell-location">{{ obj.location }}</td>
+            <td class="cell-unit">{{ obj.unit }}</td>
+          </tr>
+          {% endfor %}
+          -->
+        </tbody>
       </table>
     </div>
   </div>
 </div>
 
 <script type="text/javascript">
-var searchBar = document.getElementById('query_string');
-searchBar.focus();
-
-var result_table = document.getElementById('result-table');
-function search_result_updater() {
-  result_table.innerHTML = this.responseText;
-}
-
-var doSearch = function () {
-  var qs = encodeURIComponent(searchBar.value);
-  if (qs) {
-    const req = new XMLHttpRequest();
-    req.addEventListener('load', search_result_updater);
-    req.open('GET', '{{ url_for('search') }}?e=1&source={{ ds.id }}&database={{ target }}&q=' + qs);
-    req.send();
+modules.require('Match', function requireMatch(Match) {
+  // Global variables for compare tables feature (via global variable `sharedData`)...
+  const sharedData = {
+    searchUrlPrefix: '{{ url_for('search') }}',
+    source: '{{ ds.id }}',
+    database: '{{ target }}',
+    initialQueryString: '{{ query_string }}',
+    initialTableRows: {{ matches_json|safe }}, // Initial table rows...
+    originalProcess: {
+      name: '{{ ds.name }}',
+      location: '{{ ds.location }}',
+      unit: '{{ ds.unit }}',
+      comment: '{{ ds.comment }}',
+    },
   };
-};
 
-searchBar.addEventListener('focusout', doSearch);
-searchBar.addEventListener('keypress', function(event) {
-  if (event.key === 'Enter') {
-    doSearch();
-  }
+  // Export to global scope (to access from generated html code handlers).
+  window.Match = Match;
+
+  // Start core module...
+  Match.start(sharedData);
 });
+
 </script>
 {% include 'footer.html' %}

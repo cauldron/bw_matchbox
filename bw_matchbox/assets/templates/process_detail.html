@@ -9,11 +9,8 @@
 
 <link rel="stylesheet" href="{{ url_for('static', filename='css/process-detail.css') }}">
 
+{# Core js module #}
 <script src="{{ url_for('static', filename='js/ProcessDetail/ProcessDetail.js') }}"></script>
-
-{# Core js module:
-  - `ProcessDetail` (from `bw_matchbox/assets/js/ProcessDetail/ProcessDetail.js`)
-#}
 
 <div id="process-detail" class="process-detail container{{ ' waitlist' if ds.get('waitlist') }}">
   {% include 'navigation.html' %}

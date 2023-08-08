@@ -1,0 +1,102 @@
+/* stylelint-disable selector-class-pattern */
+
+:root {
+  --match-similar-bg-color05: rgb(30 174 219 / 5%);
+  --match-similar-bg-color10: rgb(30 174 219 / 10%);
+  --match-similar-bg-color15: rgb(30 174 219 / 15%);
+  --match-similar-bg-color20: rgb(30 174 219 / 20%);
+  --match-similar-bg-color30: rgb(30 174 219 / 30%);
+  --match-similar-bg-color40: rgb(30 174 219 / 40%);
+  --match-similar-bg-color50: rgb(30 174 219 / 50%);
+  --match-similar-animation-time: 3s;
+}
+
+/* Basic styles */
+.match-root {
+  /* Animation... */
+  transition: all var(--common-animation-time);
+  position: relative;
+}
+
+.match-root.loading #result-table {
+  display: none;
+}
+
+/* Data table... */
+#result-table {
+  margin-top: 2.5rem;
+}
+/* #result-table th.cell-name { width: 40%; } */
+#result-table th.cell-referenceProduct {
+  width: 10rem;
+}
+#result-table th.cell-location {
+  width: 12rem;
+  white-space: nowrap;
+}
+#result-table th.cell-unit {
+  width: 8rem;
+  white-space: nowrap;
+}
+/* General cells... */
+#result-table td {
+  /* padding: 4px; */
+}
+#result-table td div {
+  /* padding: 4px; */
+}
+/* Similar cells... */
+#result-table td.similar {
+  /* border: 1px solid var(--layout-theme-primary-color); */
+  background: var(--match-similar-bg-color05);
+  background: repeating-linear-gradient(
+    45deg,
+    var(--match-similar-bg-color10),
+    var(--match-similar-bg-color10) 10px,
+    var(--match-similar-bg-color05) 10px,
+    var(--match-similar-bg-color05) 20px
+  );
+  border: 1px solid var(--match-similar-bg-color20);
+  box-shadow: inset 0 0 5px var(--match-similar-bg-color20);
+}
+
+/* Info section */
+.match-root .info-tableau {
+  position: relative;
+  /* margin: 10px 0; */
+  transition: all var(--common-animation-time);
+  min-height: 0;
+}
+.match-root.loading .info-tableau {
+  min-height: 50px;
+}
+
+/* Error */
+.match-root .info-tableau .error {
+  border-radius: 4px;
+  background-color: var(--layout-theme-error-color);
+  color: #fff;
+  margin: 20px auto;
+  padding: 10px 20px;
+}
+.match-root:not(.has-error) .info-tableau .error {
+  display: none;
+}
+
+/* Loader splash */
+.match-root .info-tableau .loader-splash {
+  padding: 20px;
+}
+.match-root:not(.loading) .info-tableau .loader-splash {
+  /* Inherited from `.loader-splash.hidden`, see `bw_matchbox/assets/css/common.css` */
+  opacity: 0;
+  pointer-events: none;
+}
+
+/* Disabled buttons */
+.match-root button.disabled {
+  opacity: 0.5;
+  pointer-events: none;
+  cursor: default;
+  user-select: none;
+}
