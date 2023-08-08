@@ -15,7 +15,7 @@
   - `ProcessDetail` (from `bw_matchbox/assets/js/ProcessDetail/ProcessDetail.js`)
 #}
 
-<div class="process-detail container">
+<div class="process-detail container {{ 'waitlist' if ds.get('waitlist') }}">
   {% include 'navigation.html' %}
   <div class="row">
     <div class="column">
@@ -128,29 +128,32 @@ modules.require('ProcessDetail', function requireProcessDetail(ProcessDetail) {
     markMatchedUrl: "{{ url_for('add_attribute', id=ds.id, attr='matched', value='1')|safe }}",
     markAllMatchedUrl: "{{ url_for('multi_match', id=ds.id)|safe }}",
     multimatch: "{{ multimatch or '' }}", // TODO: What type of variable is here? Is it string or boolean?
+    // Waitlist record status...
+    waitlist: {{ 'true' if ds.get('waitlist') else 'false' }},
   };
   console.log('[process_detail:requireProcessDetail]', {
     sharedData,
-    // DEBUG: Server data...
-    ds: '{{ ds }}', // node
-    authors: '{{ authors }}', // get_authors(node.get("authors"))
-    project: '{{ project }}', // proj
-    proxy: '{{ proxy }}', // proxy
-    proxy_node: '{{ proxy_node }}', // proxy_node
-    reference_node: '{{ reference_node }}', // reference_node
-    source: '{{ source }}', // s
-    target: '{{ target }}', // t
-    file_number: '{{ file_number }}', // sum(1 for obj in files if obj["enabled"])
-    user: '{{ user }}', // auth.current_user()
-    same_name_count: '{{ same_name_count }}', // same_name_count
-    same_name: '{{ same_name }}', // same_name
-    technosphere: '{{ technosphere }}', // technosphere
-    biosphere: '{{ biosphere }}', // biosphere
-    match_type: '{{ match_type }}', // matchbox_app.config["mb_match_types"].get(node.get("match_type"))
-    total_consumers: '{{ total_consumers }}', // len(node.upstream())
-    consumers: '{{ consumers }}', // list(node.upstream())[:50]
+    {# // DEBUG: Unused server variables...
+      ds: '{{ ds.items() }}', // node
+      authors: '{{ authors }}', // get_authors(node.get("authors"))
+      project: '{{ project }}', // proj
+      proxy: '{{ proxy }}', // proxy
+      proxy_node: '{{ proxy_node }}', // proxy_node
+      reference_node: '{{ reference_node }}', // reference_node
+      source: '{{ source }}', // s
+      target: '{{ target }}', // t
+      file_number: '{{ file_number }}', // sum(1 for obj in files if obj["enabled"])
+      user: '{{ user }}', // auth.current_user()
+      same_name_count: '{{ same_name_count }}', // same_name_count
+      same_name: '{{ same_name }}', // same_name
+      technosphere: '{{ technosphere }}', // technosphere
+      match_type: '{{ match_type }}', // matchbox_app.config["mb_match_types"].get(node.get("match_type"))
+      total_consumers: '{{ total_consumers }}', // len(node.upstream())
+      consumers: '{{ consumers }}', // list(node.upstream())[:50]
+      biosphere: '{{ biosphere }}', // biosphere
+    #}
   });
-  debugger;
+  // debugger;
 
   // Export to global scope (to access from generated html code handlers).
   window.ProcessDetail = ProcessDetail;
