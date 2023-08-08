@@ -15,7 +15,7 @@ from flask_httpauth import HTTPBasicAuth
 from peewee import fn
 from werkzeug.security import check_password_hash, generate_password_hash
 
-from .utils import get_match_types, name_close_enough, similar_location
+from .utils import get_match_types, name_close_enough, similar_location, MATCH_TYPE_ABBREVIATIONS
 
 BASE_DIR = Path(__file__).resolve().parent
 DATA_DIR = BASE_DIR / "data"
@@ -95,6 +95,31 @@ def get_files():
             for index, path in enumerate(included)
         ]
     return files
+
+
+def get_match_type_for_source_process(node):
+    if hasattr(node, "data"):
+        if "match_type" in node.data:
+            label = matchbox_app.config["mb_match_types"].get(
+                node.data["match_type"], "Unknown"
+            )
+            return MATCH_TYPE_ABBREVIATIONS.get(label, label)
+        elif node.data.get("proxy_id"):
+            mt = bd.get_node(id=node.data["proxy_id"]).get("match_type")
+            label = matchbox_app.config["mb_match_types"].get(mt, "Unknown")
+            return MATCH_TYPE_ABBREVIATIONS.get(label, label)
+        else:
+            return "Unknown"
+    elif "match_type" in node:
+        label = matchbox_app.config["mb_match_types"].get(node["match_type"], "Unknown")
+        return MATCH_TYPE_ABBREVIATIONS.get(label, label)
+    else:
+        mt = bd.get_node(id=node["proxy_id"]).get("match_type")
+        if not mt or mt == "0":
+            return "Unknown"
+        else:
+            label = matchbox_app.config["mb_match_types"].get(mt, "Unknown")
+            return MATCH_TYPE_ABBREVIATIONS.get(label, label)
 
 
 @matchbox_app.route("/project", methods=["POST", "GET"])
@@ -363,48 +388,6 @@ def processes():
         ],
     }
     return flask.jsonify(payload)
-
-
-mwmarortalf = "Match with market and replace or remove transport and loss factor"
-
-MATCH_TYPE_ABBREVIATIONS = {
-    "No direct match available": "No direct match",
-    "Direct match with near-identical data": "Near-identical data",
-    "Match with updated data": "Updated data",
-    "Match with updated data and adding source transport": "Updated data w/ src trans",
-    "Match with market and replace or remove transport": "Market w/ diff trans",
-    mwmarortalf: "Market w/ diff trans loss",
-    "Equivalent datasets after modification": "Modifications",
-    "Replace aggregated with unit process": "Replace aggregated",
-    "Rescaled direct correspondence": "Rescaled",
-    "Similar data but different location": "New location",
-    "Unknown": "Unknown",
-}
-
-
-def get_match_type_for_source_process(node):
-    if hasattr(node, "data"):
-        if "match_type" in node.data:
-            label = matchbox_app.config["mb_match_types"].get(
-                node.data["match_type"], "Unknown"
-            )
-            return MATCH_TYPE_ABBREVIATIONS.get(label, label)
-        elif node.data.get("proxy_id"):
-            mt = bd.get_node(id=node.data["proxy_id"]).get("match_type")
-            label = matchbox_app.config["mb_match_types"].get(mt, "Unknown")
-            return MATCH_TYPE_ABBREVIATIONS.get(label, label)
-        else:
-            return "Unknown"
-    elif "match_type" in node:
-        label = matchbox_app.config["mb_match_types"].get(node["match_type"], "Unknown")
-        return MATCH_TYPE_ABBREVIATIONS.get(label, label)
-    else:
-        mt = bd.get_node(id=node["proxy_id"]).get("match_type")
-        if not mt or mt == "0":
-            return "Unknown"
-        else:
-            label = matchbox_app.config["mb_match_types"].get(mt, "Unknown")
-            return MATCH_TYPE_ABBREVIATIONS.get(label, label)
 
 
 # @matchbox_app.route("/match-status", methods=["GET"])
