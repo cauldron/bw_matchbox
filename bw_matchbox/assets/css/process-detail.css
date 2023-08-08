@@ -19,7 +19,9 @@
   font-weight: normal;
 }
 
-#mark-waitlist-dialog-modal #mark-waitlist-ok.disabled {
-  opacity: 0.5;
-  pointer-events: none;
-}
+/* // UNUSED: Disabled button (it's always enabled)
+ * #mark-waitlist-dialog-modal #mark-waitlist-ok.disabled {
+ *   opacity: 0.5;
+ *   pointer-events: none;
+ * }
+ */
