@@ -440,15 +440,17 @@ def search():
     json = flask.request.args.get("json")  # Return the data as json
     search_db = flask.request.args.get("database")
 
-    table_data = bd.Database(search_db or t).search(q, limit=100),
+    table_data = bd.Database(search_db or t).search(q, limit=100)
 
     if json:
-        data = [
-            # TODO: To fix, issue #56: On the client, we need only this data: id, name, referenceProduct, location, unit.
-            dict(x._data, **{'referenceProduct': x.get("reference product")})
-            for x in table_data[0]
+        MAPPING = {'reference product': 'referenceProduct'}
+        FIELDS = {'name', 'id', 'location', 'unit', 'reference product'}
+
+        payload = [
+            {MAPPING.get(key, key): ds.get(key) for key in FIELDS}
+            for ds in table_data
         ]
-        return flask.jsonify(data)
+        return flask.jsonify(payload)
     elif embed:
         source = bd.get_activity(id=int(flask.request.args.get("source")))
         return flask.render_template(
@@ -593,10 +595,12 @@ def match(source):
     node = bd.get_node(id=source)
 
     matches = bd.Database(t).search(node["name"] + " " + node.get("location", ""))
-    matches_data = [
-        # TODO: To fix, issue #56: On the client, we need only this data: id, name, referenceProduct, location, unit.
-        dict(x._data, **{'referenceProduct': x.get("reference product")})
-        for x in matches
+
+    MAPPING = {'reference product': 'referenceProduct'}
+    FIELDS = {'name', 'id', 'location', 'unit', 'reference product'}
+    matches_payload = [
+        {MAPPING.get(key, key): ds.get(key) for key in FIELDS}
+        for ds in matches
     ]
 
     return flask.render_template(
@@ -611,7 +615,7 @@ def match(source):
         user=auth.current_user(),
         query_string=node["name"] + " " + node.get("location", ""),
         matches=matches,
-        matches_json=json.dumps(matches_data),
+        matches_json=json.dumps(matches_payload),
     )
 
 
