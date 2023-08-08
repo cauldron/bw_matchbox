@@ -37,7 +37,7 @@
           <li><label>Authors:</label> {{ authors }}</li>
           <li><label>Comment:</label> {{ds.comment }}</li>
           {% if same_name_count %}
-              <li><label>Datasets with same name:</label> {{ same_name_count }}: {% for obj in same_name %}<a href="{{ url_for('process_detail', id=obj.id) }}">{% if obj.data.matched %}<i class="fa-solid fa-check"></i> {% endif %}{{obj.location}}</a> {% endfor %}</li>
+              <li><label>Datasets with same name:</label> {{ same_name_count }}: {% for obj in same_name %}<a href="{{ url_for('process_detail', id=obj.id) }}" {% if obj.data.matched %}class="exact"{% endif %}>{% if obj.data.matched %}<i class="fa-solid fa-check"></i> {% endif %}{{obj.location}}</a> {% endfor %}</li>
           {% endif %}
           {% if proxy_node %}
               <li><label>Proxy:</label> <a href="{{ url_for('process_detail', id=proxy_node.id) }}">{{ proxy_node }}</a></li>
