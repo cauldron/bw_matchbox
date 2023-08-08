@@ -377,6 +377,7 @@ MATCH_TYPE_ABBREVIATIONS = {
     "Equivalent datasets after modification": "Modifications",
     "Replace aggregated with unit process": "Replace aggregated",
     "Rescaled direct correspondence": "Rescaled",
+    "Similar data but different location": "New location",
     "Unknown": "Unknown",
 }
 
