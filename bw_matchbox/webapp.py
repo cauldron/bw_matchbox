@@ -383,30 +383,26 @@ MATCH_TYPE_ABBREVIATIONS = {
 def get_match_type_for_source_process(node):
     if hasattr(node, "data"):
         if "match_type" in node.data:
-            return MATCH_TYPE_ABBREVIATIONS[
-                matchbox_app.config["mb_match_types"].get(
-                    node.data["match_type"], "Unknown"
-                )
-            ]
+            label = matchbox_app.config["mb_match_types"].get(
+                node.data["match_type"], "Unknown"
+            )
+            return MATCH_TYPE_ABBREVIATIONS.get(label, label)
         elif node.data.get("proxy_id"):
             mt = bd.get_node(id=node.data["proxy_id"]).get("match_type")
-            return MATCH_TYPE_ABBREVIATIONS[
-                matchbox_app.config["mb_match_types"].get(mt, "Unknown")
-            ]
+            label = matchbox_app.config["mb_match_types"].get(mt, "Unknown")
+            return MATCH_TYPE_ABBREVIATIONS.get(label, label)
         else:
             return "Unknown"
     elif "match_type" in node:
-        return MATCH_TYPE_ABBREVIATIONS[
-            matchbox_app.config["mb_match_types"].get(node["match_type"], "Unknown")
-        ]
+        label = matchbox_app.config["mb_match_types"].get(node["match_type"], "Unknown")
+        return MATCH_TYPE_ABBREVIATIONS.get(label, label)
     else:
         mt = bd.get_node(id=node["proxy_id"]).get("match_type")
         if not mt or mt == "0":
             return "Unknown"
         else:
-            return MATCH_TYPE_ABBREVIATIONS[
-                matchbox_app.config["mb_match_types"].get(mt, "Unknown")
-            ]
+            label = matchbox_app.config["mb_match_types"].get(mt, "Unknown")
+            return MATCH_TYPE_ABBREVIATIONS.get(label, label)
 
 
 # @matchbox_app.route("/match-status", methods=["GET"])
