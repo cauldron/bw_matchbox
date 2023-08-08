@@ -157,13 +157,14 @@ modules.define(
         ].filter(Boolean);
         // Call both requests at once...
         const callbacks = urls.map((url) => () => fetch(url));
-        // DEBUG: While #57 is in progress or in testing...
-        console.log('[ProcessDetail:doMarkWaitlist]', {
-          setWaitlist,
-          urls,
-          callbacks,
-          userAction,
-        });
+        /* // DEBUG: While #57 is in progress or in testing...
+         * console.log('[ProcessDetail:doMarkWaitlist]', {
+         *   setWaitlist,
+         *   urls,
+         *   callbacks,
+         *   userAction,
+         * });
+         */
         this.setLoading(true);
         // Run callbacks one by one...
         return CommonHelpers.runAsyncCallbacksSequentially(callbacks)
@@ -212,11 +213,12 @@ modules.define(
         const { sharedData } = this;
         const urls = [sharedData.markMatchedUrl, sharedData.markMatchTypeUrl];
         const callbacks = urls.map((url) => () => fetch(url));
-        // DEBUG: While #57 is in progress or in testing...
-        console.log('[ProcessDetail:markMatched]', {
-          urls,
-          callbacks,
-        });
+        /* // DEBUG: While #57 is in progress or in testing...
+         * console.log('[ProcessDetail:markMatched]', {
+         *   urls,
+         *   callbacks,
+         * });
+         */
         this.setLoading(true);
         // Run callbacks one by one...
         return CommonHelpers.runAsyncCallbacksSequentially(callbacks)
