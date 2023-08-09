@@ -448,6 +448,10 @@ modules.define(
         event.preventDefault();
       },
 
+      // Copy to clipboard
+
+
+
       // Start...
 
       /** start -- Initialize compare feature (entry point)
