@@ -15,7 +15,12 @@ from flask_httpauth import HTTPBasicAuth
 from peewee import fn
 from werkzeug.security import check_password_hash, generate_password_hash
 
-from .utils import get_match_types, name_close_enough, similar_location, MATCH_TYPE_ABBREVIATIONS
+from .utils import (
+    MATCH_TYPE_ABBREVIATIONS,
+    get_match_types,
+    name_close_enough,
+    similar_location,
+)
 
 BASE_DIR = Path(__file__).resolve().parent
 DATA_DIR = BASE_DIR / "data"
@@ -443,12 +448,11 @@ def search():
     table_data = bd.Database(search_db or t).search(q, limit=100)
 
     if json:
-        MAPPING = {'reference product': 'referenceProduct'}
-        FIELDS = {'name', 'id', 'location', 'unit', 'reference product'}
+        MAPPING = {"reference product": "referenceProduct"}
+        FIELDS = {"name", "id", "location", "unit", "reference product"}
 
         payload = [
-            {MAPPING.get(key, key): ds.get(key) for key in FIELDS}
-            for ds in table_data
+            {MAPPING.get(key, key): ds.get(key) for key in FIELDS} for ds in table_data
         ]
         return flask.jsonify(payload)
     elif embed:
@@ -512,6 +516,36 @@ def get_authors(authors):
         return ", ".join({obj.get("name", "Unknown") for obj in authors.values()})
 
 
+@matchbox_app.route("/delete-proxy/<id>", methods=["GET"])
+@auth.login_required
+def delete_proxy(id):
+    context = get_context()
+    if isinstance(context, flask.Response):
+        return context
+    proj, s, t, proxy = context
+    bd.projects.set_current(proj)
+
+    node = bd.get_node(id=id)
+    if not node["database"] == proxy:
+        raise ValueError(f"Not a proxy dataset in the proxy database {proxy}")
+
+    if node.get("original_id"):
+        reference = bd.get_node(id=node["original_id"])
+        for field in ("proxy_id", "matched", "match_type"):
+            if field in reference:
+                del reference[field]
+        reference.save()
+    else:
+        reference = None
+
+    node.delete()
+
+    if reference is None:
+        return flask.redirect(flask.url_for("index"))
+    else:
+        return flask.redirect(flask.url_for("process_detail", id=reference.id))
+
+
 @matchbox_app.route("/process/<id>", methods=["GET"])
 @auth.login_required
 def process_detail(id):
@@ -522,7 +556,11 @@ def process_detail(id):
     files = get_files()
     bd.projects.set_current(proj)
 
-    node = bd.get_node(id=id)
+    try:
+        node = bd.get_node(id=id)
+    except bd.errors.UnknownObject:
+        return flask.redirect(flask.url_for("index"))
+
     proxy_node = bd.get_node(id=node["proxy_id"]) if node.get("proxy_id") else None
     reference_node = (
         bd.get_node(id=node["original_id"]) if node.get("original_id") else None
@@ -534,6 +572,7 @@ def process_detail(id):
     same_name_count = same_name.count()
     technosphere = sorted(node.technosphere(), key=lambda x: x.input["name"])
     biosphere = sorted(node.biosphere(), key=lambda x: x.input["name"])
+    is_proxy = node["database"] == proxy
 
     return flask.render_template(
         "process_detail.html",
@@ -555,6 +594,7 @@ def process_detail(id):
         match_type=matchbox_app.config["mb_match_types"].get(node.get("match_type")),
         total_consumers=len(node.upstream()),
         consumers=list(node.upstream())[:50],
+        is_proxy=is_proxy,
     )
 
 
@@ -596,11 +636,10 @@ def match(source):
 
     matches = bd.Database(t).search(node["name"] + " " + node.get("location", ""))
 
-    MAPPING = {'reference product': 'referenceProduct'}
-    FIELDS = {'name', 'id', 'location', 'unit', 'reference product'}
+    MAPPING = {"reference product": "referenceProduct"}
+    FIELDS = {"name", "id", "location", "unit", "reference product"}
     matches_payload = [
-        {MAPPING.get(key, key): ds.get(key) for key in FIELDS}
-        for ds in matches
+        {MAPPING.get(key, key): ds.get(key) for key in FIELDS} for ds in matches
     ]
 
     return flask.render_template(
@@ -763,7 +802,7 @@ def create_proxy():
         original_name=source["name"],
         original_id=source.id,
         match_type=content.get("match_type", "0"),
-        **{"reference product": source.get("reference product")}
+        **{"reference product": source.get("reference product")},
     )
     process.save()
 

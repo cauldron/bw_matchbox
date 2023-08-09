@@ -51,3 +51,10 @@
 .selected-element {
   box-shadow: 0 0 5px 5px #33c3f0;
 }
+
+.button.button-danger,
+button.button-danger {
+  color: #FFF;
+  background-color: #592a71;
+  border-color: #592a71;
+}
