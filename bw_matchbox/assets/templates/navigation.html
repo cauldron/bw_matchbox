@@ -1,11 +1,13 @@
 <div class="row" style="margin-top: 5%">
-    <div class="two columns"><a href="{{ url_for('index') }}">home</a></div>
-    <div class="two columns"><a href="{{ url_for('select_matching_files') }}">Input files ({{ file_number or 0}})</a></div>
-    <div class="two columns">User: {{ user }}</div>
-    <div class="six columns">Proxy: {{ proxy or "None" }}</div>
+    <div class="four columns"><a href="{{ url_for('index') }}">home</a></div>
+    <div class="four columns">User: {{ config.user }} | <a href="">Logout</a></div>
+    <div class="four columns">Configuration: {{ config.config_label }} | <a href="{{ url_for('select_config') }}">Change</a></div>
 </div>
 <div class="row">
-    {% if project %}<div class="four columns">Project: {{ project }} | <a href="{{ url_for('select_project') }}">Change</a></div>{% endif %}
-    {% if source %}<div class="four columns">Source DB: {{ source }}</div>
-    <div class="four columns">Target DB: {{ target }} | <a href="{{ url_for('select_databases') }}">Change</a></div>{% endif %}
+    {% if config.project %}<div class="three columns">Project: {{ config.project }}</div>{% endif %}
+    {% if config.source %}
+    <div class="three columns">Source: {{ config.source }}</div>
+    <div class="three columns">Target: {{ config.target }}</div>
+    <div class="three columns">Proxy: {{ config.proxy }}</div>
+    {% endif %}
 </div>

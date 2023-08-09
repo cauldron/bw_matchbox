@@ -30,8 +30,10 @@
         | {{ target_node.unit }}{% endif %}</h4>
     </div>
     <div class="five columns">
+    {% if config.role == 'editors' %}
     <button class="button-primary" id="save-mapping-button">{% if proxy and proxy != "None" %}Create Proxy</button>
     <button class="button-primary" id="one-to-one">1-to-1 Proxy</button>{% else %}Save{% endif %}</button>
+    {% endif %}
     </div>
   </div>
   <div class="row collapsed-tools">
