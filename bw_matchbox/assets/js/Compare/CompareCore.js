@@ -459,8 +459,6 @@ modules.define(
 
         const { source_data, target_data } = this.sharedData;
 
-        // console.log('[CompareCore:start] sharedData', sharedData);
-
         // Prepare all the tables data...
         this.indexTable(source_data);
         this.indexTable(target_data);

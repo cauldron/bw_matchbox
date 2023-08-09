@@ -56,16 +56,6 @@ modules.define(
           !isLastPage && this.renderNavigationLink('next', 'Next'),
           // TODO: first, last, pages...
         ].filter(Boolean);
-        /* console.log('[ProcessesListPagination:createPaginationItems]', {
-         *   items,
-         *   pageSize,
-         *   currentPage,
-         *   totalPages,
-         *   totalRecords,
-         *   isFirstPage,
-         *   isLastPage,
-         * });
-         */
         return items;
       },
 
@@ -81,12 +71,6 @@ modules.define(
         // Find all the pagination blocks...
         const rootNode = ProcessesListNodes.getRootNode();
         const paginationNodes = rootNode.getElementsByClassName('table-pagination');
-        /* console.log('[ProcessesListPagination:renderAllPaginations]', {
-         *   contentItems,
-         *   rootNode,
-         *   paginationNodes,
-         * });
-         */
         // Update contents of all the pagination blocks...
         for (const node of paginationNodes) {
           const contentNodes = CommonHelpers.htmlToElements(contentItems);
@@ -133,11 +117,6 @@ modules.define(
       onNavigationClick(target) {
         const id = target.getAttribute('pagination-id');
         const pageNo = this.getNavigationPageNo(id);
-        /* console.log('[ProcessesListPagination:onNavigationClick]', {
-         *   pageNo,
-         *   id,
-         * });
-         */
         // TODO: Use `setPageNo` method?
         ProcessesListData.currentPage = pageNo;
         // TODO: Load data...
