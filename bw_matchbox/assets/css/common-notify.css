@@ -1,0 +1,94 @@
+.notify-root {
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: 0;
+  display: flex;
+  flex-direction: column;
+  justify-content: stretch;
+  align-items: stretch;
+  z-index: 999;
+}
+
+.notify-root .notify {
+  cursor: pointer;
+  overflow: hidden;
+  background-color: rgb(0 0 0 / 85%);
+  border: 1px solid rgb(255 255 255 / 5%);
+  box-shadow: 2px 2px 4px rgb(0 0 0 / 25%);
+  padding: 8px;
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  align-items: center;
+  position: relative;
+  gap: 12px;
+  /* Animate creating & destroying... */
+  transition: all var(--common-animation-time);
+  top: -100px;
+  opacity: 0;
+}
+.notify-root .notify.active {
+  top: 0;
+  opacity: 0.95;
+}
+@media (width >= 440px) {
+  .notify-root {
+    top: 20px;
+  }
+  .notify-root .notify {
+    margin: 2px auto;
+    border-radius: 6px;
+    max-width: 400px;
+    width: 100%;
+  }
+}
+@media (width >= 640px) {
+  .notify-root .notify {
+    max-width: 600px;
+  }
+}
+/* Stylize */
+.notify-root .notify > .text {
+  color: #fff;
+  flex: 1;
+}
+.notify-root .notify .icon {
+  width: 32px;
+  height: 32px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  border-radius: 50%;
+  background-color: #fff;
+  color: var(--layout-theme-primary-color);
+}
+
+/* Stylize different notify types: info, success, warn, error */
+.notify-root .notify-info {
+  background-color: var(--layout-theme-primary-color);
+}
+.notify-root .notify-info > .icon {
+  color: var(--layout-theme-primary-color);
+}
+
+.notify-root .notify-success {
+  background-color: var(--common-success-color);
+}
+.notify-root .notify-success > .icon {
+  color: var(--common-success-color);
+}
+
+.notify-root .notify-error {
+  background-color: var(--common-error-color);
+}
+.notify-root .notify-error > .icon {
+  color: var(--common-error-color);
+}
+
+.notify-root .notify-warn {
+  background-color: var(--common-warn-color);
+}
+.notify-root .notify-warn > .icon {
+  color: var(--common-warn-color);
+}

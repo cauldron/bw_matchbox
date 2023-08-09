@@ -4,6 +4,7 @@ modules.define(
     // Required modules...
     'CommonHelpers',
     'CommonModal',
+    'CommonNotify',
     'CompareProxyDialogModal',
     'CompareRowClick',
     'CompareRowsHelpers',
@@ -13,6 +14,7 @@ modules.define(
     // Resolved modules...
     CommonHelpers,
     CommonModal,
+    CommonNotify,
     CompareProxyDialogModal,
     CompareRowClick,
     CompareRowsHelpers,
@@ -124,12 +126,10 @@ modules.define(
         >`;
         // Issue #59: Name cell with check icon for 'matched' rows...
         const nameClassName = `cell-name${matched && ' matched'}`;
-        let nameContent = '';
+        let nameContent = `<a onClick="CompareCore.disableRowClickHandler(this)" href="${url}">${name}</a>`;
         if (!is_target && matched) {
-          nameContent = `<i class="name-icon fa-solid fa-check"></i><span class="name-text"><a onClick="CompareCore.disableRowClickHandler(this)" href="${url}" class="exact">${name}</a></span>`;
-        } else {
-          nameContent = `<a onClick="CompareCore.disableRowClickHandler(this)" href="${url}">${name}</a>`;
-        };
+          nameContent = `<i class="name-icon fa-solid fa-check"></i><span class="name-text">${nameContent}</span>`;
+        }
         const end = `<td class="${nameClassName}"><div>${nameContent}</div></td>
           <td class="cell-location"><div>${location}</div></td>
           <td class="cell-unit"><div>${unit}</div></td>
@@ -223,7 +223,7 @@ modules.define(
       },
 
       replaceWithTargetHandler(elem) {
-        CompareRowClick.disableRowClickHandler();
+        // CompareRowClick.disableRowClickHandler(); // NOTE: It's not inside the row
         const { target_node, target_data } = this.sharedData;
         // Trying to make unique row_id...
         const uniqueCounter = ++this.targetNodesCounter;
@@ -234,7 +234,8 @@ modules.define(
         this.sharedData.comment += `* Collapsed input exchanges to target node\n`;
         // TODO: Is sorting required here?
         this.buildTable('target-table', target_data, true);
-        elem.innerHTML = '';
+        // Hide icon...
+        elem.classList.toggle('hidden', true); // Old code: `innerHTML = ''`
       },
 
       removeRowHandler(element) {
@@ -448,6 +449,37 @@ modules.define(
         event.preventDefault();
       },
 
+      // Copy to clipboard
+
+      copyToClipboardHandler(node) {
+        const { sharedData } = this;
+        const nodeType = node.getAttribute('data-node-type');
+        const nameId = nodeType + '_node_name'; // 'source_node_name' | 'target_node_name'
+        const urlId = nodeType + '_node_url'; // 'source_node_url' | 'target_node_url'
+        const name = sharedData[nameId];
+        const url = sharedData[urlId];
+        const text = '[' + name + '](' + url + ')';
+        // NOTE: Docment should be focused...
+        navigator.clipboard
+          .writeText(text)
+          .then(() => {
+            // Show notification...
+            CommonNotify.showSuccess('Text already copied to clipboard');
+          })
+          .catch((error) => {
+            // eslint-disable-next-line no-console
+            console.error('[CompareCore:copyToClipboardHandler] Catched error', error);
+            // eslint-disable-next-line no-debugger
+            debugger;
+            // Show error in the notification toast...
+            CommonNotify.showSuccess(
+              'Can not copy text to clipboard: ' + CommonHelpers.getErrorText(error),
+            );
+          });
+        // TODO: To catch promise resolve or catch?
+        return false;
+      },
+
       // Start...
 
       /** start -- Initialize compare feature (entry point)
@@ -458,6 +490,10 @@ modules.define(
         this.sharedData = sharedData;
         CompareRowsHelpers.sharedData = sharedData;
         CompareProxyDialogModal.sharedData = sharedData;
+
+        /* // DEBUG: Show demo notifiers...
+         * CommonNotify.showDemo();
+         */
 
         const { source_data, target_data } = this.sharedData;
 

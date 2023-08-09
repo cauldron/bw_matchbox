@@ -4,6 +4,7 @@
 
 {# Modal windows are used #}
 {% include 'common-modal.html' %}
+{% include 'common-notify.html' %}
 
 {# Module-specific dependencies... #}
 
@@ -41,15 +42,36 @@
   </div>
   <div class="row compare-tables">
     <div class="column one-half">
-      <h3><a href="{{ url_for('process_detail', id=source_node.id) }}">{{ source_node.name }}</a> <i onclick="copySourceMarkdown()" class="fa-solid fa-copy"></i></h3>
+      <div class="common-page-header">
+        <h3 class="title">
+          <a href="{{ url_for('process_detail', id=source_node.id) }}" title="Go to process #{{ source_node.id }} page">
+            {{ source_node.name }}
+          </a>
+          <div class="icons">
+            <div class="icons-wrapper">
+              <a onClick="CompareCore.copyToClipboardHandler(this)" data-node-type="source" title="Copy markdown link to clipboard"><i class="fa-solid fa-copy"></i></a>
+            </div>
+          </div>
+        </h3>
+      </div>
       <table class="fixed-table fixed-table-active compare-table" id="source-table" width="100%">
       </table>
       <p>{{ source_biosphere_number }} biosphere exchanges</p>
     </div>
     <div class="column one-half">
-      <h3><a href="{{ url_for('process_detail', id=target_node.id) }}">{{ target_node.name }}</a>
-      <i onclick="copyTargetMarkdown()" class="fa-solid fa-copy"></i>
-      <span onclick="CompareCore.replaceWithTargetHandler(this)" id="replace-with-target-arrow"><a><i class="fa-solid fa-arrow-up"></i></a></span></h3>
+      <div class="common-page-header">
+        <h3 class="title">
+          <a href="{{ url_for('process_detail', id=target_node.id) }}" title="Go to process #{{ target_node.id }} page">
+            {{ target_node.name }}
+          </a>
+          <div class="icons">
+            <div class="icons-wrapper">
+              <a onClick="CompareCore.copyToClipboardHandler(this)" data-node-type="target" title="Copy markdown link to clipboard"><i class="fa-solid fa-copy"></i></a>
+              <a onClick="CompareCore.replaceWithTargetHandler(this)" id="replace-with-target-arrow" title="Replace with target"><i class="fa-solid fa-arrow-up"></i></a>
+            </div>
+          </div>
+        </h3>
+      </div>
       <table class="fixed-table fixed-table-active compare-table" id="target-table" width="100%">
       </table>
       <p>{{ target_biosphere_number }} biosphere exchanges</p>
@@ -58,26 +80,15 @@
 </div>
 
 <script>
-  const sourceText = "[{{ source_node.name }}]({{ base_url}}{{ url_for('process_detail', id=source_node.id) }})";
-  const targetText = "[{{ target_node.name }}]({{ base_url}}{{ url_for('process_detail', id=target_node.id) }})";
-  const copySourceMarkdown = async () => {
-    try {
-      await navigator.clipboard.writeText(sourceText);
-    } catch (err) {
-      console.error('Failed to copy: ', err);
-    }
-  }
-  const copyTargetMarkdown = async () => {
-    try {
-      await navigator.clipboard.writeText(targetText);
-    } catch (err) {
-      console.error('Failed to copy: ', err);
-    }
-  }
-
   modules.require('CompareCore', (CompareCore) => {
     // Global variables for compare tables feature (via global variable `sharedData`)...
     const sharedData = {
+      // Data for clipboard copy feature...
+      source_node_name: '{{ source_node.name }}',
+      source_node_url: '{{ base_url}}{{ url_for('process_detail', id=source_node.id) }}',
+      target_node_name: '{{ target_node.name }}',
+      target_node_url: '{{ base_url}}{{ url_for('process_detail', id=target_node.id) }}',
+      // Generic data...
       source_data: {{ source_data_json|safe }}, // TDataRecord[]
       target_data: {{ target_data_json|safe }}, // TDataRecord[]
       target_node: {{ target_json|safe}},
@@ -89,7 +100,7 @@
       match_types: {{ match_types|safe }},
       match_type_default: '3',
       comment: '', // Shared comments accumulator
-      /* // #52: match_types sample:
+      /* // Issue #52: match_types sample:
        * {
        *   '1': 'No direct match available',
        *   '2': 'Direct match with near-identical data',
