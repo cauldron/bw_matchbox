@@ -74,6 +74,7 @@ modules.define(
           amount,
           name,
           input_id,
+          matched,
         } = data;
         const rowKind = is_target ? 'target' : 'source';
         const collapsedId = CompareRowsHelpers.getCollapsedId(rowKind, rowId);
@@ -111,19 +112,23 @@ modules.define(
           isCollapsed && CompareRowsHelpers.buildCollapsedHandlerRow(rowKind, rowId, data);
         // Create class name...
         const className = [isCollapsed && 'collapsed'].filter(Boolean).join(' ');
-        const attrs = [['class', className], isCollapsed && ['collapsed-id', collapsedId]]
+        const trAttrs = [['class', className], isCollapsed && ['collapsed-id', collapsedId]]
           .filter(Boolean)
           .map(([name, value]) => value && name + '="' + CommonHelpers.quoteHtmlAttr(value) + '"')
           .filter(Boolean)
           .join(' ');
         const start = `<tr
-          ${attrs}
+          ${trAttrs}
           row_id="${rowId}"
           onClick="CompareCore.clickRowHandler(this)"
         >`;
-        const end = `<td class="cell-name"><div><a
-            onClick="CompareCore.disableRowClickHandler(this)"
-            href="${url}">${name}</a></div></td>
+        // Issue #59: Name cell with check icon for 'matched' rows...
+        const nameClassName = `cell-name${matched && ' matched'}`;
+        let nameContent = `<a onClick="CompareCore.disableRowClickHandler(this)" href="${url}">${name}</a>`;
+        if (!is_target && matched) {
+          nameContent = `<i class="name-icon fa-solid fa-check"></i><span class="name-text">${nameContent}</span>`;
+        }
+        const end = `<td class="${nameClassName}"><div>${nameContent}</div></td>
           <td class="cell-location"><div>${location}</div></td>
           <td class="cell-unit"><div>${unit}</div></td>
         </tr>`;
