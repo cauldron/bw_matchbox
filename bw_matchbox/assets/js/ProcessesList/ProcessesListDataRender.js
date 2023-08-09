@@ -34,17 +34,6 @@ modules.define(
           match_type, // 'No direct match available'
           matched, // false
         } = rowData;
-        /* console.log('[ProcessesListDataRender:renderDataRow]: start', {
-         *   details_url, // '/process/726'
-         *   id, // 726
-         *   location, // 'United States'
-         *   match_url, // '/match/726'
-         *   matched, // false
-         *   name, // 'Electronic capacitors, resistors, coils, transformers, connectors and other components (except  semiconductors and printed circuit assemblies); at manufacturer'
-         *   unit, // ''
-         *   rowData,
-         * });
-         */
         const matchUrl = '/match/' + id;
         const matchButton = matched
           ? `<a class="button" href="${matchUrl || ''}"><i class="fa-solid fa-check"></i> ${

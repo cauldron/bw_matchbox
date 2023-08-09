@@ -53,23 +53,6 @@ modules.define(
         };
         const urlQuery = CommonHelpers.makeQuery(params, { addQuestionSymbol: true });
         const url = urlBase + urlQuery;
-        /* // DEBUG: Using temporarily while working with requests (issues #41, #45, etc)...
-         * console.log('[ProcessesListDataLoad:loadData]: start', {
-         *   searchValue,
-         *   databases,
-         *   userDbValue,
-         *   userDb,
-         *   url,
-         *   params,
-         *   urlQuery,
-         *   urlBase,
-         *   currentPage,
-         *   pageSize,
-         *   offset,
-         *   orderBy,
-         *   filterBy,
-         * });
-         */
         ProcessesListStates.setLoading(true);
         fetch(url)
           .then((res) => {

@@ -26,38 +26,6 @@ modules.define(
     const ProcessesListSearch = {
       __id: 'ProcessesListSearch',
 
-      /* [>* UNUSED (old approach): Go to the search page (TODO: to refactor?) <]
-       * doSearchRedirect() {
-       *   const { database } = ProcessesListData;
-       *   const { searchUrl } = ProcessesListData.sharedParams;
-       *   const searchBar = ProcessesListNodes.getSearchBarNode();
-       *   const searchValue = searchBar && searchBar.value;
-       *   // TODO: pare search value with previous (if exists)?
-       *   if (searchValue !== ProcessesListData.searchValue) {
-       *     ProcessesListData.searchValue = searchValue; // Useless due to following redirect
-       *     // If searchValue is empty, then go to index (processes-list, root) page, else -- to the search page...
-       *     const urlParams = {
-       *       database,
-       *       q: searchValue,
-       *     };
-       *     const urlQuery = CommonHelpers.makeQuery(urlParams, { addQuestionSymbol: true });
-       *     const urlBase = searchValue ? searchUrl : '/';
-       *     const url = urlBase + urlQuery;
-       *     [> console.log('[ProcessesListSearch:doSearch]', {
-       *      *   url,
-       *      *   urlQuery,
-       *      *   urlParams,
-       *      *   urlBase,
-       *      *   searchValue,
-       *      *   searchUrl,
-       *      * });
-       *      <]
-       *     location.assign(url);
-       *   }
-       *   return false;
-       * },
-       */
-
       /** Apply search */
       doSearch() {
         const searchBar = ProcessesListNodes.getSearchBarNode();

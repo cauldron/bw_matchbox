@@ -72,19 +72,7 @@ modules.define(
 
       renderTableRowsContent(tableRows) {
         const { sharedData } = this;
-        const {
-          // prettier-ignore
-          source,
-          // searchUrlPrefix,
-          // database,
-        } = sharedData;
-        /* console.log('[Match:renderTableRowsContent]', {
-         *   tableRows,
-         *   source,
-         *   // searchUrlPrefix,
-         *   // database,
-         * });
-         */
+        const { source } = sharedData;
         const content = tableRows
           .map((rowData) => {
             const {
@@ -103,29 +91,11 @@ modules.define(
               { id: 'unit', value: unit },
             ];
             const cellsContent = cells.map(this.makeTableCell.bind(this)).join('');
-            /* console.log('[Match:renderTableRowsContent] iteration', {
-             *   cellsContent,
-             *   cells,
-             *   url,
-             *   id,
-             *   name,
-             *   referenceProduct,
-             *   location,
-             *   unit,
-             *   rowData,
-             * });
-             */
             return `
               <tr data-row-id="${id}">
                 ${cellsContent}
               </tr>
             `;
-            /* // Original tempate code:
-             * <td class="cell-name"><a href="${url}">${name || ''}</a></td>
-             * <td class="cell-referenceProduct>${referenceProduct || ''}</td>
-             * <td class="cell-location">${location || ''}</td>
-             * <td class="cell-unit">${unit || ''}</td>
-             */
           })
           .filter(Boolean)
           .join('');
@@ -135,12 +105,6 @@ modules.define(
       updateTableRows(tableRows) {
         const tableBody = document.getElementById('result-table-body');
         const tableRowsContent = this.renderTableRowsContent(tableRows);
-        /* console.log('[Match:doSearch]: done', {
-         *   tableRowsContent,
-         *   tableBody,
-         *   tableRows,
-         * });
-         */
         tableBody.innerHTML = tableRowsContent;
       },
 
@@ -167,15 +131,6 @@ modules.define(
         };
         const urlQuery = CommonHelpers.makeQuery(params, defaultMakeUrlParams);
         const url = searchUrlPrefix + urlQuery;
-        /* console.log('[Match:doSearch]: start', {
-         *   value,
-         *   urlQuery,
-         *   url,
-         *   searchUrlPrefix,
-         *   source,
-         *   database,
-         * });
-         */
         this.setLoading(true);
         fetch(url)
           .then((res) => {
@@ -191,10 +146,6 @@ modules.define(
             }
           })
           .then((tableRows) => {
-            /* console.log('[Match:doSearch]: success', {
-             *   tableRows,
-             * });
-             */
             this.updateTableRows(tableRows);
             this.setError(undefined);
           })
@@ -209,11 +160,6 @@ modules.define(
           .finally(() => {
             this.setLoading(false);
           });
-        /* // ORIGINAL CODE
-         * req.addEventListener('load', searchResultUpdater);
-         * req.open('GET', `{{ url_for('search') }}?e=1&source={{ ds.id }}&database={{ target }}&q=' + qs);
-         * req.send();
-         */
       },
 
       initSearchBar() {
@@ -231,13 +177,7 @@ modules.define(
         // Save public data...
         this.sharedData = sharedData;
 
-        const {
-          // searchUrlPrefix,
-          // source,
-          // database,
-          initialQueryString,
-          initialTableRows,
-        } = sharedData;
+        const { initialQueryString, initialTableRows } = sharedData;
 
         this.searchValue = initialQueryString || '';
         this.updateTableRows(initialTableRows);

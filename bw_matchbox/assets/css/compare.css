@@ -48,6 +48,23 @@
   width: 8em;
 }
 
+/* Table cell tunings: Issue #59: Name cell with check icon for 'matched' rows... */
+.compare-table .cell-name.matched div {
+  display: flex;
+  gap: 5px;
+}
+.compare-table .cell-name div .name-text {
+  flex: 1;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.compare-table .cell-name div .name-icon {
+  opacity: 0.5;
+}
+.compare-table .cell-name:not(.matched) div .name-icon {
+  display: none;
+}
+
 /* Action cell icons */
 .compare-table td.cell-actions {
   color: #e5e5e5;

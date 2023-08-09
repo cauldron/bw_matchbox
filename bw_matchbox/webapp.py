@@ -701,6 +701,8 @@ def compare(source, target):
             "location": exc.input["location"],
             "input_id": exc.input.id,
             "url": flask.url_for("process_detail", id=exc.input.id),
+            # Issue #59: Name cell with check icon for 'matched' rows
+            "matched": bool(exc.input.get('matched')),
         }
         for exc in source.technosphere()
     ]
