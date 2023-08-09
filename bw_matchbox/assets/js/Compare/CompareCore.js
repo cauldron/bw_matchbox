@@ -124,11 +124,9 @@ modules.define(
         >`;
         // Issue #59: Name cell with check icon for 'matched' rows...
         const nameClassName = `cell-name${matched && ' matched'}`;
-        let nameContent = '';
+        let nameContent = `<a onClick="CompareCore.disableRowClickHandler(this)" href="${url}">${name}</a>`;
         if (!is_target && matched) {
-          nameContent = `<i class="name-icon fa-solid fa-check"></i><span class="name-text"><a onClick="CompareCore.disableRowClickHandler(this)" href="${url}" class="exact">${name}</a></span>`;
-        } else {
-          nameContent = `<a onClick="CompareCore.disableRowClickHandler(this)" href="${url}">${name}</a>`;
+          nameContent = `<i class="name-icon fa-solid fa-check"></i><span class="name-text">${nameContent}</span>`;
         }
         const end = `<td class="${nameClassName}"><div>${nameContent}</div></td>
           <td class="cell-location"><div>${location}</div></td>

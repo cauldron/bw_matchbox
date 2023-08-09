@@ -53,13 +53,18 @@
   display: flex;
   gap: 5px;
 }
+.compare-table .cell-name div .name-icon,
+.compare-table .cell-name.matched div a {
+  /* Color from `.exact` class */
+  color: #2d8632;
+}
 .compare-table .cell-name div .name-text {
   flex: 1;
   overflow: hidden;
   text-overflow: ellipsis;
 }
 .compare-table .cell-name div .name-icon {
-  opacity: 0.5;
+  opacity: 0.75;
 }
 .compare-table .cell-name:not(.matched) div .name-icon {
   display: none;
