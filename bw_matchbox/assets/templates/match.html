@@ -61,7 +61,7 @@ modules.require('Match', function requireMatch(Match) {
       name: '{{ ds.name }}',
       location: '{{ ds.location }}',
       unit: '{{ ds.unit }}',
-      comment: '{{ ds.comment }}',
+      comment: `{{ ds.comment|safe }}`,
     },
   };
 
