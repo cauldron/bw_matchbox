@@ -10,6 +10,7 @@ import bw2data as bd
 import flask
 import tomli
 import whoosh
+from bw2analyzer import PageRank
 from bw2data.backends import ActivityDataset as AD
 from flask_httpauth import HTTPBasicAuth
 from peewee import fn
@@ -125,6 +126,27 @@ def get_match_type_for_source_process(node):
         else:
             label = matchbox_app.config["mb_match_types"].get(mt, "Unknown")
             return MATCH_TYPE_ABBREVIATIONS.get(label, label)
+
+
+@matchbox_app.route("/page-rank", methods=["GET"])
+@auth.login_required
+def build_page_rank_cache():
+    context = get_context()
+    proj, s, t, proxy = context
+    bd.projects.set_current(proj)
+    output_dir = Path(matchbox_app.config["mb_output_dir"])
+    pr = PageRank(bd.Database(s)).calculate()
+    with open(output_dir / "page-rank.json", "w") as f:
+        json.dump({"scores": pr}, f, indent=2)
+    return ""
+
+
+def get_page_rank_cache():
+    fp = Path(matchbox_app.config["mb_output_dir"]) / "page-rank.json"
+    if fp.is_file():
+        return json.load(open(fp))["scores"]
+    else:
+        return []
 
 
 @matchbox_app.route("/project", methods=["POST", "GET"])
@@ -274,7 +296,9 @@ def index():
 
 
 def apply_filter_to_qs(qs, filter_arg):
-    if filter_arg == "unmatched":
+    if not filter_arg:
+        return qs
+    elif filter_arg == "unmatched":
         return [node for node in qs if not node.data.get("matched")]
     else:
         return [node for node in qs if node.data.get(filter_arg)]
@@ -342,10 +366,13 @@ def processes():
     limit = maybe_int(flask.request.args.get("limit"))
     offset = maybe_int(flask.request.args.get("offset"))
     filter_arg = flask.request.args.get("filter")
+    order_by = flask.request.args.get("order_by")
+
+    pr = get_page_rank_cache()
 
     search_query = flask.request.args.get("search")
     if search_query:
-        # Override default very small search limit
+        # Override default too small search limit
         qs = [
             x._document
             for x in bd.Database(database_label).search(search_query, limit=1000)
@@ -354,10 +381,17 @@ def processes():
             qs = apply_filter_to_qs(qs, filter_arg)
         total_records = len(qs)
         qs = apply_limit_offset(qs, limit, offset)
+    elif order_by == "importance":
+        limit = limit or 250
+        offset = offset or 0
+        qs = [bd.get_node(id=id_)._document for _, id_ in pr[offset : offset + limit]]
+        print(limit, offset, len(qs))
+        qs = apply_filter_to_qs(qs, filter_arg)
+        print(limit, offset, len(qs))
+        total_records = len(bd.Database(s))
     else:
         qs = AD.select().where(AD.database == database_label)
 
-        order_by = flask.request.args.get("order_by")
         if order_by and order_by in ("name", "location", "product"):
             qs = qs.order_by(getattr(AD, order_by))
         else:
@@ -702,7 +736,7 @@ def compare(source, target):
             "input_id": exc.input.id,
             "url": flask.url_for("process_detail", id=exc.input.id),
             # Issue #59: Name cell with check icon for 'matched' rows
-            "matched": bool(exc.input.get('matched')),
+            "matched": bool(exc.input.get("matched")),
         }
         for exc in source.technosphere()
     ]
