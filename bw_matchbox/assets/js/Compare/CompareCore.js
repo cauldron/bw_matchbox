@@ -4,6 +4,7 @@ modules.define(
     // Required modules...
     'CommonHelpers',
     'CommonModal',
+    'CommonNotify',
     'CompareProxyDialogModal',
     'CompareRowClick',
     'CompareRowsHelpers',
@@ -13,6 +14,7 @@ modules.define(
     // Resolved modules...
     CommonHelpers,
     CommonModal,
+    CommonNotify,
     CompareProxyDialogModal,
     CompareRowClick,
     CompareRowsHelpers,
@@ -457,25 +459,23 @@ modules.define(
         const name = sharedData[nameId];
         const url = sharedData[urlId];
         const text = '[' + name + '](' + url + ')';
-        /* console.log('[CompareCore:copyToClipboardHandler]', {
-         *   urlId,
-         *   nameId,
-         *   url,
-         *   name,
-         *   text,
-         *   nodeType,
-         *   node,
-         * });
-         */
         // NOTE: Docment should be focused...
-        navigator.clipboard.writeText(text).catch((error) => {
-          // eslint-disable-next-line no-console
-          console.error('[CompareCore:copyToClipboardHandler] Catched error', error);
-          // eslint-disable-next-line no-debugger
-          debugger;
-          // Show errors on the page...
-          // this.setError(error);
-        });
+        navigator.clipboard
+          .writeText(text)
+          .then(() => {
+            // Show notification...
+            CommonNotify.showSuccess('Text already copied to clipboard');
+          })
+          .catch((error) => {
+            // eslint-disable-next-line no-console
+            console.error('[CompareCore:copyToClipboardHandler] Catched error', error);
+            // eslint-disable-next-line no-debugger
+            debugger;
+            // Show error in the notification toast...
+            CommonNotify.showSuccess(
+              'Can not copy text to clipboard: ' + CommonHelpers.getErrorText(error),
+            );
+          });
         // TODO: To catch promise resolve or catch?
         return false;
       },
@@ -490,6 +490,10 @@ modules.define(
         this.sharedData = sharedData;
         CompareRowsHelpers.sharedData = sharedData;
         CompareProxyDialogModal.sharedData = sharedData;
+
+        /* // DEBUG: Show demo notifiers...
+         * CommonNotify.showDemo();
+         */
 
         const { source_data, target_data } = this.sharedData;
 

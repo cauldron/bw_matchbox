@@ -4,6 +4,7 @@
 
 {# Modal windows are used #}
 {% include 'common-modal.html' %}
+{% include 'common-notify.html' %}
 
 {# Module-specific dependencies... #}
 
@@ -77,24 +78,6 @@
 </div>
 
 <script>
-  /* // ORIGINAL CODE: Clipboard copy
-  const sourceText = "[{{ source_node.name }}]({{ base_url}}{{ url_for('process_detail', id=source_node.id) }})";
-  const targetText = "[{{ target_node.name }}]({{ base_url}}{{ url_for('process_detail', id=target_node.id) }})";
-  const copySourceMarkdown = async () => {
-    try {
-      await navigator.clipboard.writeText(sourceText);
-    } catch (err) {
-      console.error('Failed to copy: ', err);
-    }
-  }
-  const copyTargetMarkdown = async () => {
-    try {
-      await navigator.clipboard.writeText(targetText);
-    } catch (err) {
-      console.error('Failed to copy: ', err);
-    }
-  }
-  */
   modules.require('CompareCore', (CompareCore) => {
     // Global variables for compare tables feature (via global variable `sharedData`)...
     const sharedData = {
@@ -115,7 +98,7 @@
       match_types: {{ match_types|safe }},
       match_type_default: '3',
       comment: '', // Shared comments accumulator
-      /* // #52: match_types sample:
+      /* // Issue #52: match_types sample:
        * {
        *   '1': 'No direct match available',
        *   '2': 'Direct match with near-identical data',
