@@ -282,9 +282,7 @@ def processes():
         limit = limit or 250
         offset = offset or 0
         qs = [bd.get_node(id=id_)._document for _, id_ in pr[offset : offset + limit]]
-        print(limit, offset, len(qs))
         qs = apply_filter_to_qs(qs, filter_arg)
-        print(limit, offset, len(qs))
         total_records = len(bd.Database(config["source"]))
     else:
         qs = AD.select().where(AD.database == database_label)
@@ -407,9 +405,20 @@ def get_authors(authors):
         return ", ".join({obj.get("name", "Unknown") for obj in authors.values()})
 
 
-@matchbox_app.route("/delete-proxy/<id>", methods=["GET"])
+@matchbox_app.route("/remove-match/<id>", methods=["GET"])
 @auth.login_required
-def delete_proxy(id):
+def remove_match(id):
+    """Remove match information.
+
+    If the referenced process is in the proxy database, it will be deleted, and the
+    source process matching attributes will be removed.
+
+    If the reference process is in the source database, its matching attributes will
+    be removed, and it's proxy process (if any) will be deleted.
+
+    If the reference process is from any other database, no action is taken.
+
+    Returns a redirect to the source dataset process details view."""
     config = get_config()
     if isinstance(config, flask.Response):
         return config
@@ -418,26 +427,35 @@ def delete_proxy(id):
         flask.abort(403)
 
     node = bd.get_node(id=id)
-    if not node["database"] == config["proxy"]:
-        raise ValueError(
-            "Not a proxy dataset in the proxy database {}".format(config["proxy"])
+    if node["database"] == config["proxy"]:
+        if node.get("original_id"):
+            reference = bd.get_node(id=node["original_id"])
+            for field in ("proxy_id", "matched", "match_type"):
+                if field in reference:
+                    del reference[field]
+            reference.save()
+        else:
+            reference = None
+
+        node.delete()
+
+        return_url = (
+            flask.url_for("process_detail", id=reference.id)
+            if reference
+            else flask.url_for("index")
         )
-
-    if node.get("original_id"):
-        reference = bd.get_node(id=node["original_id"])
+    elif node["database"] == config["source"]:
+        if "proxy_id" in node:
+            bd.get_node(id=node["proxy_id"]).delete()
         for field in ("proxy_id", "matched", "match_type"):
-            if field in reference:
-                del reference[field]
-        reference.save()
+            if field in node:
+                del node[field]
+        node.save()
+        return_url = flask.url_for("process_detail", id=node.id)
     else:
-        reference = None
+        return_url = flask.url_for("process_detail", id=reference.id)
 
-    node.delete()
-
-    if reference is None:
-        return flask.redirect(flask.url_for("index"))
-    else:
-        return flask.redirect(flask.url_for("process_detail", id=reference.id))
+    return flask.redirect(return_url)
 
 
 @matchbox_app.route("/process/<id>", methods=["GET"])
@@ -616,7 +634,6 @@ def compare(source, target):
         check_similar(obj, source_technosphere)
 
     base_url = flask.request.base_url.replace(flask.request.path, "")
-    print(base_url)
 
     return flask.render_template(
         "compare.html",
