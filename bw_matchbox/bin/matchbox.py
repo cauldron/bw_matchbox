@@ -29,10 +29,10 @@ johnny = "mnemonic"
 editors = ["johnny"]
 
 [configs]
-my_config = { project = "something", source = "database A", target = "database B", proxy = "database C"}
+my_config = { project = "something", source = "database A", target = "database B", proxy = "database C" }
 
 [files]
-output_dir = "{}"
+output_dir = "{o}"
 """
 
 CHANGES_TEMPLATE = {
@@ -67,7 +67,7 @@ def create_setup_files(filename, output_dir):
     if not filename.lower().endswith(".toml"):
         filename += ".toml"
     with open(CWD / filename, "w", newline="\n") as f:
-        data = CONFIG_TEMPLATE.format(str(output_dir).replace("\\", "/"))
+        data = CONFIG_TEMPLATE.replace("{o}", str(output_dir).replace("\\", "/"))
         f.write(data)
         print("Created config file {}".format(CWD / filename))
 
