@@ -326,6 +326,7 @@ def processes():
                 "id": obj.id,
                 "name": obj.name,
                 "location": obj.location,
+                "product": obj.product,
                 "unit": obj.data["unit"],
             }
             for obj in qs
