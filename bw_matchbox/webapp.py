@@ -78,7 +78,7 @@ def configure_app(filepath, app):
 
 
 def return_invalid_config(config):
-    # TBD
+    # TBD #90
     raise ValueError(f"Invalid configuration: {config}")
 
 
@@ -95,7 +95,7 @@ def get_config():
         return flask.redirect(flask.url_for("select_config"))
 
     try:
-        # TBD: Provide good error messages
+        # TBD #90: Provide good error messages
         config = matchbox_app.config["mb_configs"][config_label]
         config["roles"] = matchbox_app.config["mb_roles"]
         config["config_label"] = config_label
