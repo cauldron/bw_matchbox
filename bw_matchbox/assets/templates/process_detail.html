@@ -16,16 +16,33 @@
   {% include 'navigation.html' %}
   <div class="row">
     <div class="column">
-      <h1>{{ ds.name }}
-        {% if ds.database == source and config.role == 'editors'  %}
-          <button onClick="ProcessDetail.markWaitlist(this)" style="vertical-align: middle" class="{{ 'button-primary' if not ds.get('waitlist') }}" id="mark-waitlist">{{ 'Waitlisted' if ds.waitlist else 'Waitlist' }}</button>
-          {% if not ds.matched %}<button onClick="ProcessDetail.markMatched(this)" style="vertical-align: middle" class="button-primary" id="manual-match">No match needed</button>
-          {% if same_name_count %}<button onClick="ProcessDetail.markAllMatched(this)" style="vertical-align: middle" class="button-primary" id="manual-multi-match">Mark all matched</button>{% endif %}
-          <a style="vertical-align: middle" id="match-button" class="button button-primary" href="{{ url_for('match', source=ds.id)}}">Match</a>{% elif ds.match_type == "1" %}<button id="match-button" style="vertical-align: middle" class="disabled">No match needed</button>{% else %}<button id="match-button" style="vertical-align: middle">Matched</button>{% endif %}
-        {% endif %}{% if is_proxy and config.role == 'editors' %}
-        <a href="{{ url_for('delete_proxy', id=ds.id)}}" class="button button-danger">Delete proxy</a>
-        {% endif %}
-      </h1>
+      <div class="common-page-header">
+        <h3 class="title">
+          {{ ds.name }}
+          <div class="tools">
+            <div class="tools-wrapper">
+              <a class="tools-icon DEBUG" title="DEBUG"><i class="fa-solid fa-copy"></i></a>
+              {% if ds.database == source and config.role == 'editors'  %}
+                <button id="mark-waitlist" class="tools-button button{{ ' button-primary' if not ds.get('waitlist') }}" onClick="ProcessDetail.markWaitlist(this)">{{ 'Waitlisted' if ds.waitlist else 'Waitlist' }}</button>
+                {% if not ds.matched %}
+                  <button id="manual-match" class="tools-button button button-primary" onClick="ProcessDetail.markMatched(this)">No match needed</button>
+                  {% if same_name_count %}
+                    <button id="manual-multi-match" class="tools-button button button-primary" onClick="ProcessDetail.markAllMatched(this)">Mark all matched</button>
+                  {% endif %}
+                  <a id="match-button" class="tools-button button button-primary" href="{{ url_for('match', source=ds.id)}}">Match</a>
+                {% else %}
+                  <button id="match-button" class="tools-button button disabled">{% if ds.match_type == "1" %}No match needed{% else %}Matched{% endif %}</button>
+                {% endif %}
+              {% endif %}
+              {# // DEBUG: Condition has temporarily disabled for debug! Don't forget to re-enable when done.
+              {% if is_proxy and config.role == 'editors' %}
+              {% endif %}
+              #}
+              <a class="button button-danger" href="{{ url_for('delete_proxy', id=ds.id)}}">Delete proxy</a>
+            </div>
+          </div>
+        </h3>
+      </div>
       <ul class="details-list">
           <li><label>Database:</label> {{ ds.database }}</li>
           <li><label>Location:</label> {{ ds.location }}</li>
