@@ -21,24 +21,21 @@
           {{ ds.name }}
           <div class="tools">
             <div class="tools-wrapper">
-              <a class="tools-icon DEBUG" title="DEBUG"><i class="fa-solid fa-copy"></i></a>
               {% if ds.database == source and config.role == 'editors'  %}
-                <button id="mark-waitlist" class="tools-button button{{ ' button-primary' if not ds.get('waitlist') }}" onClick="ProcessDetail.markWaitlist(this)">{{ 'Waitlisted' if ds.waitlist else 'Waitlist' }}</button>
+                <a id="mark-waitlist" class="tools-button {{ ' theme-primary' if not ds.get('waitlist') }}" onClick="ProcessDetail.markWaitlist(this)">{{ 'Waitlisted' if ds.waitlist else 'Waitlist' }}</a>
                 {% if not ds.matched %}
-                  <button id="manual-match" class="tools-button button button-primary" onClick="ProcessDetail.markMatched(this)">No match needed</button>
+                  <a id="manual-match" class="tools-button theme-primary" onClick="ProcessDetail.markMatched(this)">No match needed</a>
                   {% if same_name_count %}
-                    <button id="manual-multi-match" class="tools-button button button-primary" onClick="ProcessDetail.markAllMatched(this)">Mark all matched</button>
+                    <a id="manual-multi-match" class="tools-button theme-primary" onClick="ProcessDetail.markAllMatched(this)">Mark all matched</a>
                   {% endif %}
-                  <a id="match-button" class="tools-button button button-primary" href="{{ url_for('match', source=ds.id)}}">Match</a>
+                  <a id="match-button" class="tools-button theme-primary" href="{{ url_for('match', source=ds.id)}}">Match</a>
                 {% else %}
-                  <button id="match-button" class="tools-button button disabled">{% if ds.match_type == "1" %}No match needed{% else %}Matched{% endif %}</button>
+                  <a id="match-button" class="tools-button disabled">{% if ds.match_type == "1" %}No match needed{% else %}Matched{% endif %}</a>
                 {% endif %}
               {% endif %}
-              {# // DEBUG: Condition has temporarily disabled for debug! Don't forget to re-enable when done.
               {% if is_proxy and config.role == 'editors' %}
+                <a class="tools-button theme-danger" href="{{ url_for('delete_proxy', id=ds.id)}}">Delete proxy</a>
               {% endif %}
-              #}
-              <a class="button button-danger" href="{{ url_for('delete_proxy', id=ds.id)}}">Delete proxy</a>
             </div>
           </div>
         </h3>
@@ -69,22 +66,22 @@
         <div class="error" id="error">Sample error text</div>
         <div id="loader-splash" class="loader-splash bg-white full-cover"><div class="loader-spinner"></div></div>
       </div>
-      <h2>Technosphere Inputs</h2>
-      <table width="100%">
+      <h3>Technosphere Inputs</h3>
+      <table class="fixed-table" width="100%">
         <tr>
-          <th>Amount</th>
-          <th>Name</th>
-          <th>Location</th>
-          <th>Unit</th>
-          <th>Matched</th>
+          <th class="cell-amount"><div>Amount</div></th>
+          <th class="cell-name"><div>Name</div></th>
+          <th class="cell-location"><div>Location</div></th>
+          <th class="cell-unit"><div>Unit</div></th>
+          <th class="cell-matched"><div>Matched</div></th>
         </tr>
         {% for row in technosphere %}
         <tr>
-          <td>{{row.amount}}</td>
-          <td><a href="{{ url_for('process_detail', id=row.input.id) }}">{{row.input.name}}</a></td>
-          <td>{{row.input.location}}</td>
-          <td>{{row.input.unit}}</td>
-          <td>{% if row.input.matched %}<i class="fa-solid fa-check"></i>{% else %}<i class="fa-solid fa-circle-xmark"></i>{% endif %}</td>
+          <td><div>{{row.amount}}</div></td>
+          <td><div><a href="{{ url_for('process_detail', id=row.input.id) }}">{{row.input.name}}</a></div></td>
+          <td><div>{{row.input.location}}</div></td>
+          <td><div>{{row.input.unit}}</div></td>
+          <td><div>{% if row.input.matched %}<i class="fa-solid fa-check"></i>{% else %}<i class="fa-solid fa-circle-xmark"></i>{% endif %}</div></td>
         </tr>
         {% endfor %}
       </table>
@@ -92,19 +89,19 @@
       {% if biosphere|length > 50 or not biosphere|length %}
       <p>{{ biosphere|length }} biosphere exchanges</p>
       {% else %}
-      <table width="100%">
+      <table class="fixed-table" width="100%">
         <tr>
-          <th>Amount</th>
-          <th>Name</th>
-          <th>Categories</th>
-          <th>Unit</th>
+          <th class="cell-amount"><div>Amount</div></th>
+          <th class="cell-name"><div>Name</div></th>
+          <th class="cell-categories"><div>Categories</div></th>
+          <th class="cell-unit"><div>Unit</div></th>
         </tr>
         {% for exc in biosphere %}
           <tr>
-            <td>{{ exc.amount }}</td>
-            <td>{{ exc.input.name }}</td>
-            <td>{{ exc.input.categories|join("|") }}</td>
-            <td>{{ exc.input.unit }}</td>
+            <td><div>{{ exc.amount }}</div></td>
+            <td><div>{{ exc.input.name }}</div></td>
+            <td><div>{{ exc.input.categories|join("|") }}</div></td>
+            <td><div>{{ exc.input.unit }}</div></td>
           </tr>
         {% endfor %}
       {% endif %}
@@ -116,19 +113,19 @@
       <p>Showing 50 of {{ total_consumers }}</p>
       {% endif %}
       {% if total_consumers %}
-      <table width="100%">
+      <table class="fixed-table" width="100%">
         <tr>
-          <th>Amount</th>
-          <th>Name</th>
-          <th>Location</th>
-          <th>Unit</th>
+          <th class="cell-amount"><div>Amount</div></th>
+          <th class="cell-name"><div>Name</div></th>
+          <th class="cell-location"><div>Location</div></th>
+          <th class="cell-unit"><div>Unit</div></th>
         </tr>
         {% for exc in consumers %}
           <tr>
-            <td>{{ exc.amount }}</td>
-            <td><a href="{{ url_for('process_detail', id=exc.output.id) }}">{{ exc.output.name }}</a></td>
-            <td>{{ exc.output.location }}</td>
-            <td>{{ exc.output.unit }}</td>
+            <td><div>{{ exc.amount }}</div></td>
+            <td><div><a href="{{ url_for('process_detail', id=exc.output.id) }}">{{ exc.output.name }}</a></div></td>
+            <td><div>{{ exc.output.location }}</div></td>
+            <td><div>{{ exc.output.unit }}</div></td>
           </tr>
         {% endfor %}
       {% endif %}

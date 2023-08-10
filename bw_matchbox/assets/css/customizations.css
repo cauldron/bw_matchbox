@@ -33,18 +33,22 @@
 }
 
 .narrower {
+  /* TODO: To use common color? */
   color: #592a71;
 }
 
 .broader {
+  /* TODO: To use common color `--common-error-color: #b00` */
   color: #aa3c39;
 }
 
 .exact {
+  /* TODO: To use common color `--common-success-color: #181` */
   color: #2d8632;
 }
 
 .approximate {
+  /* TODO: To use common color `--common-warn-color: #960` */
   color: #a8aa39;
 }
 
@@ -55,6 +59,8 @@
 .button.button-danger,
 button.button-danger {
   color: #fff;
-  background-color: #592a71;
-  border-color: #592a71;
+  /* background-color: #592a71; */
+  /* border-color: #592a71; */
+  background-color: var(--common-error-color);
+  border-color: var(--common-error-color);
 }
