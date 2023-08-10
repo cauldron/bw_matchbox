@@ -1,6 +1,5 @@
 # common-page-header
 
-
 Node: `.common-page-header`
 
 Can contain next elements:

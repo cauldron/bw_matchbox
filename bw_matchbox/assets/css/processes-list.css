@@ -55,7 +55,7 @@
 .processes-list .page-filters .radio-group-item {
   white-space: nowrap;
 }
-.processes-list .page-filters .radio-group-item-disabled {
+.processes-list .page-filters .radio-group-item.disabled {
   opacity: 0.5;
   pointer-events: none;
 }
