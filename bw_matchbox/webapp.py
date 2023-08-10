@@ -420,40 +420,6 @@ def processes():
     return flask.jsonify(payload)
 
 
-# @matchbox_app.route("/match-status", methods=["GET"])
-# @auth.login_required
-# def match_status():
-#     crud = {}
-#     status = {}
-#     failed = []
-
-#     for filename in filter(lambda x: x.suffix.lower() == ".json", DATA_DIR.iterdir()):
-#         try:
-#             file_status = {'count': 0, 'duplicates': []}
-#             data = json.load(open(filename))
-#             for key in OPERATIONS:
-#                 for elem in data.get(key, []):
-#                     lookup = frozendict(elem['source'])
-#                     value = frozendict(elem['target'])
-#                     file_status['count'] += 1
-#                     if lookup in crud and crud.get(lookup) != value:
-#                         error = "Source: {}. Already have: {}. Given: {}".format(
-#                            dict(lookup), dict(crud[lookup]), dict(value))
-#                         if error not in file_status['duplicates']:
-#                             file_status['duplicates'].append(error)
-#                     else:
-#                         crud[lookup] = value
-#             status[filename.name] = file_status
-#         except:
-#             failed.append(filename.name)
-#             raise
-#     return flask.render_template(
-#         "match-status.html",
-#         failed=failed,
-#         status=[(key, value) for key, value in status.items()]
-#    )
-
-
 @matchbox_app.route("/search/", methods=["GET"])
 @auth.login_required
 def search():
