@@ -46,3 +46,20 @@
   cursor: default;
   user-select: none;
 }
+
+/* Table */
+.process-detail .fixed-table .cell-amount {
+  width: 14em;
+}
+.process-detail .fixed-table .cell-name {
+  width: auto;
+}
+.process-detail .fixed-table .cell-location {
+  width: 12em;
+}
+.process-detail .fixed-table .cell-unit {
+  width: 5em;
+}
+.process-detail .fixed-table .cell-matched {
+  width: 8em;
+}

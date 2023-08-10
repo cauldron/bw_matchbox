@@ -13,6 +13,7 @@
   --common-error-color: #b00;
   --common-warn-color: #960;
   --common-success-color: #181;
+  --common-tools-icon-size: 28px;
 }
 
 /* Basic layout */
@@ -99,10 +100,10 @@
   column-rule: 1px solid #eee;
   column-width: 300px;
   list-style-type: none;
-  line-height: 1.25;
+  line-height: 1.3;
 }
 .details-list li {
-  margin: 5px 0;
+  margin: 10px 0;
 }
 /* // UNUSED? Using the same width on the all scren widths?
  * @media (width >= 1300px) {
@@ -115,85 +116,4 @@
   display: inline;
   opacity: 0.5;
   font-weight: normal;
-}
-
-/* Generic page header */
-.common-page-header {
-  /*
-  display: flex;
-  align-items: flex-start;
-  gap: 10px;
-  */
-  margin: 20px 0;
-}
-.common-page-header .title {
-  /* font-size: 2.5rem; */
-  line-height: 1.1;
-  letter-spacing: 0;
-  font-weight: lighter;
-  flex: 1;
-  /* display: flex; */
-}
-.common-page-header .title a {
-  text-decoration: none;
-  color: var(--layout-theme-primary-color-dark1);
-  transition: all var(--common-animation-time);
-}
-.common-page-header .title a:hover {
-  text-decoration: underline;
-  text-decoration-thickness: 1px;
-  /* text-decoration-style: dashed; */
-  /* color: var(--layout-theme-primary-color-dark2); */
-  color: #333;
-}
-.common-page-header .icons {
-  margin-left: 5px;
-  display: inline-block;
-  vertical-align: middle;
-}
-.common-page-header .icons-wrapper {
-  white-space: nowrap;
-  display: flex;
-  align-items: center;
-  gap: 5px;
-  font-size: 14px;
-}
-.common-page-header .icons-wrapper > a {
-  background-color: var(--layout-theme-primary-color);
-  color: #fff;
-  border-radius: 4px;
-  position: relative;
-  overflow: hidden;
-  width: 28px;
-  height: 28px;
-  text-align: center;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  transition: all var(--common-animation-time);
-}
-.common-page-header .icons-wrapper > a.hidden {
-  display: none;
-}
-.common-page-header .icons-wrapper > a.disabled {
-  background-color: #ccc;
-  cursor: default;
-  opacity: 0.3;
-  pointer-events: none;
-}
-.common-page-header .icons-wrapper > a:not(.disabled) {
-  cursor: pointer;
-  opacity: 0.5;
-}
-.common-page-header .icons-wrapper > a:not(.disabled):active,
-.common-page-header .icons-wrapper > a:not(.disabled):hover {
-  text-decoration: none;
-  background-color: var(--layout-theme-primary-color-dark1);
-  box-shadow: 0 0 4px var(--layout-theme-primary-color-dark1);
-  opacity: 1;
-  color: #fff;
-}
-.common-page-header .icons-wrapper > a:not(.disabled):active {
-  background-color: var(--layout-theme-primary-color-dark2);
-  box-shadow: 0 0 8px 2px var(--layout-theme-primary-color-dark1);
 }

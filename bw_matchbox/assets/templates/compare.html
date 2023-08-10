@@ -47,9 +47,9 @@
           <a href="{{ url_for('process_detail', id=source_node.id) }}" title="Go to process #{{ source_node.id }} page">
             {{ source_node.name }}
           </a>
-          <div class="icons">
-            <div class="icons-wrapper">
-              <a onClick="CompareCore.copyToClipboardHandler(this)" data-node-type="source" title="Copy markdown link to clipboard"><i class="fa-solid fa-copy"></i></a>
+          <div class="tools">
+            <div class="tools-wrapper">
+              <a class="tools-icon theme-primary" onClick="CompareCore.copyToClipboardHandler(this)" data-node-type="source" title="Copy markdown link to clipboard"><i class="fa-solid fa-copy"></i></a>
             </div>
           </div>
         </h3>
@@ -64,10 +64,10 @@
           <a href="{{ url_for('process_detail', id=target_node.id) }}" title="Go to process #{{ target_node.id }} page">
             {{ target_node.name }}
           </a>
-          <div class="icons">
-            <div class="icons-wrapper">
-              <a onClick="CompareCore.copyToClipboardHandler(this)" data-node-type="target" title="Copy markdown link to clipboard"><i class="fa-solid fa-copy"></i></a>
-              <a onClick="CompareCore.replaceWithTargetHandler(this)" id="replace-with-target-arrow" title="Collapse process inputs"><i class="fa-solid fa-arrow-up"></i></a>
+          <div class="tools">
+            <div class="tools-wrapper">
+              <a class="tools-icon theme-primary" onClick="CompareCore.copyToClipboardHandler(this)" data-node-type="target" title="Copy markdown link to clipboard"><i class="fa-solid fa-copy"></i></a>
+              <a class="tools-icon theme-primary" onClick="CompareCore.replaceWithTargetHandler(this)" id="replace-with-target-arrow" title="Collapse process inputs"><i class="fa-solid fa-arrow-up"></i></a>
             </div>
           </div>
         </h3>
