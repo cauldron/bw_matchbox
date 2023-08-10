@@ -176,7 +176,8 @@
   display: none;
 }
 .common-page-header .icons-wrapper > a.disabled {
-  cursor: dafault;
+  background-color: #ccc;
+  cursor: default;
   opacity: 0.3;
   pointer-events: none;
 }

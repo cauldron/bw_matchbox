@@ -2,12 +2,12 @@ modules.define(
   'CommonNotify',
   [
     // Required modules...
-    // 'CommonHelpers',
+    'CommonHelpers',
   ],
   function provide_CommonNotify(
     provide,
     // Resolved modules...
-    // CommonHelpers,
+    CommonHelpers,
   ) {
     // UNUSED: Icon shapes...
     const icons = {
@@ -26,19 +26,36 @@ modules.define(
 
       // Methods...
 
-      removeNotify(node) {
+      /** removeNotify
+       * @param {<{ node, handler }>} notifyData
+       */
+      removeNotify(notifyData) {
+        const { node, handler } = notifyData;
         // Play animation...
         node.classList.remove('active');
+        if (handler) {
+          clearTimeout(handler);
+          notifyData.handler = undefined;
+        }
         setTimeout(() => {
           // ...And remove node...
           this.notifyRoot.removeChild(node);
         }, 250); // Value of `var(--common-animation-time)`
       },
 
+      /** showNotify
+       * @param {'info' | 'error' | 'warn' | 'success'} [mode] - Message type ('info' is default)
+       * @param {string|Error} text - Message content
+       */
       showNotify(mode, text) {
         if (!text) {
+          // If only one parameters passed assume it as message with default type
           text = mode;
           mode = 'info';
+        }
+        if (text instanceof Error) {
+          // Convert error object to the plain text...
+          text = CommonHelpers.getErrorText(text);
         }
         this.inited || this.init();
         // Create node...
@@ -62,22 +79,20 @@ modules.define(
         node.appendChild(nodeText);
         this.notifyRoot.appendChild(node);
         // Remove node after delay...
-        const removeNotifyHandler = this.removeNotify.bind(this, node);
-        let handler = setTimeout(removeNotifyHandler, this.timeoutDelay);
+        const notifyData = { node, handler: undefined };
+        const removeNotifyHandler = this.removeNotify.bind(this, notifyData);
+        notifyData.handler = setTimeout(removeNotifyHandler, this.timeoutDelay);
         // Stop & restore timer on mouse in and out events...
         node.addEventListener('mouseenter', () => {
           // Clear timer...
-          clearTimeout(handler);
+          clearTimeout(notifyData.handler);
         });
         node.addEventListener('mouseleave', () => {
-          // Restore timer...
-          handler = setTimeout(removeNotifyHandler, this.timeoutDelay);
+          // Resume timer...
+          notifyData.handler = setTimeout(removeNotifyHandler, this.timeoutDelay);
         });
         // Click handler...
-        node.addEventListener('click', () => {
-          this.removeNotify(node);
-          clearTimeout(handler);
-        });
+        node.addEventListener('click', removeNotifyHandler);
       },
 
       // Some shorthands...
