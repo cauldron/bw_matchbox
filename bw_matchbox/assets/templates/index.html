@@ -128,12 +128,10 @@
     // Initialize page data...
     const sharedParams = {
       searchUrl: '{{ url_for("search") }}',
-      // TODO: Remove this when #41 is closed
-      // database: '{{ database }}', // UNUSED: #41: Using `databases` and `userDb`.
       databases: {
-        source: '{{ source }}',
-        target: '{{ target }}',
-        proxy: '{{ proxy or "" }}',
+        source: '{{ config.source }}',
+        target: '{{ config.target }}',
+        proxy: '{{ config.proxy }}',
       },
     };
 
