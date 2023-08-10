@@ -218,6 +218,15 @@ def maybe_int(value):
         return int(value)
 
 
+def get_proxy_url(ds):
+    if isinstance(ds, AD) and "proxy_id" in ds.data:
+        return flask.url_for("process_detail", id=ds.data["proxy_id"])
+    elif not isinstance(ds, AD) and "proxy_id" in ds:
+        return flask.url_for("process_detail", id=ds["proxy_id"])
+    else:
+        return None
+
+
 @matchbox_app.route("/processes", methods=["GET"])
 @auth.login_required
 def processes():
@@ -310,6 +319,7 @@ def processes():
             {
                 "details_url": flask.url_for("process_detail", id=obj.id),
                 "match_url": flask.url_for("match", source=obj.id),
+                "proxy_url": get_proxy_url(obj),
                 "matched": bool(obj.data.get("matched")),
                 "match_type": get_match_type_for_source_process(obj),
                 "waitlist": bool(obj.data.get("waitlist")),
