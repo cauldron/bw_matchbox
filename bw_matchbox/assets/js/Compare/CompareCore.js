@@ -47,24 +47,9 @@ modules.define(
 
       // Methods...
 
-      shiftRowHandler(event, row, row_id) {
-        CompareRowClick.disableRowClickHandler();
-        // Add row from source to target array
-        event.preventDefault();
-        row.parentElement.parentElement.classList.add('shift-right');
-        document.getElementById('replace-with-target-arrow').style.display = 'none';
-        const { source_data, target_data } = this.sharedData;
-        const obj = source_data.find((item) => item.row_id == row_id);
-        // Creating new object with unique (?) row_id
-        const newObj = { ...obj, row_id: 'source-' + obj.row_id };
-        target_data.push(newObj);
-        this.sortTable(target_data);
-        this.buildTable('target-table', target_data, true);
-        this.sharedData.comment += `* Added source exchange of ${obj.amount} ${obj.unit} ${obj.name} in ${obj.location}.\n`;
-        row.parentElement.innerHTML = `<i class="fa-solid fa-check"></i>`;
-      },
-
       buildRow(data, is_target) {
+        // NOTE: Row operations handlers: shiftRowHandler, editNumberHandler, expandRowHandler, removeRowHandler
+        // Reg: \<\(shiftRowHandler\|editNumberHandler\|expandRowHandler\|removeRowHandler\>\)
         const { collapsedRows } = CompareRowsHelpers;
         const {
           collapsed,
@@ -238,11 +223,44 @@ modules.define(
         elem.classList.toggle('hidden', true); // Old code: `innerHTML = ''`
       },
 
+      /** setModifiedRowsStatus -- Set modified status: if it had set then `replaceWithTargetHandler` operarion should be disabled
+       * @param {boolean} [hasModifiedRows]
+       */
+      setModifiedRowsStatus(hasModifiedRows) {
+        /* // XXX Do we need this global state?
+         * const rootNode = CompareRowsHelpers.getRootNode();
+         * rootNode.classList.toggle('has-modified-rows', hasModifiedRows);
+         */
+        const replaceButton = document.getElementById('replace-with-target-arrow');
+        replaceButton.classList.toggle('disabled', hasModifiedRows);
+      },
+
+      // Row operations handlers: shiftRowHandler, expandRowHandler,
+      // removeRowHandler, editNumberHandler (below, in 'Edit number modal
+      // dialog' section, actual final handler: setNumberAndCloseModalHandler)...
+
+      shiftRowHandler(event, row, row_id) {
+        CompareRowClick.disableRowClickHandler();
+        // Add row from source to target array
+        event.preventDefault();
+        const parentNode = row.parentElement;
+        parentNode.parentElement.classList.add('shift-right');
+        parentNode.innerHTML = `<i class="fa-solid fa-check"></i>`;
+        const { source_data, target_data } = this.sharedData;
+        const obj = source_data.find((item) => item.row_id == row_id);
+        // Creating new object with unique (?) row_id
+        const newObj = { ...obj, row_id: 'source-' + obj.row_id };
+        target_data.push(newObj);
+        this.sortTable(target_data);
+        this.buildTable('target-table', target_data, true);
+        this.sharedData.comment += `* Added source exchange of ${obj.amount} ${obj.unit} ${obj.name} in ${obj.location}.\n`;
+        this.setModifiedRowsStatus(true);
+      },
+
       removeRowHandler(element) {
         CompareRowClick.disableRowClickHandler();
         const rowId = element.closest('td').getAttribute('row_id');
         const { target_data } = this.sharedData;
-        document.getElementById('replace-with-target-arrow').style.display = 'none';
         target_data.filter((obj, index, arr) => {
           if (obj.row_id == rowId) {
             this.sharedData.comment += `* Removed exchange of ${obj.amount} ${obj.unit} ${obj.name} from ${obj.location}.\n`;
@@ -252,6 +270,7 @@ modules.define(
           return false;
         });
         this.buildTable('target-table', target_data, true);
+        this.setModifiedRowsStatus(true);
       },
 
       expandRowHandler(element) {
@@ -261,15 +280,16 @@ modules.define(
         const elAmount = element.getAttribute('amount');
         const url = '/expand/' + elInputId + '/' + elAmount + '/';
         const node = target_data.find((item) => item.input_id == elInputId);
-
-        document.getElementById('replace-with-target-arrow').style.display = 'none';
         this.sharedData.comment += `* Expanded process inputs of ${node.amount} ${node.unit} from ${node.name} in ${node.location}.\n`;
         fetch(url)
-          .then((response) => {
-            if (!response.ok) {
-              throw new Error(`HTTP error ${response.status}`);
+          .then((res) => {
+            if (!res.ok) {
+              const error = new Error(
+                `Can't load url '${res.url}': ${res.statusText}, ${res.status}`,
+              );
+              throw error;
             }
-            return response.json();
+            return res.json();
           })
           .then((data) => {
             const { target_data } = this.sharedData;
@@ -280,19 +300,35 @@ modules.define(
             });
             this.sortTable(target_data);
             this.removeRowHandler(element);
+            this.setModifiedRowsStatus(true);
+          })
+          .catch((error) => {
+            // eslint-disable-next-line no-console
+            console.error('[CompareCore:copyToClipboardHandler] Catched error', error);
+            // eslint-disable-next-line no-debugger
+            debugger;
+            // Show error in the notification toast...
+            CommonNotify.showError(`Can't expand row: ${CommonHelpers.getErrorText(error)}`);
           });
       },
 
       // Edit number modal dialog (TODO: Extract all this code into it's own dedicated module?)
 
-      replaceAmountRowHandler(elem, target_id) {
+      replaceAmountRowHandler(elem) {
         CompareRowClick.disableRowClickHandler();
-        const s = this.sharedData.source_data.find(
-          (item) => item.row_id == elem.getAttribute('source_id'),
-        );
-        const t = this.sharedData.target_data.find((item) => item.row_id == target_id);
-        this.sharedData.comment += `* Used source database amount ${s.amount} ${s.unit} from ${s.name} in ${s.location} instead of ${t.amount} ${t.unit} from ${t.name} in ${t.location}.\n`;
-        document.getElementById('number-current-amount').innerText = elem.getAttribute('amount');
+        const target_id = elem.getAttribute('target_id');
+        const source_id = elem.getAttribute('source_id');
+        const sourceRow = this.sharedData.source_data.find((item) => item.row_id == source_id);
+        if (!sourceRow) {
+          throw new Error('Not found source row for id: ' + source_id);
+        }
+        const targetRow = this.sharedData.target_data.find((item) => item.row_id == target_id);
+        if (!targetRow) {
+          throw new Error('Not found target row for id: ' + target_id);
+        }
+        this.sharedData.comment += `* Used source database amount ${sourceRow.amount} ${sourceRow.unit} from ${sourceRow.name} in ${sourceRow.location} instead of ${targetRow.amount} ${targetRow.unit} from ${targetRow.name} in ${targetRow.location}.\n`;
+        const amount = sourceRow.amount;
+        document.getElementById('number-current-amount').innerText = amount;
       },
 
       rescaleAmountHandler(event) {
@@ -322,7 +358,7 @@ modules.define(
         document.getElementById('number-current-amount').innerText = new_value;
       },
 
-      setNumberHandler(event) {
+      setNumberAndCloseModalHandler(event) {
         event.preventDefault();
         const { target } = event;
         const formRootElem = target.closest('.set-number-modal-form');
@@ -333,12 +369,13 @@ modules.define(
         const item = target_data.find(({ row_id }) => row_id === rowId);
         if (item) {
           item.amount = current;
+          // TODO: Number formatting is weird here. It would be nice to fix it.
           item.amount_display = current.toExponential();
         }
-        // TODO: Number formatting is weird here. It would be nice to fix it.
         CommonModal.hideModal();
         this.sortTable(target_data);
         this.buildTable('target-table', target_data, true);
+        this.setModifiedRowsStatus(true);
       },
 
       resetNumberHandler(event) {
@@ -359,17 +396,13 @@ modules.define(
         inputNumber.value = amount;
       },
 
-      editNumberHandler(link) {
-        CompareRowClick.disableRowClickHandler();
-        const { source_data, target_data } = this.sharedData;
-        const td = link.closest('td');
-        const rowId = td.getAttribute('row_id');
-        const row = target_data.find(({ row_id }) => row_id == rowId);
-
-        let start = `
+      getEditNumberModalContent(row) {
+        const rowId = row.row_id;
+        const { source_data } = this.sharedData;
+        const start = `
           <div class="set-number-modal-table">
             <p>Click on a row to take that value</p>
-            <table id="edit-number-table" class="fixed-table modal-table" width="100%">
+            <table id="edit-number-table" class="fixed-table fixed-table-active modal-table" width="100%">
               <thead>
                 <tr>
                   <th>Amount</th>
@@ -379,17 +412,15 @@ modules.define(
               </thead>
               <tbody>
         `;
-
-        source_data.forEach((item) => {
-          start += `
-                <tr amount="${item.amount}" source_id="${item.row_id}" onClick="CompareCore.replaceAmountRowHandler(this, ${row.row_id})">
-                  <td><div>${item.amount_display}</div></td>
-                  <td><div>${item.name}</div></td>
-                  <td><div>${item.unit}</div></td>
-                </tr>
+        const rowsContent = source_data.map((item) => {
+          return `
+            <tr source_id="${item.row_id}" target_id="${rowId}" onClick="CompareCore.replaceAmountRowHandler(this)">
+              <td><div>${item.amount_display}</div></td>
+              <td><div>${item.name}</div></td>
+              <td><div>${item.unit}</div></td>
+            </tr>
           `;
         });
-
         const end = `
               <tbody>
             </table>
@@ -398,7 +429,7 @@ modules.define(
             <div class="strong"><strong>Original amount:</strong> ${row.amount}</div>
             <div class="strong"><strong>Current amount:</strong> <span id="number-current-amount">${row.amount}</span></div>
             <hr />
-            <button class="button-primary" id="close-number-editor">Set and close</button>
+            <button class="button-primary" id="set-and-close-number-editor">Set and close</button>
             <button id="reset-number">Reset number</button>
             <hr />
             <form>
@@ -416,9 +447,18 @@ modules.define(
             </form>
           </div>
         `;
+        return start + rowsContent.join('') + end;
+      },
+
+      editNumberHandler(link) {
+        CompareRowClick.disableRowClickHandler();
+        const { target_data } = this.sharedData;
+        const td = link.closest('td');
+        const rowId = td.getAttribute('row_id');
+        const row = target_data.find(({ row_id }) => row_id == rowId);
 
         const title = [row.name, row.location, row.unit].filter(Boolean).join(' | ');
-        const content = start + end;
+        const content = this.getEditNumberModalContent(row);
 
         CommonModal.setModalContentId('set-number-modal')
           .setTitle(title)
@@ -438,8 +478,8 @@ modules.define(
           .getElementById('new-number-button')
           .addEventListener('click', this.setNewNumberHandler.bind(this));
         document
-          .getElementById('close-number-editor')
-          .addEventListener('click', this.setNumberHandler.bind(this));
+          .getElementById('set-and-close-number-editor')
+          .addEventListener('click', this.setNumberAndCloseModalHandler.bind(this));
         document
           .getElementById('reset-number')
           .addEventListener('click', this.resetNumberHandler.bind(this));
@@ -472,8 +512,8 @@ modules.define(
             // eslint-disable-next-line no-debugger
             debugger;
             // Show error in the notification toast...
-            CommonNotify.showSuccess(
-              'Can not copy text to clipboard: ' + CommonHelpers.getErrorText(error),
+            CommonNotify.showError(
+              `Can't copy text to clipboard: ${CommonHelpers.getErrorText(error)}`,
             );
           });
         // TODO: To catch promise resolve or catch?
