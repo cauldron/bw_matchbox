@@ -50,8 +50,10 @@ modules.define(
       /** Update value of 'order by' parameter from user */
       onOrderByChange(target) {
         // TODO: Move to Handlers module?
-        const { value } = target;
-        ProcessesListStates.setOrderBy(value);
+        const { value: orderBy } = target;
+        ProcessesListStates.setOrderBy(orderBy);
+        // Update `user-db` states (allow only `source` for `importance`)
+        ProcessesListStates.updateUserDbForOrderBy(orderBy);
         ProcessesListDataLoad.loadData();
       },
 
@@ -66,8 +68,10 @@ modules.define(
       /** Update value of 'userDb' parameter from user */
       onUserDbChange(target) {
         // TODO: Move to Handlers module?
-        const { value } = target;
-        ProcessesListStates.setUserDb(value);
+        const { value: userDb } = target;
+        ProcessesListStates.setUserDb(userDb);
+        // Update `order_by` states (disable `importance` if not `source`)...
+        ProcessesListStates.updateOrderByForUserDb(userDb);
         ProcessesListDataLoad.loadData();
       },
 

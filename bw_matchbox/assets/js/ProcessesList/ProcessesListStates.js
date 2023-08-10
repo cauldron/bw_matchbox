@@ -191,14 +191,54 @@ modules.define(
         }
       },
 
-      /** updateDomOrderBy -- Update actual 'order by' dom node.
+      /** updateDomCheckedOrderBy -- Update actual 'order by' dom node.
        * @param {'random' | 'name' | 'location' | 'product'} [orderBy]
        */
-      updateDomOrderBy(orderBy) {
+      updateDomCheckedOrderBy(orderBy) {
         const { defaultOrderBy } = ProcessesListConstants;
         const value = orderBy || defaultOrderBy;
         const elems = document.querySelectorAll('input[type="radio"][name="order_by"]');
         elems.forEach((elem) => (elem.checked = elem.value === value));
+      },
+
+      /** updateUserDbForOrderBy -- Update `user-db` states for `order_by` value (allow only `source` for `importance`)
+       * @param {string} orderBy
+       */
+      updateUserDbForOrderBy(orderBy) {
+        const { sharedParams } = ProcessesListData;
+        const { databases } = sharedParams;
+        const isImportance = orderBy === 'importance';
+        /* console.log('[ProcessesListStates:updateUserDbForOrderBy]', {
+         *   orderBy,
+         * });
+         */
+        const elems = document.querySelectorAll('input[type="radio"][name="user-db"]');
+        elems.forEach((elem) => {
+          const { value: userDb } = elem;
+          const isDisabled =
+            // Disable proxy option if no proxy databese provided
+            (userDb === 'proxy' && !databases.proxy) ||
+            // Disable all databases except source for importance order
+            (isImportance && userDb !== 'source');
+          elem.parentNode.classList.toggle('disabled', isDisabled);
+        });
+      },
+
+      /** updateOrderByForUserDb -- Update `order_by` states for `userDb` value (disable `importance` if not `source`)
+       * @param {string} userDb
+       */
+      updateOrderByForUserDb(userDb) {
+        const isSource = userDb === 'source';
+        /* console.log('[ProcessesListStates:updateOrderByForUserDb]', {
+         *   userDb,
+         * });
+         */
+        const elems = document.querySelectorAll('input[type="radio"][name="order_by"]');
+        elems.forEach((elem) => {
+          const { value: orderBy } = elem;
+          const isDisabled = !isSource && orderBy === 'importance';
+          elem.parentNode.classList.toggle('disabled', isDisabled);
+        });
       },
 
       /** updateDomFilterBy -- Update actual 'filter by' dom node.
@@ -243,32 +283,27 @@ modules.define(
         });
       },
 
-      /* initUserDbData -- Initialize proxy db option
-       */
-      initUserDbData() {
-        const { sharedParams } = ProcessesListData;
-        const { databases } = sharedParams;
-        if (!databases.proxy) {
-          const proxyDbOption = document.getElementById('user-db-proxy');
-          proxyDbOption.setAttribute('disabled', true);
-          const proxyDbOptionParent = proxyDbOption.parentNode;
-          proxyDbOptionParent.classList.toggle('radio-group-item-disabled', true);
-        }
+      getRadioGroupValue(groupId) {
+        const elem = document.querySelector('input[type="radio"][name="' + groupId + '"]:checked');
+        return elem && elem.value;
       },
 
       start() {
         // Update all the dynamic parameters...
-        // Order by selector...
-        this.updateDomOrderBy(undefined);
+
+        // Order by...
+        this.updateDomCheckedOrderBy(undefined);
         this.setOrderBy(undefined, { omitClearData: true });
-        // Filter by selector...
+        this.updateUserDbForOrderBy(this.getRadioGroupValue('order_by'));
+
+        // Filter by...
         this.updateDomFilterBy(undefined);
         this.setFilterBy(undefined, { omitClearData: true });
-        // Database selector...
+
+        // Database...
         this.updateDomUserDb(undefined);
         this.setUserDb(undefined, { omitClearData: true });
-        // Initialize proxy db option
-        this.initUserDbData();
+        this.updateOrderByForUserDb(this.getRadioGroupValue('user-db'));
       },
     };
 
