@@ -32,16 +32,6 @@
           </tr>
         </thead>
         <tbody id="result-table-body">
-          <!-- ** Generated content - to remove when tested **
-          {% for obj in matches %}
-          <tr>
-            <td class="cell-name"><a href="{{ url_for('compare', source=ds.id, target=obj.id) }}">{{obj.name}}</a></td>
-            <td class="cell-referenceProduct>{{ obj["reference product"] }}</td>
-            <td class="cell-location">{{ obj.location }}</td>
-            <td class="cell-unit">{{ obj.unit }}</td>
-          </tr>
-          {% endfor %}
-          -->
         </tbody>
       </table>
     </div>
@@ -54,7 +44,7 @@ modules.require('Match', function requireMatch(Match) {
   const sharedData = {
     searchUrlPrefix: '{{ url_for('search') }}',
     source: '{{ ds.id }}',
-    database: '{{ target }}',
+    database: '{{ config.target }}',
     initialQueryString: '{{ query_string }}',
     initialTableRows: {{ matches_json|safe }}, // Initial table rows...
     originalProcess: {

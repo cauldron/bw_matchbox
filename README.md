@@ -56,11 +56,30 @@ To use `bw_matchbox`, you need to do the following:
 
 ### Create a configuration file
 
-Configuration is done via a `toml` file. See [`config_example.toml`](https://github.com/cauldron/bw_matchbox/blob/main/config_example.toml) for the structure of this file. It needs to provide the following:
+Configuration is done via a `toml` file. See [`config_example.toml`](https://github.com/cauldron/bw_matchbox/blob/main/config_example.toml) for the structure of this file. Here is an example:
+
+```toml
+[users]
+jane = "deer"
+john = "doe"
+
+[roles]
+editors = ["jane"]
+reviewers = ["john"]
+
+[configs]
+my_config = { project = "something", source = "database A", target = "database B", proxy = "database C"}
+
+[files]
+output_dir = "/Path/to/some/directory"
+```
+
+The `config.toml` file needs to provide the following:
 
 * `[users]` section: Authentication, via a set of usernames and passwords
-* `output_dir`: Location of the directory where output files will be written. Must be writable.
-* `directories`: (Optional) Location of existing [randonneur](https://github.com/cmutel/randonneur) matching files to use, if any.
+* `[roles]` section: The exact role labels must be used. Editors can make changes, reviewers can only comment.
+* `[configs]` section: A combination of Brightway project and the source, target and proxy databases.
+* `[files]` section: Currently only uses the `output_dir` key.
 
 The easiest way to set this up is with:
 
@@ -68,17 +87,7 @@ The easiest way to set this up is with:
 matchbox setup
 ```
 
-This will create stub configuration and changes files in your current working directory - note that you need to edit `changes.json`, and should change the username/password in `config.toml`.
-
-### Create a Brightway project
-
-`bw_matchbox` is designed to match two [Brightway](https://docs.brightway.dev/en/latest/) databases against each other. If you are new to life cycle assessment, or just want to see matchbox in action, do the following.
-
-```console
-matchbox example_project
-```
-
-This will install the [US EEIO database](https://github.com/USEPA/USEEIO/). You can practice by linking it against itself :p
+This will create stub configuration and changes files in your current working directory - note that you should change the configuration and username/password in `config.toml`.
 
 ### Running the development server
 

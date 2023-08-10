@@ -1,10 +1,10 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
+# flake8: noqa
 """bw_matchbox scripts.
 
 Usage:
   matchbox setup [<output_dir>]
-  matchbox example_project [<project_name>]
   matchbox webapp <config> [--port=<port>] [--localhost]
 
 Options:
@@ -14,8 +14,8 @@ Options:
 """
 from pathlib import Path
 
-import bw2data as bd
-import bw2io as bi
+# import bw2data as bd
+# import bw2io as bi
 from docopt import docopt
 
 from bw_matchbox.webapp import configure_app, matchbox_app
@@ -25,8 +25,13 @@ CWD = Path.cwd()
 CONFIG_TEMPLATE = """[users]
 johnny = "mnemonic"
 
+[roles]
+editors = ["johnny"]
+
+[configs]
+my_config = { project = "something", source = "database A", target = "database B", proxy = "database C"}
+
 [files]
-directories = []
 output_dir = "{}"
 """
 
@@ -62,7 +67,7 @@ def create_setup_files(filename, output_dir):
     if not filename.lower().endswith(".toml"):
         filename += ".toml"
     with open(CWD / filename, "w", newline="\n") as f:
-        data = CONFIG_TEMPLATE.format(str(output_dir).replace('\\', '/'))
+        data = CONFIG_TEMPLATE.format(str(output_dir).replace("\\", "/"))
         f.write(data)
         print("Created config file {}".format(CWD / filename))
 
@@ -73,15 +78,15 @@ def main():
     if args["setup"]:
         output_dir = args["<output_dir>"] or CWD
         create_setup_files("config.toml", Path(output_dir).resolve())
-    elif args["example_project"]:
-        name = args["<project_name>"] or "matchbox-example"
-        bi.install_project("USEEIO-1.1", name)
-        bd.projects.set_current(name)
-        bd.Database("USEEIO-1.1").copy("USEEIO-copy")
-        print(
-            f"Create project {name}. Make sure to select `USEEIO-1.1` for one "
-            + "database and `USEEIO-copy` for the other."
-        )
+    # elif args["example_project"]:
+    #     name = args["<project_name>"] or "matchbox-example"
+    #     bi.install_project("USEEIO-1.1", name)
+    #     bd.projects.set_current(name)
+    #     bd.Database("USEEIO-1.1").copy("USEEIO-copy")
+    #     print(
+    #         f"Create project {name}. Make sure to select `USEEIO-1.1` for one "
+    #         + "database and `USEEIO-copy` for the other."
+    #     )
     elif args["webapp"]:
         filepath = args["<config>"]
         port = int(args.get("--port", False) or 5000)
