@@ -647,7 +647,7 @@ def process_detail(id):
 
     return flask.render_template(
         "process_detail.html",
-        title="bw_matchbox Detail Page",
+        title="MB {} {} {}".format(node['name'][:20], node['location'][:5], node['unit'][:5]),
         ds=node,
         config=config,
         authors=get_authors(node.get("authors")),
