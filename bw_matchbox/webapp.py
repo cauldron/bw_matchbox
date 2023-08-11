@@ -704,6 +704,9 @@ def match(source):
 
     node = bd.get_node(id=source)
 
+    if node['matched']:
+        return flask.redirect(flask.url_for("process_detail", id=node.id))
+
     matches = bd.Database(config["target"]).search(
         node["name"] + " " + node.get("location", "")
     )
