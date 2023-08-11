@@ -3,45 +3,38 @@ modules.define(
   [
     // Required modules...
     // 'CommonHelpers',
-    // 'CommentsConstants',
-    // 'CommentsData',
-    // 'CommentsDataLoad',
-    // 'CommentsDataRender',
-    // 'CommentsNodes',
-    // 'CommentsStates',
+    'CommentsConstants',
+    'CommentsData',
+    'CommentsDataRender',
+    'CommentsLoader',
+    'CommentsNodes',
+    'CommentsStates',
   ],
   function provide_Comments(
     provide,
     // Resolved modules...
     // CommonHelpers,
-    // CommentsConstants,
-    // CommentsData,
-    // CommentsDataLoad,
-    // CommentsDataRender,
-    // CommentsNodes,
-    // CommentsStates,
+    CommentsConstants,
+    CommentsData,
+    CommentsDataRender,
+    CommentsLoader,
+    CommentsNodes,
+    CommentsStates,
   ) {
-    // Define module...
-
-    /** @descr Process list table client code.
-     *
-     * TODO:
-     *
-     * - Add fallback for 'Reload' (reload last data chunk) if error occured.
+    /** Used modules list (will be needed for initialization, in `startAllModules`)
+     * TODO: To populate it from the arguments list?
      */
-
-    // NOTE: Don't forget to call `startAllModules` for all the used modules...
     const allModulesList = [
-      // CommentsConstants,
-      // CommentsData,
-      // CommentsNodes,
-      // CommentsStates,
-      // CommentsSearch,
-      // CommentsDataRender,
-      // CommentsDataLoad,
+      CommentsConstants,
+      CommentsData,
+      CommentsDataRender,
+      CommentsLoader,
+      CommentsNodes,
+      CommentsStates,
     ];
 
-    // global module variable
+    /** @exports Comments
+     */
     const Comments = {
       __id: 'Comments',
 
@@ -77,25 +70,20 @@ modules.define(
 
       /** Start entrypoint */
       start(sharedParams) {
-        /* // Save shared data for future use...
-         * CommentsData.sharedParams = sharedParams;
-         */
+        // Save shared data for future use...
+        CommentsData.sharedParams = sharedParams;
         this.sharedParams = sharedParams;
 
         console.log('[Comments:start]', {
           sharedParams,
         });
-        debugger;
-
-        // Fetch url query parameters...
-        this.fetchUrlParams();
+        // debugger;
 
         // Initialize all the modules...
         this.startAllModules();
 
-        /* // Load data...
-         * CommentsDataLoad.loadData();
-         */
+        // Load data...
+        CommentsLoader.loadComments();
       },
     };
 

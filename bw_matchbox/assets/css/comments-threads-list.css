@@ -1,0 +1,7 @@
+.comments-root .threads-list {
+  border: 5px solid green;
+}
+.comments-root .threads-list .thread {
+  border: 1px solid blue;
+}
+
