@@ -1,7 +1,8 @@
 <div class="row" style="margin-top: 5%">
-    <div class="four columns"><a href="{{ url_for('index') }}">home</a></div>
-    <div class="four columns">User: {{ config.user }} | <a href="">Logout</a></div>
-    <div class="four columns">Configuration: {{ config.config_label }} | <a href="{{ url_for('select_config') }}">Change</a></div>
+    <div class="three columns"><a href="{{ url_for('index') }}">home</a></div>
+    <div class="three columns">User: {{ config.user }} | <a href="">Logout</a></div>
+    <div class="three columns">Role: {{ config.role }}</div>
+    <div class="three columns">Configuration: {{ config.config_label }} | <a href="{{ url_for('select_config') }}">Change</a></div>
 </div>
 <div class="row">
     {% if config.project %}<div class="three columns">Project: {{ config.project }}</div>{% endif %}
