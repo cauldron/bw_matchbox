@@ -21,7 +21,8 @@ modules.define(
 
       // Comments and threads data...
       comments: [], // TComment[]
-      threads: [], // TThread[]
+      threads: [], // TLocalThread[]
+      threadsHash: {}, // Record<TTreadId, TLocalThread>
 
       // Page state...
       totalComments: 0,

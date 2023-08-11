@@ -33,16 +33,8 @@ modules.define(
       CommentsStates,
     ];
 
-    /** @exports Comments
-     */
-    const Comments = {
-      __id: 'Comments',
-
-      // Owner page's provided data (TODO: Move to `CommentsData`, see `start` method)...
-      sharedParams: undefined,
-
-      // Proxy handlers...
-
+    /** Local helpers... */
+    const helpers = {
       /** startAllModules -- Start all the modules
        */
       startAllModules() {
@@ -56,7 +48,7 @@ modules.define(
                */
             } catch (error) {
               // eslint-disable-next-line no-console
-              console.error('[Comments:startAllModules]: error (catched)', {
+              console.error('[Comments:helpers:startAllModules]: error (catched)', {
                 error,
                 module,
                 start: module.start,
@@ -67,6 +59,36 @@ modules.define(
           }
         });
       },
+    };
+
+    /** @exports Comments
+     */
+    const Comments = {
+      __id: 'Comments',
+
+      // Owner page's provided data (TODO: Move to `CommentsData`, see `start` method)...
+      sharedParams: undefined,
+
+      // Proxy handlers...
+
+      handleExpandThread(node) {
+        const threadEl = node.closest('.thread');
+        const threadId = Number(threadEl.getAttribute('data-thread-id'));
+        const wasExpanded = threadEl.classList.contains('expanded');
+        const setExpanded = !wasExpanded;
+        console.log('[Comments:handleExpandThread]', {
+          threadEl,
+          node,
+        });
+        // Ensure that all the thread comments had already rendered...
+        if (setExpanded) {
+          CommentsDataRender.ensureThreadCommentsReady(threadId);
+        }
+        // Toggle `expanded` class name...
+        threadEl.classList.toggle('expanded', setExpanded);
+      },
+
+      // Initialization...
 
       /** Start entrypoint */
       start(sharedParams) {
@@ -80,7 +102,7 @@ modules.define(
         // debugger;
 
         // Initialize all the modules...
-        this.startAllModules();
+        helpers.startAllModules();
 
         // Load data...
         CommentsLoader.loadComments();

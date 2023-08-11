@@ -13,39 +13,143 @@ modules.define(
     CommentsData,
     CommentsNodes,
   ) {
-    /** Local helpers... */
+    /** Local (not public) helpers... */
     const helpers = {
       /** renderThread
-       * @param {<TThread>} thread
+       * @param {<TLocalThread>} thread
        * @return {string} - HTML content
        */
       renderThread(thread) {
-        /** @type {<TThread>} */
+        /** @type {<TLocalThread>} */
         const {
           // prettier-ignore
-          id,
+          id: threadId,
           name,
           reporter,
           comments,
         } = thread;
         const commentPositions = comments.map((comment) => comment.position);
+        const commentsCount = comments.length;
+        const isEmpty = !commentsCount;
+        const isExpanded = commentsCount <= 2; // DEBUG!
+        const className = [
+          // prettier-ignore
+          'thread',
+          isEmpty && 'empty',
+          isExpanded && 'expanded',
+        ]
+          .filter(Boolean)
+          .join(' ');
+        // TODO: Render actual comments if thread is expanded by default
+        const commentsContent = isExpanded
+          ? helpers.renderThreadCommentsContent(threadId)
+          : // DEBUG: Here should be empty data for the unexpanded thread comments...
+            commentPositions.join(', ');
         const content = `
-          <div data-thread-id="${id}" class="thread">
-            <div class="thread-name">Name: ${name}</div>
-            <div class="thread-reporter">Reporter: ${reporter}</div>
-            <div class="thread-comments">${commentPositions.join(', ')}</div>
+          <div data-thread-id="${threadId}" class="${className}">
+            <div class="main-row">
+              <div class="expand-button-wrapper">
+                <a class="expand-button" onClick="Comments.handleExpandThread(this)">
+                  <i class="fa-solid fa-chevron-right"></i>
+                </a>
+              </div>
+              <div class="title">
+                <div class="title-text">
+                  <span class="name">${name}</span>
+                  <span class="reporter">(reporter: ${reporter}, comments: ${commentsCount})</span>
+                </div>
+                <div class="title-actions">
+                  <a><i class="fa-regular fa-comment"></i></a>
+                  <a><i class="fa-solid fa-xmark"></i></a>
+                </div>
+              </div>
+            </div>
+            <div class="comments" id="comments-for-thread-${threadId}">${commentsContent}</div>
           </div>
         `;
         console.log('[CommentsDataRender:helpers:renderThread]', {
           content,
           commentPositions,
-          id,
+          threadId,
           name,
           reporter,
           comments,
           thread,
         });
         return content;
+      },
+
+      renderComment(comment) {
+        const {
+          content, // string; // '...'
+          position, // number; // 10
+          resolved, // boolean; // true
+          thread_id, // number; // 13
+          // thread_name, // string; // 'Consequatur exercita'
+          // thread_reporter, // string; // 'Reporter Name'
+          user, // string; // 'Ida Trombetta'
+          process, // TCommentProcess;
+        } = comment;
+        const className = [
+          // prettier-ignore
+          'comment',
+          resolved && 'resolved',
+        ]
+          .filter(Boolean)
+          .join(' ');
+        const html = `
+          <div
+            class="${className}"
+            data-position="${position}"
+            data-thread-id="${thread_id}"
+          >
+            <div class="title">
+              <div class="title-text">
+                <span class="user">${user}</span>
+              </div>
+              <div class="title-actions">
+                <a><i class="fa-regular fa-comment"></i></a>
+                <a><i class="fa-solid fa-xmark"></i></a>
+              </div>
+            </div>
+            <div class="content">
+              ${content}
+            </div>
+          </div>
+        `;
+        console.log('[CommentsDataRender:helpers:renderComment]', {
+          html,
+          //\\
+          content, // string; // '...'
+          position, // number; // 10
+          resolved, // boolean; // true
+          thread_id, // number; // 13
+          // thread_name, // string; // 'Consequatur exercita'
+          // thread_reporter, // string; // 'Reporter Name'
+          user, // string; // 'Ida Trombetta'
+          process, // TCommentProcess;
+          //\\
+          comment,
+        });
+        return html;
+      },
+
+      getCommentsForThread(threadId) {
+        const thread = CommentsData.threadsHash[threadId];
+        const { comments } = thread;
+        // TODO: Catch no data/empty data errors?
+        return comments;
+      },
+
+      renderThreadCommentsContent(threadId) {
+        const comments = helpers.getCommentsForThread(threadId);
+        const commentsHtml = comments.map(helpers.renderComment).join('\n');
+        console.log('[CommentsDataRender:helpers:renderThreadCommentsContent]', {
+          commentsHtml,
+          comments,
+          threadId,
+        });
+        return commentsHtml;
       },
     };
 
@@ -71,6 +175,25 @@ modules.define(
         }
         // Update (or clear) error block content...
         errorNode.innerHTML = errorText;
+      },
+
+      ensureThreadCommentsReady(threadId) {
+        const commentsElId = `comments-for-thread-${threadId}`;
+        const commentsEl = document.getElementById(commentsElId);
+        // Do nothing if the node is ready...
+        if (commentsEl.classList.contains('ready')) {
+          return;
+        }
+        // Else render the comments list...
+        const htmlsContent = helpers.renderThreadCommentsContent(threadId);
+        console.log('[CommentsDataRender:ensureThreadCommentsReady]', {
+          htmlsContent,
+          threadId,
+          commentsElId,
+          commentsEl,
+        });
+        commentsEl.innerHTML = htmlsContent;
+        commentsEl.classList.toggle('ready', true);
       },
 
       // TODO?

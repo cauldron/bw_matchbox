@@ -37,7 +37,7 @@ modules.define(
      *   user: string; // 'Ida Trombetta'
      *   process: TCommentProcess;
      * }
-     * interface TThread {
+     * interface TLocalThread {
      *   comments: TComment[];
      *   id: number;
      *   name: string;
@@ -48,8 +48,8 @@ modules.define(
     /** Local helpers... */
     const helpers = {
       /** Compare two threads objects
-       * @param {<TThread>} a
-       * @param {<TThread>} b
+       * @param {<TLocalThread>} a
+       * @param {<TLocalThread>} b
        * @return {-1, 0, 1}
        */
       sortThreads(a, b) {
@@ -91,7 +91,7 @@ modules.define(
             // process, // TCommentProcess
           } = comment;
           if (!threads[thread_id]) {
-            /** @type {<TThread>} */
+            /** @type {<TLocalThread>} */
             threads[thread_id] = {
               comments: [],
               id: thread_id,
@@ -106,13 +106,19 @@ modules.define(
         threads.forEach(({ comments }) => {
           comments.sort(helpers.sortComments);
         });
+        const threadsHash = threads.reduce((hash, thread) => {
+          hash[thread.id] = thread;
+          return hash;
+        }, {});
         console.log('[CommentsLoader:acceptData]: start', {
           comments,
           threads,
+          threadsHash,
         });
         // Save data...
-        CommentsData.threads = threads;
         CommentsData.comments = comments;
+        CommentsData.threads = threads;
+        CommentsData.threadsHash = threadsHash;
         // TODO: Create threads...
         CommentsDataRender.renderData();
       },
