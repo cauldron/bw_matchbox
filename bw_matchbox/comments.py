@@ -18,6 +18,11 @@ class CommentThread(peewee.Model):
             .order_by(Comment.position.asc())
         )
 
+    @property
+    def reporter(self):
+        min_position = Comment.select(peewee.fn.Min(Comment.position)).where(Comment.thread == self).scalar()
+        return Comment.get(position=min_position, thread=self).user
+
     def next_position(self):
         if not len(self):
             return 0

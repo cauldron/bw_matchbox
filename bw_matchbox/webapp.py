@@ -218,6 +218,7 @@ def comments_api():
                 {
                     "thread_id": int, 1-indexed (from db),
                     "thread_name": str,
+                    "thread_reporter": str,
                     "resolved": bool,
                     "process": {
                         "id": int, 1-indexed (from db),
@@ -275,6 +276,7 @@ def comments_api():
             {
                 "thread_id": obj["thread_id"],
                 "thread_name": obj["name"],
+                "thread_reporter": CommentThread.get(id=obj["thread_id"]).reporter,
                 "resolved": obj["resolved"],
                 "process": format_process(obj["process_id"]),
                 "content": obj["content"],
