@@ -622,6 +622,17 @@ def remove_match(id):
     return flask.redirect(return_url)
 
 
+def get_match_type(node, proxy, mapping):
+    if 'match_type' in node:
+        return mapping.get(node['match_type'], "Unknown")
+    elif proxy and 'match_type' in proxy:
+        return mapping.get(proxy['match_type'], "Unknown")
+    elif node.get('matched'):
+        return 'No direct match available'
+    else:
+        return None
+
+
 @matchbox_app.route("/process/<id>", methods=["GET"])
 @auth.login_required
 def process_detail(id):
@@ -660,7 +671,7 @@ def process_detail(id):
         same_name=same_name,
         technosphere=technosphere,
         biosphere=biosphere,
-        match_type=matchbox_app.config["mb_match_types"].get(node.get("match_type")),
+        match_type=get_match_type(node, proxy_node, matchbox_app.config["mb_match_types"]),
         total_consumers=len(node.upstream()),
         consumers=list(node.upstream())[:50],
         is_proxy=is_proxy,
