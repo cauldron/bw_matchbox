@@ -31,7 +31,7 @@ modules.define(
         const commentPositions = comments.map((comment) => comment.position);
         const commentsCount = comments.length;
         const isEmpty = !commentsCount;
-        const isExpanded = commentsCount <= 2; // DEBUG!
+        const isExpanded = false; // commentsCount <= 2; // DEBUG!
         const className = [
           // prettier-ignore
           'thread',
