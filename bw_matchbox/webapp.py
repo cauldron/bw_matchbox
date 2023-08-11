@@ -16,6 +16,7 @@ from flask_httpauth import HTTPBasicAuth
 from peewee import fn
 from werkzeug.security import check_password_hash, generate_password_hash
 
+from .comments import Comment, CommentThread
 from .utils import (
     MATCH_TYPE_ABBREVIATIONS,
     get_match_types,
@@ -137,12 +138,162 @@ def get_match_type_for_source_process(node):
             return MATCH_TYPE_ABBREVIATIONS.get(label, label)
 
 
+@matchbox_app.route("/delete-all-comments", methods=["GET"])
+@auth.login_required
+def delete_all_comments():
+    config = get_config()
+    if config["role"] != "editors":
+        flask.abort(403)
+
+    Comment.delete().execute()
+    CommentThread.delete().execute()
+
+    return ""
+
+
+@matchbox_app.route("/generate-fake-comments", methods=["GET"])
+@auth.login_required
+def generate_fake_comments():
+    config = get_config()
+    if config["role"] != "editors":
+        flask.abort(403)
+
+    from faker import Faker
+
+    fake = Faker(["it_IT", "en_US", "ja_JP", "ru_RU"])
+    import random
+
+    names = [fake.name() for _ in range(8)]
+    processes = [ds.id for ds, _ in zip(bd.Database(config["proxy"]), range(20))]
+
+    for process in processes:
+        num_comments = abs(int(2 * random.normalvariate(mu=0, sigma=5)))
+        if not num_comments:
+            continue
+
+        thread = CommentThread.create(
+            name=fake.text()[:20], process_id=process, resolved=random.random() < 0.2
+        )
+
+        for index in range(num_comments):
+            Comment.create(
+                thread=thread, content=fake.text(), user=random.choice(names)
+            )
+
+    return ""
+
+
+def format_process(obj_id):
+    node = bd.get_node(id=obj_id)
+    return {
+        "id": node.id,
+        "database": node["database"],
+        "name": node["name"],
+        "unit": node["unit"],
+        "location": node["location"],
+        "product": node["reference product"],
+        "url": flask.url_for("process_detail", id=node.id),
+    }
+
+
+@matchbox_app.route("/comments-api", methods=["GET"])
+@auth.login_required
+def comments_api():
+    """
+    API to populate dynamic comments display.
+
+    Optional GET parameters.
+
+    * `user`: str. Username to filter by
+    * `process`: int. Proxy process ID
+    * `resolved`: str, either "0" or "1". Whether comment thread is resolved or not
+    * `thread`: int. Comment thread id
+
+    JSON Return format, sorted by ascending comment thread and then comment position.
+
+        {
+            "total_threads": int,
+            "total_comments": int,
+            "data": [
+                {
+                    "thread_id": int, 1-indexed (from db),
+                    "thread_name": str,
+                    "resolved": bool,
+                    "process": {
+                        "id": int, 1-indexed (from db),
+                        "database": str,
+                        "name": str,
+                        "unit": str,
+                        "location": str,
+                        "product": str,
+                        "url": str, relative URL,
+                    },
+                    "content": str,
+                    "position": int, 0-indexed,
+                    "user": str,
+                }
+                for obj in qs.dicts()
+            ],
+        }
+
+    """
+    get_config()
+
+    qs = (
+        Comment.select(
+            Comment.position,
+            Comment.content,
+            Comment.user,
+            Comment.id,
+            CommentThread.id.alias("thread_id"),
+            CommentThread.name,
+            CommentThread.resolved,
+            CommentThread.process_id,
+        )
+        .join(CommentThread)
+        .order_by(CommentThread.id.asc(), Comment.position.asc())
+    )
+
+    user = flask.request.args.get("user")
+    process = flask.request.args.get("process")
+    resolved = flask.request.args.get("resolved")
+    thread = flask.request.args.get("thread")
+
+    if user:
+        qs = qs.where(Comment.user == user)
+    if process:
+        qs = qs.where(CommentThread.process_id == int(process))
+    if resolved and resolved in "01":
+        qs = qs.where(CommentThread.resolved == (True if resolved == "1" else False))
+    if thread:
+        qs = qs.where(CommentThread.id == int(thread))
+
+    payload = {
+        "total_threads": CommentThread.select().count(),
+        "total_comments": Comment.select().count(),
+        "data": [
+            {
+                "thread_id": obj["thread_id"],
+                "thread_name": obj["name"],
+                "resolved": obj["resolved"],
+                "process": format_process(obj["process_id"]),
+                "content": obj["content"],
+                "position": obj["position"],
+                "user": obj["user"],
+            }
+            for obj in qs.dicts()
+        ],
+    }
+    return flask.jsonify(payload)
+
+
 @matchbox_app.route("/page-rank", methods=["GET"])
 @auth.login_required
 def build_page_rank_cache():
     config = get_config()
     if config["role"] != "editors":
         flask.abort(403)
+
     pr = PageRank(bd.Database(config["source"])).calculate()
     with open(config["output_dir"] / "page-rank.json", "w") as f:
         json.dump({"scores": pr}, f, indent=2)
