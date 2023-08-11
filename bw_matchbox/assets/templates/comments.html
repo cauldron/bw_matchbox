@@ -1,0 +1,44 @@
+{% include 'header.html' %}
+
+{# Module-specific dependencies... #}
+
+<link rel="stylesheet" href="{{ url_for('static', filename='css/comment.css') }}">
+
+<script src="{{ url_for('static', filename='js/Comments/Comments.js') }}"></script>
+
+{# Core module:
+  - `Comments` (from `bw_matchbox/assets/js/Comments/Comments.js`)
+#}
+
+<div id="comments-root" class="container comment empty loading">
+  {# // TODO: Do we need `navigation` block here?
+  {% include 'navigation.html' %}
+  #}
+  <div class="common-page-header">
+    <h3 class="title">
+      Comments
+      <div class="tools">
+        <div class="tools-wrapper">
+          <a class="tools-icon theme-primary" onClick="Comments.copyToClipboardHandler(this)" data-node-type="source" title="Copy markdown link to clipboard"><i class="fa-solid fa-copy"></i></a>
+        </div>
+      </div>
+    </h3>
+  </div>
+</div>
+
+<script type="text/javascript">
+  modules.require('Comments', (Comments) => {
+    // Initialize page data...
+    const sharedParams = {
+      base_url: '{{ base_url }}',
+      role: '{{ config.role }}',
+    };
+
+    // Export to global scope (to access from generated html code handlers).
+    window.Comments = Comments;
+
+    // Start core module...
+    Comments.start(sharedParams);
+  });
+</script>
+{% include 'footer.html' %}

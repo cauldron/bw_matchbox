@@ -864,6 +864,23 @@ def check_similar(node, candidates):
             )
 
 
+@matchbox_app.route("/comments", methods=["GET"])
+@auth.login_required
+def comments():
+    config = get_config()
+    if isinstance(config, flask.Response):
+        return config
+
+    base_url = flask.request.base_url.replace(flask.request.path, "")
+
+    return flask.render_template(
+        "comments.html",
+        title="Comments Dashboard",
+        config=config,
+        base_url=base_url,
+    )
+
+
 @matchbox_app.route("/compare/<source>/<target>", methods=["GET"])
 @auth.login_required
 def compare(source, target):
