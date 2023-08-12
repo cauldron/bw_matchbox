@@ -72,28 +72,6 @@ modules.define(
         CommentsDataRender.clearRenderedData();
       },
 
-      /** updatePage -- Update all the page dynamic elements
-       */
-      updatePage() {
-        const { updatePageHandlers } = CommentsData;
-        // Call all the registered update handlers...
-        updatePageHandlers.forEach((handler) => {
-          try {
-            if (handler) {
-              handler();
-            }
-          } catch (error) {
-            // eslint-disable-next-line no-console
-            console.error('[CommentsStates:updatePage]: error (catched)', {
-              error,
-              handler,
-            });
-            // eslint-disable-next-line no-debugger
-            debugger;
-          }
-        });
-      },
-
       getRadioGroupValue(groupId) {
         const elem = document.querySelector('input[type="radio"][name="' + groupId + '"]:checked');
         return elem && elem.value;

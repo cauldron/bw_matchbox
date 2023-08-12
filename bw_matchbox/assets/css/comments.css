@@ -22,7 +22,7 @@
 .comments-root > * {
   transition: all var(--common-animation-time);
 }
-.comments-root.loading .page-filters,
+.comments-root.loading .filters,
 .comments-root.loading .bottom-actions-links {
   opacity: 0.5;
   pointer-events: none;

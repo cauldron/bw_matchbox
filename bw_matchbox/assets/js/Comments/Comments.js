@@ -11,11 +11,13 @@ modules.define(
     'CommentsLoader',
     'CommentsNodes',
     'CommentsStates',
+    'CommentsUpdaters',
   ],
   function provide_Comments(
     provide,
     // Resolved modules...
     // CommonHelpers,
+    /* eslint-disable no-unused-vars */
     CommentsConstants,
     CommentsData,
     CommentsDataRender,
@@ -24,48 +26,12 @@ modules.define(
     CommentsLoader,
     CommentsNodes,
     CommentsStates,
+    CommentsUpdaters,
+    /* eslint-enable no-unused-vars */
   ) {
     /** Used modules list (will be needed for initialization, in `startAllModules`)
-     * TODO: To populate it from the arguments list?
      */
-    const allModulesList = [
-      CommentsConstants,
-      CommentsData,
-      CommentsDataRender,
-      CommentsHandlers,
-      CommentsHelpers,
-      CommentsLoader,
-      CommentsNodes,
-      CommentsStates,
-    ];
-
-    /** Local helpers... */
-    const helpers = {
-      /** startAllModules -- Start all the modules
-       */
-      startAllModules() {
-        // Start all the modules...
-        allModulesList.forEach((module) => {
-          if (module && typeof module.start === 'function') {
-            try {
-              module.start();
-              /* // Alternate option: Delayed start...
-               * setTimeout(module.start.bind(module), 0);
-               */
-            } catch (error) {
-              // eslint-disable-next-line no-console
-              console.error('[Comments:helpers:startAllModules]: error (catched)', {
-                error,
-                module,
-                start: module.start,
-              });
-              // eslint-disable-next-line no-debugger
-              debugger;
-            }
-          }
-        });
-      },
-    };
+    const usedModulesList = Array.from(arguments).splice(1);
 
     /** @exports Comments
      */
@@ -96,6 +62,36 @@ modules.define(
 
       // Initialization...
 
+      /** startAllModules -- Start all the modules
+       */
+      startAllModules() {
+        // Start all the modules...
+        usedModulesList.forEach((module) => {
+          if (!module) {
+            return;
+          }
+          if (module.__id) {
+            this[module.__id] = module;
+          }
+          if (typeof module.start === 'function') {
+            try {
+              module.start();
+              /* // Alternate option: Delayed start...
+               * setTimeout(module.start.bind(module), 0);
+               */
+            } catch (error) {
+              // eslint-disable-next-line no-console
+              console.error('[Comments:helpers:startAllModules]: error (catched)', {
+                error,
+                module,
+                start: module.start,
+              });
+              // eslint-disable-next-line no-debugger
+              debugger;
+            }
+          }
+        });
+      },
       /** Start entrypoint */
       start(sharedParams) {
         // Save shared data for future use...
@@ -105,10 +101,9 @@ modules.define(
         console.log('[Comments:start]', {
           sharedParams,
         });
-        // debugger;
 
         // Initialize all the modules...
-        helpers.startAllModules();
+        this.startAllModules();
 
         // Load data...
         CommentsLoader.loadComments();

@@ -8,6 +8,7 @@ modules.define(
     'CommentsHelpers',
     'CommentsStates',
     'CommonHelpers',
+    'CommentsUpdaters',
   ],
   function provide_CommentsLoader(
     provide,
@@ -18,6 +19,7 @@ modules.define(
     CommentsHelpers,
     CommentsStates,
     CommonHelpers,
+    CommentsUpdaters,
   ) {
     /* // Data types decription (TS-style):
      * interface TCommentProcess {
@@ -35,16 +37,6 @@ modules.define(
      *   thread: number; // 1
      *   user: string; // 'Puccio Bernini'
      *   content: string; // '...'
-     *   [> OLD VERSION:
-     *    * content: string; // '...'
-     *    * position: number; // 10
-     *    * resolved: boolean; // true
-     *    * thread_id: number; // 13
-     *    * thread_name: string; // 'Consequatur exercita'
-     *    * thread_reporter: string; // 'Reporter Name'
-     *    * user: string; // 'Ida Trombetta'
-     *    * process: TCommentProcess;
-     *    <]
      * }
      * interface TThread {
      *   id: number; // 1
@@ -58,22 +50,10 @@ modules.define(
      * interface TLocalThread extends TThread {
      *   commentIds: number[];
      * }
-     * // OLD VERSION (for local thread representation)
-     * interface TLocalThread {
-     *   comments: TComment[];
-     *   id: number;
-     *   name: string;
-     *   reporter: string;
-     * }
      * type TCommentsHash = Record<TTreadId, TComment>;
      * type TThreadsHash = Record<TTreadId, TLocalThread>;
      *
      */
-
-    /** Local helpers... */
-    const helpers = {
-      // ...
-    };
 
     /** @exports CommentsLoader
      */
@@ -211,7 +191,7 @@ modules.define(
           .finally(() => {
             CommentsStates.setLoading(false);
             // Update all the page dynamic elements?
-            CommentsStates.updatePage();
+            CommentsUpdaters.updatePage();
           });
       },
     };

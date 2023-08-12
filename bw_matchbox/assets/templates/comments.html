@@ -3,8 +3,10 @@
 {# Module-specific dependencies... #}
 
 <link rel="stylesheet" href="{{ url_for('static', filename='css/comments.css') }}">
+<link rel="stylesheet" href="{{ url_for('static', filename='css/comments-filters.css') }}">
 <link rel="stylesheet" href="{{ url_for('static', filename='css/comments-threads-list.css') }}">
 
+<script src="{{ url_for('static', filename='js/Comments/Comments.js') }}"></script>
 <script src="{{ url_for('static', filename='js/Comments/CommentsConstants.js') }}"></script>
 <script src="{{ url_for('static', filename='js/Comments/CommentsData.js') }}"></script>
 <script src="{{ url_for('static', filename='js/Comments/CommentsDataRender.js') }}"></script>
@@ -13,7 +15,7 @@
 <script src="{{ url_for('static', filename='js/Comments/CommentsLoader.js') }}"></script>
 <script src="{{ url_for('static', filename='js/Comments/CommentsNodes.js') }}"></script>
 <script src="{{ url_for('static', filename='js/Comments/CommentsStates.js') }}"></script>
-<script src="{{ url_for('static', filename='js/Comments/Comments.js') }}"></script>
+<script src="{{ url_for('static', filename='js/Comments/CommentsUpdaters.js') }}"></script>
 
 {# Core module:
   - `Comments` (from `bw_matchbox/assets/js/Comments/Comments.js`)
@@ -35,13 +37,23 @@
       #}
     </h3>
   </div>
-  <div class="page-filters">
-    <span>Resolved state (no filter, resolved, open)</span>
-    <span>Process (Can be a select element with multiple)</span>
-    <span>Author (Again a select element)</span>
-    <span>Participants</span>
-    <span>Reset</span>
-    <span>My comment threads</span>
+  <div class="filters">
+    <div class="filter">
+      <label for="filterByState">Resolved state:</label>
+      <select id="filterByState" onChange="Comments.CommentsHandlers.handleFilterByStateChange(this)">
+        <option value="none" selected>No filter (all)</option>
+        <option value="resolved">Resolved</option>
+        <option value="open">Open</option>
+      </select>
+    </div>
+    <div class="info">
+      <div>Resolved state (no filter, resolved, open)</div>
+      <div>Process (Can be a select element with multiple)</div>
+      <div>Author (Again a select element)</div>
+      <div>Participants</div>
+      <div>Reset</div>
+      <div>My comment threads</div>
+    </div>
   </div>
   <div id="comments-error" class="error">
     <!-- Error text comes here -->

@@ -2,20 +2,22 @@ modules.define(
   'CommentsDataRender',
   [
     // Required modules...
-    'CommonHelpers',
-    'CommentsHandlers',
     'CommentsConstants',
     'CommentsData',
+    'CommentsUpdaters',
+    'CommentsHandlers',
     'CommentsNodes',
+    'CommonHelpers',
   ],
   function provide_CommentsDataRender(
     provide,
     // Resolved modules...
-    CommonHelpers,
-    CommentsHandlers,
     CommentsConstants,
     CommentsData,
+    CommentsUpdaters,
+    CommentsHandlers,
     CommentsNodes,
+    CommonHelpers,
   ) {
     /** Local (not public) helpers... */
     const helpers = {
@@ -100,8 +102,8 @@ modules.define(
                   <span class="info">(reporter: ${reporter}, comments: ${commentsCount}, modified date: ${modifiedStr})</span>
                 </div>
                 <div class="title-actions">
-                  <a id="thread-comment""><i class="fa-regular fa-comment"></i></a>
-                  <a id="thread-resolve""><i class="fa-solid fa-xmark"></i></a>
+                  <a id="thread-answer" title="Answer"><i class="fa-regular fa-comment"></i></a>
+                  <a id="thread-resolve" title"Mark it as resolved"><i class="fa-solid fa-xmark"></i></a>
                 </div>
               </div>
             </div>
@@ -149,8 +151,8 @@ modules.define(
                 <span class="user">${user}</span>
               </div>
               <div class="title-actions">
-                <a id="comment-comment""><i class="fa-regular fa-comment"></i></a>
-                <a id="comment-resolve""><i class="fa-solid fa-xmark"></i></a>
+                <a id="comment-answer" title="Answer"><i class="fa-regular fa-comment"></i></a>
+                <a id="comment-resolve" title"Mark it as resolved"><i class="fa-solid fa-xmark"></i></a>
               </div>
             </div>
             <div class="content">
@@ -190,6 +192,8 @@ modules.define(
     /** @exports CommentsDataRender
      */
     const CommentsDataRender = {
+      __id: 'CommentsDataRender',
+
       renderError(error) {
         // TODO: Set css class for id="processes-list-root" --> error, update local state
         const isError = !!error;
@@ -264,6 +268,16 @@ modules.define(
           });
           threadsNode.append.apply(threadsNode, contentNodes);
         }
+      },
+
+      updateAllComments() {
+        console.log('[:updateAllComments]');
+        debugger;
+      },
+
+      start() {
+        // Add handler on update all the comments event...
+        CommentsUpdaters.updateCommentsHandlers.push(this.updateAllComments.bind(this));
       },
     };
 

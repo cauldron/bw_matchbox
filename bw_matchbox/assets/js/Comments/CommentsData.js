@@ -30,6 +30,10 @@ modules.define(
       sortThreadsBy: 'modifiedDate',
       reversedThreadsSorts: true,
 
+      // Filters...
+      filterByState: 'none', // 'none' 'resolved', 'open'
+      defaultFilterByState: 'none',
+
       // Page state...
       totalComments: 0,
       totalThreads: 0,
@@ -38,9 +42,6 @@ modules.define(
       isError: false,
       isLoading: true,
       hasData: false,
-
-      // Handlers to call on each page update (see `processes-list-states.js`)...
-      updatePageHandlers: [],
     };
 
     // Provide module...

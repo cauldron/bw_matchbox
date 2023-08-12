@@ -2,10 +2,14 @@ modules.define(
   'CommentsHandlers',
   [
     // Required modules...
+    'CommentsData',
+    'CommentsUpdaters',
   ],
   function provide_CommentsHandlers(
     provide,
     // Resolved modules...
+    CommentsData,
+    CommentsUpdaters,
   ) {
     /** @exports CommentsHandlers
      */
@@ -39,6 +43,15 @@ modules.define(
         elems.forEach((elem) => {
           elem.addEventListener('click', handler);
         });
+      },
+
+      handleFilterByStateChange(node) {
+        const { value } = node;
+        console.log('[CommentsHandlers:handleFilterByStateChange]', {
+          node,
+        });
+        CommentsData.filterByState = value;
+        CommentsUpdaters.updateComments();
       },
     };
 

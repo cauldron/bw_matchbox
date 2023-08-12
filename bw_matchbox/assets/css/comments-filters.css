@@ -1,0 +1,10 @@
+.comments-root .filters {
+}
+.comments-root .filters label,
+.comments-root .filters select {
+  display: inline-block;
+}
+
+.comments-root .filters label {
+  margin-right: 8px;
+}

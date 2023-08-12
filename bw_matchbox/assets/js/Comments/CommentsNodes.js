@@ -10,6 +10,8 @@ modules.define(
     /** @exports CommentsNodes
      */
     const CommentsNodes = {
+      __id: 'CommentsNodes',
+
       getThreadsListNode() {
         // TODO?
         const node = document.getElementById('threads-list');
