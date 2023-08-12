@@ -11,7 +11,7 @@ modules.define(
     'CommentsLoader',
     'CommentsNodes',
     'CommentsStates',
-    'CommentsUpdaters',
+    'CommentsThreadsHelpers',
   ],
   function provide_Comments(
     provide,
@@ -26,7 +26,7 @@ modules.define(
     CommentsLoader,
     CommentsNodes,
     CommentsStates,
-    CommentsUpdaters,
+    CommentsThreadsHelpers,
     /* eslint-enable no-unused-vars */
   ) {
     /** Used modules list (will be needed for initialization, in `startAllModules`)
@@ -41,30 +41,20 @@ modules.define(
       // Owner page's provided data (TODO: Move to `CommentsData`, see `start` method)...
       sharedParams: undefined,
 
-      // Proxy handlers...
+      /** Handlers exchange object */
+      handlers: {},
 
-      handleExpandThread(node) {
-        const threadEl = node.closest('.thread');
-        const threadId = Number(threadEl.getAttribute('data-thread-id'));
-        const wasExpanded = threadEl.classList.contains('expanded');
-        const setExpanded = !wasExpanded;
-        console.log('[Comments:handleExpandThread]', {
-          threadEl,
-          node,
-        });
-        // Ensure that all the thread comments had already rendered...
-        if (setExpanded) {
-          CommentsDataRender.ensureThreadCommentsReady(threadId);
-        }
-        // Toggle `expanded` class name...
-        threadEl.classList.toggle('expanded', setExpanded);
-      },
+      // Proxy handlers...
 
       // Initialization...
 
       /** startAllModules -- Start all the modules
        */
       startAllModules() {
+        const initParams = {
+          handlers: this.handlers,
+          sharedParams: this.sharedParams,
+        };
         // Start all the modules...
         usedModulesList.forEach((module) => {
           if (!module) {
@@ -75,7 +65,7 @@ modules.define(
           }
           if (typeof module.start === 'function') {
             try {
-              module.start();
+              module.start(initParams);
               /* // Alternate option: Delayed start...
                * setTimeout(module.start.bind(module), 0);
                */

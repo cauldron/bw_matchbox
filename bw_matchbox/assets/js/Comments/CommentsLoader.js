@@ -8,7 +8,6 @@ modules.define(
     'CommentsHelpers',
     'CommentsStates',
     'CommonHelpers',
-    'CommentsUpdaters',
   ],
   function provide_CommentsLoader(
     provide,
@@ -19,7 +18,6 @@ modules.define(
     CommentsHelpers,
     CommentsStates,
     CommonHelpers,
-    CommentsUpdaters,
   ) {
     /* // Data types decription (TS-style):
      * interface TCommentProcess {
@@ -190,8 +188,9 @@ modules.define(
           })
           .finally(() => {
             CommentsStates.setLoading(false);
-            // Update all the page dynamic elements?
-            CommentsUpdaters.updatePage();
+            /* // TODO: Update all the page dynamic elements?
+             * CommentsEvents.invokeEvent('updatePage');
+             */
           });
       },
     };

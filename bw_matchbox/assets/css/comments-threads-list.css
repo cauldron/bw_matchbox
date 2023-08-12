@@ -15,6 +15,9 @@
   padding: 2px 10px;
   padding-left: 8px;
 }
+.comments-root .threads-list .thread.hidden {
+  display: none;
+}
 .comments-root .threads-list .thread.expanded,
 .comments-root .threads-list .thread:hover {
   background-color: rgb(0 0 0 / 5%);
@@ -137,7 +140,12 @@
 }
 .comments-root .threads-list .thread .comment .title-text {
   margin: 5px 0;
+}
+.comments-root .threads-list .thread .comment .title-text .name {
   font-weight: bold;
+}
+.comments-root .threads-list .thread .comment .title-text .status {
+  opacity: 0.5;
 }
 .comments-root .threads-list .thread .comment .content {
   line-height: 1.5;

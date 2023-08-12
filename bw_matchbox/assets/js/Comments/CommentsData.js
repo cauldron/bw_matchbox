@@ -2,12 +2,10 @@ modules.define(
   'CommentsData',
   [
     // Required modules...
-    // 'CommentsConstants',
   ],
   function provide_CommentsData(
     provide,
     // Resolved modules...
-    // CommentsConstants,
   ) {
     /** @exports CommentsData
      */

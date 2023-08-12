@@ -81,4 +81,3 @@ modules.define(
     provide(CommentsHelpers);
   },
 );
-

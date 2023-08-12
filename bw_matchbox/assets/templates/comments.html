@@ -15,7 +15,7 @@
 <script src="{{ url_for('static', filename='js/Comments/CommentsLoader.js') }}"></script>
 <script src="{{ url_for('static', filename='js/Comments/CommentsNodes.js') }}"></script>
 <script src="{{ url_for('static', filename='js/Comments/CommentsStates.js') }}"></script>
-<script src="{{ url_for('static', filename='js/Comments/CommentsUpdaters.js') }}"></script>
+<script src="{{ url_for('static', filename='js/Comments/CommentsThreadsHelpers.js') }}"></script>
 
 {# Core module:
   - `Comments` (from `bw_matchbox/assets/js/Comments/Comments.js`)
@@ -40,19 +40,22 @@
   <div class="filters">
     <div class="filter">
       <label for="filterByState">Resolved state:</label>
-      <select id="filterByState" onChange="Comments.CommentsHandlers.handleFilterByStateChange(this)">
-        <option value="none" selected>No filter (all)</option>
+      <select id="filterByState" onChange="Comments.handlers.handleFilterByStateChange(this)">
+        <option value="none" selected>All</option>
         <option value="resolved">Resolved</option>
         <option value="open">Open</option>
       </select>
     </div>
-    <div class="info">
-      <div>Resolved state (no filter, resolved, open)</div>
-      <div>Process (Can be a select element with multiple)</div>
-      <div>Author (Again a select element)</div>
-      <div>Participants</div>
-      <div>Reset</div>
-      <div>My comment threads</div>
+    <div class="filter">
+      <button class="button-primary" onClick="Comments.handlers.handleResetFilters(this)">Reset all filters</button>
+    </div>
+    <div class="debug-info">
+      <div>+ Resolved state (no filter, resolved, open)</div>
+      <div>- Process (Can be a select element with multiple)</div>
+      <div>? Author (Again a select element)</div>
+      <div>? Participants</div>
+      <div>+ Reset</div>
+      <div>- My comment threads</div>
     </div>
   </div>
   <div id="comments-error" class="error">

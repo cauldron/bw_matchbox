@@ -4,20 +4,18 @@ modules.define(
     // Required modules...
     'CommentsConstants',
     'CommentsData',
-    'CommentsUpdaters',
-    'CommentsHandlers',
     'CommentsNodes',
     'CommonHelpers',
+    'CommentsThreadsHelpers',
   ],
   function provide_CommentsDataRender(
     provide,
     // Resolved modules...
     CommentsConstants,
     CommentsData,
-    CommentsUpdaters,
-    CommentsHandlers,
     CommentsNodes,
     CommonHelpers,
+    CommentsThreadsHelpers,
   ) {
     /** Local (not public) helpers... */
     const helpers = {
@@ -57,10 +55,10 @@ modules.define(
           modified, // TDateStr, eg: 'Sat, 12 Aug 2023 12:36:08 GMT'
           name, // string, eg: 'Возмутиться кпсс гул'
           reporter, // string, eg: '阿部 篤司'
-          // resolved, // boolean, eg: false
+          resolved, // boolean, eg: false
           // process, // TCommentProcess;
         } = thread;
-        // const { comments, commentsByThreads } = CommentsData;
+        const isVisible = CommentsThreadsHelpers.isThreadVisible(threadId);
         const commentsList = helpers.getCommentsForThread(threadId);
         const commentPositions = commentsList.map((comment) => comment.position);
         const commentsCount = commentsList.length;
@@ -71,6 +69,7 @@ modules.define(
           'thread',
           isEmpty && 'empty',
           isExpanded && 'expanded',
+          !isVisible && 'hidden',
         ]
           .filter(Boolean)
           .join(' ');
@@ -88,9 +87,17 @@ modules.define(
           ? helpers.renderThreadCommentsContent(threadId)
           : // DEBUG: Here should be empty data for the unexpanded thread comments...
             commentPositions.join(', ');
+        const info = [
+          reporter && `reporter: ${reporter}`,
+          commentsCount && `comments: ${commentsCount}`,
+          modifiedStr && `modified date: ${modifiedStr}`,
+          resolved ? 'resolved' : 'open',
+        ]
+          .filter(Boolean)
+          .join(', ');
         const content = `
-          <div data-thread-id="${threadId}" class="${className}">
-            <div class="main-row" onClick="Comments.handleExpandThread(this)">
+          <div data-thread-id="${threadId}" id="thread-${threadId}" class="${className}">
+            <div class="main-row" onClick="Comments.CommentsHandlers.handleExpandThread(this)">
               <div class="expand-button-wrapper">
                 <a class="expand-button">
                   <i class="fa-solid fa-chevron-right"></i>
@@ -99,7 +106,7 @@ modules.define(
               <div class="title">
                 <div class="title-text">
                   <span class="name">${name}</span>
-                  <span class="info">(reporter: ${reporter}, comments: ${commentsCount}, modified date: ${modifiedStr})</span>
+                  <span class="info">(${info})</span>
                 </div>
                 <div class="title-actions">
                   <a id="thread-answer" title="Answer"><i class="fa-regular fa-comment"></i></a>
@@ -107,7 +114,7 @@ modules.define(
                 </div>
               </div>
             </div>
-            <div class="comments" id="comments-for-thread-${threadId}">${commentsContent}</div>
+            <div class="comments" data-for-thread-id="${threadId}" id="comments-for-thread-${threadId}">${commentsContent}</div>
           </div>
         `;
         console.log('[CommentsDataRender:helpers:renderThread]', {
@@ -124,27 +131,26 @@ modules.define(
 
       renderComment(comment) {
         const {
+          id, // number; // 2
+          position, // number; // 1
+          thread: threadId, // number; // 1
+          user, // string; // 'Puccio Bernini'
           content, // string; // '...'
-          position, // number; // 10
-          resolved, // boolean; // true
-          thread_id, // number; // 13
-          // thread_name, // string; // 'Consequatur exercita'
-          // thread_reporter, // string; // 'Reporter Name'
-          user, // string; // 'Ida Trombetta'
-          process, // TCommentProcess;
         } = comment;
         const className = [
           // prettier-ignore
           'comment',
-          resolved && 'resolved',
+          // resolved && 'resolved',
         ]
           .filter(Boolean)
           .join(' ');
         const html = `
           <div
+            id="thread-%{threadId}-comment-${id}"
+            data-thread-id="${threadId}"
+            data-id="${id}"
             class="${className}"
             data-position="${position}"
-            data-thread-id="${thread_id}"
           >
             <div class="title">
               <div class="title-text">
@@ -163,14 +169,11 @@ modules.define(
         console.log('[CommentsDataRender:helpers:renderComment]', {
           html,
           //\\
+          id, // number; // 2
+          position, // number; // 1
+          thread: threadId, // number; // 1
+          user, // string; // 'Puccio Bernini'
           content, // string; // '...'
-          position, // number; // 10
-          resolved, // boolean; // true
-          thread_id, // number; // 13
-          // thread_name, // string; // 'Consequatur exercita'
-          // thread_reporter, // string; // 'Reporter Name'
-          user, // string; // 'Ida Trombetta'
-          process, // TCommentProcess;
           //\\
           comment,
         });
@@ -178,6 +181,8 @@ modules.define(
       },
 
       renderThreadCommentsContent(threadId) {
+        // const { filterByState } = CommentsData;
+        // TODO: Use some filters?
         const comments = helpers.getCommentsForThread(threadId);
         const commentsHtml = comments.map(helpers.renderComment).join('\n');
         console.log('[CommentsDataRender:helpers:renderThreadCommentsContent]', {
@@ -215,30 +220,35 @@ modules.define(
         errorNode.innerHTML = errorText;
       },
 
-      ensureThreadCommentsReady(threadId) {
-        const commentsElId = `comments-for-thread-${threadId}`;
-        const commentsEl = document.getElementById(commentsElId);
-        // Do nothing if the node is ready...
-        if (commentsEl.classList.contains('ready')) {
-          return;
-        }
+      updateThreadComments(threadId) {
+        const commentsNodeId = `comments-for-thread-${threadId}`;
+        const commentsNode = document.getElementById(commentsNodeId);
         // Else render the comments list...
-        const htmlsContent = helpers.renderThreadCommentsContent(threadId);
-        console.log('[CommentsDataRender:ensureThreadCommentsReady]', {
-          htmlsContent,
+        const commentsContent = helpers.renderThreadCommentsContent(threadId);
+        console.log('[CommentsDataRender:updateThreadComments]', {
+          commentsContent,
           threadId,
-          commentsElId,
-          commentsEl,
+          commentsNodeId,
+          commentsNode,
         });
-        commentsEl.innerHTML = htmlsContent;
-        CommentsHandlers.addTitleActionHandlersToNodeChildren(commentsEl);
-        commentsEl.classList.toggle('ready', true);
+        commentsNode.innerHTML = commentsContent;
+        this.addTitleActionHandlersToNodeChildren(commentsNode);
+        commentsNode.classList.toggle('ready', true);
+      },
+
+      ensureThreadCommentsReady(threadId) {
+        const commentsNodeId = `comments-for-thread-${threadId}`;
+        const commentsNode = document.getElementById(commentsNodeId);
+        // Do nothing if the node is ready...
+        if (!commentsNode.classList.contains('ready')) {
+          this.updateThreadComments(threadId);
+        }
       },
 
       // TODO?
       clearRenderedData() {
-        const threadsNode = CommentsNodes.getThreadsListNode();
-        threadsNode.replaceChildren();
+        const threadsListNode = CommentsNodes.getThreadsListNode();
+        threadsListNode.replaceChildren();
       },
 
       /** renderData -- Display new data rows at the end of the table.
@@ -247,37 +257,119 @@ modules.define(
        */
       renderData(opts = {}) {
         const { threads, comments } = CommentsData;
-        const threadsNode = CommentsNodes.getThreadsListNode();
+        const threadsListNode = CommentsNodes.getThreadsListNode();
         const content = threads.map(helpers.renderThread).join('\n');
         console.log('[CommentsDataRender:renderData]', {
-          threadsNode,
+          threadsListNode,
           content,
           threads,
           comments,
         });
         if (!opts.append) {
           // Replace data...
-          threadsNode.innerHTML = content; // Insert content just as raw html
-          CommentsHandlers.addTitleActionHandlersToNodeChildren(threadsNode);
-          // threadsNode.replaceChildren.apply(threadsNode, contentNodes); // Old approach
+          threadsListNode.innerHTML = content; // Insert content just as raw html
+          this.addTitleActionHandlersToNodeChildren(threadsListNode);
+          // threadsListNode.replaceChildren.apply(threadsListNode, contentNodes); // Old approach
         } else {
           // Append new data (will be used for incremental update)...
           const contentNodes = CommonHelpers.htmlToElements(content);
           contentNodes.forEach((node) => {
-            CommentsHandlers.addTitleActionHandlersToNodeChildren(node);
+            this.addTitleActionHandlersToNodeChildren(node);
           });
-          threadsNode.append.apply(threadsNode, contentNodes);
+          threadsListNode.append.apply(threadsListNode, contentNodes);
         }
       },
 
-      updateAllComments() {
-        console.log('[:updateAllComments]');
-        debugger;
+      /** clearAllHiddenThreadsComments -- Remove all rendered comments from hidden (non-expanded) threads */
+      clearAllHiddenThreadsComments() {
+        // const rootNode = CommentsNodes.getRootNode();
+        const threadsListNode = CommentsNodes.getThreadsListNode();
+        const hiddenCommentNodes = threadsListNode.querySelectorAll(
+          '.thread:not(.expanded) .comments.ready',
+        );
+        /* console.log('[CommentsDataRender:clearAllHiddenThreadsComments]', {
+         *   threadsListNode,
+         *   hiddenCommentNodes,
+         * });
+         */
+        hiddenCommentNodes.forEach((el) => {
+          el.classList.toggle('ready', false);
+          el.innerHTML = '';
+        });
       },
 
-      start() {
-        // Add handler on update all the comments event...
-        CommentsUpdaters.updateCommentsHandlers.push(this.updateAllComments.bind(this));
+      /** Is it used? */
+      rerenderAllVisibleComments() {
+        // Remove all hidden threads comments blocks.
+        this.clearAllHiddenThreadsComments();
+        // Find all expanded threads...
+        const threadsListNode = CommentsNodes.getThreadsListNode();
+        const expandedCommentsNodes = threadsListNode.querySelectorAll(
+          '.thread.expanded .comments',
+        );
+        console.log('[CommentsDataRender:rerenderAllVisibleComments]', {
+          expandedCommentsNodes,
+        });
+        expandedCommentsNodes.forEach((commentsNode) => {
+          const threadId = Number(commentsNode.getAttribute('data-for-thread-id'));
+          console.log('[CommentsDataRender:rerenderAllVisibleComments] iteration', {
+            commentsNode,
+            threadId,
+          });
+          this.updateThreadComments(threadId);
+        });
+      },
+
+      updateThreadVisibleState(threadId) {
+        const isVisible = CommentsThreadsHelpers.isThreadVisible(threadId);
+        const threadNode = document.getElementById(`thread-${threadId}`);
+        const isExpanded = threadNode.classList.contains('expanded');
+        /* console.log('[CommentsDataRender:updateThreadVisibleState]', {
+         *   isExpanded,
+         *   threadId,
+         *   isVisible,
+         * });
+         */
+        threadNode.classList.toggle('hidden', !isVisible);
+        if (isVisible && isExpanded) {
+          this.ensureThreadCommentsReady(threadId);
+        }
+      },
+
+      updateVisibleThreads() {
+        const { threads } = CommentsData;
+        const threadIds = threads.map(({ id }) => id);
+        /* console.log('[CommentsDataRender:updateVisibleThreads]', {
+         *   threadIds,
+         * });
+         */
+        threadIds.forEach((threadId) => {
+          this.updateThreadVisibleState(threadId);
+        });
+      },
+
+      addTitleActionHandlersToNodeChildren(node) {
+        const elems = node.querySelectorAll('.title-actions a');
+        const { handlers } = this;
+        const { handleTitleActionClick } = handlers;
+        elems.forEach((elem) => {
+          elem.addEventListener('click', handleTitleActionClick);
+        });
+      },
+
+      start({ handlers }) {
+        // Save handlers...
+        this.handlers = handlers;
+        /* // UNUSED: Add update handlers (via `CommentsEvents`)...
+         * CommentsEvents.addEventHandler(
+         *   'rerenderAllVisibleComments',
+         *   this.rerenderAllVisibleComments.bind(this),
+         * );
+         * CommentsEvents.addEventHandler(
+         *   'updateVisibleThreads',
+         *   this.updateVisibleThreads.bind(this),
+         * );
+         */
       },
     };
 

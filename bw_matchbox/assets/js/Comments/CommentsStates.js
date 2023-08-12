@@ -34,6 +34,11 @@ modules.define(
         CommentsData.hasData = hasData;
       },
 
+      setFilterByState(value) {
+        CommentsData.filterByState = value;
+        CommentsDataRender.updateVisibleThreads();
+      },
+
       setTotalCommentsCount(totalComments) {
         CommentsData.totalComments = totalComments;
         /* // Set css class for root node, update local state

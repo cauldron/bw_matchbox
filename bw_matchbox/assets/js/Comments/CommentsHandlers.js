@@ -3,55 +3,85 @@ modules.define(
   [
     // Required modules...
     'CommentsData',
-    'CommentsUpdaters',
+    'CommentsDataRender',
+    'CommentsStates',
   ],
   function provide_CommentsHandlers(
     provide,
     // Resolved modules...
     CommentsData,
-    CommentsUpdaters,
+    CommentsDataRender,
+    CommentsStates,
   ) {
     /** @exports CommentsHandlers
      */
     const CommentsHandlers = /** @lends CommentsHandlers */ {
       __id: 'CommentsHandlers',
 
-      boundActionClickHandler: undefined,
-
-      getBoundActionClickHandler() {
-        if (!this.boundActionClickHandler) {
-          this.boundActionClickHandler = this.handleActionClick.bind(this);
-        }
-        return this.boundActionClickHandler;
-      },
-
-      handleActionClick(event) {
+      handleTitleActionClick(event) {
         event.preventDefault();
         event.stopPropagation();
         const { currentTarget } = event;
         const { id } = currentTarget;
-        console.log('[Comments:handleActionClick]', id, {
+        console.log('[Comments:handleTitleActionClick]', id, {
           id,
           currentTarget,
           event,
         });
       },
 
-      addTitleActionHandlersToNodeChildren(node) {
-        const elems = node.querySelectorAll('.title-actions a');
-        const handler = this.getBoundActionClickHandler();
-        elems.forEach((elem) => {
-          elem.addEventListener('click', handler);
-        });
-      },
-
       handleFilterByStateChange(node) {
         const { value } = node;
-        console.log('[CommentsHandlers:handleFilterByStateChange]', {
-          node,
+        /* console.log('[CommentsHandlers:handleFilterByStateChange]', {
+         *   value,
+         *   // node,
+         * });
+         */
+        CommentsStates.setFilterByState(value);
+      },
+
+      /** Reset all the filters to default values
+       */
+      resetFilterByState() {
+        const filterByState = document.getElementById('filterByState');
+        const { defaultFilterByState: value } = CommentsData;
+        filterByState.value = value;
+        CommentsStates.setFilterByState(value);
+      },
+
+      handleExpandThread(node) {
+        const threadEl = node.closest('.thread');
+        const threadId = Number(threadEl.getAttribute('data-thread-id'));
+        const wasExpanded = threadEl.classList.contains('expanded');
+        const setExpanded = !wasExpanded;
+        /* console.log('[CommentsHandlers:handleExpandThread]', {
+         *   threadEl,
+         *   node,
+         * });
+         */
+        // Ensure that all the thread comments had already rendered...
+        if (setExpanded) {
+          CommentsDataRender.ensureThreadCommentsReady(threadId);
+        }
+        // Toggle `expanded` class name...
+        threadEl.classList.toggle('expanded', setExpanded);
+      },
+
+      /** Reset all the filters to default values
+       */
+      handleResetFilters() {
+        this.resetFilterByState();
+      },
+
+      start({ handlers }) {
+        // Export all methods as external handlers...
+        const propNames = Object.keys(this);
+        propNames.forEach((key) => {
+          const fn = this[key];
+          if (typeof fn === 'function' && key !== 'start') {
+            handlers[key] = fn.bind(this);
+          }
         });
-        CommentsData.filterByState = value;
-        CommentsUpdaters.updateComments();
       },
     };
 
