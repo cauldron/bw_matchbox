@@ -205,86 +205,95 @@ def comments_api():
     Optional GET parameters.
 
     * `user`: str. Username to filter by
+    * `reporter`: str. First reporter of comment thread
     * `process`: int. Proxy process ID
     * `resolved`: str, either "0" or "1". Whether comment thread is resolved or not
     * `thread`: int. Comment thread id
 
     JSON Return format, sorted by ascending comment thread and then comment position.
 
-        {
-            "total_threads": int,
-            "total_comments": int,
-            "data": [
-                {
-                    "thread_id": int, 1-indexed (from db),
-                    "thread_name": str,
-                    "thread_reporter": str,
-                    "resolved": bool,
-                    "process": {
-                        "id": int, 1-indexed (from db),
-                        "database": str,
-                        "name": str,
-                        "unit": str,
-                        "location": str,
-                        "product": str,
-                        "url": str, relative URL,
-                    },
-                    "content": str,
-                    "position": int, 0-indexed,
-                    "user": str,
-                }
-                for obj in qs.dicts()
-            ],
-        }
+    {
+        "total_threads": int,
+        "total_comments": int,
+        "comments": [
+            {
+                "id": int, 1-indexed (from db),
+                "thread": int, 1-indexed (from db),
+                "content": str,
+                "position": int, 0-indexed,
+                "user": str,
+            }
+        ],
+        "threads": [
+            {
+                "id": int, 1-indexed,
+                "name": str,
+                "reporter": str,
+                "resolved": bool,
+                "created": ISO 8601 str,
+                "modified": ISO 8601 str,
+                "process": {
+                    "id": int, 1-indexed (from db),
+                    "database": str,
+                    "name": str,
+                    "unit": str,
+                    "location": str,
+                    "product": str,
+                    "url": str, relative URL,
+                },
+            }
+        ]
+    }
 
     """
     get_config()
 
-    qs = (
-        Comment.select(
-            Comment.position,
-            Comment.content,
-            Comment.user,
-            Comment.id,
-            CommentThread.id.alias("thread_id"),
-            CommentThread.name,
-            CommentThread.resolved,
-            CommentThread.process_id,
-        )
-        .join(CommentThread)
-        .order_by(CommentThread.id.asc(), Comment.position.asc())
-    )
+    comments = Comment.select().order_by(Comment.thread_id, Comment.position)
+    threads = CommentThread.select().order_by(CommentThread.id)
 
     user = flask.request.args.get("user")
+    reporter = flask.request.args.get("reporter")
     process = flask.request.args.get("process")
     resolved = flask.request.args.get("resolved")
     thread = flask.request.args.get("thread")
 
     if user:
-        qs = qs.where(Comment.user == user)
+        comments = comments.where(Comment.user == user)
+        threads = threads.where(CommentThread.id << {o.thread_id for o in comments})
+    if reporter:
+        thread_ids = {o.id for o in threads if o.reporter == reporter}
+        threads = threads.where(CommentThread.id << thread_ids)
+        comments = comments.where(Comment.thread_id << thread_ids)
     if process:
-        qs = qs.where(CommentThread.process_id == int(process))
+        threads = threads.where(CommentThread.process_id == int(process))
+        comments = comments.where(Comment.thread_id << {o.id for o in threads})
     if resolved and resolved in "01":
-        qs = qs.where(CommentThread.resolved == (True if resolved == "1" else False))
+        threads = threads.where(
+            CommentThread.resolved == (True if resolved == "1" else False)
+        )
+        comments = comments.where(Comment.thread_id << {o.id for o in threads})
     if thread:
-        qs = qs.where(CommentThread.id == int(thread))
+        comments = comments.where(Comment.thread_id == int(thread))
+        threads = threads.where(CommentThread.id == int(thread))
+
+    threads = [
+        {
+            "id": o.id,
+            "name": o.name,
+            "reporter": o.reporter,
+            "resolved": o.resolved,
+            "created": o.created,
+            "modified": o.modified,
+            "process": format_process(o.process_id),
+        }
+        for o in threads
+    ]
 
     payload = {
         "total_threads": CommentThread.select().count(),
         "total_comments": Comment.select().count(),
-        "data": [
-            {
-                "thread_id": obj["thread_id"],
-                "thread_name": obj["name"],
-                "thread_reporter": CommentThread.get(id=obj["thread_id"]).reporter,
-                "resolved": obj["resolved"],
-                "process": format_process(obj["process_id"]),
-                "content": obj["content"],
-                "position": obj["position"],
-                "user": obj["user"],
-            }
-            for obj in qs.dicts()
-        ],
+        "comments": list(comments.dicts()),
+        "threads": threads,
     }
     return flask.jsonify(payload)
 
@@ -623,12 +632,12 @@ def remove_match(id):
 
 
 def get_match_type(node, proxy, mapping):
-    if 'match_type' in node:
-        return mapping.get(node['match_type'], "Unknown")
-    elif proxy and 'match_type' in proxy:
-        return mapping.get(proxy['match_type'], "Unknown")
-    elif node.get('matched'):
-        return 'No direct match available'
+    if "match_type" in node:
+        return mapping.get(node["match_type"], "Unknown")
+    elif proxy and "match_type" in proxy:
+        return mapping.get(proxy["match_type"], "Unknown")
+    elif node.get("matched"):
+        return "No direct match available"
     else:
         return None
 
@@ -660,7 +669,9 @@ def process_detail(id):
 
     return flask.render_template(
         "process_detail.html",
-        title="MB {} {} {}".format(node['name'][:20], node['location'][:5], node['unit'][:5]),
+        title="MB {} {} {}".format(
+            node["name"][:20], node["location"][:5], node["unit"][:5]
+        ),
         ds=node,
         config=config,
         authors=get_authors(node.get("authors")),
@@ -671,7 +682,9 @@ def process_detail(id):
         same_name=same_name,
         technosphere=technosphere,
         biosphere=biosphere,
-        match_type=get_match_type(node, proxy_node, matchbox_app.config["mb_match_types"]),
+        match_type=get_match_type(
+            node, proxy_node, matchbox_app.config["mb_match_types"]
+        ),
         total_consumers=len(node.upstream()),
         consumers=list(node.upstream())[:50],
         is_proxy=is_proxy,
@@ -717,7 +730,7 @@ def match(source):
 
     node = bd.get_node(id=source)
 
-    if node.get('matched'):
+    if node.get("matched"):
         return flask.redirect(flask.url_for("process_detail", id=node.id))
 
     matches = bd.Database(config["target"]).search(

@@ -1,3 +1,6 @@
+from datetime import datetime as dt
+from pathlib import Path
+
 import peewee
 from bw2data import config, projects
 from bw2data.sqlite import SubstitutableDatabase
@@ -6,6 +9,9 @@ from bw2data.sqlite import SubstitutableDatabase
 class CommentThread(peewee.Model):
     resolved = peewee.BooleanField(default=False)
     name = peewee.TextField(null=False)
+    created = peewee.DateTimeField(default=dt.utcnow)
+    modified = peewee.DateTimeField(default=dt.utcnow)
+
     process_id = peewee.IntegerField(null=False)
 
     def __len__(self):
@@ -20,7 +26,11 @@ class CommentThread(peewee.Model):
 
     @property
     def reporter(self):
-        min_position = Comment.select(peewee.fn.Min(Comment.position)).where(Comment.thread == self).scalar()
+        min_position = (
+            Comment.select(peewee.fn.Min(Comment.position))
+            .where(Comment.thread == self)
+            .scalar()
+        )
         return Comment.get(position=min_position, thread=self).user
 
     def next_position(self):
@@ -51,16 +61,23 @@ class Comment(peewee.Model):
     def save(self, *args, **kwargs):
         if not self.id:
             self.position = self.thread.next_position()
-        return super().save(*args, **kwargs)
+        obj = super().save(*args, **kwargs)
+        CommentThread.update(modified=dt.utcnow()).where(
+            CommentThread.id == self.thread_id
+        ).execute()
+        return obj
 
+
+mb_project_dir = projects.dir / "matchbox"
+mb_project_dir.mkdir(exist_ok=True)
 
 comments_db = SubstitutableDatabase(
-    projects.dir / "comments.db",
+    mb_project_dir / "comments.db",
     [CommentThread, Comment],
 )
 config.sqlite3_databases.append(
     (
-        "comments.db",
+        Path("matchbox") / "comments.db",
         comments_db,
     )
 )
