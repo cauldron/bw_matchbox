@@ -2,20 +2,22 @@ modules.define(
   'CommentsLoader',
   [
     // Required modules...
-    'CommonHelpers',
     'CommentsConstants',
     'CommentsData',
-    'CommentsStates',
     'CommentsDataRender',
+    'CommentsHelpers',
+    'CommentsStates',
+    'CommonHelpers',
   ],
   function provide_CommentsLoader(
     provide,
     // Resolved modules...
-    CommonHelpers,
     CommentsConstants,
     CommentsData,
-    CommentsStates,
     CommentsDataRender,
+    CommentsHelpers,
+    CommentsStates,
+    CommonHelpers,
   ) {
     /* // Data types decription (TS-style):
      * interface TCommentProcess {
@@ -28,45 +30,49 @@ modules.define(
      *   url: string; // '/process/5300'
      * }
      * interface TComment {
+     *   id: number; // 2
+     *   position: number; // 1
+     *   thread: number; // 1
+     *   user: string; // 'Puccio Bernini'
      *   content: string; // '...'
-     *   position: number; // 10
-     *   resolved: boolean; // true
-     *   thread_id: number; // 13
-     *   thread_name: string; // 'Consequatur exercita'
-     *   thread_reporter: string; // 'Reporter Name'
-     *   user: string; // 'Ida Trombetta'
+     *   [> OLD VERSION:
+     *    * content: string; // '...'
+     *    * position: number; // 10
+     *    * resolved: boolean; // true
+     *    * thread_id: number; // 13
+     *    * thread_name: string; // 'Consequatur exercita'
+     *    * thread_reporter: string; // 'Reporter Name'
+     *    * user: string; // 'Ida Trombetta'
+     *    * process: TCommentProcess;
+     *    <]
+     * }
+     * interface TThread {
+     *   id: number; // 1
+     *   created: TDateStr; // 'Sat, 12 Aug 2023 12:36:08 GMT'
+     *   modified: TDateStr; // 'Sat, 12 Aug 2023 12:36:08 GMT'
+     *   name: string; // 'Возмутиться кпсс гул'
+     *   reporter: string; // '阿部 篤司'
+     *   resolved: boolean; // false
      *   process: TCommentProcess;
      * }
+     * interface TLocalThread extends TThread {
+     *   commentIds: number[];
+     * }
+     * // OLD VERSION (for local thread representation)
      * interface TLocalThread {
      *   comments: TComment[];
      *   id: number;
      *   name: string;
      *   reporter: string;
      * }
+     * type TCommentsHash = Record<TTreadId, TComment>;
+     * type TThreadsHash = Record<TTreadId, TLocalThread>;
+     *
      */
 
     /** Local helpers... */
     const helpers = {
-      /** Compare two threads objects
-       * @param {<TLocalThread>} a
-       * @param {<TLocalThread>} b
-       * @return {-1, 0, 1}
-       */
-      sortThreads(a, b) {
-        const cmpKey = 'name'; // TODO: Use different sort keys depending on configuration?
-        const aVal = a[cmpKey];
-        const bVal = b[cmpKey];
-        return aVal === bVal ? 0 : aVal < bVal ? -1 : 1;
-      },
-
-      /** Compare two comments objects
-       * @param {<TComment>} a
-       * @param {<TComment>} b
-       * @return {-1, 0, 1}
-       */
-      sortComments(a, b) {
-        return a.position - b.position;
-      },
+      // ...
     };
 
     /** @exports CommentsLoader
@@ -75,50 +81,45 @@ modules.define(
       __id: 'CommentsLoader',
 
       /** acceptData -- Prepare, store and render data...
-       * @param {<TComment[]>} comments
        */
-      acceptData(comments) {
-        const threads = [];
-        comments.forEach((comment) => {
-          const {
-            thread_id, // 13
-            thread_name, // 'Consequatur exercita'
-            thread_reporter, // 'Reporter Name'
-            // content, // '...'
-            // position, // 10
-            // resolved, // true
-            // user, // 'Ida Trombetta'
-            // process, // TCommentProcess
-          } = comment;
-          if (!threads[thread_id]) {
-            /** @type {<TLocalThread>} */
-            threads[thread_id] = {
-              comments: [],
-              id: thread_id,
-              name: thread_name,
-              reporter: thread_reporter,
-            };
-          }
-          threads[thread_id].comments.push(comment);
-        });
-        // Sort all the comments and threads...
-        threads.sort(helpers.sortThreads);
-        threads.forEach(({ comments }) => {
-          comments.sort(helpers.sortComments);
-        });
+      acceptData() {
+        const { comments, threads } = CommentsData;
+        CommentsHelpers.sortThreads(threads);
+        comments.sort(CommentsHelpers.sortCommentsCompare);
+        // Create hashes...
+        const commentsHash = comments.reduce((hash, comment) => {
+          hash[comment.id] = comment;
+          return hash;
+        }, {});
         const threadsHash = threads.reduce((hash, thread) => {
           hash[thread.id] = thread;
           return hash;
         }, {});
-        console.log('[CommentsLoader:acceptData]: start', {
+        // Save created hashes...
+        CommentsData.commentsHash = commentsHash;
+        CommentsData.threadsHash = threadsHash;
+        console.log('[CommentsLoader:acceptData]', {
           comments,
           threads,
+          commentsHash,
           threadsHash,
         });
-        // Save data...
-        CommentsData.comments = comments;
-        CommentsData.threads = threads;
-        CommentsData.threadsHash = threadsHash;
+        // Prepare comments lists for threads...
+        const commentsByThreads = {};
+        comments.forEach((comment) => {
+          const { id, thread: threadId } = comment;
+          const commentIds = commentsByThreads[threadId] || (commentsByThreads[threadId] = []);
+          commentIds.push(id);
+        });
+        // Save comments data to store...
+        CommentsData.commentsByThreads = commentsByThreads;
+        console.log('[CommentsLoader:acceptData]: done', {
+          comments,
+          threads,
+          commentsHash,
+          threadsHash,
+          commentsByThreads,
+        });
         // TODO: Create threads...
         CommentsDataRender.renderData();
       },
@@ -169,7 +170,8 @@ modules.define(
           })
           .then((json) => {
             const {
-              data: comments,
+              comments,
+              threads,
               total_comments: totalComments,
               total_threads: totalThreads,
             } = json;
@@ -177,16 +179,20 @@ modules.define(
             console.log('[CommentsLoader:loadComments]: got comments', {
               json,
               comments,
+              threads,
               totalThreads,
               totalComments,
             });
+            // Store data...
+            CommentsData.comments = comments;
+            CommentsData.threads = threads;
             // Update total comments number...
             CommentsStates.setTotalCommentsCount(totalComments);
             CommentsStates.setTotalThreadsCount(totalThreads);
             CommentsStates.setError(undefined); // Clear the error: all is ok
             CommentsStates.setHasData(CommentsData.hasData || hasData); // Update 'has data' flag
             // Prepare, store and render data...
-            this.acceptData(comments);
+            this.acceptData();
           })
           .catch((error) => {
             // eslint-disable-next-line no-console

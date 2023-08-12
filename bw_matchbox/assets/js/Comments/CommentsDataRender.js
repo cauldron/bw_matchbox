@@ -3,6 +3,7 @@ modules.define(
   [
     // Required modules...
     'CommonHelpers',
+    'CommentsConstants',
     'CommentsData',
     'CommentsNodes',
   ],
@@ -10,11 +11,36 @@ modules.define(
     provide,
     // Resolved modules...
     CommonHelpers,
+    CommentsConstants,
     CommentsData,
     CommentsNodes,
   ) {
     /** Local (not public) helpers... */
     const helpers = {
+      /** @type {Intl.DateTimeFormat} */
+      dateTimeFormatter: undefined,
+
+      /** getCommentsForThread
+       * @param {<TThreadId>} threadId
+       * @return {<TCommentId[]>} - Comments data list
+       */
+      getCommentsForThread(threadId) {
+        const { commentsHash, commentsByThreads } = CommentsData;
+        const commentsByThreadsIds = commentsByThreads[threadId];
+        const commentsList = commentsByThreadsIds.map((id) => commentsHash[id]);
+        return commentsList;
+      },
+
+      getDateTimeFormatter() {
+        if (!helpers.dateTimeFormatter) {
+          helpers.dateTimeFormatter = new Intl.DateTimeFormat(
+            CommentsConstants.dateTimeFormatLocale,
+            CommentsConstants.dateTimeFormatOptions,
+          );
+        }
+        return helpers.dateTimeFormatter;
+      },
+
       /** renderThread
        * @param {<TLocalThread>} thread
        * @return {string} - HTML content
@@ -22,14 +48,18 @@ modules.define(
       renderThread(thread) {
         /** @type {<TLocalThread>} */
         const {
-          // prettier-ignore
           id: threadId,
-          name,
-          reporter,
-          comments,
+          created, // TDateStr, eg: 'Sat, 12 Aug 2023 12:36:08 GMT'
+          modified, // TDateStr, eg: 'Sat, 12 Aug 2023 12:36:08 GMT'
+          name, // string, eg: 'Возмутиться кпсс гул'
+          reporter, // string, eg: '阿部 篤司'
+          resolved, // boolean, eg: false
+          process, // TCommentProcess;
         } = thread;
-        const commentPositions = comments.map((comment) => comment.position);
-        const commentsCount = comments.length;
+        // const { comments, commentsByThreads } = CommentsData;
+        const commentsList = helpers.getCommentsForThread(threadId);
+        const commentPositions = commentsList.map((comment) => comment.position);
+        const commentsCount = commentsList.length;
         const isEmpty = !commentsCount;
         const isExpanded = false; // commentsCount <= 2; // DEBUG!
         const className = [
@@ -40,6 +70,15 @@ modules.define(
         ]
           .filter(Boolean)
           .join(' ');
+        const modifiedDate = new Date(modified);
+        const dateTimeFormatter = helpers.getDateTimeFormatter();
+        const modifiedStr = dateTimeFormatter.format(modifiedDate);
+        console.log('[CommentsDataRender:renderThread]', {
+          modifiedDate,
+          modifiedStr,
+          modified,
+          dateTimeFormatter,
+        });
         // TODO: Render actual comments if thread is expanded by default
         const commentsContent = isExpanded
           ? helpers.renderThreadCommentsContent(threadId)
@@ -56,7 +95,7 @@ modules.define(
               <div class="title">
                 <div class="title-text">
                   <span class="name">${name}</span>
-                  <span class="reporter">(reporter: ${reporter}, comments: ${commentsCount})</span>
+                  <span class="info">(reporter: ${reporter}, comments: ${commentsCount}, modified date: ${modifiedStr})</span>
                 </div>
                 <div class="title-actions">
                   <a><i class="fa-regular fa-comment"></i></a>
@@ -73,7 +112,7 @@ modules.define(
           threadId,
           name,
           reporter,
-          comments,
+          commentsList,
           thread,
         });
         return content;
@@ -132,13 +171,6 @@ modules.define(
           comment,
         });
         return html;
-      },
-
-      getCommentsForThread(threadId) {
-        const thread = CommentsData.threadsHash[threadId];
-        const { comments } = thread;
-        // TODO: Catch no data/empty data errors?
-        return comments;
       },
 
       renderThreadCommentsContent(threadId) {

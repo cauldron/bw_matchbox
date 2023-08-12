@@ -76,9 +76,16 @@
 .comments-root .threads-list .thread.expanded .main-row a.expand-button {
   transform: rotate(90deg);
 }
-.comments-root .threads-list .thread .main-row .name {
+.comments-root .threads-list .thread .main-row .title .title-text {
 }
-.comments-root .threads-list .thread .main-row .reporter {
+.comments-root .threads-list .thread .main-row .title .title-text .time {
+  opacity: 0.5;
+  display: inline-block;
+  margin-right: 4px;
+}
+.comments-root .threads-list .thread .main-row .title .title-text .name {
+}
+.comments-root .threads-list .thread .main-row .title .title-text .info {
   opacity: 0.5;
 }
 

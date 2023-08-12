@@ -22,7 +22,13 @@ modules.define(
       // Comments and threads data...
       comments: [], // TComment[]
       threads: [], // TLocalThread[]
+      commentsHash: {}, // Record<TTreadId, TComment>
       threadsHash: {}, // Record<TTreadId, TLocalThread>
+      commentsByThreads: {}, // Record<TTreadId, TCommentId[]>
+
+      // View options...
+      sortThreadsBy: 'modifiedDate',
+      reversedThreadsSorts: true,
 
       // Page state...
       totalComments: 0,

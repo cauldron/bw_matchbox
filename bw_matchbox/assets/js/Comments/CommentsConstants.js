@@ -20,8 +20,16 @@ modules.define(
       /** Api base */
       commentsApiUrl: '/comments-api',
 
-      /** The number of records to retrieve at once and to display */
-      pageSize: 25,
+      /** Intl.DateTimeFormat parameters... */
+      dateTimeFormatLocale: 'en-GB',
+      dateTimeFormatOptions: {
+        year: 'numeric',
+        month: 'numeric',
+        day: 'numeric',
+        hour: 'numeric',
+        minute: 'numeric',
+        // second: 'numeric',
+      },
     };
 
     // Provide module...
