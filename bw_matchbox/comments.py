@@ -1,5 +1,4 @@
 from datetime import datetime as dt
-from pathlib import Path
 
 import peewee
 from bw2data import config, projects
@@ -68,16 +67,13 @@ class Comment(peewee.Model):
         return obj
 
 
-mb_project_dir = projects.dir / "matchbox"
-mb_project_dir.mkdir(exist_ok=True)
-
 comments_db = SubstitutableDatabase(
-    mb_project_dir / "comments.db",
+    projects.dir / "comment_threads.db",
     [CommentThread, Comment],
 )
 config.sqlite3_databases.append(
     (
-        Path("matchbox") / "comments.db",
+        "comment_threads.db",
         comments_db,
     )
 )
