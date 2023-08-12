@@ -27,10 +27,13 @@
   align-items: flex-start;
   gap: var(--comments-expand-button-gap);
   margin: 5px 0;
-  /* font-weight: bold; */
+}
+.comments-root .threads-list .thread .title-actions {
+  align-self: flex-start;
 }
 .comments-root .threads-list .thread .main-row .title-actions {
-  margin-right: 15px;
+  /* Align thread's and comment's icons */
+  /* margin-right: 15px; */
 }
 .comments-root .threads-list .thread .main-row .expand-button-wrapper {
   margin-top: 1px;
@@ -52,28 +55,35 @@
   justify-content: center;
   align-items: center;
 }
-.comments-root .threads-list .thread .main-row a.expand-button,
-.comments-root .threads-list .thread .main-row a.expand-button-wrapper {
+.comments-root .threads-list .thread .main-row .expand-button,
+.comments-root .threads-list .thread .main-row .expand-button-wrapper {
   transition: all var(--common-animation-time);
   border-radius: 50%;
 }
-.comments-root .threads-list .thread.empty .main-row a.expand-button {
+.comments-root .threads-list .thread.empty .main-row .expand-button {
   color: #ccc;
   cursor: default;
   opacity: 0.25;
   pointer-events: none;
 }
-.comments-root .threads-list .thread:not(.empty) .main-row a.expand-button {
+.comments-root .threads-list .thread:not(.empty) .main-row .expand-button {
   cursor: pointer;
   color: var(--layout-theme-primary-color);
   opacity: 0.75;
 }
-.comments-root .threads-list .thread:not(.empty) .main-row a.expand-button:hover {
+.comments-root .threads-list .thread:not(.empty) .main-row {
+  cursor: pointer;
+  transition: all var(--common-animation-time);
+}
+.comments-root .threads-list .thread:not(.empty) .main-row:hover {
+  /* background-color: var(--layout-theme-primary-color); */
+}
+.comments-root .threads-list .thread:not(.empty) .main-row:hover .expand-button {
   background-color: var(--layout-theme-primary-color);
   color: #fff;
   opacity: 1;
 }
-.comments-root .threads-list .thread.expanded .main-row a.expand-button {
+.comments-root .threads-list .thread.expanded .main-row .expand-button {
   transform: rotate(90deg);
 }
 .comments-root .threads-list .thread .main-row .title .title-text {

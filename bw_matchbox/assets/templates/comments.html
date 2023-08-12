@@ -7,9 +7,10 @@
 
 <script src="{{ url_for('static', filename='js/Comments/CommentsConstants.js') }}"></script>
 <script src="{{ url_for('static', filename='js/Comments/CommentsData.js') }}"></script>
+<script src="{{ url_for('static', filename='js/Comments/CommentsDataRender.js') }}"></script>
+<script src="{{ url_for('static', filename='js/Comments/CommentsHandlers.js') }}"></script>
 <script src="{{ url_for('static', filename='js/Comments/CommentsHelpers.js') }}"></script>
 <script src="{{ url_for('static', filename='js/Comments/CommentsLoader.js') }}"></script>
-<script src="{{ url_for('static', filename='js/Comments/CommentsDataRender.js') }}"></script>
 <script src="{{ url_for('static', filename='js/Comments/CommentsNodes.js') }}"></script>
 <script src="{{ url_for('static', filename='js/Comments/CommentsStates.js') }}"></script>
 <script src="{{ url_for('static', filename='js/Comments/Comments.js') }}"></script>
@@ -20,16 +21,18 @@
 
 <div id="comments-root" class="comments-root container empty loading">
   {# // TODO: Do we need `navigation` block here?
-  {% include 'navigation.html' %}
   #}
+  {% include 'navigation.html' %}
   <div class="common-page-header">
     <h3 class="title">
       Comments
+      {#
       <div class="tools">
         <div class="tools-wrapper">
           <a class="tools-icon theme-primary" onClick="Comments.copyToClipboardHandler(this)" data-node-type="source" title="Copy markdown link to clipboard"><i class="fa-solid fa-copy"></i></a>
         </div>
       </div>
+      #}
     </h3>
   </div>
   <div class="page-filters">

@@ -3,6 +3,7 @@ modules.define(
   [
     // Required modules...
     'CommonHelpers',
+    'CommentsHandlers',
     'CommentsConstants',
     'CommentsData',
     'CommentsNodes',
@@ -11,6 +12,7 @@ modules.define(
     provide,
     // Resolved modules...
     CommonHelpers,
+    CommentsHandlers,
     CommentsConstants,
     CommentsData,
     CommentsNodes,
@@ -49,12 +51,12 @@ modules.define(
         /** @type {<TLocalThread>} */
         const {
           id: threadId,
-          created, // TDateStr, eg: 'Sat, 12 Aug 2023 12:36:08 GMT'
+          // created, // TDateStr, eg: 'Sat, 12 Aug 2023 12:36:08 GMT'
           modified, // TDateStr, eg: 'Sat, 12 Aug 2023 12:36:08 GMT'
           name, // string, eg: 'Возмутиться кпсс гул'
           reporter, // string, eg: '阿部 篤司'
-          resolved, // boolean, eg: false
-          process, // TCommentProcess;
+          // resolved, // boolean, eg: false
+          // process, // TCommentProcess;
         } = thread;
         // const { comments, commentsByThreads } = CommentsData;
         const commentsList = helpers.getCommentsForThread(threadId);
@@ -86,9 +88,9 @@ modules.define(
             commentPositions.join(', ');
         const content = `
           <div data-thread-id="${threadId}" class="${className}">
-            <div class="main-row">
+            <div class="main-row" onClick="Comments.handleExpandThread(this)">
               <div class="expand-button-wrapper">
-                <a class="expand-button" onClick="Comments.handleExpandThread(this)">
+                <a class="expand-button">
                   <i class="fa-solid fa-chevron-right"></i>
                 </a>
               </div>
@@ -98,8 +100,8 @@ modules.define(
                   <span class="info">(reporter: ${reporter}, comments: ${commentsCount}, modified date: ${modifiedStr})</span>
                 </div>
                 <div class="title-actions">
-                  <a><i class="fa-regular fa-comment"></i></a>
-                  <a><i class="fa-solid fa-xmark"></i></a>
+                  <a id="thread-comment""><i class="fa-regular fa-comment"></i></a>
+                  <a id="thread-resolve""><i class="fa-solid fa-xmark"></i></a>
                 </div>
               </div>
             </div>
@@ -147,8 +149,8 @@ modules.define(
                 <span class="user">${user}</span>
               </div>
               <div class="title-actions">
-                <a><i class="fa-regular fa-comment"></i></a>
-                <a><i class="fa-solid fa-xmark"></i></a>
+                <a id="comment-comment""><i class="fa-regular fa-comment"></i></a>
+                <a id="comment-resolve""><i class="fa-solid fa-xmark"></i></a>
               </div>
             </div>
             <div class="content">
@@ -225,6 +227,7 @@ modules.define(
           commentsEl,
         });
         commentsEl.innerHTML = htmlsContent;
+        CommentsHandlers.addTitleActionHandlersToNodeChildren(commentsEl);
         commentsEl.classList.toggle('ready', true);
       },
 
@@ -251,10 +254,14 @@ modules.define(
         if (!opts.append) {
           // Replace data...
           threadsNode.innerHTML = content; // Insert content just as raw html
+          CommentsHandlers.addTitleActionHandlersToNodeChildren(threadsNode);
           // threadsNode.replaceChildren.apply(threadsNode, contentNodes); // Old approach
         } else {
           // Append new data (will be used for incremental update)...
           const contentNodes = CommonHelpers.htmlToElements(content);
+          contentNodes.forEach((node) => {
+            CommentsHandlers.addTitleActionHandlersToNodeChildren(node);
+          });
           threadsNode.append.apply(threadsNode, contentNodes);
         }
       },
