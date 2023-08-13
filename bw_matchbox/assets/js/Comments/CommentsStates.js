@@ -36,36 +36,51 @@ modules.define(
 
       /**
        * @param {string[]} values
+       * @param {object} [opts]
+       * @param {boolean} [opts.omitUpdate] - Don't automatically state (eg: will be updated manually later).
        */
-      setFilterByUser(values) {
-        /* console.log('[CommentsStates:setFilterByUser]', {
+      setFilterByUsers(values, opts = {}) {
+        /* console.log('[CommentsStates:setFilterByUsers]', {
          *   values,
          * });
          */
         CommentsData.filterByUsers = values;
-        CommentsDataRender.updateVisibleThreads();
+        if (!opts.omitUpdate) {
+          CommentsDataRender.updateVisibleThreads();
+        }
       },
 
       /**
        * @param {string[]} values
+       * @param {object} [opts]
+       * @param {boolean} [opts.omitUpdate] - Don't automatically state (eg: will be updated manually later).
        */
-      setFilterByProcess(values) {
-        /* console.log('[CommentsStates:setFilterByProcess]', {
+      setFilterByProcesses(values, opts = {}) {
+        /* console.log('[CommentsStates:setFilterByProcesses]', {
          *   values,
          * });
          */
         CommentsData.filterByProcesses = values;
-        CommentsDataRender.updateVisibleThreads();
+        if (!opts.omitUpdate) {
+          CommentsDataRender.updateVisibleThreads();
+        }
       },
 
-      setFilterByState(value) {
+      /**
+       * @param {TFilterByState} value
+       * @param {object} [opts]
+       * @param {boolean} [opts.omitUpdate] - Don't automatically state (eg: will be updated manually later).
+       */
+      setFilterByState(value, opts = {}) {
         CommentsData.filterByState = value;
-        CommentsDataRender.updateVisibleThreads();
+        if (!opts.omitUpdate) {
+          CommentsDataRender.updateVisibleThreads();
+        }
       },
 
       setTotalCommentsCount(totalComments) {
         CommentsData.totalComments = totalComments;
-        /* // Set css class for root node, update local state
+        /* // TODO?
          * const rootNode = CommentsNodes.getRootNode();
          * const elems = rootNode.querySelectorAll('#total-comments-number');
          * elems.forEach((node) => {

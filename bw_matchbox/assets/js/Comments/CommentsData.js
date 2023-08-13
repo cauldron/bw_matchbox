@@ -42,7 +42,7 @@ modules.define(
   ) {
     const { useDebug } = CommentsConstants;
 
-    const useFakeData = false;
+    const useFakeData = false; // DEBUG: Use fake data for tests
 
     /** Default filter values... */
     const defaultFilters = {

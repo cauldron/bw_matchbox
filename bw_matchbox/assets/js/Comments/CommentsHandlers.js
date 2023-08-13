@@ -5,6 +5,7 @@ modules.define(
     'CommentsData',
     'CommentsDataRender',
     'CommentsStates',
+    'CommentsHelpers',
   ],
   function provide_CommentsHandlers(
     provide,
@@ -12,15 +13,8 @@ modules.define(
     CommentsData,
     CommentsDataRender,
     CommentsStates,
+    CommentsHelpers,
   ) {
-    /** Local helpers */
-    const helpers = {
-      getMultipleSelectValues(node) {
-        const options = Array.from(node.options);
-        return options.filter((item) => item.selected).map((item) => item.value);
-      },
-    };
-
     /** @exports CommentsHandlers
      */
     const CommentsHandlers = /** @lends CommentsHandlers */ {
@@ -41,21 +35,21 @@ modules.define(
       },
 
       handleFilterByUserChange(node) {
-        const values = helpers.getMultipleSelectValues(node);
+        const values = CommentsHelpers.getMultipleSelectValues(node);
         /* console.log('[CommentsHandlers:handleFilterByUserChange]', {
          *   values,
          * });
          */
-        CommentsStates.setFilterByUser(values);
+        CommentsStates.setFilterByUsers(values);
       },
 
       handleFilterByProcessChange(node) {
-        const values = helpers.getMultipleSelectValues(node).map(Number);
+        const values = CommentsHelpers.getMultipleSelectValues(node).map(Number);
         /* console.log('[CommentsHandlers:handleFilterByProcessChange]', {
          *   values,
          * });
          */
-        CommentsStates.setFilterByProcess(values);
+        CommentsStates.setFilterByProcesses(values);
       },
 
       handleFilterByStateChange(node) {
@@ -67,13 +61,40 @@ modules.define(
         CommentsStates.setFilterByState(value);
       },
 
-      /** Reset all the filters to default values
+      /** Reset `filterByState` filter
+       * @param {object} [opts]
+       * @param {boolean} [opts.omitUpdate] - Don't automatically state (eg: will be updated manually later).
        */
-      resetFilterByState() {
+      resetFilterByState(opts = {}) {
         const filterByState = document.getElementById('filterByState');
-        const { defaultFilterByState: value } = CommentsData;
+        const { defaultFilters } = CommentsData;
+        const { filterByState: value } = defaultFilters;
         filterByState.value = value;
-        CommentsStates.setFilterByState(value);
+        CommentsStates.setFilterByState(value, opts);
+      },
+
+      /** Reset `filterByUsers` filter
+       * @param {object} [opts]
+       * @param {boolean} [opts.omitUpdate] - Don't automatically state (eg: will be updated manually later).
+       */
+      resetFilterByUsers(opts = {}) {
+        const filterByUsers = document.getElementById('filterByUsers');
+        const { defaultFilters } = CommentsData;
+        const { filterByUsers: values } = defaultFilters;
+        CommentsHelpers.setMultipleSelectValues(filterByUsers, values);
+        CommentsStates.setFilterByUsers(values, opts);
+      },
+
+      /** Reset `filterByProcesses` filter
+       * @param {object} [opts]
+       * @param {boolean} [opts.omitUpdate] - Don't automatically state (eg: will be updated manually later).
+       */
+      resetFilterByProcesses(opts = {}) {
+        const filterByProcesses = document.getElementById('filterByProcesses');
+        const { defaultFilters } = CommentsData;
+        const { filterByProcesses: values } = defaultFilters;
+        CommentsHelpers.setMultipleSelectValues(filterByProcesses, values);
+        CommentsStates.setFilterByProcesses(values, opts);
       },
 
       handleExpandThread(node) {
@@ -97,7 +118,11 @@ modules.define(
       /** Reset all the filters to default values
        */
       handleResetFilters() {
-        this.resetFilterByState();
+        const commonOpts = { omitUpdate: true };
+        this.resetFilterByState(commonOpts);
+        this.resetFilterByUsers(commonOpts);
+        this.resetFilterByProcesses(commonOpts);
+        CommentsDataRender.updateVisibleThreads();
       },
 
       start({ handlers }) {

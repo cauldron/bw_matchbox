@@ -14,6 +14,30 @@ modules.define(
     const CommentsHelpers = /** @lends CommentsHelpers */ {
       __id: 'CommentsHelpers',
 
+      /**
+       * @param {HTMLSelectElement} node
+       */
+      getMultipleSelectValues(node) {
+        const options = Array.from(node.options);
+        return options.filter((item) => item.selected).map((item) => item.value);
+      },
+
+      /**
+       * @param {HTMLSelectElement} node
+       * @param {<stringable>[]} values
+       */
+      setMultipleSelectValues(node, values) {
+        const strValues = values.map(String);
+        const options = Array.from(node.options);
+        options.forEach((item) => {
+          const { value, selected } = item;
+          const isSelected = strValues.includes(value);
+          if (isSelected !== selected) {
+            item.selected = isSelected;
+          }
+        });
+      },
+
       /** Compare two threads objects
        * @param {object} opts
        * @param {<keyof TThread>} [opts.key='name']

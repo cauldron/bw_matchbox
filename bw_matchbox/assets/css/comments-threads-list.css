@@ -1,7 +1,7 @@
 :root {
   --comments-expand-button-size: 24px;
   --comments-title-action-button-size: 24px;
-  --comments-expand-button-title-top-margin: 2px;
+  --comments-expand-button-title-top-margin: 5px;
   --comments-expand-button-gap: 8px;
 }
 
@@ -33,10 +33,6 @@
 }
 .comments-root .threads-list .thread .title-actions {
   align-self: flex-start;
-}
-.comments-root .threads-list .thread .main-row .title-actions {
-  /* Align thread's and comment's icons */
-  /* margin-right: 15px; */
 }
 .comments-root .threads-list .thread .main-row .expand-button-wrapper {
   margin-top: 1px;
