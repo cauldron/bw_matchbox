@@ -59,7 +59,7 @@
     </div>
     <div id="filterActions" class="filter-item">
       <label>&nbsp;</label>
-      <button class="button-primary" onClick="Comments.handlers.handleMyCommentThreads(this)">My comment threads</button>
+      <button class="button-primary" onClick="Comments.handlers.handleFilterMyCommentThreads(this)">My comment threads</button>
       <button class="button-regular" onClick="Comments.handlers.handleResetFilters(this)">Reset all filters</button>
     </div>
     {# // Debug info
@@ -77,7 +77,7 @@
     <!-- Error text comes here -->
   </div>
 
-  <div id="threads-list-empty" class="threads-list-empty">No data has loaded</div>
+  <div id="threads-list-empty" class="threads-list-empty">No avaialable comment threads</div>
   <div id="threads-list" class="threads-list">Data...</div>
   <div class="bottom-actions">
     {# // TODO: Is these actions required here?

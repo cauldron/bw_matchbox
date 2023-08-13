@@ -98,6 +98,7 @@ modules.define(
             CommentsPrepareLoadedData.makeDerivedData();
             // Render data...
             CommentsDataRender.renderData();
+            CommentsDataRender.updateVisibleThreadsStatus();
             CommentsDataRender.renderDerivedFilters();
           })
           .catch((error) => {

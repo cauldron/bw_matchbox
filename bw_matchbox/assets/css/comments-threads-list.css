@@ -31,9 +31,6 @@
   gap: var(--comments-expand-button-gap);
   margin: 5px 0;
 }
-.comments-root .threads-list .thread .title-actions {
-  align-self: flex-start;
-}
 .comments-root .threads-list .thread .main-row .expand-button-wrapper {
   margin-top: 1px;
   font-size: 0.75em;
@@ -159,7 +156,7 @@
 
 /* Title actions */
 .comments-root .threads-list .thread .title-actions {
-  /* border: 1px solid gray; */
+  align-self: flex-start;
   display: flex;
   justify-content: flex-end;
   gap: 2px;
@@ -187,6 +184,6 @@
 }
 .comments-root .threads-list .thread .title-actions a:not(.disabled):hover {
   opacity: 1;
-  background-color: var(--layout-theme-primary-color);
-  color: #fff;
+  /* background-color: var(--layout-theme-primary-color); */
+  /* color: #fff; */
 }

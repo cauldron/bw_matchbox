@@ -8,7 +8,7 @@
   display: none;
 }
 .comments-root.loading .threads-list-empty,
-.comments-root:not(.empty) .threads-list-empty {
+.comments-root.has-visible-threads .threads-list-empty {
   display: none;
 }
 .comments-root .threads-list-empty {

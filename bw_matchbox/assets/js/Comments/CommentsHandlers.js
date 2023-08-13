@@ -115,6 +115,11 @@ modules.define(
         threadEl.classList.toggle('expanded', setExpanded);
       },
 
+      handleFilterMyCommentThreads() {
+        console.log('[CommentsHandlers:handleFilterMyCommentThreads]');
+        debugger;
+      },
+
       /** Reset all the filters to default values
        */
       handleResetFilters() {

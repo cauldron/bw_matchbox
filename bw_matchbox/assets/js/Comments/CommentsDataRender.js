@@ -253,6 +253,14 @@ modules.define(
         }
       },
 
+      updateVisibleThreadsStatus() {
+        const rootNode = CommentsNodes.getRootNode();
+        const threadsListNode = CommentsNodes.getThreadsListNode();
+        const visibleThreadNodes = threadsListNode.querySelectorAll('.thread:not(.hidden)');
+        const hasVisibleThreads = !!visibleThreadNodes.length;
+        rootNode.classList.toggle('has-visible-threads', hasVisibleThreads);
+      },
+
       // TODO: Is it used?
       clearRenderedData() {
         const threadsListNode = CommentsNodes.getThreadsListNode();
@@ -405,6 +413,7 @@ modules.define(
         threadIds.forEach((threadId) => {
           this.updateThreadVisibleState(threadId);
         });
+        this.updateVisibleThreadsStatus();
       },
 
       addTitleActionHandlersToNodeChildren(node) {
