@@ -23,6 +23,10 @@ modules.define(
         return `${name} #${id}`;
       },
 
+      /** Filter threads for current filters
+       * @param {TThreadId} threadId
+       * @return {boolean} - Is thread visible?
+       */
       isThreadVisible(threadId) {
         const {
           filterByState,
@@ -34,10 +38,11 @@ modules.define(
         } = CommentsData;
         const thread = threadsHash[threadId];
         const { resolved, process } = thread;
-        console.log('[CommentsThreadsHelpers:isThreadVisible]', {
-          filterByUsers,
-          filterByProcesses,
-        });
+        /* console.log('[CommentsThreadsHelpers:isThreadVisible]', {
+         *   filterByUsers,
+         *   filterByProcesses,
+         * });
+         */
         // Filter with `filterByState`...
         if (filterByState === 'resolved' && !resolved) {
           return false;
@@ -56,13 +61,14 @@ modules.define(
             })
             .filter(Boolean);
           const hasCommonUsers = !!commonUsers.length;
-          console.log('[CommentsThreadsHelpers:isThreadVisible]', {
-            hasCommonUsers,
-            commentUsersList,
-            commonUsers,
-            filterByUsers,
-            commentIds,
-          });
+          /* console.log('[CommentsThreadsHelpers:isThreadVisible]', {
+           *   hasCommonUsers,
+           *   commentUsersList,
+           *   commonUsers,
+           *   filterByUsers,
+           *   commentIds,
+           * });
+           */
           if (!hasCommonUsers) {
             return false;
           }

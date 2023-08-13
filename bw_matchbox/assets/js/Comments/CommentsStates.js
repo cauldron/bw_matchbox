@@ -38,9 +38,10 @@ modules.define(
        * @param {string[]} values
        */
       setFilterByUser(values) {
-        console.log('[CommentsStates:setFilterByUser]', {
-          values,
-        });
+        /* console.log('[CommentsStates:setFilterByUser]', {
+         *   values,
+         * });
+         */
         CommentsData.filterByUsers = values;
         CommentsDataRender.updateVisibleThreads();
       },
@@ -49,9 +50,10 @@ modules.define(
        * @param {string[]} values
        */
       setFilterByProcess(values) {
-        console.log('[CommentsStates:setFilterByProcess]', {
-          values,
-        });
+        /* console.log('[CommentsStates:setFilterByProcess]', {
+         *   values,
+         * });
+         */
         CommentsData.filterByProcesses = values;
         CommentsDataRender.updateVisibleThreads();
       },

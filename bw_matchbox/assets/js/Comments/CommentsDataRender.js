@@ -48,7 +48,6 @@ modules.define(
        * @return {string} - HTML content
        */
       renderThread(thread) {
-        /** @type {<TThread>} */
         const {
           id: threadId,
           // created, // TDateStr, eg: 'Sat, 12 Aug 2023 12:36:08 GMT'
@@ -76,12 +75,13 @@ modules.define(
         const modifiedDate = new Date(modified);
         const dateTimeFormatter = helpers.getDateTimeFormatter();
         const modifiedStr = dateTimeFormatter.format(modifiedDate);
-        console.log('[CommentsDataRender:renderThread]', {
-          modifiedDate,
-          modifiedStr,
-          modified,
-          dateTimeFormatter,
-        });
+        /* console.log('[CommentsDataRender:renderThread]', {
+         *   modifiedDate,
+         *   modifiedStr,
+         *   modified,
+         *   dateTimeFormatter,
+         * });
+         */
         // TODO: Render actual comments if thread is expanded by default
         const commentsContent = isExpanded
           ? helpers.renderThreadCommentsContent(threadId)
@@ -119,15 +119,16 @@ modules.define(
             <div class="comments" data-for-thread-id="${threadId}" id="comments-for-thread-${threadId}">${commentsContent}</div>
           </div>
         `;
-        console.log('[CommentsDataRender:helpers:renderThread]', {
-          content,
-          commentPositions,
-          threadId,
-          name,
-          reporter,
-          commentsList,
-          thread,
-        });
+        /* console.log('[CommentsDataRender:helpers:renderThread]', {
+         *   content,
+         *   commentPositions,
+         *   threadId,
+         *   name,
+         *   reporter,
+         *   commentsList,
+         *   thread,
+         * });
+         */
         return content;
       },
 
@@ -168,17 +169,18 @@ modules.define(
             </div>
           </div>
         `;
-        console.log('[CommentsDataRender:helpers:renderComment]', {
-          html,
-          //\\
-          id, // number; // 2
-          position, // number; // 1
-          thread: threadId, // number; // 1
-          user, // string; // 'Puccio Bernini'
-          content, // string; // '...'
-          //\\
-          comment,
-        });
+        /* console.log('[CommentsDataRender:helpers:renderComment]', {
+         *   html,
+         *   //\\
+         *   id, // number; // 2
+         *   position, // number; // 1
+         *   thread: threadId, // number; // 1
+         *   user, // string; // 'Puccio Bernini'
+         *   content, // string; // '...'
+         *   //\\
+         *   comment,
+         * });
+         */
         return html;
       },
 
@@ -187,11 +189,12 @@ modules.define(
         // TODO: Use some filters?
         const comments = helpers.getCommentsForThread(threadId);
         const commentsHtml = comments.map(helpers.renderComment).join('\n');
-        console.log('[CommentsDataRender:helpers:renderThreadCommentsContent]', {
-          commentsHtml,
-          comments,
-          threadId,
-        });
+        /* console.log('[CommentsDataRender:helpers:renderThreadCommentsContent]', {
+         *   commentsHtml,
+         *   comments,
+         *   threadId,
+         * });
+         */
         return commentsHtml;
       },
     };
@@ -227,12 +230,13 @@ modules.define(
         const commentsNode = document.getElementById(commentsNodeId);
         // Else render the comments list...
         const commentsContent = helpers.renderThreadCommentsContent(threadId);
-        console.log('[CommentsDataRender:updateThreadComments]', {
-          commentsContent,
-          threadId,
-          commentsNodeId,
-          commentsNode,
-        });
+        /* console.log('[CommentsDataRender:updateThreadComments]', {
+         *   commentsContent,
+         *   threadId,
+         *   commentsNodeId,
+         *   commentsNode,
+         * });
+         */
         commentsNode.innerHTML = commentsContent;
         this.addTitleActionHandlersToNodeChildren(commentsNode);
         commentsNode.classList.toggle('ready', true);
@@ -258,15 +262,15 @@ modules.define(
        * @param {boolean} [opts.append] - Append data to the end of the table (default behavior: replace)
        */
       renderData(opts = {}) {
-        const { threads, comments } = CommentsData;
+        const { threads } = CommentsData;
         const threadsListNode = CommentsNodes.getThreadsListNode();
         const content = threads.map(helpers.renderThread).join('\n');
-        console.log('[CommentsDataRender:renderData]', {
-          threadsListNode,
-          content,
-          threads,
-          comments,
-        });
+        /* console.log('[CommentsDataRender:renderData]', {
+         *   threadsListNode,
+         *   content,
+         *   threads,
+         * });
+         */
         if (!opts.append) {
           // Replace data...
           threadsListNode.innerHTML = content; // Insert content just as raw html
@@ -310,12 +314,13 @@ modules.define(
           return `<option value="${value}"${isSelected ? ' selected' : ''}>${user}</option>`;
         });
         const hasUsers = !!options.length;
-        console.log('[CommentsDataRender:renderFilterByUserOptions]', {
-          options,
-          hasUsers,
-          users,
-          filterByUsersNode,
-        });
+        /* console.log('[CommentsDataRender:renderFilterByUserOptions]', {
+         *   options,
+         *   hasUsers,
+         *   users,
+         *   filterByUsersNode,
+         * });
+         */
         filterByUsersNode.innerHTML = options.join('\n');
         rootNode.classList.toggle('has-users', hasUsers);
       },
@@ -331,12 +336,13 @@ modules.define(
           return `<option value="${id}"${isSelected ? ' selected' : ''}>${processName}</option>`;
         });
         const hasProcesses = !!options.length;
-        console.log('[CommentsDataRender:renderFilterByProcessOptions]', {
-          options,
-          hasProcesses,
-          processIds,
-          filterByProcessesNode,
-        });
+        /* console.log('[CommentsDataRender:renderFilterByProcessOptions]', {
+         *   options,
+         *   hasProcesses,
+         *   processIds,
+         *   filterByProcessesNode,
+         * });
+         */
         filterByProcessesNode.innerHTML = options.join('\n');
         rootNode.classList.toggle('has-processes', hasProcesses);
       },
@@ -355,15 +361,18 @@ modules.define(
         const expandedCommentsNodes = threadsListNode.querySelectorAll(
           '.thread.expanded .comments',
         );
-        console.log('[CommentsDataRender:rerenderAllVisibleComments]', {
-          expandedCommentsNodes,
-        });
+        /*
+         * console.log('[CommentsDataRender:rerenderAllVisibleComments]', {
+         *   expandedCommentsNodes,
+         * });
+         */
         expandedCommentsNodes.forEach((commentsNode) => {
           const threadId = Number(commentsNode.getAttribute('data-for-thread-id'));
-          console.log('[CommentsDataRender:rerenderAllVisibleComments] iteration', {
-            commentsNode,
-            threadId,
-          });
+          /* console.log('[CommentsDataRender:rerenderAllVisibleComments] iteration', {
+           *   commentsNode,
+           *   threadId,
+           * });
+           */
           this.updateThreadComments(threadId);
         });
       },

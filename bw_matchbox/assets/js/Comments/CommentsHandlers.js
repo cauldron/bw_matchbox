@@ -29,28 +29,32 @@ modules.define(
       handleTitleActionClick(event) {
         event.preventDefault();
         event.stopPropagation();
-        const { currentTarget } = event;
-        const { id } = currentTarget;
-        console.log('[Comments:handleTitleActionClick]', id, {
-          id,
-          currentTarget,
-          event,
-        });
+        /* // DEBUG
+         * const { currentTarget } = event;
+         * const { id } = currentTarget;
+         * console.log('[Comments:handleTitleActionClick]', id, {
+         *   id,
+         *   currentTarget,
+         *   event,
+         * });
+         */
       },
 
       handleFilterByUserChange(node) {
         const values = helpers.getMultipleSelectValues(node);
-        console.log('[CommentsHandlers:handleFilterByUserChange]', {
-          values,
-        });
+        /* console.log('[CommentsHandlers:handleFilterByUserChange]', {
+         *   values,
+         * });
+         */
         CommentsStates.setFilterByUser(values);
       },
 
       handleFilterByProcessChange(node) {
         const values = helpers.getMultipleSelectValues(node).map(Number);
-        console.log('[CommentsHandlers:handleFilterByProcessChange]', {
-          values,
-        });
+        /* console.log('[CommentsHandlers:handleFilterByProcessChange]', {
+         *   values,
+         * });
+         */
         CommentsStates.setFilterByProcess(values);
       },
 

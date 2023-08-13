@@ -36,6 +36,7 @@ modules.define(
         if (!handlersList) {
           // Error if no event exist!
           const error = new Error('Trying to invoke absent event: ' + id);
+          // eslint-disable-next-line no-console
           console.warn('[CommentsEvents:invokeEvent]: warning', error);
           // throw error;
           return;

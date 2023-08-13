@@ -5,7 +5,6 @@ modules.define(
     'CommentsConstants',
     'CommentsData',
     'CommentsDataRender',
-    'CommentsHelpers',
     'CommentsPrepareLoadedData',
     'CommentsStates',
     'CommonHelpers',
@@ -16,7 +15,6 @@ modules.define(
     CommentsConstants,
     CommentsData,
     CommentsDataRender,
-    CommentsHelpers,
     CommentsPrepareLoadedData,
     CommentsStates,
     CommonHelpers,
@@ -39,11 +37,12 @@ modules.define(
         };
         const urlQuery = CommonHelpers.makeQuery(params, { addQuestionSymbol: true });
         const url = urlBase + urlQuery;
-        console.log('[CommentsLoader:loadComments]: start', {
-          url,
-          urlQuery,
-          params,
-        });
+        /* console.log('[CommentsLoader:loadComments]: start', {
+         *   url,
+         *   urlQuery,
+         *   params,
+         * });
+         */
         CommentsStates.setLoading(true);
         fetch(url)
           .then((res) => {
@@ -78,13 +77,14 @@ modules.define(
               total_threads: totalThreads,
             } = json;
             const hasData = Array.isArray(comments) && !!comments.length;
-            console.log('[CommentsLoader:loadComments]: got comments', {
-              json,
-              comments,
-              threads,
-              totalThreads,
-              totalComments,
-            });
+            /* console.log('[CommentsLoader:loadComments]: got comments', {
+             *   json,
+             *   comments,
+             *   threads,
+             *   totalThreads,
+             *   totalComments,
+             * });
+             */
             // Store data...
             CommentsData.comments = comments;
             CommentsData.threads = threads;
