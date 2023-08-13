@@ -10,7 +10,6 @@ class CommentThread(peewee.Model):
     name = peewee.TextField(null=False)
     created = peewee.DateTimeField(default=dt.utcnow)
     modified = peewee.DateTimeField(default=dt.utcnow)
-
     process_id = peewee.IntegerField(null=False)
 
     def __len__(self):

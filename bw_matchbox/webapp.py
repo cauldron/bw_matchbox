@@ -13,7 +13,7 @@ import whoosh
 from bw2analyzer import PageRank
 from bw2data.backends import ActivityDataset as AD
 from flask_httpauth import HTTPBasicAuth
-from peewee import fn
+from peewee import DoesNotExist, IntegrityError, fn
 from werkzeug.security import check_password_hash, generate_password_hash
 
 from .comments import Comment, CommentThread
@@ -196,9 +196,99 @@ def format_process(obj_id):
     }
 
 
-@matchbox_app.route("/comments-api", methods=["GET"])
+@matchbox_app.route("/comments/resolve-thread", methods=["POST"])
 @auth.login_required
-def comments_api():
+def comments_resolve_thread():
+    """Change `resolved` state of a comment thread. Data should be a JSON-encoded
+    POST request:
+
+    ```json
+    {
+        'thread': integer,
+        'resolved': boolean
+    }
+    ```
+    """
+    get_config()
+    content = flask.request.get_json()
+    try:
+        thread = CommentThread.get(id=int(content["thread"]))
+        thread["resolved"] = content["resolved"]
+        thread.save()
+        return flask.jsonify(content["resolved"])
+    except (DoesNotExist, KeyError):
+        flask.abort(400)
+
+
+@matchbox_app.route("/comments/create-thread", methods=["POST"])
+@auth.login_required
+def comments_create_thread():
+    """Create a new comment thread. Must also include first comment.
+
+    Data should be a JSON-encoded POST request:
+
+    ```json
+    {
+        'thread': {
+            'name': string,
+            'process_id': integer,
+        },
+        'comment': {
+            'content': string,
+            'user': string,
+        }
+    }
+    ```
+    """
+    get_config()
+    content = flask.request.get_json()
+    try:
+        thread = CommentThread.create(
+            name=content["name"], process_id=content["process_id"]
+        )
+        Comment.create(thread=thread, content=content["content"], user=content["user"])
+        return flask.redirect(flask.url_for("/comments/read", thread=thread.id))
+    except (IntegrityError, KeyError):
+        flask.abort(400)
+
+
+@matchbox_app.route("/comments/create-comment", methods=["POST"])
+@auth.login_required
+def comments_create_comment():
+    """Create a new comment on existing thread.
+
+    Data should be a JSON-encoded POST request:
+
+    ```json
+    {
+        'thread': integer,
+        'content': string,
+        'user': string
+    }
+    ```
+    """
+    get_config()
+    content = flask.request.get_json()
+    try:
+        thread = CommentThread.get(id=int(content["thread"]))
+        comment = Comment.create(
+            thread=thread, content=content["content"], user=content["user"]
+        )
+        return flask.jsonify(
+            {
+                "thread": comment.thread_id,
+                "content": comment.content,
+                "user": comment.user,
+                "position": comment.position,
+            }
+        )
+    except (DoesNotExist, KeyError):
+        flask.abort(400)
+
+
+@matchbox_app.route("/comments/read", methods=["GET"])
+@auth.login_required
+def comments_read():
     """
     API to populate dynamic comments display.
 
