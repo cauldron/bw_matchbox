@@ -69,6 +69,7 @@ modules.define(
           isEmpty && 'empty',
           isExpanded && 'expanded',
           !isVisible && 'hidden',
+          resolved && 'resolved',
         ]
           .filter(Boolean)
           .join(' ');
@@ -111,8 +112,8 @@ modules.define(
                   <span class="info">(${info})</span>
                 </div>
                 <div class="title-actions">
-                  <a id="thread-answer" title="Add comment"><i class="fa-solid fa-comment"></i></a>
-                  <a id="thread-resolve" title="Mark as resolved"><i class="fa-solid fa-lock"></i></a>
+                  <a id="threadAddComment" title="Add comment"><i class="fa-solid fa-comment"></i></a>
+                  <a id="threadResolve" title="Mark resolved/open"><i class="is-resolved fa-solid fa-lock"></i><i class="not-resolved fa-solid fa-lock-open"></i></a>
                 </div>
               </div>
             </div>

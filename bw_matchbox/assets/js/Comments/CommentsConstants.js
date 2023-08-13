@@ -27,6 +27,7 @@ modules.define(
 
       /** Api base */
       readCommentsApiUrl: '/comments/read',
+      resolveThreadApiUrl: '/comments/resolve-thread',
 
       /** Intl.DateTimeFormat parameters... */
       dateTimeFormatLocale: 'en-GB',

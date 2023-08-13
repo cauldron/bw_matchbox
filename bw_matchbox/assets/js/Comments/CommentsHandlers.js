@@ -2,21 +2,136 @@ modules.define(
   'CommentsHandlers',
   [
     // Required modules...
+    'CommonHelpers',
     'CommentsData',
     'CommentsDataRender',
     'CommentsStates',
     'CommentsHelpers',
     'CommentsNodes',
+    'CommentsConstants',
   ],
   function provide_CommentsHandlers(
     provide,
     // Resolved modules...
+    CommonHelpers,
     CommentsData,
     CommentsDataRender,
     CommentsStates,
     CommentsHelpers,
     CommentsNodes,
+    CommentsConstants,
   ) {
+    const apiHandlers = {
+      threadAddComment(params) {
+        console.log('[CommentsHandlers:apiHandlers:threadAddComment]', {
+          params,
+        });
+        debugger;
+      },
+
+      threadResolve(params) {
+        const { resolveThreadApiUrl: urlBase } = CommentsConstants;
+        const { threadId } = params;
+        const { threadsHash } = CommentsData;
+        const thread = threadsHash[threadId];
+        const { resolved: currResolved } = thread;
+        const resolved = !currResolved;
+        const requestParams = {
+          /* // @matchbox_app.route("/comments/resolve-thread", methods=["POST"])
+           * 'thread': integer,
+           * 'resolved': boolean
+           */
+          thread: threadId,
+          resolved,
+        };
+        const fetchParams = {
+          headers: {
+            Accept: 'application/json',
+            'Content-Type': 'application/json',
+          },
+          method: 'POST',
+          body: JSON.stringify(requestParams),
+        };
+        // const urlQuery = CommonHelpers.makeQuery(requestParams, { addQuestionSymbol: true });
+        const url = urlBase; // + urlQuery;
+        console.log('[CommentsHandlers:apiHandlers:threadResolve]', {
+          resolved,
+          currResolved,
+          threadId,
+          thread,
+          params,
+          threadsHash,
+          fetchParams,
+          requestParams,
+          urlBase,
+          url,
+        });
+        debugger;
+        CommentsStates.setLoading(true);
+        fetch(url, fetchParams)
+          .then((res) => {
+            const { ok, status, statusText } = res;
+            if (!ok) {
+              // Something went wrong?
+              const reason =
+                [statusText, status && 'status: ' + status].filter(Boolean).join(', ') ||
+                'Unknown error';
+              const error = new Error('Data loading error: ' + reason);
+              // eslint-disable-next-line no-console
+              console.error('[CommentsHandlers:apiHandlers:threadResolve]: error (on then)', {
+                reason,
+                res,
+                url,
+                params,
+                urlBase,
+              });
+              // eslint-disable-next-line no-debugger
+              debugger;
+              throw error;
+            }
+            // All is ok...
+            return res.json();
+          })
+          .then((json) => {
+            console.log('[CommentsHandlers:apiHandlers:threadResolve]: done', {
+              json,
+            });
+            debugger;
+            // // Update total comments number...
+            // CommentsStates.setTotalCommentsCount(totalComments);
+            // CommentsStates.setTotalThreadsCount(totalThreads);
+            // CommentsStates.setError(undefined); // Clear the error: all is ok
+            // CommentsStates.setHasData(CommentsData.hasData || hasData); // Update 'has data' flag
+            // // Prepare and store data...
+            // CommentsPrepareLoadedData.acceptAndPrepareData();
+            // CommentsPrepareLoadedData.makeDerivedData();
+            // // Render data...
+            // CommentsDataRender.renderData();
+            // CommentsDataRender.updateVisibleThreadsStatus();
+            // CommentsDataRender.renderDerivedFilters();
+          })
+          .catch((error) => {
+            // eslint-disable-next-line no-console
+            console.error('[CommentsHandlers:apiHandlers:threadResolve]: error (catched)', {
+              error,
+              url,
+              params,
+              urlBase,
+            });
+            // eslint-disable-next-line no-debugger
+            debugger;
+            // Store & display error...
+            CommentsStates.setError(error);
+          })
+          .finally(() => {
+            CommentsStates.setLoading(false);
+            /* // TODO: Update all the page dynamic elements?
+             * CommentsEvents.invokeEvent('updatePage');
+             */
+          });
+      },
+    };
+
     /** @exports CommentsHandlers
      */
     const CommentsHandlers = /** @lends CommentsHandlers */ {
@@ -25,15 +140,39 @@ modules.define(
       handleTitleActionClick(event) {
         event.preventDefault();
         event.stopPropagation();
-        /* // DEBUG
-         * const { currentTarget } = event;
-         * const { id } = currentTarget;
-         * console.log('[Comments:handleTitleActionClick]', id, {
-         *   id,
-         *   currentTarget,
-         *   event,
-         * });
-         */
+        const { currentTarget: node } = event;
+        const { id } = node;
+        const isThreadAction = id.startsWith('thread');
+        const threadNode = node.closest('.thread');
+        const threadId = Number(threadNode.getAttribute('data-thread-id'));
+        const params = {
+          node,
+          threadNode,
+          id,
+          threadId,
+        };
+        const func = apiHandlers[id];
+        try {
+          if (!func) {
+            const error = new Error('Cannot find api handler for id ' + id);
+            throw error;
+          }
+          console.log('[CommentsHandlers:handleTitleActionClick]', id, {
+            id,
+            func,
+            node,
+            event,
+            isThreadAction,
+            threadNode,
+            threadId,
+          });
+          func(params);
+        } catch (error) {
+          // eslint-disable-next-line no-console
+          console.error('[CommentsHandlers:handleTitleActionClick] error', error);
+          // eslint-disable-next-line no-debugger
+          debugger;
+        }
       },
 
       handleFilterByUserChange(node) {
