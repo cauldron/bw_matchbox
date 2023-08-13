@@ -34,6 +34,28 @@ modules.define(
         CommentsData.hasData = hasData;
       },
 
+      /**
+       * @param {string[]} values
+       */
+      setFilterByUser(values) {
+        console.log('[CommentsStates:setFilterByUser]', {
+          values,
+        });
+        CommentsData.filterByUsers = values;
+        CommentsDataRender.updateVisibleThreads();
+      },
+
+      /**
+       * @param {string[]} values
+       */
+      setFilterByProcess(values) {
+        console.log('[CommentsStates:setFilterByProcess]', {
+          values,
+        });
+        CommentsData.filterByProcesses = values;
+        CommentsDataRender.updateVisibleThreads();
+      },
+
       setFilterByState(value) {
         CommentsData.filterByState = value;
         CommentsDataRender.updateVisibleThreads();

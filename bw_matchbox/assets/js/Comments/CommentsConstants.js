@@ -7,6 +7,10 @@ modules.define(
     provide,
     // Resolved modules...
   ) {
+    // Determine environment...
+    const { host } = window.location;
+    const isDev = host === 'localhost:5000';
+
     // Define module...
 
     /* @desc Shared constants
@@ -14,8 +18,12 @@ modules.define(
     const CommentsConstants = {
       __id: 'CommentsConstants',
 
+      // Determine environment...
+      isDev,
+      isProd: !isDev,
+
       // DEBUG: useDebug -- specify debug mode. Don't use it for production!
-      useDebug: false,
+      useDebug: true && isDev,
 
       /** Api base */
       readCommentsApiUrl: '/comments/read',

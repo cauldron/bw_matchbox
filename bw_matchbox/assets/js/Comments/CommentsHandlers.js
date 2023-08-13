@@ -13,6 +13,14 @@ modules.define(
     CommentsDataRender,
     CommentsStates,
   ) {
+    /** Local helpers */
+    const helpers = {
+      getMultipleSelectValues(node) {
+        const options = Array.from(node.options);
+        return options.filter((item) => item.selected).map((item) => item.value);
+      },
+    };
+
     /** @exports CommentsHandlers
      */
     const CommentsHandlers = /** @lends CommentsHandlers */ {
@@ -30,11 +38,26 @@ modules.define(
         });
       },
 
+      handleFilterByUserChange(node) {
+        const values = helpers.getMultipleSelectValues(node);
+        console.log('[CommentsHandlers:handleFilterByUserChange]', {
+          values,
+        });
+        CommentsStates.setFilterByUser(values);
+      },
+
+      handleFilterByProcessChange(node) {
+        const values = helpers.getMultipleSelectValues(node).map(Number);
+        console.log('[CommentsHandlers:handleFilterByProcessChange]', {
+          values,
+        });
+        CommentsStates.setFilterByProcess(values);
+      },
+
       handleFilterByStateChange(node) {
         const { value } = node;
         /* console.log('[CommentsHandlers:handleFilterByStateChange]', {
          *   value,
-         *   // node,
          * });
          */
         CommentsStates.setFilterByState(value);

@@ -14,6 +14,7 @@
 <script src="{{ url_for('static', filename='js/Comments/CommentsHelpers.js') }}"></script>
 <script src="{{ url_for('static', filename='js/Comments/CommentsLoader.js') }}"></script>
 <script src="{{ url_for('static', filename='js/Comments/CommentsNodes.js') }}"></script>
+<script src="{{ url_for('static', filename='js/Comments/CommentsPrepareLoadedData.js') }}"></script>
 <script src="{{ url_for('static', filename='js/Comments/CommentsStates.js') }}"></script>
 <script src="{{ url_for('static', filename='js/Comments/CommentsThreadsHelpers.js') }}"></script>
 
@@ -38,15 +39,26 @@
     </h3>
   </div>
   <div class="filters">
-    <div class="filter">
+    <div id="filterItemByState" class="filter-item">
       <label for="filterByState">Resolved state:</label>
-      <select id="filterByState" onChange="Comments.handlers.handleFilterByStateChange(this)">
+      <select id="filterByState" size="5" onChange="Comments.handlers.handleFilterByStateChange(this)">
         <option value="none" selected>All</option>
         <option value="resolved">Resolved</option>
         <option value="open">Open</option>
       </select>
     </div>
-    <div class="filter">
+    <div id="filterItemByUsers" class="filter-item">
+      <label for="filterByUsers">Filter by user:</label>
+      <select id="filterByUsers" multiple onChange="Comments.handlers.handleFilterByUserChange(this)">
+      </select>
+    </div>
+    <div id="filterItemByProcesses" class="filter-item">
+      <label for="filterByProcesses">Filter by process:</label>
+      <select id="filterByProcesses" multiple onChange="Comments.handlers.handleFilterByProcessChange(this)">
+      </select>
+    </div>
+    <div id="filterItemResetAll" class="filter-item">
+      <label>&nbsp;</label>
       <button class="button-primary" onClick="Comments.handlers.handleResetFilters(this)">Reset all filters</button>
     </div>
     <div class="debug-info">
@@ -79,12 +91,14 @@
 </div>
 
 <script type="text/javascript">
-  modules.require('Comments', (Comments) => {
+  modules.require(['Comments', 'CommentsConstants'], (Comments, CommentsConstants) => {
+    const { useDebug } = CommentsConstants;
     // Initialize page data...
     const sharedParams = {
       base_url: '{{ base_url }}',
       role: '{{ config.role }}',
-      user: '{{ config.user }}',
+      user: /*DEBUG: To test local fake dataset */ useDebug ? 'Puccio Bernini' :
+        '{{ config.user }}',
     };
 
     // Export to global scope (to access from generated html code handlers).

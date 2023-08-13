@@ -10,6 +10,7 @@ modules.define(
     'CommentsHelpers',
     'CommentsLoader',
     'CommentsNodes',
+    'CommentsPrepareLoadedData',
     'CommentsStates',
     'CommentsThreadsHelpers',
   ],
@@ -25,6 +26,7 @@ modules.define(
     CommentsHelpers,
     CommentsLoader,
     CommentsNodes,
+    CommentsPrepareLoadedData,
     CommentsStates,
     CommentsThreadsHelpers,
     /* eslint-enable no-unused-vars */

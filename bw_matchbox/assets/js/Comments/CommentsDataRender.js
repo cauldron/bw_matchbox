@@ -44,11 +44,11 @@ modules.define(
       },
 
       /** renderThread
-       * @param {<TLocalThread>} thread
+       * @param {<TThread>} thread
        * @return {string} - HTML content
        */
       renderThread(thread) {
-        /** @type {<TLocalThread>} */
+        /** @type {<TThread>} */
         const {
           id: threadId,
           // created, // TDateStr, eg: 'Sat, 12 Aug 2023 12:36:08 GMT'
@@ -56,7 +56,7 @@ modules.define(
           name, // string, eg: 'Возмутиться кпсс гул'
           reporter, // string, eg: '阿部 篤司'
           resolved, // boolean, eg: false
-          // process, // TCommentProcess;
+          process, // TProcess;
         } = thread;
         const isVisible = CommentsThreadsHelpers.isThreadVisible(threadId);
         const commentsList = helpers.getCommentsForThread(threadId);
@@ -87,10 +87,12 @@ modules.define(
           ? helpers.renderThreadCommentsContent(threadId)
           : // DEBUG: Here should be empty data for the unexpanded thread comments...
             commentPositions.join(', ');
+        const processName = CommentsThreadsHelpers.createProcessName(process);
         const info = [
           reporter && `reporter: ${reporter}`,
           commentsCount && `comments: ${commentsCount}`,
           modifiedStr && `modified date: ${modifiedStr}`,
+          process && process.id && process.name && `process: ${processName}`,
           resolved ? 'resolved' : 'open',
         ]
           .filter(Boolean)
@@ -245,7 +247,7 @@ modules.define(
         }
       },
 
-      // TODO?
+      // TODO: Is it used?
       clearRenderedData() {
         const threadsListNode = CommentsNodes.getThreadsListNode();
         threadsListNode.replaceChildren();
@@ -296,6 +298,52 @@ modules.define(
           el.classList.toggle('ready', false);
           el.innerHTML = '';
         });
+      },
+
+      renderFilterByUserOptions() {
+        const rootNode = CommentsNodes.getRootNode();
+        const { users, filterByUsers } = CommentsData;
+        const filterByUsersNode = document.getElementById('filterByUsers');
+        const options = users.map((user) => {
+          const isSelected = filterByUsers.includes(user);
+          const value = CommonHelpers.quoteHtmlAttr(user);
+          return `<option value="${value}"${isSelected ? ' selected' : ''}>${user}</option>`;
+        });
+        const hasUsers = !!options.length;
+        console.log('[CommentsDataRender:renderFilterByUserOptions]', {
+          options,
+          hasUsers,
+          users,
+          filterByUsersNode,
+        });
+        filterByUsersNode.innerHTML = options.join('\n');
+        rootNode.classList.toggle('has-users', hasUsers);
+      },
+
+      renderFilterByProcessOptions() {
+        const rootNode = CommentsNodes.getRootNode();
+        const { processIds, processesHash, filterByProcesses } = CommentsData;
+        const filterByProcessesNode = document.getElementById('filterByProcesses');
+        const options = processIds.map((id) => {
+          const process = processesHash[id];
+          const processName = CommentsThreadsHelpers.createProcessName(process);
+          const isSelected = filterByProcesses.includes(id);
+          return `<option value="${id}"${isSelected ? ' selected' : ''}>${processName}</option>`;
+        });
+        const hasProcesses = !!options.length;
+        console.log('[CommentsDataRender:renderFilterByProcessOptions]', {
+          options,
+          hasProcesses,
+          processIds,
+          filterByProcessesNode,
+        });
+        filterByProcessesNode.innerHTML = options.join('\n');
+        rootNode.classList.toggle('has-processes', hasProcesses);
+      },
+
+      renderDerivedFilters() {
+        this.renderFilterByUserOptions();
+        this.renderFilterByProcessOptions();
       },
 
       /** Is it used? */
