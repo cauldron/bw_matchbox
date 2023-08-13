@@ -106,7 +106,7 @@ modules.define(
        */
       loadComments() {
         // const { sharedParams } = CommentsData;
-        const { commentsApiUrl: urlBase } = CommentsConstants;
+        const { readCommentsApiUrl: urlBase } = CommentsConstants;
         const params = {
           // user, // str. Username to filter by
           // process, // int. Proxy process ID

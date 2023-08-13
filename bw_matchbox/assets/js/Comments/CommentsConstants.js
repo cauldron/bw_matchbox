@@ -18,7 +18,7 @@ modules.define(
       useDebug: false,
 
       /** Api base */
-      commentsApiUrl: '/comments-api',
+      readCommentsApiUrl: '/comments/read',
 
       /** Intl.DateTimeFormat parameters... */
       dateTimeFormatLocale: 'en-GB',

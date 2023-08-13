@@ -65,12 +65,14 @@
   <div id="threads-list-empty" class="threads-list-empty">No data has loaded</div>
   <div id="threads-list" class="threads-list">Data...</div>
   <div class="bottom-actions">
+    {# // TODO: Is these actions required here?
     <div class="bottom-actions-links">
-      <a id="action-reload-random" onClick="Comments.clearAndReloadData(this)">Reload random data</a>
-      <a id="action-load-more" onClick="Comments.loadMoreData(this)">Load more<span id="available-records-info"></span></a>
-      <a id="action-clear-and-reload" onClick="Comments.clearAndReloadData(this)">Reload</a>
+      <a id="action-reload-random" onClick="Comments.handlers.clearAndReloadData(this)">Reload random data</a>
+      <a id="action-load-more" onClick="Comments.handlers.loadMoreData(this)">Load more<span id="available-records-info"></span></a>
+      <a id="action-clear-and-reload" onClick="Comments.handlers.clearAndReloadData(this)">Reload</a>
       <span id="show-total-comments-number">Loaded all the available comments (<span id="total-comments-number"></span>)</span>
     </div>
+    #}
     <div id="loader-splash" class="loader-splash full-cover"><div class="loader-spinner"></div></div>
   </div>
 
