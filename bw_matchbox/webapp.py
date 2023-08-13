@@ -213,7 +213,7 @@ def comments_resolve_thread():
     content = flask.request.get_json()
     try:
         thread = CommentThread.get(id=int(content["thread"]))
-        thread["resolved"] = content["resolved"]
+        thread.resolved = content["resolved"]
         thread.save()
         return flask.jsonify(content["resolved"])
     except (DoesNotExist, KeyError):
