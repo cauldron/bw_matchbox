@@ -155,6 +155,11 @@
 }
 
 /* Title actions */
+.comments-root .threads-list .thread .main-row .title-actions {
+  /* Adjust thread title actions block position */
+  margin-top: -2px;
+  margin-right: -2px;
+}
 .comments-root .threads-list .thread .title-actions {
   align-self: flex-start;
   display: flex;

@@ -23,23 +23,15 @@
 #}
 
 <div id="comments-root" class="comments-root container empty loading">
-  {# // TODO: Do we need `navigation` block here?
-  #}
   {% include 'navigation.html' %}
   <div class="common-page-header">
     <h3 class="title">
       Comments
-      {#
-      <div class="tools">
-        <div class="tools-wrapper">
-          <a class="tools-icon theme-primary" onClick="Comments.copyToClipboardHandler(this)" data-node-type="source" title="Copy markdown link to clipboard"><i class="fa-solid fa-copy"></i></a>
-        </div>
-      </div>
-      #}
+      {# // TODO: It's possible to have here `tools tools-wrapper tools-icon` elements #}
     </h3>
   </div>
   <div class="filters">
-    <div id="filterItemByState" class="filter-item">
+    <div id="filterItemByState" class="filter-item notByMyCommentThreads">
       <label for="filterByState">Resolved state:</label>
       <select id="filterByState" size="5" onChange="Comments.handlers.handleFilterByStateChange(this)">
         <option value="none" selected>All</option>
@@ -47,31 +39,32 @@
         <option value="open">Open</option>
       </select>
     </div>
-    <div id="filterItemByUsers" class="filter-item">
+    <div id="filterItemByUsers" class="filter-item notByMyCommentThreads">
       <label for="filterByUsers">Filter by user:</label>
       <select id="filterByUsers" multiple onChange="Comments.handlers.handleFilterByUserChange(this)">
       </select>
     </div>
-    <div id="filterItemByProcesses" class="filter-item">
+    <div id="filterItemByProcesses" class="filter-item notByMyCommentThreads">
       <label for="filterByProcesses">Filter by process:</label>
       <select id="filterByProcesses" multiple onChange="Comments.handlers.handleFilterByProcessChange(this)">
       </select>
     </div>
     <div id="filterActions" class="filter-item">
+      {# NOTE: Trying to align all the elements by the top emulating empty leading label.
+         TODO: Use special class like 'filter-item-without-label`.
+      #}
       <label>&nbsp;</label>
-      <button class="button-primary" onClick="Comments.handlers.handleFilterMyCommentThreads(this)">My comment threads</button>
-      <button class="button-regular" onClick="Comments.handlers.handleResetFilters(this)">Reset all filters</button>
+      <button id="filterByMyCommentThreads" onClick="Comments.handlers.handleFilterByMyCommentThreads(this)">
+        <i id="filterByMyCommentThreadsIcon" class="fa fa-check"></i>
+        My comment threads
+      </button>
+      <button id="resetFilters" onClick="Comments.handlers.handleResetFilters(this)">
+        Reset all filters
+      </button>
+      <button id="expandCollapseAll" onClick="Comments.handlers.handleExpandAllThreads(this)">
+        Expand/collapse all
+      </button>
     </div>
-    {# // Debug info
-    <div class="debug-info">
-      <div>+ Resolved state (no filter, resolved, open)</div>
-      <div>- Process (Can be a select element with multiple)</div>
-      <div>? Author (Again a select element)</div>
-      <div>? Participants</div>
-      <div>+ Reset</div>
-      <div>- My comment threads</div>
-    </div>
-    #}
   </div>
   <div id="comments-error" class="error">
     <!-- Error text comes here -->
@@ -80,14 +73,7 @@
   <div id="threads-list-empty" class="threads-list-empty">No avaialable comment threads</div>
   <div id="threads-list" class="threads-list">Data...</div>
   <div class="bottom-actions">
-    {# // TODO: Is these actions required here?
-    <div class="bottom-actions-links">
-      <a id="action-reload-random" onClick="Comments.handlers.clearAndReloadData(this)">Reload random data</a>
-      <a id="action-load-more" onClick="Comments.handlers.loadMoreData(this)">Load more<span id="available-records-info"></span></a>
-      <a id="action-clear-and-reload" onClick="Comments.handlers.clearAndReloadData(this)">Reload</a>
-      <span id="show-total-comments-number">Loaded all the available comments (<span id="total-comments-number"></span>)</span>
-    </div>
-    #}
+    {# // TODO: For example of `bottom-actions` interactive elements see processes-list (`index`) page. #}
     <div id="loader-splash" class="loader-splash full-cover"><div class="loader-spinner"></div></div>
   </div>
 

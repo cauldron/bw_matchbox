@@ -55,6 +55,8 @@ modules.define(
           : [],
       /** @type {string[]} */
       filterByProcesses: [],
+      /** @type {boolean} */
+      filterByMyCommentThreads: false,
     };
 
     /** @exports CommentsData
@@ -91,6 +93,8 @@ modules.define(
       filterByUsers: [...defaultFilters.filterByUsers],
       /** @type {string[]} */
       filterByProcesses: [...defaultFilters.filterByProcesses],
+      /** @type {boolean} */
+      filterByMyCommentThreads: defaultFilters.filterByMyCommentThreads,
 
       // Page state...
       totalComments: 0,

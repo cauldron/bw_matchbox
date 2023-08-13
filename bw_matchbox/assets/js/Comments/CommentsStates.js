@@ -78,6 +78,22 @@ modules.define(
         }
       },
 
+      /**
+       * @param {boolean} value
+       * @param {object} [opts]
+       * @param {boolean} [opts.omitUpdate] - Don't automatically state (eg: will be updated manually later).
+       */
+      setFilterByMyCommentThreads(value, opts = {}) {
+        CommentsData.filterByMyCommentThreads = value;
+        const filterByMyCommentThreadsNode = document.getElementById('filterByMyCommentThreads');
+        filterByMyCommentThreadsNode.classList.toggle('button-primary', !!value);
+        const rootNode = CommentsNodes.getRootNode();
+        rootNode.classList.toggle('filterByMyCommentThreads', !!value);
+        if (!opts.omitUpdate) {
+          CommentsDataRender.updateVisibleThreads();
+        }
+      },
+
       setTotalCommentsCount(totalComments) {
         CommentsData.totalComments = totalComments;
         /* // TODO?

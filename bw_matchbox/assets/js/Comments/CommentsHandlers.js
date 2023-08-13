@@ -6,6 +6,7 @@ modules.define(
     'CommentsDataRender',
     'CommentsStates',
     'CommentsHelpers',
+    'CommentsNodes',
   ],
   function provide_CommentsHandlers(
     provide,
@@ -14,6 +15,7 @@ modules.define(
     CommentsDataRender,
     CommentsStates,
     CommentsHelpers,
+    CommentsNodes,
   ) {
     /** @exports CommentsHandlers
      */
@@ -66,10 +68,10 @@ modules.define(
        * @param {boolean} [opts.omitUpdate] - Don't automatically state (eg: will be updated manually later).
        */
       resetFilterByState(opts = {}) {
-        const filterByState = document.getElementById('filterByState');
+        const filterByStateNode = document.getElementById('filterByState');
         const { defaultFilters } = CommentsData;
         const { filterByState: value } = defaultFilters;
-        filterByState.value = value;
+        filterByStateNode.value = value;
         CommentsStates.setFilterByState(value, opts);
       },
 
@@ -78,10 +80,10 @@ modules.define(
        * @param {boolean} [opts.omitUpdate] - Don't automatically state (eg: will be updated manually later).
        */
       resetFilterByUsers(opts = {}) {
-        const filterByUsers = document.getElementById('filterByUsers');
+        const filterByUsersNode = document.getElementById('filterByUsers');
         const { defaultFilters } = CommentsData;
         const { filterByUsers: values } = defaultFilters;
-        CommentsHelpers.setMultipleSelectValues(filterByUsers, values);
+        CommentsHelpers.setMultipleSelectValues(filterByUsersNode, values);
         CommentsStates.setFilterByUsers(values, opts);
       },
 
@@ -90,11 +92,21 @@ modules.define(
        * @param {boolean} [opts.omitUpdate] - Don't automatically state (eg: will be updated manually later).
        */
       resetFilterByProcesses(opts = {}) {
-        const filterByProcesses = document.getElementById('filterByProcesses');
+        const filterByProcessesNode = document.getElementById('filterByProcesses');
         const { defaultFilters } = CommentsData;
         const { filterByProcesses: values } = defaultFilters;
-        CommentsHelpers.setMultipleSelectValues(filterByProcesses, values);
+        CommentsHelpers.setMultipleSelectValues(filterByProcessesNode, values);
         CommentsStates.setFilterByProcesses(values, opts);
+      },
+
+      /** Reset `filterByMyCommentThreads` filter
+       * @param {object} [opts]
+       * @param {boolean} [opts.omitUpdate] - Don't automatically state (eg: will be updated manually later).
+       */
+      resetFilterByMyCommentThreads(opts = {}) {
+        const { defaultFilters } = CommentsData;
+        const { filterByMyCommentThreads: value } = defaultFilters;
+        CommentsStates.setFilterByMyCommentThreads(value, opts);
       },
 
       handleExpandThread(node) {
@@ -115,9 +127,47 @@ modules.define(
         threadEl.classList.toggle('expanded', setExpanded);
       },
 
-      handleFilterMyCommentThreads() {
-        console.log('[CommentsHandlers:handleFilterMyCommentThreads]');
-        debugger;
+      handleFilterByMyCommentThreads() {
+        const { filterByMyCommentThreads } = CommentsData;
+        CommentsStates.setFilterByMyCommentThreads(!filterByMyCommentThreads);
+      },
+
+      handleExpandAllThreads() {
+        const threadsListNode = CommentsNodes.getThreadsListNode();
+        // const threadNodes = threadsListNode.getElementsByClassName('thread');
+        const threadNodes = threadsListNode.querySelectorAll('.thread:not(.hidden)');
+        const threadNodesList = Array.from(threadNodes);
+        const allCount = threadNodesList.length;
+        const expandedThreads = threadNodesList.filter((node) =>
+          node.classList.contains('expanded'),
+        );
+        const expandedCount = expandedThreads.length;
+        const isCollapsed = !expandedCount;
+        const isExpanded = !isCollapsed && expandedCount === allCount;
+        const isSome = !isCollapsed && !isExpanded;
+        const isAll = !isSome;
+        const setExpanded = isAll ? !isExpanded : false;
+        /* console.log('[CommentsHandlers:handleExpandAllThreads]', {
+         *   threadsListNode,
+         *   threadNodes,
+         *   threadNodesList,
+         *   allCount,
+         *   expandedThreads,
+         *   expandedCount,
+         *   isCollapsed,
+         *   isExpanded,
+         *   isSome,
+         *   isAll,
+         *   setExpanded,
+         * });
+         */
+        threadNodesList.forEach((node) => {
+          if (setExpanded) {
+            const threadId = Number(node.getAttribute('data-thread-id'));
+            CommentsDataRender.ensureThreadCommentsReady(threadId);
+          }
+          node.classList.toggle('expanded', setExpanded);
+        });
       },
 
       /** Reset all the filters to default values
@@ -127,6 +177,7 @@ modules.define(
         this.resetFilterByState(commonOpts);
         this.resetFilterByUsers(commonOpts);
         this.resetFilterByProcesses(commonOpts);
+        this.resetFilterByMyCommentThreads(commonOpts);
         CommentsDataRender.updateVisibleThreads();
       },
 

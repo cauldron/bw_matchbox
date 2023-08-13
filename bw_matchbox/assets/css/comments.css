@@ -1,6 +1,21 @@
+/* stylelint-disable selector-id-pattern, selector-class-pattern */
+
 /* Root node */
 .comments-root {
   margin-bottom: 20px;
+}
+
+/* ByMyCommentThreads filter */
+.comments-root .notByMyCommentThreads {
+  transition: all var(--common-animation-time);
+}
+.comments-root.filterByMyCommentThreads .notByMyCommentThreads {
+  opacity: 0.5;
+  pointer-events: none;
+  cursor: default;
+}
+.comments-root:not(.filterByMyCommentThreads) #filterByMyCommentThreadsIcon {
+  display: none;
 }
 
 /* Empty state: hode some elements... */

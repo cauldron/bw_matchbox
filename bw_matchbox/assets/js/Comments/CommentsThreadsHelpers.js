@@ -28,30 +28,57 @@ modules.define(
        * @return {boolean} - Is thread visible?
        */
       isThreadVisible(threadId) {
-        const {
+        let {
+          // Those filters can be overrided if `filterByMyCommentThreads` has set
           filterByState,
           filterByUsers,
           filterByProcesses,
+        } = CommentsData;
+        const {
+          filterByMyCommentThreads, // NOTE: Should override other filters
           threadsHash,
           commentsByThreads,
           commentsHash,
+          sharedParams,
         } = CommentsData;
+        const { user } = sharedParams;
         const thread = threadsHash[threadId];
         const { resolved, process } = thread;
         /* console.log('[CommentsThreadsHelpers:isThreadVisible]', {
+         *   user,
+         *   sharedParams,
+         *   filterByState,
          *   filterByUsers,
          *   filterByProcesses,
+         *   filterByMyCommentThreads,
          * });
          */
-        // Filter with `filterByState`...
-        if (filterByState === 'resolved' && !resolved) {
-          return false;
+        if (filterByMyCommentThreads) {
+          // Filter for current user' and open threads
+          filterByState = 'open';
+          filterByUsers = [user];
+          filterByProcesses = undefined;
+          /* console.log('[CommentsThreadsHelpers:isThreadVisible] filterByMyCommentThreads', {
+           *   user,
+           *   sharedParams,
+           *   filterByState,
+           *   filterByUsers,
+           *   filterByProcesses,
+           *   filterByMyCommentThreads,
+           * });
+           */
         }
-        if (filterByState === 'open' && resolved) {
-          return false;
+        // Filter with `filterByState`...
+        if (filterByState) {
+          if (filterByState === 'resolved' && !resolved) {
+            return false;
+          }
+          if (filterByState === 'open' && resolved) {
+            return false;
+          }
         }
         // Filter with `filterByUsers`...
-        if (filterByUsers.length) {
+        if (Array.isArray(filterByUsers) && filterByUsers.length) {
           const commentIds = commentsByThreads[threadId];
           const commentUsersList = commentIds.map((userId) => commentsHash[userId].user);
           // TODO: Optimize search?
@@ -61,20 +88,12 @@ modules.define(
             })
             .filter(Boolean);
           const hasCommonUsers = !!commonUsers.length;
-          /* console.log('[CommentsThreadsHelpers:isThreadVisible]', {
-           *   hasCommonUsers,
-           *   commentUsersList,
-           *   commonUsers,
-           *   filterByUsers,
-           *   commentIds,
-           * });
-           */
           if (!hasCommonUsers) {
             return false;
           }
         }
         // Filter with `filterByProcesses`...
-        if (filterByProcesses.length) {
+        if (Array.isArray(filterByProcesses) && filterByProcesses.length) {
           if (!filterByProcesses.includes(process.id)) {
             return false;
           }
