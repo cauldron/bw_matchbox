@@ -57,9 +57,10 @@
       <select id="filterByProcesses" multiple onChange="Comments.handlers.handleFilterByProcessChange(this)">
       </select>
     </div>
-    <div id="filterItemResetAll" class="filter-item">
+    <div id="filterActions" class="filter-item">
       <label>&nbsp;</label>
-      <button class="button-primary" onClick="Comments.handlers.handleResetFilters(this)">Reset all filters</button>
+      <button class="button-primary" onClick="Comments.handlers.handleMyCommentThreads(this)">My comment threads</button>
+      <button class="button-regular" onClick="Comments.handlers.handleResetFilters(this)">Reset all filters</button>
     </div>
     <div class="debug-info">
       <div>+ Resolved state (no filter, resolved, open)</div>

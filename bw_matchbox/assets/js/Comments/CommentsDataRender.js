@@ -89,10 +89,10 @@ modules.define(
             commentPositions.join(', ');
         const processName = CommentsThreadsHelpers.createProcessName(process);
         const info = [
-          reporter && `reporter: ${reporter}`,
-          commentsCount && `comments: ${commentsCount}`,
-          modifiedStr && `modified date: ${modifiedStr}`,
-          process && process.id && process.name && `process: ${processName}`,
+          reporter && `<label>reporter:</label> ${reporter}`,
+          commentsCount && `<label>comments:</label> ${commentsCount}`,
+          modifiedStr && `<label>modified date:</label> ${modifiedStr}`,
+          process && process.id && process.name && `<label>process:</label> ${processName}`,
           resolved ? 'resolved' : 'open',
         ]
           .filter(Boolean)
@@ -100,7 +100,7 @@ modules.define(
         const content = `
           <div data-thread-id="${threadId}" id="thread-${threadId}" class="${className}">
             <div class="main-row" onClick="Comments.CommentsHandlers.handleExpandThread(this)">
-              <div class="expand-button-wrapper">
+              <div class="expand-button-wrapper" title="Expand/collapse comments">
                 <a class="expand-button">
                   <i class="fa-solid fa-chevron-right"></i>
                 </a>
@@ -111,8 +111,8 @@ modules.define(
                   <span class="info">(${info})</span>
                 </div>
                 <div class="title-actions">
-                  <a id="thread-answer" title="Answer"><i class="fa-regular fa-comment"></i></a>
-                  <a id="thread-resolve" title"Mark it as resolved"><i class="fa-solid fa-xmark"></i></a>
+                  <a id="thread-answer" title="Add comment"><i class="fa-solid fa-comment"></i></a>
+                  <a id="thread-resolve" title="Mark as resolved"><i class="fa-solid fa-lock"></i></a>
                 </div>
               </div>
             </div>
@@ -157,12 +157,14 @@ modules.define(
           >
             <div class="title">
               <div class="title-text">
-                <span class="user">${user}</span>
+                <span class="name">${user}</span>
               </div>
+              <!-- // UNUSED: Actions for particular comments.
               <div class="title-actions">
                 <a id="comment-answer" title="Answer"><i class="fa-regular fa-comment"></i></a>
-                <a id="comment-resolve" title"Mark it as resolved"><i class="fa-solid fa-xmark"></i></a>
+                <a id="comment-resolve" title="Mark it as resolved"><i class="fa-solid fa-xmark"></i></a>
               </div>
+              -->
             </div>
             <div class="content">
               ${content}

@@ -12,6 +12,7 @@
 .comments-root .filters button {
   margin: 0;
   margin-bottom: 5px;
+  display: block;
 }
 
 .comments-root .filters label {
@@ -42,6 +43,11 @@
 .comments-root .filters .debug-info {
   width: 100%;
   flex: 0 0 100%;
+}
+
+/* Customize fiters' elements */
+.comments-root .filters #filterActions > * {
+  width: 100%;
 }
 
 /* Show/hide respectively items */

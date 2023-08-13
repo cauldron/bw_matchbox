@@ -42,14 +42,17 @@ modules.define(
   ) {
     const { useDebug } = CommentsConstants;
 
+    const useFakeData = false;
+
     /** Default filter values... */
     const defaultFilters = {
       /** @type {'none' | 'resolved' | 'open'} */
       filterByState: 'none',
       /** @type {string[]} */
-      filterByUsers: /*DEBUG*/ useDebug
-        ? ['Puccio Bernini', 'Melissa Fisher'] // DEBUG: Test multiple selectors initalization
-        : [],
+      filterByUsers:
+        /*DEBUG*/ useFakeData && useDebug
+          ? ['Puccio Bernini', 'Melissa Fisher'] // DEBUG: Test multiple selectors initalization
+          : [],
       /** @type {string[]} */
       filterByProcesses: [],
     };
