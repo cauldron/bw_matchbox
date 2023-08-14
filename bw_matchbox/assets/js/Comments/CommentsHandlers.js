@@ -239,7 +239,7 @@ modules.define(
         // Check roles...
         if (currentRole !== 'editors' && currentRole !== 'reviewers') {
           CommonNotify.showError(
-            `This role (${currentRole}) hasn't allowed to resolve/open the threads`,
+            `This role (${currentRole}) hasn't allowed to add comments`,
           );
           return;
         }
