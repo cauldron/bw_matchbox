@@ -163,38 +163,43 @@ modules.define(
              * @param {<TComment>} comment
              */
             .then((comment) => {
-              /* // TODO: Construct updated date tag?
-               * const currDate = new Date();
-               * const currDateStr = currDate.toUTCString();
-               */
-              // // Update data...
-              // thread.resolved = resolved;
-              // thread.modified = currDateStr;
+              const { id: commentId } = comment;
+              const { comments, threads, commentsHash, commentsByThreads } = CommentsData;
+              // Update thread modified date (manually!)
+              const currDate = new Date();
+              const currDateStr = currDate.toUTCString();
+              // Update data...
+              thread.modified = currDateStr;
+              // Add comment to list (`comments`) and update hashes (`commentsByThreads`) ...
+              comments.push(comment);
+              commentsByThreads[threadId].push(commentId);
+              commentsHash[commentId] = comment;
+              // Sort comments...
+              comments.sort(CommentsHelpers.sortCommentsCompare);
+              CommentsHelpers.sortThreads(threads);
               // Update content...
               const threadTitleTextNode = threadNode.querySelector('.title-text');
               const threadTitleTextContent =
                 CommentsDataRender.helpers.createThreadTitleTextContent(thread);
               console.log('[CommentsHandlers:apiHandlers:threadAddCommentRequest]: done', {
+                commentId,
+                comment,
+                commentsHash,
+                commentsByThreads,
                 thread,
+                threadId,
                 // currDate,
                 // currDateStr,
                 threadTitleTextNode,
                 threadTitleTextContent,
-                comment,
               });
-              debugger;
-              // TODO: Add comment to list (`comments`) and update hashes (`commentsByThreads`) ...
-              // TODO: Sort comments...
-              // ToDO: Rerender comments...
               // Update data & elements' states...
               threadTitleTextNode.innerHTML = threadTitleTextContent;
-              // // Update thread node class...
-              // threadNode.classList.toggle('resolved', resolved);
-              // Update/re-render data...
               // CommentsDataRender.renderData();
+              CommentsDataRender.updateThreadComments(threadId);
               CommentsDataRender.updateVisibleThreads();
               // Show noitification...
-              CommonNotify.showSuccess('Thread data successfully updated');
+              CommonNotify.showSuccess('Comment successfully added');
             })
             .catch((error) => {
               // eslint-disable-next-line no-console
