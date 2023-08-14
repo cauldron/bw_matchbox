@@ -23,6 +23,29 @@ modules.define(
         return `${name} #${id}`;
       },
 
+      /** Filter visible comment ids
+       * @param {TCommentId} commentId
+       * @return {boolean} - Is comment visible?
+       */
+      isCommentVisible(commentId) {
+        /* // TODO: Tho hide some comments (here we hide comment for 'MyCommentThreads' filter
+         * const {
+         *   filterByMyCommentThreads, // NOTE: Should override other filters
+         *   sharedParams,
+         *   commentsHash,
+         * } = CommentsData;
+         * if (filterByMyCommentThreads) {
+         *   const { currentUser } = sharedParams;
+         *   const comment = commentsHash[commentId];
+         *   const { user } = comment;
+         *   if (user !== currentUser) {
+         *     return false;
+         *   }
+         * }
+         */
+        return true;
+      },
+
       /** Filter threads for current filters
        * @param {TThreadId} threadId
        * @return {boolean} - Is thread visible?

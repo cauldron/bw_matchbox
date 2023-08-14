@@ -33,6 +33,16 @@ modules.define(
         return commentsList;
       },
 
+      getVisibleCommentsForThread(threadId) {
+        const { commentsHash, commentsByThreads } = CommentsData;
+        const commentsByThreadsIds = commentsByThreads[threadId];
+        const visibleCommentIds = commentsByThreadsIds.filter(
+          CommentsThreadsHelpers.isCommentVisible,
+        );
+        const commentsList = visibleCommentIds.map((id) => commentsHash[id]);
+        return commentsList;
+      },
+
       getDateTimeFormatter() {
         if (!helpers.dateTimeFormatter) {
           helpers.dateTimeFormatter = new Intl.DateTimeFormat(
@@ -58,7 +68,7 @@ modules.define(
           process, // TProcess;
         } = thread;
         const isVisible = CommentsThreadsHelpers.isThreadVisible(threadId);
-        const commentsList = helpers.getCommentsForThread(threadId);
+        const commentsList = helpers.getVisibleCommentsForThread(threadId);
         const commentPositions = commentsList.map((comment) => comment.position);
         const commentsCount = commentsList.length;
         const isEmpty = !commentsCount;
@@ -194,7 +204,7 @@ modules.define(
       renderThreadCommentsContent(threadId) {
         // const { filterByState } = CommentsData;
         // TODO: Use some filters?
-        const comments = helpers.getCommentsForThread(threadId);
+        const comments = helpers.getVisibleCommentsForThread(threadId);
         const commentsHtml = comments.map(helpers.renderComment).join('\n');
         /* console.log('[CommentsDataRender:helpers:renderThreadCommentsContent]', {
          *   commentsHtml,
@@ -372,27 +382,24 @@ modules.define(
         this.renderFilterByProcessOptions();
       },
 
-      /** Is it used? */
+      /** Re-render all comments in visible and expanded threads */
       rerenderAllVisibleComments() {
         // Remove all hidden threads comments blocks.
         this.clearAllHiddenThreadsComments();
         // Find all expanded threads...
         const threadsListNode = CommentsNodes.getThreadsListNode();
-        const expandedCommentsNodes = threadsListNode.querySelectorAll(
-          '.thread.expanded .comments',
+        const visibleThreadNodes = threadsListNode.querySelectorAll(
+          '.thread:not(.hidden).expanded',
         );
-        /*
-         * console.log('[CommentsDataRender:rerenderAllVisibleComments]', {
-         *   expandedCommentsNodes,
-         * });
-         */
-        expandedCommentsNodes.forEach((commentsNode) => {
-          const threadId = Number(commentsNode.getAttribute('data-for-thread-id'));
-          /* console.log('[CommentsDataRender:rerenderAllVisibleComments] iteration', {
-           *   commentsNode,
-           *   threadId,
-           * });
-           */
+        console.log('[CommentsDataRender:rerenderAllVisibleComments]', {
+          visibleThreadNodes,
+        });
+        visibleThreadNodes.forEach((commentsNode) => {
+          const threadId = Number(commentsNode.getAttribute('data-thread-id'));
+          console.log('[CommentsDataRender:rerenderAllVisibleComments] iteration', {
+            commentsNode,
+            threadId,
+          });
           this.updateThreadComments(threadId);
         });
       },

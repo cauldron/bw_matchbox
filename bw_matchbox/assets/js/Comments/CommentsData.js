@@ -42,7 +42,8 @@ modules.define(
   ) {
     const { useDebug } = CommentsConstants;
 
-    const useFakeData = false; // DEBUG: Use fake data for tests
+    const useFakeData = true; // DEBUG: Use fake data for tests
+    const useFakeCurrentUser = useFakeData; // DEBUG: Use first of found users instead provided by page
 
     /** Default filter values... */
     const defaultFilters = {
@@ -66,6 +67,7 @@ modules.define(
 
       // DEBUG
       useFakeData,
+      useFakeCurrentUser,
 
       // Owner page's provided data...
       sharedParams: undefined,

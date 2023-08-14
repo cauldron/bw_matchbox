@@ -91,6 +91,7 @@ modules.define(
         rootNode.classList.toggle('filterByMyCommentThreads', !!value);
         if (!opts.omitUpdate) {
           CommentsDataRender.updateVisibleThreads();
+          CommentsDataRender.rerenderAllVisibleComments();
         }
       },
 
