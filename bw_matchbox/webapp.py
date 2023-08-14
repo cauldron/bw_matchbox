@@ -276,6 +276,7 @@ def comments_create_comment():
         )
         return flask.jsonify(
             {
+                "id": comment.id,
                 "thread": comment.thread_id,
                 "content": comment.content,
                 "user": comment.user,
