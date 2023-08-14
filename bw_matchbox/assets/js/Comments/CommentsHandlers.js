@@ -3,6 +3,7 @@ modules.define(
   [
     // Required modules...
     'CommonNotify',
+    'CommonModal',
     'CommentsData',
     'CommentsDataRender',
     'CommentsStates',
@@ -14,6 +15,7 @@ modules.define(
     provide,
     // Resolved modules...
     CommonNotify,
+    CommonModal,
     CommentsData,
     CommentsDataRender,
     CommentsStates,
@@ -30,12 +32,201 @@ modules.define(
      * }
      */
 
-    const apiHandlers = {
-      threadAddComment(params) {
-        console.log('[CommentsHandlers:apiHandlers:threadAddComment]', {
-          params,
+    const commentModal = {
+      getCommentModalContent() {
+        const content = `
+          <div class="comment-modal-form">
+            <label for="comment-modal-text">Comment</label>
+            <textarea class="u-full-width" id="comment-modal-text" name="comment-modal-text"></textarea>
+          </div>
+          <div class="comment-modal-actions">
+            <button class="button-primary" id="comment-modal-ok">Ok</button>
+            <button id="comment-modal-cancel">Cancel</button>
+          </div>
+        `;
+        return content;
+      },
+
+      /** promiseCommentModal -- Show dialog with editable comment text and wait for action
+       * @return {Promise}
+       */
+      promiseCommentModal() {
+        return new Promise((resolve, _reject) => {
+          const title = 'Enter comment text';
+          const content = this.getCommentModalContent();
+          let isOpened = true;
+          CommonModal.setModalContentId('comment-dialog-modal')
+            .setTitle(title)
+            .setModalWindowOptions({
+              autoHeight: true,
+              width: 'md',
+            })
+            .setModalContentOptions({
+              scrollable: true,
+              padded: true,
+            })
+            .setContent(content)
+            .onHide(() => {
+              // It will be called on modal close...
+              if (isOpened) {
+                isOpened = false;
+                // Don't proceed the operation!
+                resolve(false);
+              }
+            })
+            .showModal();
+          // Store comment value...
+          const okButtonEl = document.getElementById('comment-modal-ok');
+          const commentTextEl = document.getElementById('comment-modal-text');
+          commentTextEl.focus();
+          // TODO: Add handlers for modal actions
+          okButtonEl.addEventListener('click', () => {
+            if (isOpened) {
+              isOpened = false;
+              CommonModal.hideModal({ dontNotify: true });
+              // Success: proceed with comment text
+              const comment = commentTextEl.value;
+              const userAction = { comment, status: 'comment from promiseCommentModal' };
+              resolve(userAction);
+            }
+          });
+          document
+            .getElementById('comment-modal-cancel')
+            .addEventListener('click', CommonModal.boundHideModal);
         });
-        debugger;
+      },
+    };
+
+    const apiHandlers = {
+      threadAddCommentRequest(params, comment) {
+        const { createCommentApiUrl: urlBase } = CommentsConstants;
+        const { threadId, threadNode } = params;
+        const { threadsHash, sharedParams } = CommentsData;
+        const { currentUser } = sharedParams;
+        const thread = threadsHash[threadId];
+        const requestParams = {
+          /* // @matchbox_app.route("/comments/create-comment", methods=["POST"])
+           * 'thread': integer,
+           * 'content': string,
+           * 'user': string
+           */
+          thread: threadId,
+          user: currentUser,
+          content: comment,
+        };
+        const fetchParams = {
+          headers: {
+            Accept: 'application/json',
+            'Content-Type': 'application/json',
+          },
+          method: 'POST',
+          body: JSON.stringify(requestParams),
+        };
+        const url = urlBase;
+        console.log('[CommentsHandlers:apiHandlers:threadAddCommentRequest]', {
+          threadId,
+          thread,
+          params,
+          threadsHash,
+          fetchParams,
+          requestParams,
+          urlBase,
+          url,
+        });
+        CommentsStates.setLoading(true);
+        return (
+          fetch(url, fetchParams)
+            .then((res) => {
+              const { ok, status, statusText } = res;
+              if (!ok) {
+                // Something went wrong?
+                const reason =
+                  [statusText, status && 'status: ' + status].filter(Boolean).join(', ') ||
+                  'Unknown error';
+                const error = new Error('Data loading error: ' + reason);
+                // eslint-disable-next-line no-console
+                console.error('[CommentsHandlers:apiHandlers:threadAddCommentRequest]: on then', {
+                  reason,
+                  res,
+                  url,
+                  params,
+                  urlBase,
+                });
+                // eslint-disable-next-line no-debugger
+                debugger;
+                throw error;
+              }
+              // All is ok...
+              return res.json();
+            })
+            /**
+             * @param {<TComment>} comment
+             */
+            .then((comment) => {
+              /* // TODO: Construct updated date tag?
+               * const currDate = new Date();
+               * const currDateStr = currDate.toUTCString();
+               */
+              // // Update data...
+              // thread.resolved = resolved;
+              // thread.modified = currDateStr;
+              // Update content...
+              const threadTitleTextNode = threadNode.querySelector('.title-text');
+              const threadTitleTextContent =
+                CommentsDataRender.helpers.createThreadTitleTextContent(thread);
+              console.log('[CommentsHandlers:apiHandlers:threadAddCommentRequest]: done', {
+                thread,
+                // currDate,
+                // currDateStr,
+                threadTitleTextNode,
+                threadTitleTextContent,
+                comment,
+              });
+              debugger;
+              // TODO: Add comment to list (`comments`) and update hashes (`commentsByThreads`) ...
+              // TODO: Sort comments...
+              // ToDO: Rerender comments...
+              // Update data & elements' states...
+              threadTitleTextNode.innerHTML = threadTitleTextContent;
+              // // Update thread node class...
+              // threadNode.classList.toggle('resolved', resolved);
+              // Update/re-render data...
+              // CommentsDataRender.renderData();
+              CommentsDataRender.updateVisibleThreads();
+              // Show noitification...
+              CommonNotify.showSuccess('Thread data successfully updated');
+            })
+            .catch((error) => {
+              // eslint-disable-next-line no-console
+              console.error('[CommentsHandlers:apiHandlers:threadAddCommentRequest]: catched', {
+                error,
+                url,
+                params,
+                urlBase,
+              });
+              // eslint-disable-next-line no-debugger
+              debugger;
+              // Store & display error...
+              CommentsStates.setError(error);
+              CommonNotify.showError(error);
+            })
+            .finally(() => {
+              CommentsStates.setLoading(false);
+            })
+        );
+      },
+
+      threadAddComment(params) {
+        // Show comment text form modal first and wait for user action...
+        commentModal.promiseCommentModal().then((userAction) => {
+          if (!userAction) {
+            // Comment edition canceled
+            return false;
+          }
+          // Make api request...
+          const { comment } = userAction;
+          return apiHandlers.threadAddCommentRequest(params, comment);
+        });
       },
 
       /** threadResolve -- Set resolved status for thread (called from `handleTitleActionClick` by literal id: `apiHandlers[id]`)
@@ -147,6 +338,7 @@ modules.define(
             debugger;
             // Store & display error...
             CommentsStates.setError(error);
+            CommonNotify.showError(error);
           })
           .finally(() => {
             CommentsStates.setLoading(false);
