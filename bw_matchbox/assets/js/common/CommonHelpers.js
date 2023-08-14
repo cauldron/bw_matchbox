@@ -10,6 +10,27 @@ modules.define(
     // Define module...
 
     const CommonHelpers = {
+      /** Compare two arrays with scalar (number, string, boolean) values
+       * @param {<number | string | boolean>[]} a1
+       * @param {<number | string | boolean>[]} a2
+       * @return {boolean}
+       */
+      compareArrays(a1, a2) {
+        if (!a1 || !a1) {
+          return a1 === a2;
+        }
+        if (a1.length !== a2.length) {
+          return false;
+        }
+        // Compare all the items...
+        for (let i = 0; i < a1.length; i++) {
+          if (a1[i] !== a2[i]) {
+            return false;
+          }
+        }
+        return true;
+      },
+
       /** runAsyncCallbacksSequentially -- Run all the promised callbacks sequentially, one after another
        * @param {<() => Promise>[]} callbacks - List of non-empty (!) callbacks
        * @return {Promise}

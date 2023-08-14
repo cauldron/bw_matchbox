@@ -48,7 +48,7 @@ modules.define(
     /** Default filter values... */
     const defaultParams = {
       /** @type {'name' | 'modifiedDate'} */
-      sortThreadsBy: 'name',
+      sortThreadsBy: 'modifiedDate',
 
       /** @type {'none' | 'resolved' | 'open'} */
       filterByState: 'none',

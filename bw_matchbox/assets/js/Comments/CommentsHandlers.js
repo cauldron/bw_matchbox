@@ -98,6 +98,11 @@ modules.define(
     };
 
     const apiHandlers = {
+      /** Actual comment api request
+       * @param {<TApiHandlerParams>} params
+       * @param {string} comment - Comment text to append
+       * @return {Promise}
+       */
       threadAddCommentRequest(params, comment) {
         const { createCommentApiUrl: urlBase } = CommentsConstants;
         const { threadId, threadNode } = params;
@@ -188,8 +193,8 @@ modules.define(
                 commentsByThreads,
                 thread,
                 threadId,
-                // currDate,
-                // currDateStr,
+                currDate,
+                currDateStr,
                 threadTitleTextNode,
                 threadTitleTextContent,
               });
@@ -198,6 +203,8 @@ modules.define(
               // CommentsDataRender.renderData();
               CommentsDataRender.updateThreadComments(threadId);
               CommentsDataRender.updateVisibleThreads();
+              CommentsHelpers.sortThreads(threads);
+              CommentsDataRender.reorderRenderedThreads();
               // Show noitification...
               CommonNotify.showSuccess('Comment successfully added');
             })
@@ -221,9 +228,13 @@ modules.define(
         );
       },
 
+      /** Start adding comment (show comment text dialog
+       * @param {<TApiHandlerParams>} params
+       * @return {Promise}
+       */
       threadAddComment(params) {
         // Show comment text form modal first and wait for user action...
-        commentModal.promiseCommentModal().then((userAction) => {
+        return commentModal.promiseCommentModal().then((userAction) => {
           if (!userAction) {
             // Comment edition canceled
             return false;

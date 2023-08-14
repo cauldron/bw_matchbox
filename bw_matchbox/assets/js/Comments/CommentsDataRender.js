@@ -325,6 +325,36 @@ modules.define(
         }
       },
 
+      reorderRenderedThreads() {
+        const { threads } = CommentsData;
+        const threadsListNode = CommentsNodes.getThreadsListNode();
+        const threadNodes = threadsListNode.children;
+        const threadNodesList = Array.from(threadNodes);
+        const actualIds = threads.map(({ id }) => id);
+        const renderedNodesHash = {};
+        const renderedIds = threadNodesList.map((node) => {
+          const id = Number(node.getAttribute('data-thread-id'));
+          renderedNodesHash[id] = node;
+          return id;
+        });
+        // TODO: Compare `actualIds` and `renderedIds`...
+        const isTheSameOrder = CommonHelpers.compareArrays(actualIds, renderedIds);
+        console.log('[CommentsDataRender:reorderRenderedThreads]', {
+          isTheSameOrder,
+          threads,
+          threadsListNode,
+          threadNodes,
+          threadNodesList,
+          actualIds,
+          renderedIds,
+        });
+        if (!isTheSameOrder) {
+          const sortedThreadNodesList = actualIds.map((id) => renderedNodesHash[id]);
+          // threadsListNode.innerHTML = '';
+          threadsListNode.replaceChildren.apply(threadsListNode, sortedThreadNodesList);
+        }
+      },
+
       /** clearAllHiddenThreadsComments -- Remove all rendered comments from hidden (non-expanded) threads */
       clearAllHiddenThreadsComments() {
         // const rootNode = CommentsNodes.getRootNode();
