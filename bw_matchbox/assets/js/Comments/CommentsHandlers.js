@@ -128,7 +128,7 @@ modules.define(
           body: JSON.stringify(requestParams),
         };
         const url = urlBase;
-        console.log('[CommentsHandlers:apiHandlers:threadAddCommentRequest]', {
+        console.log('[CommentsHandlers:apiHandlers:threadAddCommentRequest]: start', {
           threadId,
           thread,
           params,
@@ -274,7 +274,7 @@ modules.define(
         };
         // const urlQuery = CommonHelpers.makeQuery(requestParams, { addQuestionSymbol: true });
         const url = urlBase; // + urlQuery;
-        console.log('[CommentsHandlers:apiHandlers:threadResolve]', {
+        console.log('[CommentsHandlers:apiHandlers:threadResolve]: start', {
           resolved,
           currResolved,
           threadId,
@@ -372,10 +372,10 @@ modules.define(
         event.stopPropagation();
         const { currentTarget: node } = event;
         const { id: actionId } = node;
-        const isThreadAction = actionId.startsWith('thread');
+        // const isThreadAction = actionId.startsWith('thread');
         const threadNode = node.closest('.thread');
         const threadId = Number(threadNode.getAttribute('data-thread-id'));
-        /** @type {<TApiHandlerParams>} */
+        /* @param {<TApiHandlerParams>} params */
         const params = {
           node,
           threadNode,
@@ -388,15 +388,16 @@ modules.define(
             const error = new Error('Cannot find api handler for id ' + actionId);
             throw error;
           }
-          console.log('[CommentsHandlers:handleTitleActionClick]', actionId, {
-            actionId,
-            func,
-            node,
-            event,
-            isThreadAction,
-            threadNode,
-            threadId,
-          });
+          /* console.log('[CommentsHandlers:handleTitleActionClick]', actionId, {
+           *   actionId,
+           *   func,
+           *   node,
+           *   event,
+           *   // isThreadAction,
+           *   threadNode,
+           *   threadId,
+           * });
+           */
           func(params);
         } catch (error) {
           // eslint-disable-next-line no-console

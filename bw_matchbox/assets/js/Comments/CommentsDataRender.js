@@ -339,15 +339,16 @@ modules.define(
         });
         // TODO: Compare `actualIds` and `renderedIds`...
         const isTheSameOrder = CommonHelpers.compareArrays(actualIds, renderedIds);
-        console.log('[CommentsDataRender:reorderRenderedThreads]', {
-          isTheSameOrder,
-          threads,
-          threadsListNode,
-          threadNodes,
-          threadNodesList,
-          actualIds,
-          renderedIds,
-        });
+        /* console.log('[CommentsDataRender:reorderRenderedThreads]', {
+         *   isTheSameOrder,
+         *   threads,
+         *   threadsListNode,
+         *   threadNodes,
+         *   threadNodesList,
+         *   actualIds,
+         *   renderedIds,
+         * });
+         */
         if (!isTheSameOrder) {
           const sortedThreadNodesList = actualIds.map((id) => renderedNodesHash[id]);
           // threadsListNode.innerHTML = '';

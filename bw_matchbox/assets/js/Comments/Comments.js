@@ -90,11 +90,6 @@ modules.define(
         CommentsData.sharedParams = sharedParams;
         this.sharedParams = sharedParams;
 
-        /* console.log('[Comments:start]', {
-         *   sharedParams,
-         * });
-         */
-
         // Initialize all the modules...
         this.startAllModules();
 
