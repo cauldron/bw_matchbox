@@ -41,11 +41,11 @@ modules.define(
           commentsHash,
           sharedParams,
         } = CommentsData;
-        const { user } = sharedParams;
+        const { currentUser } = sharedParams;
         const thread = threadsHash[threadId];
         const { resolved, process } = thread;
         /* console.log('[CommentsThreadsHelpers:isThreadVisible]', {
-         *   user,
+         *   currentUser,
          *   sharedParams,
          *   filterByState,
          *   filterByUsers,
@@ -56,10 +56,10 @@ modules.define(
         if (filterByMyCommentThreads) {
           // Filter for current user' and open threads
           filterByState = 'open';
-          filterByUsers = [user];
+          filterByUsers = [currentUser];
           filterByProcesses = undefined;
           /* console.log('[CommentsThreadsHelpers:isThreadVisible] filterByMyCommentThreads', {
-           *   user,
+           *   currentUser,
            *   sharedParams,
            *   filterByState,
            *   filterByUsers,

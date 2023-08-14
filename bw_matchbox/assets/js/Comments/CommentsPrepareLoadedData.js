@@ -17,7 +17,7 @@ modules.define(
       __id: 'CommentsPrepareLoadedData',
 
       makeDerivedData() {
-        const { comments, threads } = CommentsData;
+        const { comments, threads, sharedParams, useFakeData } = CommentsData;
         /* console.log('[CommentsPrepareLoadedData:makeDerivedData]', {
          *   comments,
          *   threads,
@@ -45,6 +45,10 @@ modules.define(
          * });
          */
         CommentsData.users = users;
+        // DEBUG: Set first given user as current user
+        if (useFakeData) {
+          sharedParams.currentUser = users[0];
+        }
         CommentsData.processesHash = processesHash;
         CommentsData.processIds = processIds;
       },

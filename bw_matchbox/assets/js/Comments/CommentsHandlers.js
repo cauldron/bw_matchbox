@@ -2,7 +2,7 @@ modules.define(
   'CommentsHandlers',
   [
     // Required modules...
-    'CommonHelpers',
+    // 'CommonHelpers',
     'CommentsData',
     'CommentsDataRender',
     'CommentsStates',
@@ -13,7 +13,7 @@ modules.define(
   function provide_CommentsHandlers(
     provide,
     // Resolved modules...
-    CommonHelpers,
+    // CommonHelpers,
     CommentsData,
     CommentsDataRender,
     CommentsStates,
@@ -238,6 +238,11 @@ modules.define(
         CommentsStates.setFilterByProcesses(values, opts);
       },
 
+      handleFilterByMyCommentThreads() {
+        const { filterByMyCommentThreads } = CommentsData;
+        CommentsStates.setFilterByMyCommentThreads(!filterByMyCommentThreads);
+      },
+
       /** Reset `filterByMyCommentThreads` filter
        * @param {object} [opts]
        * @param {boolean} [opts.omitUpdate] - Don't automatically state (eg: will be updated manually later).
@@ -264,11 +269,6 @@ modules.define(
         }
         // Toggle `expanded` class name...
         threadEl.classList.toggle('expanded', setExpanded);
-      },
-
-      handleFilterByMyCommentThreads() {
-        const { filterByMyCommentThreads } = CommentsData;
-        CommentsStates.setFilterByMyCommentThreads(!filterByMyCommentThreads);
       },
 
       handleExpandAllThreads() {

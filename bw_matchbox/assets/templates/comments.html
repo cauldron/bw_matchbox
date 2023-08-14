@@ -83,18 +83,23 @@
   modules.require(['Comments', 'CommentsConstants'], (Comments, CommentsConstants) => {
     const { useDebug } = CommentsConstants;
     // Initialize page data...
-    const sharedParams = {
+    const sharedData = {
       base_url: '{{ base_url }}',
-      role: '{{ config.role }}',
-      user: /*DEBUG: To test local fake dataset */ useDebug ? 'Puccio Bernini' :
-        '{{ config.user }}',
+      currentRole: '{{ config.role }}',
+      // DEBUG: See updating of current user in `CommentsPrepareLoadedData:makeDerivedData` for debug mode
+      currentUser: '{{ config.user }}',
     };
+
+    /* // DEBUG
+     * console.log('[comments]', sharedData);
+     * debugger;
+     */
 
     // Export to global scope (to access from generated html code handlers).
     window.Comments = Comments;
 
     // Start core module...
-    Comments.start(sharedParams);
+    Comments.start(sharedData);
   });
 </script>
 {% include 'footer.html' %}

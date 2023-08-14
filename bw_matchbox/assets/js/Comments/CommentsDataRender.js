@@ -134,6 +134,8 @@ modules.define(
       },
 
       renderComment(comment) {
+        const { sharedParams } = CommentsData;
+        const { currentUser } = sharedParams;
         const {
           id, // number; // 2
           position, // number; // 1
@@ -141,6 +143,7 @@ modules.define(
           user, // string; // 'Puccio Bernini'
           content, // string; // '...'
         } = comment;
+        const isCurrentUser = user === currentUser;
         const className = [
           // prettier-ignore
           'comment',
@@ -159,6 +162,7 @@ modules.define(
             <div class="title">
               <div class="title-text">
                 <span class="name">${user}</span>
+                ${isCurrentUser ? '<span class="me">(me)</span>' : ''}
               </div>
               <!-- // UNUSED: Actions for particular comments.
               <div class="title-actions">
@@ -317,12 +321,17 @@ modules.define(
 
       renderFilterByUserOptions() {
         const rootNode = CommentsNodes.getRootNode();
-        const { users, filterByUsers } = CommentsData;
+        const { users, filterByUsers, sharedParams } = CommentsData;
+        const { currentUser } = sharedParams;
         const filterByUsersNode = document.getElementById('filterByUsers');
         const options = users.map((user) => {
           const isSelected = filterByUsers.includes(user);
           const value = CommonHelpers.quoteHtmlAttr(user);
-          return `<option value="${value}"${isSelected ? ' selected' : ''}>${user}</option>`;
+          let text = user;
+          if (user === currentUser) {
+            text += ' (me)';
+          }
+          return `<option value="${value}"${isSelected ? ' selected' : ''}>${text}</option>`;
         });
         const hasUsers = !!options.length;
         /* console.log('[CommentsDataRender:renderFilterByUserOptions]', {

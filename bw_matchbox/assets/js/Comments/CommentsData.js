@@ -64,6 +64,9 @@ modules.define(
     const CommentsData = /** @lends CommentsData */ {
       __id: 'CommentsData',
 
+      // DEBUG
+      useFakeData,
+
       // Owner page's provided data...
       sharedParams: undefined,
 
