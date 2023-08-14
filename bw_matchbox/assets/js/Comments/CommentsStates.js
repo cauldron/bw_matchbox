@@ -3,6 +3,7 @@ modules.define(
   [
     // Required modules...
     // 'CommentsConstants',
+    'CommentsHelpers',
     'CommentsData',
     'CommentsDataRender',
     'CommentsNodes',
@@ -11,6 +12,7 @@ modules.define(
     provide,
     // Resolved modules...
     // CommentsConstants,
+    CommentsHelpers,
     CommentsData,
     CommentsDataRender,
     CommentsNodes,
@@ -83,15 +85,53 @@ modules.define(
        * @param {object} [opts]
        * @param {boolean} [opts.omitUpdate] - Don't automatically state (eg: will be updated manually later).
        */
-      setFilterByMyCommentThreads(value, opts = {}) {
-        CommentsData.filterByMyCommentThreads = value;
-        const filterByMyCommentThreadsNode = document.getElementById('filterByMyCommentThreads');
-        filterByMyCommentThreadsNode.classList.toggle('button-primary', !!value);
+      setSortThreadsReversedChange(value, opts = {}) {
+        const { threads } = CommentsData;
+        CommentsData.sortThreadsReversed = value;
+        // Re-sort threads...
+        CommentsHelpers.sortThreads(threads);
+        /* // NOTE: Don't need to re-sort comments
+         * comments.sort(CommentsHelpers.sortCommentsCompare);
+         */
+        if (!opts.omitUpdate) {
+          // Re-render all threads...
+          CommentsDataRender.renderData();
+        }
+      },
+
+      /**
+       * @param {TFilterByState} value
+       * @param {object} [opts]
+       * @param {boolean} [opts.omitUpdate] - Don't automatically state (eg: will be updated manually later).
+       */
+      setSortThreadsByChange(value, opts = {}) {
+        const { threads } = CommentsData;
+        CommentsData.sortThreadsBy = value;
+        // Re-sort threads...
+        CommentsHelpers.sortThreads(threads);
+        /* // NOTE: Don't need to re-sort comments
+         * comments.sort(CommentsHelpers.sortCommentsCompare);
+         */
+        if (!opts.omitUpdate) {
+          // Re-render all threads...
+          CommentsDataRender.renderData();
+        }
+      },
+
+      /**
+       * @param {boolean} value
+       * @param {object} [opts]
+       * @param {boolean} [opts.omitUpdate] - Don't automatically state (eg: will be updated manually later).
+       */
+      setFilterByMyThreads(value, opts = {}) {
+        CommentsData.filterByMyThreads = value;
+        const filterByMyThreadsNode = document.getElementById('filterByMyThreads');
+        filterByMyThreadsNode.classList.toggle('button-primary', !!value);
         const rootNode = CommentsNodes.getRootNode();
-        rootNode.classList.toggle('filterByMyCommentThreads', !!value);
+        rootNode.classList.toggle('filterByMyThreads', !!value);
         if (!opts.omitUpdate) {
           CommentsDataRender.updateVisibleThreads();
-          CommentsDataRender.rerenderAllVisibleComments();
+          // CommentsDataRender.rerenderAllVisibleComments(); // Could be used if will filter and particular comments also
         }
       },
 

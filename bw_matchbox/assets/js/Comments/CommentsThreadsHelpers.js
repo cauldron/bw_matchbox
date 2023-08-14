@@ -27,14 +27,14 @@ modules.define(
        * @param {TCommentId} commentId
        * @return {boolean} - Is comment visible?
        */
-      isCommentVisible(commentId) {
-        /* // TODO: Tho hide some comments (here we hide comment for 'MyCommentThreads' filter
+      isCommentVisible(_commentId) {
+        /* // TODO: Tho hide some comments (here we hide comment for 'MyThreads' filter
          * const {
-         *   filterByMyCommentThreads, // NOTE: Should override other filters
+         *   filterByMyThreads, // NOTE: Should override other filters
          *   sharedParams,
          *   commentsHash,
          * } = CommentsData;
-         * if (filterByMyCommentThreads) {
+         * if (filterByMyThreads) {
          *   const { currentUser } = sharedParams;
          *   const comment = commentsHash[commentId];
          *   const { user } = comment;
@@ -52,13 +52,13 @@ modules.define(
        */
       isThreadVisible(threadId) {
         let {
-          // Those filters can be overrided if `filterByMyCommentThreads` has set
+          // Those filters can be overrided if `filterByMyThreads` has set
           filterByState,
           filterByUsers,
           filterByProcesses,
         } = CommentsData;
         const {
-          filterByMyCommentThreads, // NOTE: Should override other filters
+          filterByMyThreads, // NOTE: Should override other filters
           threadsHash,
           commentsByThreads,
           commentsHash,
@@ -73,21 +73,21 @@ modules.define(
          *   filterByState,
          *   filterByUsers,
          *   filterByProcesses,
-         *   filterByMyCommentThreads,
+         *   filterByMyThreads,
          * });
          */
-        if (filterByMyCommentThreads) {
+        if (filterByMyThreads) {
           // Filter for current user' and open threads
           filterByState = 'open';
           filterByUsers = [currentUser];
           filterByProcesses = undefined;
-          /* console.log('[CommentsThreadsHelpers:isThreadVisible] filterByMyCommentThreads', {
+          /* console.log('[CommentsThreadsHelpers:isThreadVisible] filterByMyThreads', {
            *   currentUser,
            *   sharedParams,
            *   filterByState,
            *   filterByUsers,
            *   filterByProcesses,
-           *   filterByMyCommentThreads,
+           *   filterByMyThreads,
            * });
            */
         }

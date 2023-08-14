@@ -202,14 +202,32 @@ modules.define(
         CommentsStates.setFilterByState(value);
       },
 
+      handleSortThreadsReversedChange(node) {
+        const { checked: value } = node;
+        /* console.log('[CommentsHandlers:handleSortThreadsChange]', {
+         *   value,
+         * });
+         */
+        CommentsStates.setSortThreadsReversedChange(value);
+      },
+
+      handleSortThreadsByChange(node) {
+        const { value } = node;
+        /* console.log('[CommentsHandlers:handleSortThreadsByChange]', {
+         *   value,
+         * });
+         */
+        CommentsStates.setSortThreadsByChange(value);
+      },
+
       /** Reset `filterByState` filter
        * @param {object} [opts]
        * @param {boolean} [opts.omitUpdate] - Don't automatically state (eg: will be updated manually later).
        */
       resetFilterByState(opts = {}) {
         const filterByStateNode = document.getElementById('filterByState');
-        const { defaultFilters } = CommentsData;
-        const { filterByState: value } = defaultFilters;
+        const { defaultParams } = CommentsData;
+        const { filterByState: value } = defaultParams;
         filterByStateNode.value = value;
         CommentsStates.setFilterByState(value, opts);
       },
@@ -220,8 +238,8 @@ modules.define(
        */
       resetFilterByUsers(opts = {}) {
         const filterByUsersNode = document.getElementById('filterByUsers');
-        const { defaultFilters } = CommentsData;
-        const { filterByUsers: values } = defaultFilters;
+        const { defaultParams } = CommentsData;
+        const { filterByUsers: values } = defaultParams;
         CommentsHelpers.setMultipleSelectValues(filterByUsersNode, values);
         CommentsStates.setFilterByUsers(values, opts);
       },
@@ -232,25 +250,25 @@ modules.define(
        */
       resetFilterByProcesses(opts = {}) {
         const filterByProcessesNode = document.getElementById('filterByProcesses');
-        const { defaultFilters } = CommentsData;
-        const { filterByProcesses: values } = defaultFilters;
+        const { defaultParams } = CommentsData;
+        const { filterByProcesses: values } = defaultParams;
         CommentsHelpers.setMultipleSelectValues(filterByProcessesNode, values);
         CommentsStates.setFilterByProcesses(values, opts);
       },
 
-      handleFilterByMyCommentThreads() {
-        const { filterByMyCommentThreads } = CommentsData;
-        CommentsStates.setFilterByMyCommentThreads(!filterByMyCommentThreads);
+      handleFilterByMyThreads() {
+        const { filterByMyThreads } = CommentsData;
+        CommentsStates.setFilterByMyThreads(!filterByMyThreads);
       },
 
-      /** Reset `filterByMyCommentThreads` filter
+      /** Reset `filterByMyThreads` filter
        * @param {object} [opts]
        * @param {boolean} [opts.omitUpdate] - Don't automatically state (eg: will be updated manually later).
        */
-      resetFilterByMyCommentThreads(opts = {}) {
-        const { defaultFilters } = CommentsData;
-        const { filterByMyCommentThreads: value } = defaultFilters;
-        CommentsStates.setFilterByMyCommentThreads(value, opts);
+      resetFilterByMyThreads(opts = {}) {
+        const { defaultParams } = CommentsData;
+        const { filterByMyThreads: value } = defaultParams;
+        CommentsStates.setFilterByMyThreads(value, opts);
       },
 
       handleExpandThread(node) {
@@ -316,7 +334,7 @@ modules.define(
         this.resetFilterByState(commonOpts);
         this.resetFilterByUsers(commonOpts);
         this.resetFilterByProcesses(commonOpts);
-        this.resetFilterByMyCommentThreads(commonOpts);
+        this.resetFilterByMyThreads(commonOpts);
         CommentsDataRender.updateVisibleThreads();
       },
 

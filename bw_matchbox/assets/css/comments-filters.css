@@ -20,6 +20,15 @@
   white-space: nowrap;
 }
 
+.comments-root .filters .filter-inline {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+}
+.comments-root .filters .filter-inline > * {
+  margin: 0;
+}
+
 /* Filters layout */
 .comments-root .filters {
   display: flex;
@@ -36,16 +45,17 @@
 .comments-root .filters select[multiple] {
   height: 10.5em;
 }
-.comments-root .filters select[size] option,
-.comments-root .filters select[multiple] option {
+.comments-root .filters select {
+  cursor: pointer;
+}
+.comments-root .filters select option {
   cursor: pointer;
   padding: 0.25em 8px;
   margin: 0.25em 0;
   border-radius: 4px;
   transition: all var(--common-animation-time);
 }
-.comments-root .filters select[size] option:not(:checked):hover,
-.comments-root .filters select[multiple] option:not(:checked):hover {
+.comments-root .filters select option:not(:checked):hover {
   background-color: #eee;
 }
 
@@ -60,7 +70,7 @@
 }
 
 /* Show/hide respectively items */
-.comments-root:not(.has-processes) .filters #filterItemByProcesses,
-.comments-root:not(.has-users) .filters #filterItemByUsers {
+.comments-root:not(.has-processes) .filters #filterByProcessesItem,
+.comments-root:not(.has-users) .filters #filterByUsersItem {
   display: none;
 }

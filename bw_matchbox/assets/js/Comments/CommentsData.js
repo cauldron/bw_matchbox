@@ -42,11 +42,14 @@ modules.define(
   ) {
     const { useDebug } = CommentsConstants;
 
-    const useFakeData = true; // DEBUG: Use fake data for tests
-    const useFakeCurrentUser = useFakeData; // DEBUG: Use first of found users instead provided by page
+    const useFakeData = useDebug && false; // DEBUG: Use fake data for tests
+    const useFakeCurrentUser = useDebug && true; // DEBUG: Use first of found users instead provided by page
 
     /** Default filter values... */
-    const defaultFilters = {
+    const defaultParams = {
+      /** @type {'name' | 'modifiedDate'} */
+      sortThreadsBy: 'name',
+
       /** @type {'none' | 'resolved' | 'open'} */
       filterByState: 'none',
       /** @type {string[]} */
@@ -57,7 +60,7 @@ modules.define(
       /** @type {string[]} */
       filterByProcesses: [],
       /** @type {boolean} */
-      filterByMyCommentThreads: false,
+      filterByMyThreads: false,
     };
 
     /** @exports CommentsData
@@ -87,19 +90,19 @@ modules.define(
       processesHash: {},
 
       // View options...
-      sortThreadsBy: 'modifiedDate',
-      reversedThreadsSorts: true,
+      sortThreadsBy: defaultParams.sortThreadsBy,
+      sortThreadsReversed: false,
 
-      defaultFilters,
+      defaultParams,
 
       // Filters...
-      filterByState: defaultFilters.filterByState, // 'none' 'resolved', 'open'
+      filterByState: defaultParams.filterByState, // 'none' 'resolved', 'open'
       /** @type {string[]} */
-      filterByUsers: [...defaultFilters.filterByUsers],
+      filterByUsers: [...defaultParams.filterByUsers],
       /** @type {string[]} */
-      filterByProcesses: [...defaultFilters.filterByProcesses],
+      filterByProcesses: [...defaultParams.filterByProcesses],
       /** @type {boolean} */
-      filterByMyCommentThreads: defaultFilters.filterByMyCommentThreads,
+      filterByMyThreads: defaultParams.filterByMyThreads,
 
       // Page state...
       totalComments: 0,

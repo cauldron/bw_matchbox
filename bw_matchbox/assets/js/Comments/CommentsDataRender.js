@@ -391,15 +391,17 @@ modules.define(
         const visibleThreadNodes = threadsListNode.querySelectorAll(
           '.thread:not(.hidden).expanded',
         );
-        console.log('[CommentsDataRender:rerenderAllVisibleComments]', {
-          visibleThreadNodes,
-        });
+        /* console.log('[CommentsDataRender:rerenderAllVisibleComments]', {
+         *   visibleThreadNodes,
+         * });
+         */
         visibleThreadNodes.forEach((commentsNode) => {
           const threadId = Number(commentsNode.getAttribute('data-thread-id'));
-          console.log('[CommentsDataRender:rerenderAllVisibleComments] iteration', {
-            commentsNode,
-            threadId,
-          });
+          /* console.log('[CommentsDataRender:rerenderAllVisibleComments] iteration', {
+           *   commentsNode,
+           *   threadId,
+           * });
+           */
           this.updateThreadComments(threadId);
         });
       },

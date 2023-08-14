@@ -62,7 +62,7 @@ modules.define(
        * @param {<TThread[]>} threads
        */
       sortThreads(threads) {
-        const { sortThreadsBy, reversedThreadsSorts } = CommentsData;
+        const { sortThreadsBy, sortThreadsReversed } = CommentsData;
         const opts = {
           key: sortThreadsBy,
           asDate: false,
@@ -74,7 +74,7 @@ modules.define(
           opts.key = sortThreadsBy.substring(0, sortThreadsBy.length - matchDate.length);
         }
         threads.sort(this.sortThreadsCompareWithOptions.bind(this, opts));
-        if (reversedThreadsSorts) {
+        if (sortThreadsReversed) {
           threads.reverse();
         }
       },

@@ -5,16 +5,16 @@
   margin-bottom: 20px;
 }
 
-/* ByMyCommentThreads filter */
-.comments-root .notByMyCommentThreads {
+/* ByMyThreads filter */
+.comments-root .notByMyThreads {
   transition: all var(--common-animation-time);
 }
-.comments-root.filterByMyCommentThreads .notByMyCommentThreads {
+.comments-root.filterByMyThreads .notByMyThreads {
   opacity: 0.5;
   pointer-events: none;
   cursor: default;
 }
-.comments-root:not(.filterByMyCommentThreads) #filterByMyCommentThreadsIcon {
+.comments-root:not(.filterByMyThreads) #filterByMyThreadsIcon {
   display: none;
 }
 
