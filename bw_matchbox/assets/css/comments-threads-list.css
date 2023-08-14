@@ -167,6 +167,11 @@
   margin-top: -2px;
   margin-right: -2px;
 }
+/* Disable some actions */
+.comments-root:not(.role-editors, .role-reviewers) .threads-list .thread .main-row .title-actions a#threadAddComment,
+.comments-root:not(.role-editors) .threads-list .thread .main-row .title-actions a#threadResolve {
+  display: none;
+}
 .comments-root .threads-list .thread .title-actions {
   align-self: flex-start;
   display: flex;

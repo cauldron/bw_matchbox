@@ -96,9 +96,6 @@
   color: var(--layout-theme-primary-color-dark1);
   cursor: pointer;
 }
-.comments-root .bottom-actions-links a + a::before {
-  /* display: inline-block; */
-}
 .comments-root .bottom-actions-links a:hover {
   text-decoration: underline;
 }

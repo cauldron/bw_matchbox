@@ -104,6 +104,7 @@ modules.define(
        * @return {Promise}
        */
       threadAddCommentRequest(params, comment) {
+        // TODO: Check roles for editors, reviewers?
         const { createCommentApiUrl: urlBase } = CommentsConstants;
         const { threadId, threadNode } = params;
         const { threadsHash, sharedParams } = CommentsData;
@@ -233,6 +234,15 @@ modules.define(
        * @return {Promise}
        */
       threadAddComment(params) {
+        const { sharedParams } = CommentsData;
+        const { currentRole } = sharedParams;
+        // Check roles...
+        if (currentRole !== 'editors' && currentRole !== 'reviewers') {
+          CommonNotify.showError(
+            `This role (${currentRole}) hasn't allowed to resolve/open the threads`,
+          );
+          return;
+        }
         // Show comment text form modal first and wait for user action...
         return commentModal.promiseCommentModal().then((userAction) => {
           if (!userAction) {
@@ -252,7 +262,15 @@ modules.define(
       threadResolve(params) {
         const { resolveThreadApiUrl: urlBase } = CommentsConstants;
         const { threadId, threadNode } = params;
-        const { threadsHash } = CommentsData;
+        const { threadsHash, sharedParams } = CommentsData;
+        const { currentRole } = sharedParams;
+        // Check roles...
+        if (currentRole !== 'editors') {
+          CommonNotify.showError(
+            `This role (${currentRole}) hasn't allowed to resolve/open the threads`,
+          );
+          return;
+        }
         const thread = threadsHash[threadId];
         const { resolved: currResolved } = thread;
         const resolved = !currResolved;
