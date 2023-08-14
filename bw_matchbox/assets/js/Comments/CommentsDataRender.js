@@ -53,11 +53,7 @@ modules.define(
         return helpers.dateTimeFormatter;
       },
 
-      /** renderThread
-       * @param {<TThread>} thread
-       * @return {string} - HTML content
-       */
-      renderThread(thread) {
+      createThreadTitleTextContent(thread) {
         const {
           id: threadId,
           // created, // TDateStr, eg: 'Sat, 12 Aug 2023 12:36:08 GMT'
@@ -66,6 +62,42 @@ modules.define(
           reporter, // string, eg: '阿部 篤司'
           resolved, // boolean, eg: false
           process, // TProcess;
+        } = thread;
+        const commentsList = helpers.getVisibleCommentsForThread(threadId);
+        const commentsCount = commentsList.length;
+        const modifiedDate = new Date(modified);
+        const dateTimeFormatter = helpers.getDateTimeFormatter();
+        const modifiedStr = dateTimeFormatter.format(modifiedDate);
+        const processName = CommentsThreadsHelpers.createProcessName(process);
+        const infoText = [
+          reporter && `<label>reporter:</label> ${reporter}`,
+          commentsCount && `<label>comments:</label> ${commentsCount}`,
+          modifiedStr && `<label>modified date:</label> ${modifiedStr}`,
+          process && process.id && process.name && `<label>process:</label> ${processName}`,
+          resolved ? 'resolved' : 'open',
+        ]
+          .filter(Boolean)
+          .join(', ');
+        const content = `
+            <span class="name">${name}</span>
+            <span class="info">(${infoText})</span>
+        `;
+        return content;
+      },
+
+      /** renderThread
+       * @param {<TThread>} thread
+       * @return {string} - HTML content
+       */
+      renderThread(thread) {
+        const {
+          id: threadId,
+          resolved, // boolean, eg: false
+          // created, // TDateStr, eg: 'Sat, 12 Aug 2023 12:36:08 GMT'
+          // modified, // TDateStr, eg: 'Sat, 12 Aug 2023 12:36:08 GMT'
+          // name, // string, eg: 'Возмутиться кпсс гул'
+          // reporter, // string, eg: '阿部 篤司'
+          // process, // TProcess;
         } = thread;
         const isVisible = CommentsThreadsHelpers.isThreadVisible(threadId);
         const commentsList = helpers.getVisibleCommentsForThread(threadId);
@@ -83,31 +115,12 @@ modules.define(
         ]
           .filter(Boolean)
           .join(' ');
-        const modifiedDate = new Date(modified);
-        const dateTimeFormatter = helpers.getDateTimeFormatter();
-        const modifiedStr = dateTimeFormatter.format(modifiedDate);
-        /* console.log('[CommentsDataRender:renderThread]', {
-         *   modifiedDate,
-         *   modifiedStr,
-         *   modified,
-         *   dateTimeFormatter,
-         * });
-         */
-        // TODO: Render actual comments if thread is expanded by default
+        // Render actual comments if thread is expanded by default...
         const commentsContent = isExpanded
           ? helpers.renderThreadCommentsContent(threadId)
           : // DEBUG: Here should be empty data for the unexpanded thread comments...
             commentPositions.join(', ');
-        const processName = CommentsThreadsHelpers.createProcessName(process);
-        const info = [
-          reporter && `<label>reporter:</label> ${reporter}`,
-          commentsCount && `<label>comments:</label> ${commentsCount}`,
-          modifiedStr && `<label>modified date:</label> ${modifiedStr}`,
-          process && process.id && process.name && `<label>process:</label> ${processName}`,
-          resolved ? 'resolved' : 'open',
-        ]
-          .filter(Boolean)
-          .join(', ');
+        const threadTitleTextContent = helpers.createThreadTitleTextContent(thread);
         const content = `
           <div data-thread-id="${threadId}" id="thread-${threadId}" class="${className}">
             <div class="main-row" onClick="Comments.CommentsHandlers.handleExpandThread(this)">
@@ -118,12 +131,11 @@ modules.define(
               </div>
               <div class="title">
                 <div class="title-text">
-                  <span class="name">${name}</span>
-                  <span class="info">(${info})</span>
+                  ${threadTitleTextContent}
                 </div>
                 <div class="title-actions">
                   <a id="threadAddComment" title="Add comment"><i class="fa-solid fa-comment"></i></a>
-                  <a id="threadResolve" title="Mark resolved/open"><i class="is-resolved fa-solid fa-lock"></i><i class="not-resolved fa-solid fa-lock-open"></i></a>
+                  <a id="threadResolve"><i class="is-resolved fa-solid fa-lock" title="Resolved (click to open)"></i><i class="not-resolved fa-solid fa-lock-open" title="Open (click to resolve)"></i></a>
                 </div>
               </div>
             </div>
@@ -220,6 +232,8 @@ modules.define(
      */
     const CommentsDataRender = {
       __id: 'CommentsDataRender',
+
+      helpers, // Expose helpers (TODO: Refactor to make it hidden?)
 
       renderError(error) {
         // TODO: Set css class for id="processes-list-root" --> error, update local state

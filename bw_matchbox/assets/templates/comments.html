@@ -1,5 +1,10 @@
 {% include 'header.html' %}
 
+{# Common dependencies... #}
+
+{% include 'common-modal.html' %}
+{% include 'common-notify.html' %}
+
 {# Module-specific dependencies... #}
 
 <link rel="stylesheet" href="{{ url_for('static', filename='css/comments.css') }}">

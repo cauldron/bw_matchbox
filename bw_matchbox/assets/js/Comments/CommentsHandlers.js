@@ -2,7 +2,7 @@ modules.define(
   'CommentsHandlers',
   [
     // Required modules...
-    // 'CommonHelpers',
+    'CommonNotify',
     'CommentsData',
     'CommentsDataRender',
     'CommentsStates',
@@ -13,7 +13,7 @@ modules.define(
   function provide_CommentsHandlers(
     provide,
     // Resolved modules...
-    // CommonHelpers,
+    CommonNotify,
     CommentsData,
     CommentsDataRender,
     CommentsStates,
@@ -21,6 +21,15 @@ modules.define(
     CommentsNodes,
     CommentsConstants,
   ) {
+    /* // Types (TS):
+     * interface TApiHandlerParams {
+     *   actionId: string;
+     *   threadId: ThreadId;
+     *   node: HTMLLinkElement;
+     *   threadNode: HTMLDivElement;
+     * }
+     */
+
     const apiHandlers = {
       threadAddComment(params) {
         console.log('[CommentsHandlers:apiHandlers:threadAddComment]', {
@@ -29,9 +38,13 @@ modules.define(
         debugger;
       },
 
+      /** threadResolve -- Set resolved status for thread (called from `handleTitleActionClick` by literal id: `apiHandlers[id]`)
+       * @param {<TApiHandlerParams>} params
+       * @return {Promise}
+       */
       threadResolve(params) {
         const { resolveThreadApiUrl: urlBase } = CommentsConstants;
-        const { threadId } = params;
+        const { threadId, threadNode } = params;
         const { threadsHash } = CommentsData;
         const thread = threadsHash[threadId];
         const { resolved: currResolved } = thread;
@@ -66,9 +79,8 @@ modules.define(
           urlBase,
           url,
         });
-        debugger;
         CommentsStates.setLoading(true);
-        fetch(url, fetchParams)
+        return fetch(url, fetchParams)
           .then((res) => {
             const { ok, status, statusText } = res;
             if (!ok) {
@@ -93,22 +105,35 @@ modules.define(
             return res.json();
           })
           .then((json) => {
+            /* // TODO: Construct updated date tag?
+             * const currDate = new Date();
+             * const currDateStr = currDate.toUTCString();
+             */
+            // Update data...
+            thread.resolved = resolved;
+            // thread.modified = currDateStr;
+            // Update content...
+            const threadTitleTextNode = threadNode.querySelector('.title-text');
+            const threadTitleTextContent =
+              CommentsDataRender.helpers.createThreadTitleTextContent(thread);
             console.log('[CommentsHandlers:apiHandlers:threadResolve]: done', {
+              resolved,
+              thread,
+              // currDate,
+              // currDateStr,
+              threadTitleTextNode,
+              threadTitleTextContent,
               json,
             });
-            debugger;
-            // // Update total comments number...
-            // CommentsStates.setTotalCommentsCount(totalComments);
-            // CommentsStates.setTotalThreadsCount(totalThreads);
-            // CommentsStates.setError(undefined); // Clear the error: all is ok
-            // CommentsStates.setHasData(CommentsData.hasData || hasData); // Update 'has data' flag
-            // // Prepare and store data...
-            // CommentsPrepareLoadedData.acceptAndPrepareData();
-            // CommentsPrepareLoadedData.makeDerivedData();
-            // // Render data...
+            // Update data & elements' states...
+            threadTitleTextNode.innerHTML = threadTitleTextContent;
+            // Update thread node class...
+            threadNode.classList.toggle('resolved', resolved);
+            // Update/re-render data...
             // CommentsDataRender.renderData();
-            // CommentsDataRender.updateVisibleThreadsStatus();
-            // CommentsDataRender.renderDerivedFilters();
+            CommentsDataRender.updateVisibleThreads();
+            // Show noitification...
+            CommonNotify.showSuccess('Thread data successfully updated');
           })
           .catch((error) => {
             // eslint-disable-next-line no-console
@@ -125,9 +150,6 @@ modules.define(
           })
           .finally(() => {
             CommentsStates.setLoading(false);
-            /* // TODO: Update all the page dynamic elements?
-             * CommentsEvents.invokeEvent('updatePage');
-             */
           });
       },
     };
@@ -141,24 +163,25 @@ modules.define(
         event.preventDefault();
         event.stopPropagation();
         const { currentTarget: node } = event;
-        const { id } = node;
-        const isThreadAction = id.startsWith('thread');
+        const { id: actionId } = node;
+        const isThreadAction = actionId.startsWith('thread');
         const threadNode = node.closest('.thread');
         const threadId = Number(threadNode.getAttribute('data-thread-id'));
+        /** @type {<TApiHandlerParams>} */
         const params = {
           node,
           threadNode,
-          id,
+          actionId,
           threadId,
         };
-        const func = apiHandlers[id];
+        const func = apiHandlers[actionId];
         try {
           if (!func) {
-            const error = new Error('Cannot find api handler for id ' + id);
+            const error = new Error('Cannot find api handler for id ' + actionId);
             throw error;
           }
-          console.log('[CommentsHandlers:handleTitleActionClick]', id, {
-            id,
+          console.log('[CommentsHandlers:handleTitleActionClick]', actionId, {
+            actionId,
             func,
             node,
             event,
