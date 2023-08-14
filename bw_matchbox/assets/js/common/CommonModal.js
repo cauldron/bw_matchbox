@@ -269,6 +269,9 @@ modules.define(
       },
     };
 
+    // Boumd handlers...
+    CommonModal.boundHideModal = CommonModal.hideModal.bind(CommonModal);
+
     provide(CommonModal);
   },
 );

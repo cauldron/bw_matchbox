@@ -276,6 +276,7 @@ def comments_create_comment():
         )
         return flask.jsonify(
             {
+                "id": comment.id,
                 "thread": comment.thread_id,
                 "content": comment.content,
                 "user": comment.user,
@@ -862,6 +863,23 @@ def check_similar(node, candidates):
             ] = "Collapsed-{}-{}".format(
                 index, "".join(random.choices(string.ascii_letters, k=6))
             )
+
+
+@matchbox_app.route("/comments", methods=["GET"])
+@auth.login_required
+def comments():
+    config = get_config()
+    if isinstance(config, flask.Response):
+        return config
+
+    base_url = flask.request.base_url.replace(flask.request.path, "")
+
+    return flask.render_template(
+        "comments.html",
+        title="Comments Dashboard",
+        config=config,
+        base_url=base_url,
+    )
 
 
 @matchbox_app.route("/compare/<source>/<target>", methods=["GET"])

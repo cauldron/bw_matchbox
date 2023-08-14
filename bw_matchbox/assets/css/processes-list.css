@@ -8,12 +8,6 @@
   margin-bottom: 20px;
 }
 
-/* // UNUSED? [> Header <]
- * .processes-list .page-header h1 {
- *   font-size: 200%;
- * }
- */
-
 /* Empty state: hode some elements... */
 .processes-list.empty .processes-list-table {
   display: none;
@@ -68,10 +62,10 @@
 }
 
 /* Table */
-.processes-list-table {
+.processes-list .processes-list-table {
   margin: 20px 0;
 }
-.processes-list-table tr td:last-child div > .button {
+.processes-list .processes-list-table tr td:last-child div > .button {
   display: block;
   width: 100%;
   margin-bottom: 0;
@@ -100,7 +94,7 @@
 /* Error */
 .processes-list .error {
   border-radius: 4px;
-  background-color: var(--layout-theme-error-color);
+  background-color: var(--common-error-color);
   color: #fff;
   margin: 20px auto;
   padding: 10px 20px;

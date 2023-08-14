@@ -1,0 +1,76 @@
+/* stylelint-disable selector-id-pattern */
+
+.comments-root .filters {
+}
+
+.comments-root .filters .debug-info {
+  opacity: 0.5;
+}
+
+.comments-root .filters label,
+.comments-root .filters select,
+.comments-root .filters button {
+  margin: 0;
+  margin-bottom: 5px;
+  display: block;
+}
+
+.comments-root .filters label {
+  opacity: 0.5;
+  white-space: nowrap;
+}
+
+.comments-root .filters .filter-inline {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+}
+.comments-root .filters .filter-inline > * {
+  margin: 0;
+}
+
+/* Filters layout */
+.comments-root .filters {
+  display: flex;
+  gap: 10px;
+  align-items: center;
+  align-items: flex-end;
+  align-items: flex-start;
+  flex-wrap: wrap;
+}
+.comments-root .filters .filter-item label {
+  cursor: pointer;
+}
+.comments-root .filters select[size],
+.comments-root .filters select[multiple] {
+  height: 10.5em;
+}
+.comments-root .filters select {
+  cursor: pointer;
+}
+.comments-root .filters select option {
+  cursor: pointer;
+  padding: 0.25em 8px;
+  margin: 0.25em 0;
+  border-radius: 4px;
+  transition: all var(--common-animation-time);
+}
+.comments-root .filters select option:not(:checked):hover {
+  background-color: #eee;
+}
+
+.comments-root .filters .debug-info {
+  width: 100%;
+  flex: 0 0 100%;
+}
+
+/* Customize fiters' elements */
+.comments-root .filters #filterActions > * {
+  width: 100%;
+}
+
+/* Show/hide respectively items */
+.comments-root:not(.has-processes) .filters #filterByProcessesItem,
+.comments-root:not(.has-users) .filters #filterByUsersItem {
+  display: none;
+}

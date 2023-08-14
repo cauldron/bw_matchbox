@@ -74,7 +74,7 @@
 /* Error */
 .match-root .info-tableau .error {
   border-radius: 4px;
-  background-color: var(--layout-theme-error-color);
+  background-color: var(--common-error-color);
   color: #fff;
   margin: 20px auto;
   padding: 10px 20px;

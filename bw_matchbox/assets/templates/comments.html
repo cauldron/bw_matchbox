@@ -1,0 +1,122 @@
+{% include 'header.html' %}
+
+{# Common dependencies... #}
+
+{% include 'common-modal.html' %}
+{% include 'common-notify.html' %}
+
+{# Module-specific dependencies... #}
+
+<link rel="stylesheet" href="{{ url_for('static', filename='css/comments.css') }}">
+<link rel="stylesheet" href="{{ url_for('static', filename='css/comments-filters.css') }}">
+<link rel="stylesheet" href="{{ url_for('static', filename='css/comments-threads-list.css') }}">
+
+<script src="{{ url_for('static', filename='js/Comments/Comments.js') }}"></script>
+<script src="{{ url_for('static', filename='js/Comments/CommentsConstants.js') }}"></script>
+<script src="{{ url_for('static', filename='js/Comments/CommentsData.js') }}"></script>
+<script src="{{ url_for('static', filename='js/Comments/CommentsDataRender.js') }}"></script>
+<script src="{{ url_for('static', filename='js/Comments/CommentsHandlers.js') }}"></script>
+<script src="{{ url_for('static', filename='js/Comments/CommentsHelpers.js') }}"></script>
+<script src="{{ url_for('static', filename='js/Comments/CommentsLoader.js') }}"></script>
+<script src="{{ url_for('static', filename='js/Comments/CommentsNodes.js') }}"></script>
+<script src="{{ url_for('static', filename='js/Comments/CommentsPrepareLoadedData.js') }}"></script>
+<script src="{{ url_for('static', filename='js/Comments/CommentsStates.js') }}"></script>
+<script src="{{ url_for('static', filename='js/Comments/CommentsThreadsHelpers.js') }}"></script>
+
+{# Core module:
+  - `Comments` (from `bw_matchbox/assets/js/Comments/Comments.js`)
+#}
+
+<div id="comments-root" class="comments-root container empty loading role-{{ config.role }}">
+  {% include 'navigation.html' %}
+  <div class="common-page-header">
+    <h3 class="title">
+      Comments
+      {# // TODO: It's possible to have here `tools tools-wrapper tools-icon` elements #}
+    </h3>
+  </div>
+  <div class="filters">
+    <div id="sortThreadsItem" class="filter-item">
+      <label for="sortThreadsBy">Sort threads by:</label>
+      <select id="sortThreadsBy" onChange="Comments.handlers.handleSortThreadsByChange(this)">
+        <option value="modifiedDate" selected>Modified date</option>
+        <option value="name">Name</option>
+      </select>
+      <span class="filter-inline">
+        <input type="checkbox" name="sortThreadsReversed" id="sortThreadsReversed"
+          onChange="Comments.handlers.handleSortThreadsReversedChange(this)"
+        />
+        <label for="sortThreadsReversed">Reversed</label>
+    </div>
+    <div id="filterByStateItem" class="filter-item notByMyThreads">
+      <label for="filterByState">Resolved state:</label>
+      <select id="filterByState" size="5" onChange="Comments.handlers.handleFilterByStateChange(this)">
+        <option value="none" selected>All</option>
+        <option value="resolved">Resolved</option>
+        <option value="open">Open</option>
+      </select>
+    </div>
+    <div id="filterByUsersItem" class="filter-item notByMyThreads">
+      <label for="filterByUsers">Filter by user:</label>
+      <select id="filterByUsers" multiple onChange="Comments.handlers.handleFilterByUserChange(this)">
+      </select>
+    </div>
+    <div id="filterByProcessesItem" class="filter-item notByMyThreads">
+      <label for="filterByProcesses">Filter by process:</label>
+      <select id="filterByProcesses" multiple onChange="Comments.handlers.handleFilterByProcessChange(this)">
+      </select>
+    </div>
+    <div id="filterActions" class="filter-item">
+      {# NOTE: Trying to align all the elements by the top emulating empty leading label.
+         TODO: Use special class like 'filter-item-without-label`.
+      #}
+      <label>&nbsp;</label>
+      <button id="filterByMyThreads" onClick="Comments.handlers.handleFilterByMyThreads(this)">
+        <i id="filterByMyThreadsIcon" class="fa fa-check"></i>
+        My threads
+      </button>
+      <button id="resetFilters" onClick="Comments.handlers.handleResetFilters(this)">
+        Reset all filters
+      </button>
+      <button id="expandCollapseAll" onClick="Comments.handlers.handleExpandAllThreads(this)">
+        Expand/collapse all
+      </button>
+    </div>
+  </div>
+  <div id="comments-error" class="error">
+    <!-- Error text comes here -->
+  </div>
+
+  <div id="threads-list-empty" class="threads-list-empty">No avaialable comment threads</div>
+  <div id="threads-list" class="threads-list">Data...</div>
+  <div class="bottom-actions">
+    {# // TODO: For example of `bottom-actions` interactive elements see processes-list (`index`) page. #}
+    <div id="loader-splash" class="loader-splash full-cover"><div class="loader-spinner"></div></div>
+  </div>
+
+</div>
+
+<script type="text/javascript">
+  modules.require(['Comments', 'CommentsConstants'], (Comments, CommentsConstants) => {
+    const { useDebug } = CommentsConstants;
+    // Initialize page data...
+    const sharedData = {
+      base_url: '{{ base_url }}',
+      currentRole: '{{ config.role }}',
+      // DEBUG: See updating of current user in `CommentsPrepareLoadedData:makeDerivedData` for debug mode
+      currentUser: '{{ config.user }}',
+    };
+
+    /* // DEBUG
+     * console.log('[comments]', sharedData);
+     * debugger;
+     */
+
+    // Export to global scope (to access from generated html code handlers).
+    window.Comments = Comments;
+
+    // Start core module...
+    Comments.start(sharedData);
+  });
+</script>
+{% include 'footer.html' %}
