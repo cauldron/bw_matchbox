@@ -68,8 +68,7 @@ modules.define(
        * @return {string}
        */
       renderProxyModalContent() {
-        const { source_node_unit, source_node_location, target_data, match_types, comment } =
-          this.sharedData;
+        const { source_node_unit, source_node_location, target_data, match_types, comment } = this.sharedData;
         const selectedMatchType = this.getSelectedMatchType();
 
         const name = this.getTargetProxyName();

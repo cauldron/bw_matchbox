@@ -23,6 +23,7 @@ rules:
   # indentation:
   #   - 2
   #   - severity: warning
+  # max-line-length: 120
   comment-whitespace-inside: null
   block-no-empty: null
   no-duplicate-selectors: null

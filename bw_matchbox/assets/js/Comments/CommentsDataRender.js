@@ -36,9 +36,7 @@ modules.define(
       getVisibleCommentsForThread(threadId) {
         const { commentsHash, commentsByThreads } = CommentsData;
         const commentsByThreadsIds = commentsByThreads[threadId];
-        const visibleCommentIds = commentsByThreadsIds.filter(
-          CommentsThreadsHelpers.isCommentVisible,
-        );
+        const visibleCommentIds = commentsByThreadsIds.filter(CommentsThreadsHelpers.isCommentVisible);
         const commentsList = visibleCommentIds.map((id) => commentsHash[id]);
         return commentsList;
       },
@@ -360,9 +358,7 @@ modules.define(
       clearAllHiddenThreadsComments() {
         // const rootNode = CommentsNodes.getRootNode();
         const threadsListNode = CommentsNodes.getThreadsListNode();
-        const hiddenCommentNodes = threadsListNode.querySelectorAll(
-          '.thread:not(.expanded) .comments.ready',
-        );
+        const hiddenCommentNodes = threadsListNode.querySelectorAll('.thread:not(.expanded) .comments.ready');
         /* console.log('[CommentsDataRender:clearAllHiddenThreadsComments]', {
          *   threadsListNode,
          *   hiddenCommentNodes,
@@ -433,9 +429,7 @@ modules.define(
         this.clearAllHiddenThreadsComments();
         // Find all expanded threads...
         const threadsListNode = CommentsNodes.getThreadsListNode();
-        const visibleThreadNodes = threadsListNode.querySelectorAll(
-          '.thread:not(.hidden).expanded',
-        );
+        const visibleThreadNodes = threadsListNode.querySelectorAll('.thread:not(.hidden).expanded');
         /* console.log('[CommentsDataRender:rerenderAllVisibleComments]', {
          *   visibleThreadNodes,
          * });
