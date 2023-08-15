@@ -191,15 +191,19 @@
   opacity: 0.5;
 }
 .comments-root .threads-list .thread .title-actions a.disabled {
-  color: #ccc;
+  color: #ddd;
   opacity: 0.5;
   cursor: default;
 }
 .comments-root .threads-list .thread .title-actions a:not(.disabled) {
+  color: #bbb;
   transition: all var(--common-animation-time);
-  color: var(--layout-theme-primary-color);
   opacity: 0.5;
   cursor: pointer;
+}
+.comments-root .threads-list .thread.expanded .title-actions a:not(.disabled),
+.comments-root .threads-list .thread:hover .title-actions a:not(.disabled) {
+  color: var(--layout-theme-primary-color);
 }
 .comments-root .threads-list .thread .title-actions a:not(.disabled):active,
 .comments-root .threads-list .thread .title-actions a:not(.disabled):hover {
