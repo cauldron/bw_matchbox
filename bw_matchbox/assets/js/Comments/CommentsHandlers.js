@@ -90,9 +90,7 @@ modules.define(
               resolve(userAction);
             }
           });
-          document
-            .getElementById('comment-modal-cancel')
-            .addEventListener('click', CommonModal.boundHideModal);
+          document.getElementById('comment-modal-cancel').addEventListener('click', CommonModal.boundHideModal);
         });
       },
     };
@@ -147,8 +145,7 @@ modules.define(
               if (!ok) {
                 // Something went wrong?
                 const reason =
-                  [statusText, status && 'status: ' + status].filter(Boolean).join(', ') ||
-                  'Unknown error';
+                  [statusText, status && 'status: ' + status].filter(Boolean).join(', ') || 'Unknown error';
                 const error = new Error('Data loading error: ' + reason);
                 // eslint-disable-next-line no-console
                 console.error('[CommentsHandlers:apiHandlers:threadAddCommentRequest]: on then', {
@@ -185,8 +182,7 @@ modules.define(
               CommentsHelpers.sortThreads(threads);
               // Update content...
               const threadTitleTextNode = threadNode.querySelector('.title-text');
-              const threadTitleTextContent =
-                CommentsDataRender.helpers.createThreadTitleTextContent(thread);
+              const threadTitleTextContent = CommentsDataRender.helpers.createThreadTitleTextContent(thread);
               console.log('[CommentsHandlers:apiHandlers:threadAddCommentRequest]: done', {
                 commentId,
                 comment,
@@ -238,9 +234,7 @@ modules.define(
         const { currentRole } = sharedParams;
         // Check roles...
         if (currentRole !== 'editors' && currentRole !== 'reviewers') {
-          CommonNotify.showError(
-            `This role (${currentRole}) hasn't allowed to add comments`,
-          );
+          CommonNotify.showError(`This role (${currentRole}) hasn't allowed to add comments`);
           return;
         }
         // Show comment text form modal first and wait for user action...
@@ -266,9 +260,7 @@ modules.define(
         const { currentRole } = sharedParams;
         // Check roles...
         if (currentRole !== 'editors') {
-          CommonNotify.showError(
-            `This role (${currentRole}) hasn't allowed to resolve/open the threads`,
-          );
+          CommonNotify.showError(`This role (${currentRole}) hasn't allowed to resolve/open the threads`);
           return;
         }
         const thread = threadsHash[threadId];
@@ -310,9 +302,7 @@ modules.define(
             const { ok, status, statusText } = res;
             if (!ok) {
               // Something went wrong?
-              const reason =
-                [statusText, status && 'status: ' + status].filter(Boolean).join(', ') ||
-                'Unknown error';
+              const reason = [statusText, status && 'status: ' + status].filter(Boolean).join(', ') || 'Unknown error';
               const error = new Error('Data loading error: ' + reason);
               // eslint-disable-next-line no-console
               console.error('[CommentsHandlers:apiHandlers:threadResolve]: error (on then)', {
@@ -339,8 +329,7 @@ modules.define(
             // thread.modified = currDateStr;
             // Update content...
             const threadTitleTextNode = threadNode.querySelector('.title-text');
-            const threadTitleTextContent =
-              CommentsDataRender.helpers.createThreadTitleTextContent(thread);
+            const threadTitleTextContent = CommentsDataRender.helpers.createThreadTitleTextContent(thread);
             console.log('[CommentsHandlers:apiHandlers:threadResolve]: done', {
               resolved,
               thread,
@@ -359,6 +348,7 @@ modules.define(
             CommentsDataRender.updateVisibleThreads();
             // Show noitification...
             CommonNotify.showSuccess('Thread data successfully updated');
+            CommentsStates.setError();
           })
           .catch((error) => {
             // eslint-disable-next-line no-console
@@ -545,9 +535,7 @@ modules.define(
         const threadNodes = threadsListNode.querySelectorAll('.thread:not(.hidden)');
         const threadNodesList = Array.from(threadNodes);
         const allCount = threadNodesList.length;
-        const expandedThreads = threadNodesList.filter((node) =>
-          node.classList.contains('expanded'),
-        );
+        const expandedThreads = threadNodesList.filter((node) => node.classList.contains('expanded'));
         const expandedCount = expandedThreads.length;
         const isCollapsed = !expandedCount;
         const isExpanded = !isCollapsed && expandedCount === allCount;
