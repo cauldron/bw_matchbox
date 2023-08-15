@@ -127,16 +127,17 @@ modules.define(
           body: JSON.stringify(requestParams),
         };
         const url = urlBase;
-        console.log('[CommentsHandlers:apiHandlers:threadAddCommentRequest]: start', {
-          threadId,
-          thread,
-          params,
-          threadsHash,
-          fetchParams,
-          requestParams,
-          urlBase,
-          url,
-        });
+        /* console.log('[CommentsHandlers:apiHandlers:threadAddCommentRequest]: start', {
+         *   threadId,
+         *   thread,
+         *   params,
+         *   threadsHash,
+         *   fetchParams,
+         *   requestParams,
+         *   urlBase,
+         *   url,
+         * });
+         */
         CommentsStates.setLoading(true);
         return (
           fetch(url, fetchParams)
@@ -183,18 +184,19 @@ modules.define(
               // Update content...
               const threadTitleTextNode = threadNode.querySelector('.title-text');
               const threadTitleTextContent = CommentsDataRender.helpers.createThreadTitleTextContent(thread);
-              console.log('[CommentsHandlers:apiHandlers:threadAddCommentRequest]: done', {
-                commentId,
-                comment,
-                commentsHash,
-                commentsByThreads,
-                thread,
-                threadId,
-                currDate,
-                currDateStr,
-                threadTitleTextNode,
-                threadTitleTextContent,
-              });
+              /* console.log('[CommentsHandlers:apiHandlers:threadAddCommentRequest]: done', {
+               *   commentId,
+               *   comment,
+               *   commentsHash,
+               *   commentsByThreads,
+               *   thread,
+               *   threadId,
+               *   currDate,
+               *   currDateStr,
+               *   threadTitleTextNode,
+               *   threadTitleTextContent,
+               * });
+               */
               // Update data & elements' states...
               threadTitleTextNode.innerHTML = threadTitleTextContent;
               // CommentsDataRender.renderData();
@@ -284,18 +286,19 @@ modules.define(
         };
         // const urlQuery = CommonHelpers.makeQuery(requestParams, { addQuestionSymbol: true });
         const url = urlBase; // + urlQuery;
-        console.log('[CommentsHandlers:apiHandlers:threadResolve]: start', {
-          resolved,
-          currResolved,
-          threadId,
-          thread,
-          params,
-          threadsHash,
-          fetchParams,
-          requestParams,
-          urlBase,
-          url,
-        });
+        /* console.log('[CommentsHandlers:apiHandlers:threadResolve]: start', {
+         *   resolved,
+         *   currResolved,
+         *   threadId,
+         *   thread,
+         *   params,
+         *   threadsHash,
+         *   fetchParams,
+         *   requestParams,
+         *   urlBase,
+         *   url,
+         * });
+         */
         CommentsStates.setLoading(true);
         return fetch(url, fetchParams)
           .then((res) => {
@@ -330,15 +333,16 @@ modules.define(
             // Update content...
             const threadTitleTextNode = threadNode.querySelector('.title-text');
             const threadTitleTextContent = CommentsDataRender.helpers.createThreadTitleTextContent(thread);
-            console.log('[CommentsHandlers:apiHandlers:threadResolve]: done', {
-              resolved,
-              thread,
-              // currDate,
-              // currDateStr,
-              threadTitleTextNode,
-              threadTitleTextContent,
-              json,
-            });
+            /* console.log('[CommentsHandlers:apiHandlers:threadResolve]: done', {
+             *   resolved,
+             *   thread,
+             *   // currDate,
+             *   // currDateStr,
+             *   threadTitleTextNode,
+             *   threadTitleTextContent,
+             *   json,
+             * });
+             */
             // Update data & elements' states...
             threadTitleTextNode.innerHTML = threadTitleTextContent;
             // Update thread node class...
