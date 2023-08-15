@@ -14,12 +14,17 @@
   --common-warn-color: #960;
   --common-success-color: #181;
   --common-tools-icon-size: 28px;
+  /* Default table cell widths */
+  --common-table-cell-amount-width: 14em;
+  --common-table-cell-name-width: auto;
+  --common-table-cell-location-width: 12em;
+  --common-table-cell-unit-width: 5em;
+  --common-table-cell-matched-width: 8em;
 }
 
 /* Basic layout */
 
 /* Issue #7: Widen default Skeleton page width */
-
 .container {
   /* Re-limit max width of column: allow it to be wider */
   max-width: 1600px;

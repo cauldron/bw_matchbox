@@ -34,18 +34,21 @@
   white-space: nowrap;
 }
 .compare-table .cell-amount {
-  width: 5.5em;
+  width: var(--common-table-cell-amount-width);
+  /* width: 5.5em; */
   white-space: nowrap;
 }
 .compare-table .cell-name {
+  /* width: var(--common-table-cell-name-width); */
   width: 50%;
   white-space: wrap;
 }
 .compare-table .cell-location {
+  /* width: var(--common-table-cell-location-width); */
   width: 30%;
 }
 .compare-table .cell-unit {
-  width: 8em;
+  width: var(--common-table-cell-unit-width);
 }
 
 /* Table cell tunings: Issue #59: Name cell with check icon for 'matched' rows... */

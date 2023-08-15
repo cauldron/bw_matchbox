@@ -31,23 +31,15 @@
   width: 10rem;
 }
 #result-table th.cell-location {
-  width: 12rem;
+  width: var(--common-table-cell-location-width);
   white-space: nowrap;
 }
 #result-table th.cell-unit {
-  width: 8rem;
+  width: var(--common-table-cell-unit-width);
   white-space: nowrap;
-}
-/* General cells... */
-#result-table td {
-  /* padding: 4px; */
-}
-#result-table td div {
-  /* padding: 4px; */
 }
 /* Similar cells... */
 #result-table td.similar {
-  /* border: 1px solid var(--layout-theme-primary-color); */
   background: var(--match-similar-bg-color05);
   background: repeating-linear-gradient(
     45deg,
@@ -63,7 +55,6 @@
 /* Info section */
 .match-root .info-tableau {
   position: relative;
-  /* margin: 10px 0; */
   transition: all var(--common-animation-time);
   min-height: 0;
 }
