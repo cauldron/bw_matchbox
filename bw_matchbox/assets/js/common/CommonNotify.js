@@ -38,7 +38,7 @@ modules.define(
           notifyData.handler = undefined;
         }
         setTimeout(() => {
-          // ...And remove node...
+          // ...And remove node (TODO: Check if node still exists in dom tree)...
           this.notifyRoot.removeChild(node);
         }, 250); // Value of `var(--common-animation-time)`
       },

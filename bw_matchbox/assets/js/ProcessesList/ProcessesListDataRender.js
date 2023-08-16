@@ -50,7 +50,7 @@ modules.define(
         let matchContent;
         if (isEditor) {
           const matchUrl = '/match/' + id;
-          matchContent = `<a class="button button-primary" href="${matchUrl}">
+          matchContent = `<a href="${matchUrl}">
             <i class="fa-solid fa-circle-xmark"></i>
             Add match
           </a>`;
