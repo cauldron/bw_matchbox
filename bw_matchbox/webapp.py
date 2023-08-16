@@ -18,9 +18,10 @@ from werkzeug.security import check_password_hash, generate_password_hash
 
 from .comments import Comment, CommentThread
 from .utils import (
-    MATCH_TYPE_ABBREVIATIONS,
     get_match_types,
+    MATCH_TYPE_ABBREVIATIONS,
     name_close_enough,
+    normalize_name,
     similar_location,
 )
 
@@ -839,7 +840,7 @@ def match(source):
         title="Database Matching Page",
         config=config,
         ds=node,
-        query_string=node["name"] + " " + node.get("location", ""),
+        query_string=normalize_name(node["name"]) + " " + node.get("location", ""),
         matches=matches,
         matches_json=json.dumps(matches_payload),
     )
