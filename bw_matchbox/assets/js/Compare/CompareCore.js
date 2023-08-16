@@ -51,18 +51,7 @@ modules.define(
         // NOTE: Row operations handlers: shiftRowHandler, editNumberHandler, expandRowHandler, removeRowHandler
         // Reg: \<\(shiftRowHandler\|editNumberHandler\|expandRowHandler\|removeRowHandler\>\)
         const { collapsedRows } = CompareRowsHelpers;
-        const {
-          collapsed,
-          row_id: rowId,
-          url,
-          location,
-          unit,
-          amount_display,
-          amount,
-          name,
-          input_id,
-          matched,
-        } = data;
+        const { collapsed, row_id: rowId, url, location, unit, amount_display, amount, name, input_id, matched } = data;
         const rowKind = is_target ? 'target' : 'source';
         const collapsedId = CompareRowsHelpers.getCollapsedId(rowKind, rowId);
         if (collapsed && !collapsedRows[collapsedId] && collapsedRows[collapsedId] !== false) {
@@ -70,9 +59,7 @@ modules.define(
           const otherTableDataKey = otherRowKind + '_data';
           const otherTableData = this.sharedData[otherTableDataKey];
           const collapsedGroupId = data['collapsed-group'];
-          const otherRowData = otherTableData.find(
-            (other) => other['collapsed-group'] === collapsedGroupId,
-          );
+          const otherRowData = otherTableData.find((other) => other['collapsed-group'] === collapsedGroupId);
           if (!otherRowData) {
             throw new Error('Cannot find other collapsed record');
           }
@@ -95,8 +82,7 @@ modules.define(
         }
         // Detect if row is collapsed, then render correspound class (`collapsed`) and append handler node...
         const isCollapsed = !!collapsedRows[collapsedId];
-        const collapsedRowHtml =
-          isCollapsed && CompareRowsHelpers.buildCollapsedHandlerRow(rowKind, rowId, data);
+        const collapsedRowHtml = isCollapsed && CompareRowsHelpers.buildCollapsedHandlerRow(rowKind, rowId, data);
         // Create class name...
         const className = [isCollapsed && 'collapsed'].filter(Boolean).join(' ');
         const trAttrs = [['class', className], isCollapsed && ['collapsed-id', collapsedId]]
@@ -284,9 +270,7 @@ modules.define(
         fetch(url)
           .then((res) => {
             if (!res.ok) {
-              const error = new Error(
-                `Can't load url '${res.url}': ${res.statusText}, ${res.status}`,
-              );
+              const error = new Error(`Can't load url '${res.url}': ${res.statusText}, ${res.status}`);
               throw error;
             }
             return res.json();
@@ -471,18 +455,12 @@ modules.define(
           .showModal();
 
         // Set modal handlers...
-        document
-          .getElementById('rescale-button')
-          .addEventListener('click', this.rescaleAmountHandler.bind(this));
-        document
-          .getElementById('new-number-button')
-          .addEventListener('click', this.setNewNumberHandler.bind(this));
+        document.getElementById('rescale-button').addEventListener('click', this.rescaleAmountHandler.bind(this));
+        document.getElementById('new-number-button').addEventListener('click', this.setNewNumberHandler.bind(this));
         document
           .getElementById('set-and-close-number-editor')
           .addEventListener('click', this.setNumberAndCloseModalHandler.bind(this));
-        document
-          .getElementById('reset-number')
-          .addEventListener('click', this.resetNumberHandler.bind(this));
+        document.getElementById('reset-number').addEventListener('click', this.resetNumberHandler.bind(this));
       },
 
       stop(event) {
@@ -512,9 +490,7 @@ modules.define(
             // eslint-disable-next-line no-debugger
             debugger;
             // Show error in the notification toast...
-            CommonNotify.showError(
-              `Can't copy text to clipboard: ${CommonHelpers.getErrorText(error)}`,
-            );
+            CommonNotify.showError(`Can't copy text to clipboard: ${CommonHelpers.getErrorText(error)}`);
           });
         // TODO: To catch promise resolve or catch?
         return false;
@@ -550,11 +526,7 @@ modules.define(
         // Button handlers...
         document
           .getElementById('save-mapping-button')
-          .addEventListener(
-            'click',
-            CompareProxyDialogModal.openProxyDialogModal.bind(CompareProxyDialogModal),
-            false,
-          );
+          .addEventListener('click', CompareProxyDialogModal.openProxyDialogModal.bind(CompareProxyDialogModal), false);
         document
           .getElementById('one-to-one')
           .addEventListener(
@@ -564,10 +536,7 @@ modules.define(
           );
 
         const expandAll = document.getElementById('expand-all-collapsed');
-        expandAll.addEventListener(
-          'click',
-          CompareRowsHelpers.expandAllCollapsedRows.bind(CompareRowsHelpers),
-        );
+        expandAll.addEventListener('click', CompareRowsHelpers.expandAllCollapsedRows.bind(CompareRowsHelpers));
       },
 
       // Re-exported handlers for access from the html code (only core module is exposed as global)...
