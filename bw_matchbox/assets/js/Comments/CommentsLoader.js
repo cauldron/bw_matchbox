@@ -49,9 +49,7 @@ modules.define(
             const { ok, status, statusText } = res;
             if (!ok) {
               // Something went wrong?
-              const reason =
-                [statusText, status && 'status: ' + status].filter(Boolean).join(', ') ||
-                'Unknown error';
+              const reason = [statusText, status && 'status: ' + status].filter(Boolean).join(', ') || 'Unknown error';
               const error = new Error('Data loading error: ' + reason);
               // eslint-disable-next-line no-console
               console.error('[CommentsLoader:loadComments]: error (on then)', {
@@ -70,12 +68,7 @@ modules.define(
             return res.json();
           })
           .then((json) => {
-            const {
-              comments,
-              threads,
-              total_comments: totalComments,
-              total_threads: totalThreads,
-            } = json;
+            const { comments, threads, total_comments: totalComments, total_threads: totalThreads } = json;
             const hasData = Array.isArray(comments) && !!comments.length;
             /* console.log('[CommentsLoader:loadComments]: got comments', {
              *   json,

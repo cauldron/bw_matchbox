@@ -1,3 +1,5 @@
+/* stylelint-disable selector-id-pattern */
+
 :root {
   --comments-expand-button-size: 24px;
   --comments-title-action-button-size: 24px;
@@ -168,8 +170,8 @@
   margin-right: -2px;
 }
 /* Disable some actions */
-.comments-root:not(.role-editors, .role-reviewers) .threads-list .thread .main-row .title-actions a#threadAddComment,
-.comments-root:not(.role-editors) .threads-list .thread .main-row .title-actions a#threadResolve {
+.comments-root:not(.role-editors, .role-reviewers) .threads-list .thread .title-actions a#threadAddComment,
+.comments-root:not(.role-editors) .threads-list .thread .title-actions a#threadResolve {
   display: none;
 }
 .comments-root .threads-list .thread .title-actions {
@@ -189,15 +191,19 @@
   opacity: 0.5;
 }
 .comments-root .threads-list .thread .title-actions a.disabled {
-  color: #ccc;
+  color: #ddd;
   opacity: 0.5;
   cursor: default;
 }
 .comments-root .threads-list .thread .title-actions a:not(.disabled) {
+  color: #bbb;
   transition: all var(--common-animation-time);
-  color: var(--layout-theme-primary-color);
   opacity: 0.5;
   cursor: pointer;
+}
+.comments-root .threads-list .thread.expanded .title-actions a:not(.disabled),
+.comments-root .threads-list .thread:hover .title-actions a:not(.disabled) {
+  color: var(--layout-theme-primary-color);
 }
 .comments-root .threads-list .thread .title-actions a:not(.disabled):active,
 .comments-root .threads-list .thread .title-actions a:not(.disabled):hover {

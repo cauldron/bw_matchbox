@@ -36,9 +36,7 @@ modules.define(
         } = rowData;
         const matchUrl = '/match/' + id;
         const matchButton = matched
-          ? `<a class="button" href="${matchUrl || ''}"><i class="fa-solid fa-check"></i> ${
-              match_type || 'EDIT'
-            }</a>`
+          ? `<a class="button" href="${matchUrl || ''}"><i class="fa-solid fa-check"></i> ${match_type || 'EDIT'}</a>`
           : `<a class="button button-primary" href="${
               matchUrl || ''
             }"><i class="fa-solid fa-circle-xmark"></i> ADD</a>`;
