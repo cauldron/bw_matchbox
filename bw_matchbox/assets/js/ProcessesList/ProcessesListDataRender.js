@@ -87,7 +87,7 @@ modules.define(
           // details_url, // '/process/726'
           // match_url, // '/match/726'
           // match_type, // 'No direct match available'
-          // matched, // false
+          matched, // false
         } = rowData;
         const matchContent = this.renderMatchCellContent(rowData);
         const matchUrl = '/match/' + id;
