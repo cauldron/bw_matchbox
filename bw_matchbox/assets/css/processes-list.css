@@ -71,6 +71,23 @@
   margin-bottom: 0;
 }
 
+/* Table cell's width */
+.processes-list .processes-list-table .cell-amount {
+  width: var(--common-table-cell-amount-width);
+}
+.processes-list .processes-list-table .cell-name {
+  width: var(--common-table-cell-name-width);
+}
+.processes-list .processes-list-table .cell-location {
+  width: var(--common-table-cell-location-width);
+}
+.processes-list .processes-list-table .cell-unit {
+  width: var(--common-table-cell-unit-width);
+}
+.processes-list .processes-list-table .cell-matched {
+  width: var(--common-table-cell-matched-width);
+}
+
 /* Filter controls section */
 .processes-list .page-filters label {
   display: inline-block;
@@ -102,26 +119,6 @@
 .processes-list:not(.error) .error {
   display: none;
 }
-
-/* [> Pagination (UNUSED: using incremental loading) <]
- * .processes-list .table-pagination {
- *   padding: 20px 0;
- *   display: flex;
- *   gap: 10px;
- * }
- * .processes-list .table-pagination .text {
- *   opacity: 0.3;
- * }
- * .processes-list .table-pagination .link {
- *   cursor: pointer;
- *   transition: all var(--common-animation-time);
- *   color: var(--layout-theme-primary-color-dark1);
- * }
- * .processes-list .table-pagination .link:hover {
- *   color: var(--layout-theme-primary-color-dark2);
- *   text-decoration: underline;
- * }
- */
 
 /* Bottom actions */
 .processes-list .bottom-actions {

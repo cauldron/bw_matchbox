@@ -47,19 +47,19 @@
   user-select: none;
 }
 
-/* Table */
+/* Table cell's widths */
 .process-detail .fixed-table .cell-amount {
-  width: 14em;
+  width: var(--common-table-cell-amount-width);
 }
 .process-detail .fixed-table .cell-name {
-  width: auto;
+  width: var(--common-table-cell-name-width);
 }
 .process-detail .fixed-table .cell-location {
-  width: 12em;
+  width: var(--common-table-cell-location-width);
 }
 .process-detail .fixed-table .cell-unit {
-  width: 5em;
+  width: var(--common-table-cell-unit-width);
 }
 .process-detail .fixed-table .cell-matched {
-  width: 8em;
+  width: var(--common-table-cell-matched-width);
 }

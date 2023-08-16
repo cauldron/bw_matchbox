@@ -4,12 +4,14 @@ modules.define(
     // Required modules...
     'CommonHelpers',
     'ProcessesListNodes',
+    'ProcessesListData',
   ],
   function provide_ProcessesListDataRender(
     provide,
     // Resolved modules...
     CommonHelpers,
     ProcessesListNodes,
+    ProcessesListData,
   ) {
     // Define module...
 
@@ -23,6 +25,59 @@ modules.define(
         tBodyNode.replaceChildren();
       },
 
+      renderMatchCellContent(rowData) {
+        const { sharedParams } = ProcessesListData;
+        const {
+          currentRole, // TODO: To generate other content for 'editors' role?
+          databases,
+        } = sharedParams;
+        const { proxy } = databases;
+        const isEditor = currentRole === 'editors';
+        const hasProxy = !!proxy;
+        const {
+          id, // 726 (required!)
+          match_type, // 'No direct match available'
+          /* // Other unused process record data...
+           * name, // 'Electronic capacitors, resistors, coils, transformers, connectors and other components (except  semiconductors and printed circuit assemblies); at manufacturer'
+           * location, // 'United States'
+           * unit, // ''
+           * details_url, // '/process/726'
+           * match_url, // '/match/726'
+           * matched, // false
+           */
+        } = rowData;
+        const hasMatchType = !!match_type;
+        let matchContent;
+        if (isEditor) {
+          const matchUrl = '/match/' + id;
+          matchContent = `<a href="${matchUrl}">
+            <i class="fa-solid fa-circle-xmark"></i>
+            Add match
+          </a>`;
+        } else if (hasProxy) {
+          matchContent = `<a href="/process/${proxy}">Proxy dataset</a>`;
+        } else if (hasMatchType) {
+          matchContent = `No match needed`;
+        } else {
+          matchContent = `Unmatched`;
+        }
+        /* // OLD CODE: This code is temporarily remained until the task is completed.
+        const matchUrl = '/match/' + id;
+        if (matched) {
+          matchContent = `<a class="button" href="${matchUrl}">
+            <i class="fa-solid fa-check"></i>
+            ${match_type || 'Edit'}
+          </a>`;
+        } else {
+          matchContent = `<a class="button button-primary" href="${matchUrl}">
+            <i class="fa-solid fa-circle-xmark"></i>
+            Add
+          </a>`;
+        }
+        */
+        return matchContent;
+      },
+
       renderDataRow(rowData) {
         const {
           id, // 726 (required!)
@@ -31,9 +86,10 @@ modules.define(
           unit, // ''
           // details_url, // '/process/726'
           // match_url, // '/match/726'
-          match_type, // 'No direct match available'
-          matched, // false
+          // match_type, // 'No direct match available'
+          // matched, // false
         } = rowData;
+        const matchContent = this.renderMatchCellContent(rowData);
         const matchUrl = '/match/' + id;
         const matchButton = matched
           ? `<a class="button" href="${matchUrl || ''}"><i class="fa-solid fa-check"></i> ${match_type || 'EDIT'}</a>`
@@ -45,7 +101,7 @@ modules.define(
             <td><div><a href="/process/${id || ''}">${name || ''}</a></div></td>
             <td><div>${location || ''}</div></td>
             <td><div>${unit || ''}</div></td>
-            <td><div>${matchButton || ''}</div></td>
+            <td><div>${matchContent || ''}</div></td>
           </tr>
         `;
         return content;

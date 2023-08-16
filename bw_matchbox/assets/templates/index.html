@@ -20,7 +20,7 @@
   - `ProcessesList` (from `bw_matchbox/assets/js/ProcessesList/ProcessesList.js`)
 #}
 
-<div id="processes-list-root" class="container processes-list empty loading">
+<div id="processes-list-root" class="container processes-list empty loading role-{{ config.role }} has-{{ 'proxy' if config.proxy else 'no-proxy' }}">
   {% include 'navigation.html' %}
   <div class="page-search">
     <p><input type="text" class="u-full-width" placeholder="Enter value to search" value="{{ query_string }}" id="query_string" /></p>
@@ -102,10 +102,10 @@
   <table id="processes-list-table" class="fixed-table processes-list-table" width="100%">
     <thead>
       <tr>
-        <th><div>Name</div></th>
-        <th><div>Location</div></th>
-        <th><div>Unit</div></th>
-        <th><div>Matched</div></th>
+        <th class="cell-name"><div>Name</div></th>
+        <th class="cell-location"><div>Location</div></th>
+        <th class="cell-unit"><div>Unit</div></th>
+        <th class="cell-matched"><div>Matched</div></th>
       </tr>
     </thead>
     <tbody id="processes-list-table-body">
@@ -133,7 +133,13 @@
         target: '{{ config.target }}',
         proxy: '{{ config.proxy }}',
       },
+      // hasProxy: {{ 'true' if config.proxy else 'false' }}, // Example
+      currentRole: '{{ config.role }}',
+      currentUser: '{{ config.user }}',
     };
+
+    // DEBUG
+    console.log('[index]', sharedParams);
 
     // Export to global scope (to access from generated html code handlers).
     window.ProcessesList = ProcessesList;
