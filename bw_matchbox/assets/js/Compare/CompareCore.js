@@ -122,7 +122,7 @@ modules.define(
                 onClick="CompareCore.expandRowHandler(this)"
                 title="Expand row"
               ><i
-                class="fa-solid fa-diamond fa-spin"></i></a>
+                class="fa-solid fa-up-right-and-down-left-from-center"></i></a>
             </div></td>
             <td
               class="cell-amount"
