@@ -37,45 +37,35 @@ modules.define(
         const {
           id, // 726 (required!)
           match_type, // 'No direct match available'
+          matched, // false
           /* // Other unused process record data...
            * name, // 'Electronic capacitors, resistors, coils, transformers, connectors and other components (except  semiconductors and printed circuit assemblies); at manufacturer'
            * location, // 'United States'
            * unit, // ''
            * details_url, // '/process/726'
            * match_url, // '/match/726'
-           * matched, // false
            */
         } = rowData;
         const hasMatchType = !!match_type;
-        let matchContent;
         if (isEditor) {
           const matchUrl = '/match/' + id;
-          matchContent = `<a href="${matchUrl}">
-            <i class="fa-solid fa-circle-xmark"></i>
-            Add match
-          </a>`;
+          const matchText = matched ? match_type || 'Edit' : 'Add';
+          const matchIcon = matched ? 'fa-check' : 'fa-circle-xmark';
+          const matchClass = !matched && 'button button-primary';
+          // Old, button action involved `matched` parameter
+          return `<a
+            class="${matchClass}"
+            href="${matchUrl}">
+              <i class="fa-solid ${matchIcon}"></i>
+              ${matchText}
+            </a>`;
         } else if (hasProxy) {
-          matchContent = `<a href="/process/${proxy}">Proxy dataset</a>`;
+          return `<a href="/process/${proxy}">Proxy dataset</a>`;
         } else if (hasMatchType) {
-          matchContent = `No match needed`;
+          return `No match needed`;
         } else {
-          matchContent = `Unmatched`;
+          return `Unmatched`;
         }
-        /* // OLD CODE: This code is temporarily remained until the task is completed.
-        const matchUrl = '/match/' + id;
-        if (matched) {
-          matchContent = `<a class="button" href="${matchUrl}">
-            <i class="fa-solid fa-check"></i>
-            ${match_type || 'Edit'}
-          </a>`;
-        } else {
-          matchContent = `<a class="button button-primary" href="${matchUrl}">
-            <i class="fa-solid fa-circle-xmark"></i>
-            Add
-          </a>`;
-        }
-        */
-        return matchContent;
       },
 
       renderDataRow(rowData) {
@@ -87,17 +77,19 @@ modules.define(
           // details_url, // '/process/726'
           // match_url, // '/match/726'
           // match_type, // 'No direct match available'
-          matched, // false
+          // matched, // false
         } = rowData;
         const matchContent = this.renderMatchCellContent(rowData);
-        const matchUrl = '/match/' + id;
-        const matchButton = matched
-          ? `<a class="button" href="${matchUrl || ''}"><i class="fa-solid fa-check"></i> ${
-              match_type || 'EDIT'
-            }</a>`
-          : `<a class="button button-primary" href="${
-              matchUrl || ''
-            }"><i class="fa-solid fa-circle-xmark"></i> ADD</a>`;
+        /* // ORIGINAL UNUSED CODE: This code is temporarily remained until the task is completed. See code in `renderMatchCellContent`.
+         * const matchUrl = '/match/' + id;
+         * const matchButton = matched
+         *   ? `<a class="button" href="${matchUrl || ''}"><i class="fa-solid fa-check"></i> ${
+         *       match_type || 'EDIT'
+         *     }</a>`
+         *   : `<a class="button button-primary" href="${
+         *       matchUrl || ''
+         *     }"><i class="fa-solid fa-circle-xmark"></i> ADD</a>`;
+         */
         const content = `
           <tr>
             <td><div><a href="/process/${id || ''}">${name || ''}</a></div></td>
