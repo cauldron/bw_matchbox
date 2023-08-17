@@ -352,7 +352,7 @@ class CommonModal {
 
   initFinished() {
     if (this.waiting) {
-      console.log('[CommonModal:initFinished]');
+      // console.log('[CommonModal:initFinished]');
       this.inited = true;
       this.error = undefined;
       this.waiting = false;
@@ -366,10 +366,11 @@ class CommonModal {
    * @param {TInitChunkId} id
    */
   initChunk(id) {
-    console.log('[CommonModal:initChunk]', id, {
-      id,
-      initedChunks: this._initedChunks,
-    });
+    /* console.log('[CommonModal:initChunk]', id, {
+     *   id,
+     *   initedChunks: this._initedChunks,
+     * });
+     */
     if (!initChunksList.includes(id)) {
       throw new Error(`Unknown initialization chunk: '${id}'`);
     } else if (this._initedChunks.includes(id)) {
