@@ -2,18 +2,41 @@
 
 import * as CommonHelpers from '../common/CommonHelpers.js';
 import { commonModal } from '../common/CommonModal.js';
+// import { commonNotify } from '../common/CommonNotify.js';
+
+/** @typedef TSharedParams
+ * @property {string} addAttributeUrl
+ * @property {string} markMatchTypeUrl
+ * @property {string} markMatchedUrl
+ * @property {string} markAllMatchedUrl
+ * @property {string} multimatch
+ * @property {boolean} isWaitlist
+ */
+
+/** @typedef TUserAction
+ * @property {string} comment
+ * @property {string} [status]
+ */
 
 export const ProcessDetail = {
-  // External data...
-  sharedData: undefined, // Initializing in `ProcessDetail.start` from `bw_matchbox/assets/templates/process_detail.html`
+  /** External data...
+   * @type TSharedParams
+   */
+  sharedParams: undefined, // Initializing in `ProcessDetail.start` from `bw_matchbox/assets/templates/process_detail.html`
 
   // Methods...
 
+  /**
+   * @param {boolean} isLoading
+   */
   setLoading(isLoading) {
     const rootEl = document.getElementById('process-detail');
     rootEl.classList.toggle('loading', !!isLoading);
   },
 
+  /**
+   * @param {boolean} isWaitlist
+   */
   setWaitlist(isWaitlist) {
     // Update root container state...
     const rootEl = document.getElementById('process-detail');
@@ -23,9 +46,9 @@ export const ProcessDetail = {
     // NOTE: `button-primary` = un-waitlised status
     waitlistButton.classList.toggle('button-primary', !isWaitlist);
     waitlistButton.innerText = isWaitlist ? 'Waitlisted' : 'Waitlist';
-    // Update parameter in `sharedData`...
-    const { sharedData } = this;
-    sharedData.isWaitlist = isWaitlist;
+    // Update parameter in `sharedParams`...
+    const { sharedParams } = this;
+    sharedParams.isWaitlist = isWaitlist;
   },
 
   /** setError -- Set and show error.
@@ -100,7 +123,7 @@ export const ProcessDetail = {
               // It will be called on modal close...
               if (isOpened) {
                 isOpened = false;
-                // Don't proceed the operation!
+                // Resolve empty value: Don't proceed the operation!
                 resolve(false);
               }
             })
@@ -117,7 +140,9 @@ export const ProcessDetail = {
               /** @type {HTMLTextAreaElement} */
               const commentEl = document.querySelector('textarea#mark-waitlist-comment');
               const comment = commentEl.value;
-              resolve({ comment, status: 'comment from promiseMarkWaitlistDialog' });
+              /* @type {TUserAction} Resolve result */
+              const userAction = { comment, status: 'comment from promiseMarkWaitlistDialog' };
+              resolve(userAction);
             }
           });
           document
@@ -129,15 +154,15 @@ export const ProcessDetail = {
   },
 
   /** doMarkWaitlist -- Send mark as waitlist requests
-   * @param {object} userAction - Result of `promiseMarkWaitlistDialog` (`{ comment }` or `false`)
+   * @param {TUserAction} userAction - Result of `promiseMarkWaitlistDialog` (`{ comment }` or `false`)
    */
-  doMarkWaitlist(userAction) {
+  async doMarkWaitlist(userAction) {
     const { comment = '' } = userAction;
-    const { sharedData } = this;
-    const { isWaitlist } = sharedData;
+    const { sharedParams } = this;
+    const { isWaitlist } = sharedParams;
     const setWaitlist = !isWaitlist;
     const waitlistValue = setWaitlist ? 1 : 0;
-    const { addAttributeUrl } = sharedData;
+    const { addAttributeUrl } = sharedParams;
     const urlBase = addAttributeUrl;
     const makeUrlParams = { addQuestionSymbol: true, useEmptyStrings: true };
     const urls = [
@@ -151,33 +176,32 @@ export const ProcessDetail = {
     const callbacks = urls.map((url) => () => fetch(url));
     this.setLoading(true);
     // Run callbacks one by one...
-    return CommonHelpers.runAsyncCallbacksSequentially(callbacks)
-      .then((resList) => {
-        const errorsList = this.processMultipleRequestErrors(resList);
-        if (errorsList.length) {
-          // Some errors?
-          // eslint-disable-next-line no-console
-          console.error('[ProcessDetail:doMarkWaitlist] Got errors', errorsList);
-          // eslint-disable-next-line no-debugger
-          debugger;
-          // Show errors on the page...
-          this.setError(errorsList);
-        } else {
-          // Success...
-          this.setWaitlist(setWaitlist);
-          this.clearError();
-        }
-      })
-      .finally(() => {
-        this.setLoading(false);
-      });
+    try {
+      const resList = await CommonHelpers.runAsyncCallbacksSequentially(callbacks);
+      const errorsList = this.processMultipleRequestErrors(resList);
+      if (errorsList.length) {
+        // Some errors?
+        // eslint-disable-next-line no-console
+        console.error('[ProcessDetail:doMarkWaitlist] Got errors', errorsList);
+        // eslint-disable-next-line no-debugger
+        debugger;
+        // Show errors on the page...
+        this.setError(errorsList);
+      } else {
+        // Success...
+        this.setWaitlist(setWaitlist);
+        this.clearError();
+      }
+    } finally {
+      this.setLoading(false);
+    }
   },
 
   /** markWaitlist -- Handler for 'Waitlist' button.
    */
   markWaitlist() {
-    const { sharedData } = this;
-    const { isWaitlist } = sharedData;
+    const { sharedParams } = this;
+    const { isWaitlist } = sharedParams;
     const setWaitlist = !isWaitlist;
     const firstPromise = setWaitlist
       ? this.promiseMarkWaitlistDialog()
@@ -197,46 +221,45 @@ export const ProcessDetail = {
   /** markMatched -- Handler for 'No match needed' button.
    * @param {HTMLButtonElement} button
    */
-  markMatched(button) {
-    const { sharedData } = this;
-    const urls = [sharedData.markMatchedUrl, sharedData.markMatchTypeUrl];
+  async markMatched(button) {
+    const { sharedParams } = this;
+    const urls = [sharedParams.markMatchedUrl, sharedParams.markMatchTypeUrl];
     const callbacks = urls.map((url) => () => fetch(url));
     this.setLoading(true);
     // Run callbacks one by one...
-    return CommonHelpers.runAsyncCallbacksSequentially(callbacks)
-      .then((resList) => {
-        const errorsList = this.processMultipleRequestErrors(resList);
-        if (errorsList.length) {
-          // Some errors?
-          // eslint-disable-next-line no-console
-          console.error('[ProcessDetail:markMatched] Got errors', errorsList);
-          // eslint-disable-next-line no-debugger
-          debugger;
-          // Show errors on the page...
-          this.setError(errorsList);
-        } else {
-          // Success...
-          button.innerText = 'Matched';
-          button.classList.remove('button-primary');
-          document.getElementById('match-button').style.display = 'none';
+    try {
+      const resList = await CommonHelpers.runAsyncCallbacksSequentially(callbacks);
+      const errorsList = this.processMultipleRequestErrors(resList);
+      if (errorsList.length) {
+        // Some errors?
+        // eslint-disable-next-line no-console
+        console.error('[ProcessDetail:markMatched] Got errors', errorsList);
+        // eslint-disable-next-line no-debugger
+        debugger;
+        // Show errors on the page...
+        this.setError(errorsList);
+      } else {
+        // Success...
+        button.innerText = 'Matched';
+        button.classList.remove('button-primary');
+        document.getElementById('match-button').style.display = 'none';
+        document.getElementById('manual-multi-match').style.display = 'none';
+        if (sharedParams.multimatch) {
           document.getElementById('manual-multi-match').style.display = 'none';
-          if (sharedData.multimatchi) {
-            document.getElementById('manual-multi-match').style.display = 'none';
-          }
-          this.clearError();
         }
-      })
-      .finally(() => {
-        this.setLoading(false);
-      });
+        this.clearError();
+      }
+    } finally {
+      this.setLoading(false);
+    }
   },
 
   /** markAllMatched -- Handler for 'Mark all matched' button.
    * @param {HTMLButtonElement} button
    */
   markAllMatched(button) {
-    const { sharedData } = this;
-    const url = sharedData.markAllMatchedUrl;
+    const { sharedParams } = this;
+    const url = sharedParams.markAllMatchedUrl;
     this.setLoading(true);
     fetch(url)
       .then((res) => {
@@ -261,10 +284,18 @@ export const ProcessDetail = {
       });
   },
 
-  start(sharedData) {
+  /**
+   * @param {TSharedParams} sharedParams
+   */
+  start(sharedParams) {
     // Save public data...
-    this.sharedData = sharedData;
-    // Pre-initialize modal windows...
-    commonModal.preInit();
+    this.sharedParams = sharedParams;
+    /* // (Optional) Pre-initialize submodules...
+     * commonModal.preInit();
+     * commonNotify.preInit();
+     */
+    /* // DEBUG: Test notify
+     * commonNotify.showInfo('test');
+     */
   },
 };

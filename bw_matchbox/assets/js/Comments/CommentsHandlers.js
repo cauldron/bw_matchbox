@@ -330,7 +330,7 @@ modules.define(
             // All is ok...
             return res.json();
           })
-          .then((json) => {
+          .then((_json) => {
             /* // TODO: Construct updated date tag?
              * const currDate = new Date();
              * const currDateStr = currDate.toUTCString();

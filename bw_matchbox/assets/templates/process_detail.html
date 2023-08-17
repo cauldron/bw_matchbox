@@ -1,18 +1,11 @@
 {% include 'header.html' %}
 
-{# Common dependencies... #}
-
-{# Modal windows are used
-{% include 'common-modal.html' %}
-#}
+{# NOTE: All reusable modules and all related stuff like css are dynamically connecting as ES6 modules, inside the code #}
 
 {# Module-specific dependencies... #}
 
+{# TODO: It's possible to dynamically load all required styles using `CommonHelpers.addCssStyle` method. #}
 <link rel="stylesheet" href="{{ url_for('static', filename='css/process-detail.css') }}">
-
-{# Core js module
-<script src="{{ url_for('static', filename='js/ProcessDetail/ProcessDetail.js') }}"></script>
-#}
 
 <div id="process-detail" class="process-detail container{{ ' waitlist' if ds.get('waitlist') }}">
   {% include 'navigation.html' %}
@@ -146,13 +139,9 @@
 
   import { ProcessDetail } from '/assets/modules/ProcessDetail/ProcessDetail.js';
 
-  // modules.require('ProcessDetail', function requireProcessDetail(ProcessDetail) {
-  // });
-
-  // Global variables for compare tables feature (via global variable `sharedData`)...
-  const sharedData = {
+  // Global variables for compare tables feature (via global variable `sharedParams`)...
+  const sharedParams = {
     addAttributeUrl: "{{ url_for('add_attribute', id=ds.id)|safe }}",
-    // markWaitlistUrl: "{{ url_for('add_attribute', id=ds.id, attr='waitlist', value='1')|safe }}",
     markMatchTypeUrl: "{{ url_for('add_attribute', id=ds.id, attr='match_type', value='1')|safe }}",
     markMatchedUrl: "{{ url_for('add_attribute', id=ds.id, attr='matched', value='1')|safe }}",
     markAllMatchedUrl: "{{ url_for('multi_match', id=ds.id)|safe }}",
@@ -165,14 +154,6 @@
   window.ProcessDetail = ProcessDetail;
 
   // Start core module...
-  ProcessDetail.start(sharedData);
-
-  /*
-  // Test import native ES6 modules...
-  // Import main client code module...
-  import { testMain } from '/assets/modules/test.js';
-  // Start client code...
-  testMain();
-  */
+  ProcessDetail.start(sharedParams);
 </script>
 {% include 'footer.html' %}

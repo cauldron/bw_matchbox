@@ -1,13 +1,10 @@
 // @ts-check
 
 import * as CommonHelpers from './CommonHelpers.js';
-import * as CommonPromises from './CommonPromises.js';
+// import * as CommonPromises from './CommonPromises.js';
+import { InitChunks } from './InitChunks.js';
 
 const cssStyleUrl = '/assets/css/common-modal.css';
-
-/** TCallback -- Callback function.
- * @typedef {() => void} TCallback
- */
 
 /** List of initilization steps.
  * @type {string[]}
@@ -18,33 +15,28 @@ const initChunksList = [
   'dom', // Created required dom elements
 ];
 
-/**
-@typedef {(typeof initChunksList)[number]} TInitChunkId;
-@typedef {Record<TInitChunkId, boolean>} TInitChunks;
-*/
+/** // Used types...
+ * @typedef {(typeof initChunksList)[number]} TInitChunkId;
+ * @typedef {Record<TInitChunkId, boolean>} TInitChunks;
+ * // TCallback -- Callback function.
+ * @typedef {() => void} TCallback
+ */
 
 class CommonModal {
-  /** Initialized flag (see `inited` method)
-   * @type {boolean}
+  /** Initializer
+   * @type {InitChunks}
    */
-  inited = false;
-  /** Waiting for initialization
-   * @type {boolean}
-   */
-  waiting = false;
-  /** @type {Error} */
-  error = undefined;
-  /** Initialization defer
-   * @type {CommonPromises.TDeferred}
-   */
-  _initDefer = undefined;
-  /** List of initialized chunks
-   * @type {TInitChunkId[]}
-   */
-  _initedChunks = [];
+  initChunks = new InitChunks(initChunksList, 'CommonModal');
 
   /** @type {TCallback[]} */
   onHideHandlers = [];
+
+  // Cached bound events...
+
+  /** @type {TCallback} */
+  _boundHideModal = undefined;
+  /** @type {EventListener} */
+  _boundOnActiveKeyPress = undefined;
 
   /**
    * @param {TCallback} [cb]
@@ -94,7 +86,7 @@ class CommonModal {
    * @return {HTMLElement|undefined}
    */
   getModalNode() {
-    this.inited || this.init();
+    this.checkDomNodeInit(); // NOTE: Don nodes should be created!
     const modal = document.getElementById('common-modal');
     // TODO: Cache?
     return modal;
@@ -106,7 +98,7 @@ class CommonModal {
    * @return {Element|undefined}
    */
   getModalNodeElementByClass(className, optional) {
-    this.inited || this.init();
+    this.checkDomNodeInit(); // NOTE: Don nodes should be created!
     const modal = this.getModalNode();
     const node = modal.getElementsByClassName(className)[0];
     if (!node && !optional) {
@@ -120,7 +112,7 @@ class CommonModal {
    * @param {string} title
    */
   setTitle(title) {
-    this.inited || this.init();
+    this.checkDomNodeInit(); // NOTE: Don nodes should be created!
     const titleEl = this.getModalNodeElementByClass('common-modal-title');
     CommonHelpers.updateNodeContent(titleEl, title);
     return this;
@@ -130,7 +122,7 @@ class CommonModal {
    * @param {string|HTMLElement|HTMLElement[]} content
    */
   setContent(content) {
-    this.inited || this.init();
+    this.checkDomNodeInit(); // NOTE: Don nodes should be created!
     const wrapperEl = this.getModalNodeElementByClass('common-modal-content-wrapper');
     CommonHelpers.updateNodeContent(wrapperEl, content);
     return this;
@@ -141,7 +133,7 @@ class CommonModal {
    * @param {boolean} [optionValue]
    */
   setModalContentOption(optionName, optionValue) {
-    this.inited || this.init();
+    this.checkDomNodeInit(); // NOTE: Don nodes should be created!
     const contentEl = this.getModalNodeElementByClass('common-modal-content');
     contentEl.classList.toggle(optionName, !!optionValue);
     return this;
@@ -152,8 +144,9 @@ class CommonModal {
    * @param {boolean} [optionValue]
    */
   setModalWindowOption(optionName, optionValue) {
-    this.inited || this.init();
+    this.checkDomNodeInit(); // NOTE: Don nodes should be created!
     const literalOptions = {
+      // TODO: Move to constants?
       width: ['sm', 'md', 'lg'],
     };
     const contentEl = this.getModalNodeElementByClass('common-modal-window');
@@ -177,7 +170,7 @@ class CommonModal {
    * @param {boolean} [scrollable]
    */
   setModalContentScrollable(scrollable) {
-    this.inited || this.init();
+    this.checkDomNodeInit(); // NOTE: Don nodes should be created!
     this.setModalContentOption('scrollable', scrollable);
     return this;
   }
@@ -186,7 +179,7 @@ class CommonModal {
    * @param {boolean} [padded]
    */
   setModalContentPadded(padded) {
-    this.inited || this.init();
+    this.checkDomNodeInit(); // NOTE: Don nodes should be created!
     this.setModalContentOption('padded', padded);
     return this;
   }
@@ -195,7 +188,7 @@ class CommonModal {
    * @param {Record<string, boolean>} options - Boolean options (`scrollable`, `padded`)
    */
   setModalContentOptions(options) {
-    this.inited || this.init();
+    this.checkDomNodeInit(); // NOTE: Don nodes should be created!
     const names = Object.keys(options);
     names.forEach((name) => {
       this.setModalContentOption(name, options[name]);
@@ -212,7 +205,7 @@ class CommonModal {
    * @param {boolean} [options.fullWindowHeight] (UNUSED)
    */
   setModalWindowOptions(options) {
-    this.inited || this.init();
+    this.checkDomNodeInit(); // NOTE: Don nodes should be created!
     const names = Object.keys(options);
     names.forEach((name) => {
       this.setModalWindowOption(name, options[name]);
@@ -224,33 +217,30 @@ class CommonModal {
    * @param {string} id
    */
   setModalContentId(id) {
-    this.inited || this.init();
+    this.checkDomNodeInit(); // NOTE: Don nodes should be created!
     const contentEl = this.getModalNodeElementByClass('common-modal-content');
     contentEl.setAttribute('id', id);
     return this;
   }
 
   /** showModal -- Show modal window
-   * @param {object} [params] - Modal parameters
-   * @param {string} [params.title] - Modal title
    */
-  showModal(params = {}) {
-    this.inited || this.init();
-    const { title } = params;
+  showModal() {
+    this.checkInit(); // NOTE: Don't forget to call `ensureInit` before!
     // Start modal ensuring all stuff has already initialized...
-    this.getInitPromise().then(() => {
-      const modal = this.getModalNode();
-      if (modal.classList.contains('show')) {
-        throw new Error('Trying to show already shown modal');
-      }
+    const modal = this.getModalNode();
+    if (modal.classList.contains('show')) {
+      throw new Error('Trying to show already shown modal');
+    }
+    /* // Use delay...
+     * setTimeout(() => {
+     * }, 30);
+     */
+    window.requestAnimationFrame(() => {
       modal.classList.toggle('show', true);
       document.body.classList.toggle('has-modal', true);
-      // Update title (if passed)...
-      if (title) {
-        this.setTitle(title);
-      }
-      this.activateEvents();
     });
+    this.activateEvents();
     return this;
   }
 
@@ -259,7 +249,7 @@ class CommonModal {
    * @param {boolean} [opts.dontNotify] - Options.
    */
   hideModal(opts = {}) {
-    this.inited || this.init();
+    this.checkInit(); // NOTE: Don't forget to call `ensureInit` before!
     this.deactivateEvents();
     const modal = this.getModalNode();
     if (!modal.classList.contains('show')) {
@@ -298,7 +288,73 @@ class CommonModal {
     outerEl.removeEventListener('mousedown', this.getBoundHideModal());
   }
 
+  // Bound events...
+
+  /**
+   * @return {TCallback}
+   */
+  getBoundHideModal() {
+    if (!this._boundHideModal) {
+      this._boundHideModal = this.hideModal.bind(this);
+    }
+    return this._boundHideModal;
+  }
+
+  /**
+   * @return {EventListener}
+   */
+  getBoundOnActiveKeyPress() {
+    if (!this._boundOnActiveKeyPress) {
+      this._boundOnActiveKeyPress = this.onActiveKeyPress.bind(this);
+    }
+    return this._boundOnActiveKeyPress;
+  }
+
   // Initialization...
+
+  getInitDefer() {
+    return this.initChunks.getInitDefer();
+  }
+
+  getInitPromise() {
+    return this.initChunks.getInitPromise();
+  }
+
+  /** Ensure the modal has initiazlized
+   * @return {Promise}
+   */
+  ensureInit() {
+    if (!this.initChunks.isWaitingOrInited()) {
+      this.init();
+    }
+    return this.initChunks.getInitPromise();
+  }
+
+  checkDomNodeInit() {
+    // NOTE: Don't forget to call `ensureInit` before!
+    if (!this.initChunks.isChunkInited('dom')) {
+      const ensureErrorText = 'Dom components should be initalized!';
+      const error = new Error(ensureErrorText);
+      // eslint-disable-next-line no-console
+      console.error('[CommonModal:checkDomNodeInit]: error (catched)', error);
+      // eslint-disable-next-line no-debugger
+      debugger;
+      throw error;
+    }
+  }
+
+  checkInit() {
+    // NOTE: Don't forget to call `ensureInit` before!
+    if (!this.initChunks.isInited()) {
+      const ensureErrorText = 'Component should be initalized with `ensureInit` before usage!';
+      const error = new Error(ensureErrorText);
+      // eslint-disable-next-line no-console
+      console.error('[CommonModal:checkInit]: error (catched)', error);
+      // eslint-disable-next-line no-debugger
+      debugger;
+      throw error;
+    }
+  }
 
   getDomNodeContent() {
     return `
@@ -324,138 +380,36 @@ class CommonModal {
     `;
   }
 
-  initDom() {
-    if (this.isChunkInited('dom')) {
-      return Promise.resolve();
-    }
-    const html = this.getDomNodeContent();
-    document.body.insertAdjacentHTML('beforeend', html);
-    this.initChunk('dom');
-  }
-
-  /**
-   * @param {Error} error
-   */
-  initFailed(error) {
-    // eslint-disable-next-line no-console
-    console.error('[CommonModal:initFailed]', error);
-    // eslint-disable-next-line no-debugger
-    debugger;
-    this.inited = false;
-    this.error = error;
-    this.waiting = false;
-    if (this._initDefer) {
-      this._initDefer.reject(error);
-    }
-    // TODO: Show notify?
-  }
-
-  initFinished() {
-    if (this.waiting) {
-      // console.log('[CommonModal:initFinished]');
-      this.inited = true;
-      this.error = undefined;
-      this.waiting = false;
-      if (this._initDefer) {
-        this._initDefer.resolve();
-      }
+  async initCssStyle() {
+    if (!this.initChunks.isChunkStarted('cssStyle')) {
+      this.initChunks.startChunk('cssStyle');
+      await CommonHelpers.addCssStyle(cssStyleUrl);
+      // Inited for `cssStyle`
+      // Wait animation frame to finish updating css styles...
+      const finishCssStyleChunk = this.initChunks.finishChunk.bind(this.initChunks, 'cssStyle');
+      window.requestAnimationFrame(finishCssStyleChunk);
     }
   }
 
-  /**
-   * @param {TInitChunkId} id
-   */
-  initChunk(id) {
-    /* console.log('[CommonModal:initChunk]', id, {
-     *   id,
-     *   initedChunks: this._initedChunks,
-     * });
-     */
-    if (!initChunksList.includes(id)) {
-      throw new Error(`Unknown initialization chunk: '${id}'`);
-    } else if (this._initedChunks.includes(id)) {
-      throw new Error(`Trying to initialize chunk '${id}' twice`);
+  createDomNode() {
+    if (!this.initChunks.isChunkStarted('dom')) {
+      this.initChunks.startChunk('dom');
+      const html = this.getDomNodeContent();
+      document.body.insertAdjacentHTML('beforeend', html);
+      this.initChunks.finishChunk('dom');
     }
-    this._initedChunks.push(id);
-    if (this._initedChunks.length >= initChunksList.length) {
-      // All chunks are initilized
-      this.initFinished();
-    }
-  }
-
-  /**
-   * @param {TInitChunkId} id
-   */
-  isChunkInited(id) {
-    return this._initedChunks.includes(id);
-  }
-
-  getInitDefer() {
-    if (!this._initDefer) {
-      this._initDefer = CommonPromises.Deferred();
-      this._initDefer.promise.catch((e) => e); // Suppress uncaught promise errors
-      if (!this.waiting) {
-        // NOTE: Check init/error state and resolve the promise immediately if this state has defined.
-        // The case: _initDefer was requested after the state has initialized.
-        if (this.inited) {
-          // Successfully initialized!
-          this._initDefer.resolve();
-          /* // Catch error?
-           * } else if (this.error) {
-           *   // Error!
-           *   this._initDefer.reject(this.error);
-           */
-        }
-        // TODO: Else -- Start initialization limit timer with auto-cancel?
-      }
-    }
-    return this._initDefer;
-  }
-
-  getInitPromise() {
-    return this.getInitDefer().promise;
-  }
-
-  /** Ensure the modal has initiazlized
-   * @return {Promise}
-   */
-  ensureInit() {
-    this.inited || this.init();
-    return this.getInitPromise();
-  }
-
-  getBoundHideModal() {
-    if (!this._boundHideModal) {
-      this._boundHideModal = this.hideModal.bind(this);
-    }
-    return this._boundHideModal;
-  }
-
-  getBoundOnActiveKeyPress() {
-    if (!this._boundOnActiveKeyPress) {
-      this._boundOnActiveKeyPress = this.onActiveKeyPress.bind(this);
-    }
-    return this._boundOnActiveKeyPress;
   }
 
   initEvents() {
-    if (this.isChunkInited('events')) {
-      return Promise.resolve();
+    if (!this.initChunks.isChunkStarted('events')) {
+      // NOTE: Can't work without initialized dom!
+      this.createDomNode();
+      this.initChunks.startChunk('events');
+      // Link close modal button handler (TODO: To use more specific class name?)...
+      const closeEl = this.getModalNodeElementByClass('close');
+      closeEl.addEventListener('click', this.getBoundHideModal());
+      this.initChunks.finishChunk('events');
     }
-    // Link close modal button handler (TODO: To use more specific class name?)...
-    const closeEl = this.getModalNodeElementByClass('close');
-    closeEl.addEventListener('click', this.getBoundHideModal());
-    this.initChunk('events');
-  }
-
-  initCssStyle() {
-    if (this.isChunkInited('cssStyle')) {
-      return Promise.resolve();
-    }
-    return CommonHelpers.addCssStyle(cssStyleUrl).then(() => {
-      // Inited for `cssStyle`
-      this.initChunk('cssStyle');
-    });
   }
 
   /** Initialize the longest things (loading external css styles)
@@ -464,29 +418,29 @@ class CommonModal {
     return this.initCssStyle();
   }
 
-  /** init -- Initialize the modal. Should be called before first usage, see call inside `showModal`.
+  /** Initialize nodule.
    */
   init() {
-    if (!this.inited && !this.waiting) {
-      this.waiting = true;
+    if (!this.initChunks.isWaitingOrInited()) {
+      this.initChunks.start();
       this.initCssStyle()
+        /* // Use some delay after css load...
+         * .then(() => CommonPromises.delayedPromise(1000))
+         */
+        // Initialize dom nodes & events...
         .then(() => {
           // Create all dom nodes...
-          return this.initDom();
-        })
-        .then(() => {
+          this.createDomNode();
           // Init events...
-          return this.initEvents();
+          this.initEvents();
         })
         // TODO: Catch error with initFailed?
         .catch((error) => {
-          this.initFailed(error);
+          this.initChunks.initFailed(error);
         });
-      // NOTE: Initialization should be finished on all init chanks finish, in `initFinished`.
+      // NOTE: Initialization should be finished on all init chanks finish, in `initChunks.initFinished`.
     }
   }
-
-  // TODO: constructor, destroy?
 }
 
 // Create and export singletone
