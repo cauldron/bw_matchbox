@@ -1,3 +1,5 @@
+// @ts-check
+
 import * as CommonHelpers from '../common/CommonHelpers.js';
 import { commonModal } from '../common/CommonModal.js';
 
@@ -27,7 +29,7 @@ export const ProcessDetail = {
   },
 
   /** setError -- Set and show error.
-   * @param {string|error|string[]|error[]} error - Error or errors list.
+   * @param {string|Error|string[]|Error[]} error - Error or errors list.
    */
   setError(error) {
     const hasErrors = !!error;
@@ -104,14 +106,16 @@ export const ProcessDetail = {
             })
             .showModal();
           // Store comment value...
-          const okButtonEl = document.getElementById('mark-waitlist-ok');
+          /** @type {HTMLButtonElement} */
+          const okButtonEl = document.querySelector('button#mark-waitlist-ok');
           // TODO: Add handlers for modal actions
           okButtonEl.addEventListener('click', () => {
             if (isOpened) {
               isOpened = false;
               commonModal.hideModal({ dontNotify: true });
               // Success: proceed with comment text
-              const commentEl = document.getElementById('mark-waitlist-comment');
+              /** @type {HTMLTextAreaElement} */
+              const commentEl = document.querySelector('textarea#mark-waitlist-comment');
               const comment = commentEl.value;
               resolve({ comment, status: 'comment from promiseMarkWaitlistDialog' });
             }
@@ -125,7 +129,6 @@ export const ProcessDetail = {
   },
 
   /** doMarkWaitlist -- Send mark as waitlist requests
-   * @param {HTMLButtonElement} button
    * @param {object} userAction - Result of `promiseMarkWaitlistDialog` (`{ comment }` or `false`)
    */
   doMarkWaitlist(userAction) {
@@ -171,7 +174,6 @@ export const ProcessDetail = {
   },
 
   /** markWaitlist -- Handler for 'Waitlist' button.
-   * @param {<HTMLButtonElement>} button
    */
   markWaitlist() {
     const { sharedData } = this;
@@ -187,13 +189,13 @@ export const ProcessDetail = {
             return this.doMarkWaitlist(userAction);
           }
         })
-        // Suppress exceptions (should be catched before)
+        // Suppress exceptions on top-level handler (should be catched before)
         .catch((e) => e)
     );
   },
 
   /** markMatched -- Handler for 'No match needed' button.
-   * @param {<HTMLButtonElement>} button
+   * @param {HTMLButtonElement} button
    */
   markMatched(button) {
     const { sharedData } = this;
@@ -230,7 +232,7 @@ export const ProcessDetail = {
   },
 
   /** markAllMatched -- Handler for 'Mark all matched' button.
-   * @param {<HTMLButtonElement>} button
+   * @param {HTMLButtonElement} button
    */
   markAllMatched(button) {
     const { sharedData } = this;
