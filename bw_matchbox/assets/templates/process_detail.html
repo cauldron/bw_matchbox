@@ -158,4 +158,12 @@ modules.require('ProcessDetail', function requireProcessDetail(ProcessDetail) {
   ProcessDetail.start(sharedData);
 });
 </script>
+<!-- Start project scripts -->
+<script type="module">
+  // Test import native ES6 modules...
+  // Import main client code module...
+  import { testMain } from '/assets/modules/test.js';
+  // Start client code...
+  testMain();
+</script>
 {% include 'footer.html' %}

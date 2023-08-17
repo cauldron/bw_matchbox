@@ -1,0 +1,29 @@
+{
+  "compilerOptions": {
+    "target": "es5",
+    "lib": ["dom", "dom.iterable", "esnext"],
+    "allowJs": true,
+    "skipLibCheck": true,
+    "strict": false,
+    "forceConsistentCasingInFileNames": true,
+    "noEmit": true,
+    "esModuleInterop": true,
+    "module": "esnext",
+    "moduleResolution": "node",
+    "useDefineForClassFields": true,
+    "experimentalDecorators": true,
+    "resolveJsonModule": true,
+    "isolatedModules": true,
+    "jsx": "preserve",
+    "incremental": true,
+    "baseUrl": ".",
+    "paths": {
+      "/": ["bw_matchbox/*"]
+    }
+  },
+  "typeRoots": [
+    "bw_matchbox/types/**/*"
+  ],
+  "include": ["**/*.ts", "**/*.js"],
+  "exclude": ["node_modules", ".git", ".vscode", "docs", "tests", "bw_matchbox.egg-info", "**/*_"]
+}
