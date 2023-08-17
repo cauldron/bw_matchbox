@@ -17,9 +17,9 @@ from peewee import DoesNotExist, IntegrityError, fn
 from werkzeug.security import check_password_hash, generate_password_hash
 
 from .comments import Comment, CommentThread
+from .matching import MATCH_TYPE_ABBREVIATIONS, get_match_types
+from .export import export_database_to_csv
 from .utils import (
-    get_match_types,
-    MATCH_TYPE_ABBREVIATIONS,
     name_close_enough,
     normalize_name,
     similar_location,
@@ -1024,3 +1024,29 @@ def create_proxy():
     source.save()
 
     return flask.redirect(flask.url_for("process_detail", id=process.id))
+
+
+@matchbox_app.route("/export/", methods=["GET"])
+@auth.login_required
+def export():
+    config = get_config()
+
+    format = flask.request.args.get("format")
+    if not format:
+        return flask.render_template(
+            "export.html",
+            config=config,
+            num_proxy_ds=len(bd.Database(config['proxy'])),
+            title="Export",
+        )
+    elif format == "csv":
+        temp_filepath = export_database_to_csv(db_name = config['proxy'], directory=matchbox_app.config["mb_output_dir"])
+        return flask.send_file(
+            path_or_file=temp_filepath,
+            mimetype='text/csv',
+            as_attachment=True,
+            download_name=temp_filepath.name,
+            etag=False,
+        )
+    else:
+        flask.abort(500)

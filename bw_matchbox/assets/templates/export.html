@@ -1,0 +1,29 @@
+{% include 'header.html' %}
+
+<div class="container">
+  {% include 'navigation.html' %}
+  <div class="row">
+    <h2>Export the proxy database "{{ config.proxy }}" ({{ num_proxy_ds }} processes)</h2>
+  </div>
+  <div class="row">
+    <div class="four columns">
+      <a href="{{ url_for('export', format='csv') }}">
+        <img src="{{ url_for('static', filename='images/csv.svg') }}" width="100%"/>
+        <h3 style="text-align: center;">CSV</h3>
+      </a>
+    </div>
+    <div class="four columns">
+      <a href="{{ url_for('export', format='xml') }}">
+        <img src="{{ url_for('static', filename='images/xml.svg') }}" width="100%"/>
+        <h3 style="text-align: center;">Ecospold1 XML</h3>
+      </a>
+    </div>
+    <div class="four columns">
+      <a href="{{ url_for('export', format='json') }}">
+        <img src="{{ url_for('static', filename='images/json.svg') }}" width="100%"/>
+        <h3 style="text-align: center;">Randonneur JSON</h3>
+      </a>
+    </div>
+  </div>
+
+{% include 'footer.html' %}

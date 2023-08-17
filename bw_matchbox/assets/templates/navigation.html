@@ -9,6 +9,6 @@
     {% if config.source %}
     <div class="three columns">Source: {{ config.source }}</div>
     <div class="three columns">Target: {{ config.target }}</div>
-    <div class="three columns">Proxy: {{ config.proxy }}</div>
+    <div class="three columns">Proxy: {{ config.proxy }} | <a href="{{ url_for('export') }}">Export</a></div>
     {% endif %}
 </div>
