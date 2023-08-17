@@ -1,5 +1,4 @@
 // @ts-check
-// Define module...
 
 /** Compare two arrays with scalar (number, string, boolean) values
  * @param {(number | string | boolean)[]} a1
@@ -29,7 +28,7 @@ export function compareArrays(a1, a2) {
 export function runAsyncCallbacksSequentially(callbacks) {
   return new Promise((resolve, reject) => {
     const results = [];
-    const doPromise = (cb) => {
+    const doPromise = (/** @type {() => Promise} */ cb) => {
       if (!cb) {
         // No more callbacks: return results...
         return resolve(results);
@@ -166,7 +165,7 @@ export function htmlToElements(html) {
 }
 
 /** updateNodeContent -- Replace all inner dom node content.
- * @param {HTMLElement} node
+ * @param {Element} node
  * @param {string|HTMLElement|HTMLElement[]} content
  */
 export function updateNodeContent(node, content) {
@@ -272,4 +271,36 @@ export function makeQuery(params, opts = {}) {
     url = '?' + url;
   }
   return url;
+}
+
+/** Dynamically load external script
+ * @param {string} url
+ * @return {Promise}
+ */
+export function addScript(url) {
+  return new Promise((resolve, reject) => {
+    // document.write('<script src="' + url + '"></script>');
+    const script = document.createElement('script');
+    script.setAttribute('src', url);
+    script.addEventListener('load', resolve);
+    script.addEventListener('error', reject);
+    document.head.appendChild(script);
+  });
+}
+
+/** Dynamically load external css
+ * @param {string} url
+ * @return {Promise}
+ */
+export function addCssStyle(url) {
+  return new Promise((resolve, reject) => {
+    // reject(new Error('test')); // DEBUG: Test errors catching
+    const script = document.createElement('link');
+    script.setAttribute('href', url);
+    script.setAttribute('type', 'text/css');
+    script.setAttribute('rel', 'stylesheet');
+    script.addEventListener('load', resolve);
+    script.addEventListener('error', reject);
+    document.head.appendChild(script);
+  });
 }

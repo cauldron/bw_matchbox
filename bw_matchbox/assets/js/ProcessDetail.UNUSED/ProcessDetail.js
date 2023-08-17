@@ -1,3 +1,6 @@
+// import * as CommonHelpers from '../../modules/common/CommonHelpers.js';
+// import { commonModal } from '../../modules/common/CommonModal.js';
+
 modules.define(
   'ProcessDetail',
   [

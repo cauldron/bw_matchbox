@@ -2,15 +2,17 @@
 
 {# Common dependencies... #}
 
-{# Modal windows are used #}
+{# Modal windows are used
 {% include 'common-modal.html' %}
+#}
 
 {# Module-specific dependencies... #}
 
 <link rel="stylesheet" href="{{ url_for('static', filename='css/process-detail.css') }}">
 
-{# Core js module #}
+{# Core js module
 <script src="{{ url_for('static', filename='js/ProcessDetail/ProcessDetail.js') }}"></script>
+#}
 
 <div id="process-detail" class="process-detail container{{ ' waitlist' if ds.get('waitlist') }}">
   {% include 'navigation.html' %}
@@ -138,7 +140,15 @@
 </div>
 
 <script type="text/javascript">
-modules.require('ProcessDetail', function requireProcessDetail(ProcessDetail) {
+</script>
+<!-- Start project scripts -->
+<script type="module">
+
+  import { ProcessDetail } from '/assets/modules/ProcessDetail/ProcessDetail.js';
+
+  // modules.require('ProcessDetail', function requireProcessDetail(ProcessDetail) {
+  // });
+
   // Global variables for compare tables feature (via global variable `sharedData`)...
   const sharedData = {
     addAttributeUrl: "{{ url_for('add_attribute', id=ds.id)|safe }}",
@@ -156,14 +166,13 @@ modules.require('ProcessDetail', function requireProcessDetail(ProcessDetail) {
 
   // Start core module...
   ProcessDetail.start(sharedData);
-});
-</script>
-<!-- Start project scripts -->
-<script type="module">
+
+  /*
   // Test import native ES6 modules...
   // Import main client code module...
   import { testMain } from '/assets/modules/test.js';
   // Start client code...
   testMain();
+  */
 </script>
 {% include 'footer.html' %}
