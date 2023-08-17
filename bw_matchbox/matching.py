@@ -11,7 +11,7 @@ BASE_MATCH_TYPES = {
     "7": "Equivalent datasets after modification",
     "8": "Replace aggregated with unit process",
     "9": "Rescaled direct correspondence",
-    "10": "Similar data but different location"
+    "10": "Similar data but different location",
 }
 
 

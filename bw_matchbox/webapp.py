@@ -1036,14 +1036,16 @@ def export():
         return flask.render_template(
             "export.html",
             config=config,
-            num_proxy_ds=len(bd.Database(config['proxy'])),
+            num_proxy_ds=len(bd.Database(config["proxy"])),
             title="Export",
         )
     elif format == "csv":
-        temp_filepath = export_database_to_csv(db_name = config['proxy'], directory=matchbox_app.config["mb_output_dir"])
+        temp_filepath = export_database_to_csv(
+            db_name=config["proxy"], directory=matchbox_app.config["mb_output_dir"]
+        )
         return flask.send_file(
             path_or_file=temp_filepath,
-            mimetype='text/csv',
+            mimetype="text/csv",
             as_attachment=True,
             download_name=temp_filepath.name,
             etag=False,
