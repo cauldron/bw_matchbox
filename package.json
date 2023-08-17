@@ -32,11 +32,13 @@
     "eslint-plugin-jsonc": "^2.9.0",
     "eslint-plugin-prettier": "^5.0.0",
     "eslint-plugin-yaml": "^0.5.0",
+    "jshint": "^2.13.6",
     "npm-run-all": "^4.1.5",
     "prettier": "^3.0.0",
     "stylelint": "^15.10.2",
     "stylelint-config-recommended": "^13.0.0",
-    "stylelint-config-standard": "^34.0.0"
+    "stylelint-config-standard": "^34.0.0",
+    "typescript": "^5.1.6"
   },
   "scripts": {
     "install-locally": "echo --Install python library locally /venv, dev/-- && pip install -e .",
@@ -47,6 +49,7 @@
     "stylelint": "echo --Lint styles-- && stylelint bw_matchbox/**/*.{css,scss,less}",
     "stylelint-fix": "echo --Lint styles-- && stylelint bw_matchbox/**/*.{css,scss,less} --fix",
     "lint": "echo --Lint sources-- && eslint bw_matchbox --ext js",
+    "type-check": "echo --Run typescript linter-- && tsc --pretty --noEmit",
     "check-all": "echo --Run all pre-commit check-ups-- && npm-run-all prettier stylelint lint && echo --All check-ups are passed--",
     "start": "echo --Run dev flask server /venv, dev/-- && python bw_matchbox/bin/matchbox.py webapp config.toml",
     "test": "echo \"Error: no test specified\" && exit 1"

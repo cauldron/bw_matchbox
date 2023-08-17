@@ -1,3 +1,4 @@
+// --@ts-check
 modules.define(
   'ProcessesListDataRender',
   [
@@ -16,6 +17,8 @@ modules.define(
     // Define module...
 
     /** @descr Render table content.
+     * @typedef ProcessesListDataRender
+     * @property {function} clearTableData
      */
     const ProcessesListDataRender = {
       clearTableData() {
