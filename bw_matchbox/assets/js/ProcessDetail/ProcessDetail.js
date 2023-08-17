@@ -144,9 +144,11 @@ modules.define(
         const makeUrlParams = { addQuestionSymbol: true, useEmptyStrings: true };
         const urls = [
           // Url #1, Eg: ?attr=match_type&value=1
-          urlBase + CommonHelpers.makeQuery({ attr: 'waitlist', value: waitlistValue }, makeUrlParams),
+          urlBase +
+            CommonHelpers.makeQuery({ attr: 'waitlist', value: waitlistValue }, makeUrlParams),
           // Url #2, Eg: ?attr=waitlist_comment&value=<comment text>
-          urlBase + CommonHelpers.makeQuery({ attr: 'waitlist_comment', value: comment }, makeUrlParams),
+          urlBase +
+            CommonHelpers.makeQuery({ attr: 'waitlist_comment', value: comment }, makeUrlParams),
         ].filter(Boolean);
         // Call both requests at once...
         const callbacks = urls.map((url) => () => fetch(url));
@@ -238,7 +240,9 @@ modules.define(
         fetch(url)
           .then((res) => {
             if (!res.ok) {
-              const error = new Error(`Can't load url '${res.url}': ${res.statusText}, ${res.status}`);
+              const error = new Error(
+                `Can't load url '${res.url}': ${res.statusText}, ${res.status}`,
+              );
               // eslint-disable-next-line no-console
               console.error('[ProcessDetail:markAllMatched] Got error', error);
               // eslint-disable-next-line no-debugger

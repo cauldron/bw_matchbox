@@ -31,9 +31,15 @@ modules.define(
        * @param {boolean} [opts.update] - Update current data chunk.
        */
       loadData(/* opts = {} */) {
-        const { currentPage, orderBy, filterBy, userDb, searchValue, sharedParams, hasSearch } = ProcessesListData;
+        const { currentPage, orderBy, filterBy, userDb, searchValue, sharedParams, hasSearch } =
+          ProcessesListData;
         const { databases } = sharedParams;
-        const { pageSize, processesApiUrl: urlBase, defaultOrderBy, defaultFilterBy } = ProcessesListConstants;
+        const {
+          pageSize,
+          processesApiUrl: urlBase,
+          defaultOrderBy,
+          defaultFilterBy,
+        } = ProcessesListConstants;
         const userDbValue = databases[userDb]; // Could it be empty? Eg, to use: `|| database`
         const offset = currentPage * pageSize; // TODO!
         const params = {
@@ -53,7 +59,9 @@ modules.define(
             const { ok, status, statusText } = res;
             if (!ok) {
               // Something went wrong?
-              const reason = [statusText, status && 'status: ' + status].filter(Boolean).join(', ') || 'Unknown error';
+              const reason =
+                [statusText, status && 'status: ' + status].filter(Boolean).join(', ') ||
+                'Unknown error';
               const error = new Error('Data loading error: ' + reason);
               // eslint-disable-next-line no-console
               console.error('[ProcessesListDataLoad:loadData]: error (on then)', {
