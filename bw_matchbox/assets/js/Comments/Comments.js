@@ -2,7 +2,6 @@ modules.define(
   'Comments',
   [
     // Required modules...
-    // 'CommonHelpers',
     'CommentsConstants',
     'CommentsData',
     'CommentsDataRender',
@@ -17,7 +16,6 @@ modules.define(
   function provide_Comments(
     provide,
     // Resolved modules...
-    // CommonHelpers,
     /* eslint-disable no-unused-vars */
     CommentsConstants,
     CommentsData,
@@ -36,6 +34,7 @@ modules.define(
     const usedModulesList = Array.from(arguments).splice(1);
 
     /** @exports Comments
+     * @type {<Comments>}
      */
     const Comments = {
       __id: 'Comments',
@@ -45,8 +44,6 @@ modules.define(
 
       /** Handlers exchange object */
       handlers: {},
-
-      // Proxy handlers...
 
       // Initialization...
 
@@ -60,16 +57,18 @@ modules.define(
         // Start all the modules...
         usedModulesList.forEach((module) => {
           if (!module) {
+            // WTF?
             return;
           }
           if (module.__id) {
+            // Expose module (is it safe and neccessary?)...
             this[module.__id] = module;
           }
           if (typeof module.start === 'function') {
             try {
               module.start(initParams);
               /* // Alternate option: Delayed start...
-               * setTimeout(module.start.bind(module), 0);
+               * setTimeout(module.start.bind(module), 0, initParams);
                */
             } catch (error) {
               // eslint-disable-next-line no-console

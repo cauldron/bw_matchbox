@@ -3,6 +3,7 @@ modules.define(
   [
     // Required modules...
     'CommonHelpers',
+    // Local modules...
     'ProcessesListConstants',
     'ProcessesListData',
     'ProcessesListDataLoad',
@@ -15,6 +16,8 @@ modules.define(
     provide,
     // Resolved modules...
     CommonHelpers,
+    // Local modules...
+    /* eslint-disable no-unused-vars */
     ProcessesListConstants,
     ProcessesListData,
     ProcessesListDataLoad,
@@ -22,30 +25,18 @@ modules.define(
     ProcessesListNodes,
     ProcessesListSearch,
     ProcessesListStates,
+    /* eslint-enable no-unused-vars */
   ) {
-    // Define module...
-
-    /** @descr Process list table client code.
-     *
-     * TODO:
-     *
-     * - Add fallback for 'Reload' (reload last data chunk) if error occured.
+    /** Used modules list (will be needed for initialization, in `startAllModules`)
      */
-
-    // NOTE: Don't forget to call `startAllModules` for all the used modules...
-    const allModulesList = [
-      ProcessesListConstants,
-      ProcessesListData,
-      ProcessesListNodes,
-      ProcessesListStates,
-      ProcessesListSearch,
-      ProcessesListDataRender,
-      ProcessesListDataLoad,
-    ];
+    const usedModulesList = Array.from(arguments).splice(1);
 
     // global module variable
     const ProcessesList = {
-      // Proxy handlers...
+      __id: 'ProcessesList',
+
+      /** TODO: Handlers exchange object */
+      // handlers: {},
 
       /** Update value of 'order by' parameter from user */
       onOrderByChange(target) {
@@ -112,13 +103,26 @@ modules.define(
       /** startAllModules -- Start all the modules
        */
       startAllModules() {
+        const initParams = {
+          // handlers: this.handlers,
+          sharedParams: this.sharedParams,
+        };
         // Start all the modules...
-        allModulesList.forEach((module) => {
-          if (module && typeof module.start === 'function') {
+        usedModulesList.forEach((module) => {
+          if (!module) {
+            // WTF?
+            return;
+          }
+          /* // Expose module (is it safe and neccessary?)...
+           * if (module.__id) {
+           *   this[module.__id] = module;
+           * }
+           */
+          if (typeof module.start === 'function') {
             try {
-              module.start();
+              module.start(initParams);
               /* // Alternate option: Delayed start...
-               * setTimeout(module.start.bind(module), 0);
+               * setTimeout(module.start.bind(module), 0, initParams);
                */
             } catch (error) {
               // eslint-disable-next-line no-console
