@@ -136,7 +136,9 @@ modules.define(
           .then((res) => {
             // TODO: if (!res.ok) ...
             if (!res.ok) {
-              const error = new Error(`Can't load url '${res.url}': ${res.statusText}, ${res.status}`);
+              const error = new Error(
+                `Can't load url '${res.url}': ${res.statusText}, ${res.status}`,
+              );
               throw error;
             } else {
               // return res.text();

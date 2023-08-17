@@ -127,7 +127,9 @@ modules.define(
       setOrderBy(orderBy, opts = {}) {
         const { defaultOrderBy } = ProcessesListConstants;
         const rootNode = ProcessesListNodes.getRootNode();
-        const prevClass = ['order', ProcessesListData.orderBy || defaultOrderBy].filter(Boolean).join('-');
+        const prevClass = ['order', ProcessesListData.orderBy || defaultOrderBy]
+          .filter(Boolean)
+          .join('-');
         const value = orderBy || defaultOrderBy;
         const nextClass = ['order', value].filter(Boolean).join('-');
         if (prevClass !== nextClass) {
@@ -149,7 +151,9 @@ modules.define(
       setFilterBy(filterBy, opts = {}) {
         const { defaultFilterBy } = ProcessesListConstants;
         const rootNode = ProcessesListNodes.getRootNode();
-        const prevClass = ['filter', ProcessesListData.filterBy || defaultFilterBy].filter(Boolean).join('-');
+        const prevClass = ['filter', ProcessesListData.filterBy || defaultFilterBy]
+          .filter(Boolean)
+          .join('-');
         const value = filterBy || defaultFilterBy;
         const nextClass = ['filter', value].filter(Boolean).join('-');
         if (prevClass !== nextClass) {
@@ -171,7 +175,9 @@ modules.define(
       setUserDb(userDb, opts = {}) {
         const { defaultUserDb } = ProcessesListConstants;
         const rootNode = ProcessesListNodes.getRootNode();
-        const prevClass = ['filter', ProcessesListData.userDb || defaultUserDb].filter(Boolean).join('-');
+        const prevClass = ['filter', ProcessesListData.userDb || defaultUserDb]
+          .filter(Boolean)
+          .join('-');
         const value = userDb || defaultUserDb;
         const nextClass = ['filter', value].filter(Boolean).join('-');
         if (prevClass !== nextClass) {

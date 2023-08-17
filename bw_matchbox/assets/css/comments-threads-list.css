@@ -170,7 +170,11 @@
   margin-right: -2px;
 }
 /* Disable some actions */
-.comments-root:not(.role-editors, .role-reviewers) .threads-list .thread .title-actions a#threadAddComment,
+.comments-root:not(.role-editors, .role-reviewers)
+  .threads-list
+  .thread
+  .title-actions
+  a#threadAddComment,
 .comments-root:not(.role-editors) .threads-list .thread .title-actions a#threadResolve {
   display: none;
 }
