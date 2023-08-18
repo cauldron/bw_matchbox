@@ -37,12 +37,14 @@ export const CommentsPageData = {
 
   // Data params...
 
-  // Comments and threads data...
-  comments: [], // TComment[]
-  threads: [], // TThread[]
-  commentsHash: {}, // TCommentsHash = Record<TTreadId, TComment>
-  threadsHash: {}, // TThreadsHash = Record<TTreadId, TThread>
-  commentsByThreads: {}, // TCommentsByThreads = Record<TTreadId, TCommentId[]>
+  /* // Moved to `ThreadCommentsData`
+   * // Comments and threads data...
+   * comments: [], // TComment[]
+   * threads: [], // TThread[]
+   * commentsHash: {}, // TCommentsHash = Record<TTreadId, TComment>
+   * threadsHash: {}, // TThreadsHash = Record<TTreadId, TThread>
+   * commentsByThreads: {}, // TCommentsByThreads = Record<TTreadId, TCommentId[]>
+   */
 
   // Collected data...
   users: [],

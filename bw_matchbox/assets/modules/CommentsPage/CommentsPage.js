@@ -11,6 +11,8 @@ import { CommentsPagePrepareLoadedData } from './CommentsPagePrepareLoadedData.j
 import { CommentsPageStates } from './CommentsPageStates.js';
 import { CommentsPageThreadsHelpers } from './CommentsPageThreadsHelpers.js';
 
+import { ThreadComments } from '../components/ThreadComments/ThreadComments.js';
+
 /** @typedef TSharedParams
  * @property {string} base_url
  * @property {string} currentRole
@@ -42,6 +44,8 @@ const usedModulesList = [
 
 export const CommentsPage = {
   __id: 'CommentsPage',
+
+  threadComments: new ThreadComments('CommentsPage'),
 
   /** Handlers exchange object
    * @type {TSharedHandlers}
@@ -89,6 +93,30 @@ export const CommentsPage = {
     });
   },
 
+  initComments() {
+    // Init comments module parameters
+    this.threadComments.setParams({
+      errorNode: CommentsPageNodes.getErrorNode(),
+      threadsListNode: CommentsPageNodes.getThreadsListNode(),
+    });
+
+    // Init sub-components...
+    this.threadComments
+      .ensureInit()
+      .then(() => {
+        console.log('[CommentsPage:start] threadComments.ensureInit success');
+        debugger;
+        // TODO: Invoke `loadComments`
+        // TODO: Clear loading status
+      })
+      .catch((error) => {
+        console.error('[CommentsPage:start] threadComments.ensureInit success', error);
+        debugger;
+        // Set error
+      });
+    // TODO: Register events in `this.threadComments.events()` for `onInitFinished`, `onInitFailed`, etc...
+  },
+
   /** Start entrypoint
    * @param {TSharedParams} sharedParams
    */
@@ -99,7 +127,12 @@ export const CommentsPage = {
     // Initialize all the modules...
     this.startAllModules(sharedParams);
 
-    // Load data...
-    CommentsPageLoader.loadComments();
+    /* // Should be called from `ThreadComments`.
+     * // Load data...
+     * CommentsPageLoader.loadComments();
+     */
+
+    // Init comments module
+    this.initComments();
   },
 };

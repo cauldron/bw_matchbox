@@ -69,20 +69,20 @@ export class InitChunks {
   // Errors...
 
   /** @param {TErrorCb} cb */
-  onFailed(cb) {
-    this.events.add('onFailed', cb);
+  onInitFailed(cb) {
+    this.events.add('onInitFailed', cb);
     return this;
   }
 
   /** @param {TCallback} cb */
-  onStarted(cb) {
-    this.events.add('onStarted', cb);
+  onInitStarted(cb) {
+    this.events.add('onInitStarted', cb);
     return this;
   }
 
   /** @param {TCallback} cb */
-  onFinished(cb) {
-    this.events.add('onFinished', cb);
+  onInitFinished(cb) {
+    this.events.add('onInitFinished', cb);
     return this;
   }
 
@@ -186,10 +186,10 @@ export class InitChunks {
       // Create init defer, start initialization...
       this._initDefer = CommonPromises.Deferred();
       const promise = this._initDefer.promise;
-      promise.then(this.events.invoke.bind(this.events, 'onFinished'));
-      promise.catch(this.events.invoke.bind(this.events, 'onFailed'));
+      promise.then(this.events.invoke.bind(this.events, 'onInitFinished'));
+      promise.catch(this.events.invoke.bind(this.events, 'onInitFailed'));
       // promise.catch((e) => e); // Suppress uncaught promise errors
-      this.events.invoke('onStarted');
+      this.events.invoke('onInitStarted');
       if (!this.waiting) {
         // NOTE: Check init/error state and resolve the promise immediately if this state has defined.
         // The case: _initDefer was requested after the state has initialized.
