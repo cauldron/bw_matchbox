@@ -7,7 +7,7 @@ const useFakeCurrentUser = useDebug && true; // DEBUG: Use first of found users 
 
 /** Default filter values... */
 const defaultParams = {
-  /** @type {'name' | 'modifiedDate'} */
+  /** @type {TSortThreadsBy} */
   sortThreadsBy: 'modifiedDate',
   // TODO: Should be a list
 
@@ -31,12 +31,12 @@ export const ThreadCommentsData = {
   useFakeData,
   useFakeCurrentUser,
 
-  // TODO: errorNode,
+  // Shared params...
 
-  /* // On `CommentsPageData`
-   * // Owner page's provided data...
-   * sharedParams: undefined,
-   */
+  /** @type {string} */
+  currentUser: undefined,
+  /** @type {string} */
+  currentRole: undefined,
 
   // Data params...
 

@@ -17,7 +17,7 @@ export const ThreadCommentsLoader = /** @lends ThreadCommentsLoader */ {
     console.log('[ThreadCommentsLoader:loadComments]: start', {
       url,
     });
-    debugger;
+    // debugger;
     ThreadCommentsStates.setLoading(true);
     fetch(url)
       .then((res) => {
@@ -50,13 +50,14 @@ export const ThreadCommentsLoader = /** @lends ThreadCommentsLoader */ {
         } = json;
         const hasData = Array.isArray(comments) && !!comments.length;
         console.log('[ThreadCommentsLoader:loadComments]: got comments', {
+          hasData,
           json,
           comments,
           threads,
           totalThreads,
           totalComments,
         });
-        debugger;
+        // debugger;
         // Store data...
         ThreadCommentsData.comments = comments;
         ThreadCommentsData.threads = threads;
@@ -70,8 +71,10 @@ export const ThreadCommentsLoader = /** @lends ThreadCommentsLoader */ {
         ThreadCommentsPrepare.makeDerivedData();
         // Render data...
         ThreadCommentsRender.renderData();
-        ThreadCommentsRender.updateVisibleThreadsStatus();
-        ThreadCommentsRender.renderDerivedFilters();
+        /* // TODO: Make signal to owner?
+         * ThreadCommentsRender.updateVisibleThreadsStatus();
+         * ThreadCommentsRender.renderDerivedFilters();
+         */
       })
       .catch((error) => {
         // eslint-disable-next-line no-console

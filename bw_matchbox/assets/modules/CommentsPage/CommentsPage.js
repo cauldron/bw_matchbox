@@ -92,11 +92,15 @@ export const CommentsPage = {
     });
   },
 
-  initComments() {
+  /** @param {TSharedParams} sharedParams */
+  initComments(sharedParams) {
+    const { currentUser, currentRole } = sharedParams;
     // Init comments module parameters
     this.threadComments.setParams({
       errorNode: CommentsPageNodes.getErrorNode(),
       threadsListNode: CommentsPageNodes.getThreadsListNode(),
+      currentUser,
+      currentRole,
     });
 
     // Init sub-components...
@@ -133,6 +137,6 @@ export const CommentsPage = {
      */
 
     // Init comments module
-    this.initComments();
+    this.initComments(sharedParams);
   },
 };

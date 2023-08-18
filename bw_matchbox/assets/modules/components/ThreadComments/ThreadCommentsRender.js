@@ -154,8 +154,7 @@ const helpers = {
    * @param {TComment} comment
    */
   renderComment(comment) {
-    const { sharedParams } = ThreadCommentsData;
-    const { currentUser } = sharedParams;
+    const { currentUser } = ThreadCommentsData;
     const {
       id, // number; // 2
       position, // number; // 1
@@ -290,16 +289,18 @@ export const ThreadCommentsRender = {
     }
   },
 
-  updateVisibleThreadsStatus() {
-    const threadsListNode = ThreadCommentsNodes.getThreadsListNode();
-    const visibleThreadNodes = threadsListNode.querySelectorAll('.thread:not(.hidden)');
-    // eslint-disable-next-line no-unused-vars
-    const hasVisibleThreads = !!visibleThreadNodes.length;
-    /* // TODO: Update global status...
-     * const rootNode = ThreadCommentsNodes.getRootNode();
-     * rootNode.classList.toggle('has-visible-threads', hasVisibleThreads);
-     */
-  },
+  /* // TODO: This code should be only in owner presentation component (`CommentsPae`, etc).
+   * updateVisibleThreadsStatus() {
+   *   const threadsListNode = ThreadCommentsNodes.getThreadsListNode();
+   *   const visibleThreadNodes = threadsListNode.querySelectorAll('.thread:not(.hidden)');
+   *   // eslint-disable-next-line no-unused-vars
+   *   const hasVisibleThreads = !!visibleThreadNodes.length;
+   *   [> // TODO: Update global status...
+   *    * const rootNode = ThreadCommentsNodes.getRootNode();
+   *    * rootNode.classList.toggle('has-visible-threads', hasVisibleThreads);
+   *    <]
+   * },
+   */
 
   // TODO: Is it used?
   clearRenderedData() {
@@ -385,8 +386,7 @@ export const ThreadCommentsRender = {
   },
 
   renderFilterByUserOptions() {
-    const { users, filterByUsers, sharedParams } = ThreadCommentsData;
-    const { currentUser } = sharedParams;
+    const { users, filterByUsers, currentUser } = ThreadCommentsData;
     const filterByUsersNode = document.getElementById('filterByUsers');
     const options = users.map((user) => {
       const isSelected = filterByUsers.includes(user);
@@ -434,10 +434,12 @@ export const ThreadCommentsRender = {
     rootNode.classList.toggle('has-processes', hasProcesses);
   },
 
-  renderDerivedFilters() {
-    this.renderFilterByUserOptions();
-    this.renderFilterByProcessOptions();
-  },
+  /* // TODO: This code should be only in owner presentation component (`CommentsPae`, etc).
+   * renderDerivedFilters() {
+   *   this.renderFilterByUserOptions();
+   *   this.renderFilterByProcessOptions();
+   * },
+   */
 
   /** Re-render all comments in visible and expanded threads */
   rerenderAllVisibleComments() {
@@ -490,7 +492,9 @@ export const ThreadCommentsRender = {
     threadIds.forEach((threadId) => {
       this.updateThreadVisibleState(threadId);
     });
-    this.updateVisibleThreadsStatus();
+    /* // TODO: This code should be only in owner presentation component (`CommentsPae`, etc).
+     * this.updateVisibleThreadsStatus();
+     */
   },
 
   /**
@@ -505,18 +509,11 @@ export const ThreadCommentsRender = {
     });
   },
 
-  start({ handlers }) {
+  /** @param {TThreadCommentsInitParams} params */
+  init(params) {
+    // TODO: Check for `hasInited` before cruical operations?
+    const { handlers } = params;
     // Save handlers...
     this.handlers = handlers;
-    /* // UNUSED: Add update handlers (via `CommentsEvents`)...
-     * CommentsEvents.addEventHandler(
-     *   'rerenderAllVisibleComments',
-     *   this.rerenderAllVisibleComments.bind(this),
-     * );
-     * CommentsEvents.addEventHandler(
-     *   'updateVisibleThreads',
-     *   this.updateVisibleThreads.bind(this),
-     * );
-     */
   },
 };

@@ -21,9 +21,11 @@ export const ThreadCommentsStates = {
    * @param {boolean} hasData
    */
   setHasData(hasData) {
-    // Set css class for root node, update local state
-    const rootNode = ThreadCommentsNodes.getRootNode();
-    rootNode.classList.toggle('empty', !hasData);
+    /* // TODO: Update root state?
+     * // Set css class for root node, update local state
+     * const rootNode = ThreadCommentsNodes.getRootNode();
+     * rootNode.classList.toggle('empty', !hasData);
+     */
     ThreadCommentsData.hasData = hasData;
   },
 
@@ -118,14 +120,19 @@ export const ThreadCommentsStates = {
     ThreadCommentsData.filterByMyThreads = value;
     const filterByMyThreadsNode = document.getElementById('filterByMyThreads');
     filterByMyThreadsNode.classList.toggle('button-primary', !!value);
-    const rootNode = ThreadCommentsNodes.getRootNode();
-    rootNode.classList.toggle('filterByMyThreads', !!value);
+    /* // TODO: Update root state?
+     * const rootNode = ThreadCommentsNodes.getRootNode();
+     * rootNode.classList.toggle('filterByMyThreads', !!value);
+     */
     if (!opts.omitUpdate) {
       ThreadCommentsRender.updateVisibleThreads();
       // ThreadCommentsRender.rerenderAllVisibleComments(); // Could be used if will filter and particular comments also
     }
   },
 
+  /**
+   * @param {number} totalComments
+   */
   setTotalCommentsCount(totalComments) {
     ThreadCommentsData.totalComments = totalComments;
     /* // TODO?
@@ -137,6 +144,9 @@ export const ThreadCommentsStates = {
      */
   },
 
+  /**
+   * @param {number} totalThreads
+   */
   setTotalThreadsCount(totalThreads) {
     ThreadCommentsData.totalThreads = totalThreads;
     /* // Set css class for root node, update local state
