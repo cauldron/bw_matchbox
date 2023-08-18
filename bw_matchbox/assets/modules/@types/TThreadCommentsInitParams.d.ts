@@ -1,0 +1,3 @@
+interface TThreadCommentsInitParams {
+  handlers: TSharedHandlers;
+}

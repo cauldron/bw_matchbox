@@ -1,21 +1,15 @@
 export const CommentsPageNodes = {
   __id: 'CommentsPageNodes',
 
-  /* // Moved to `ThreadCommentsNodes`
-   * getThreadsListNode() {
-   *   // TODO?
-   *   const node = document.getElementById('threads-list');
-   *   return node;
-   * },
-   */
+  getThreadsListNode() {
+    return document.getElementById('threads-list');
+  },
 
   getErrorNode() {
-    const node = document.getElementById('comments-error');
-    return node;
+    return document.getElementById('comments-error');
   },
 
   getRootNode() {
-    const node = document.getElementById('comments-root');
-    return node;
+    return document.getElementById('comments-root');
   },
 };

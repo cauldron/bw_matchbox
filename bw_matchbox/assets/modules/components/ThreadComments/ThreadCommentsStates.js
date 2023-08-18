@@ -1,18 +1,25 @@
+// @ts-check
+
 import { ThreadCommentsData } from './ThreadCommentsData.js';
 import { ThreadCommentsRender } from './ThreadCommentsRender.js';
 import { ThreadCommentsHelpers } from './ThreadCommentsHelpers.js';
 import { ThreadCommentsNodes } from './ThreadCommentsNodes.js';
 
 export const ThreadCommentsStates = {
-  __id: 'ThreadCommentsStates',
-
+  /**
+   * @param {boolean} isLoading
+   */
   setLoading(isLoading) {
-    // Set css class for id="processes-list-root" --> loading, set local status
-    const rootNode = ThreadCommentsNodes.getRootNode();
-    rootNode.classList.toggle('loading', isLoading);
+    /* // Set css class for id="processes-list-root" --> loading, set local status
+     * const rootNode = ThreadCommentsNodes.getRootNode();
+     * rootNode.classList.toggle('loading', isLoading);
+     */
     ThreadCommentsData.isLoading = isLoading;
   },
 
+  /**
+   * @param {boolean} hasData
+   */
   setHasData(hasData) {
     // Set css class for root node, update local state
     const rootNode = ThreadCommentsNodes.getRootNode();
@@ -32,7 +39,7 @@ export const ThreadCommentsStates = {
      */
     ThreadCommentsData.filterByUsers = values;
     if (!opts.omitUpdate) {
-      ThreadCommentsDataRender.updateVisibleThreads();
+      ThreadCommentsRender.updateVisibleThreads();
     }
   },
 
@@ -48,7 +55,7 @@ export const ThreadCommentsStates = {
      */
     ThreadCommentsData.filterByProcesses = values;
     if (!opts.omitUpdate) {
-      ThreadCommentsDataRender.updateVisibleThreads();
+      ThreadCommentsRender.updateVisibleThreads();
     }
   },
 
@@ -60,7 +67,7 @@ export const ThreadCommentsStates = {
   setFilterByState(value, opts = {}) {
     ThreadCommentsData.filterByState = value;
     if (!opts.omitUpdate) {
-      ThreadCommentsDataRender.updateVisibleThreads();
+      ThreadCommentsRender.updateVisibleThreads();
     }
   },
 
@@ -79,7 +86,7 @@ export const ThreadCommentsStates = {
      */
     if (!opts.omitUpdate) {
       // Re-render all threads...
-      ThreadCommentsDataRender.renderData();
+      ThreadCommentsRender.renderData();
     }
   },
 
@@ -98,7 +105,7 @@ export const ThreadCommentsStates = {
      */
     if (!opts.omitUpdate) {
       // Re-render all threads...
-      ThreadCommentsDataRender.renderData();
+      ThreadCommentsRender.renderData();
     }
   },
 
@@ -114,8 +121,8 @@ export const ThreadCommentsStates = {
     const rootNode = ThreadCommentsNodes.getRootNode();
     rootNode.classList.toggle('filterByMyThreads', !!value);
     if (!opts.omitUpdate) {
-      ThreadCommentsDataRender.updateVisibleThreads();
-      // ThreadCommentsDataRender.rerenderAllVisibleComments(); // Could be used if will filter and particular comments also
+      ThreadCommentsRender.updateVisibleThreads();
+      // ThreadCommentsRender.rerenderAllVisibleComments(); // Could be used if will filter and particular comments also
     }
   },
 
@@ -141,23 +148,32 @@ export const ThreadCommentsStates = {
      */
   },
 
-  // setError -- Shorthand for `setHasData`
+  /** setError -- Shorthand for `setHasData`
+   * @param {boolean} isEmpty
+   */
   setEmpty(isEmpty) {
     this.setHasData(!isEmpty);
   },
 
+  /**
+   * @param {Error} error
+   */
   setError(error) {
     ThreadCommentsData.isError = !!error;
     ThreadCommentsData.error = error;
-    ThreadCommentsDataRender.renderError(error);
+    ThreadCommentsRender.renderError(error);
   },
 
   clearData() {
     this.setHasData(false);
-    ThreadCommentsDataRender.clearRenderedData();
+    ThreadCommentsRender.clearRenderedData();
   },
 
+  /**
+   * @param {string} groupId
+   */
   getRadioGroupValue(groupId) {
+    /** @type {HTMLInputElement} */
     const elem = document.querySelector('input[type="radio"][name="' + groupId + '"]:checked');
     return elem && elem.value;
   },

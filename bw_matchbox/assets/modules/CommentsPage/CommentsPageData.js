@@ -41,9 +41,9 @@ export const CommentsPageData = {
    * // Comments and threads data...
    * comments: [], // TComment[]
    * threads: [], // TThread[]
-   * commentsHash: {}, // TCommentsHash = Record<TTreadId, TComment>
-   * threadsHash: {}, // TThreadsHash = Record<TTreadId, TThread>
-   * commentsByThreads: {}, // TCommentsByThreads = Record<TTreadId, TCommentId[]>
+   * commentsHash: {}, // TCommentsHash = Record<TThreadId, TComment>
+   * threadsHash: {}, // TThreadsHash = Record<TThreadId, TThread>
+   * commentsByThreads: {}, // TCommentsByThreads = Record<TThreadId, TCommentId[]>
    */
 
   // Collected data...

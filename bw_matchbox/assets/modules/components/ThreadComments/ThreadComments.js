@@ -5,7 +5,8 @@
 // import * as CommonPromises from '../../common/CommonPromises.js';
 import { InitChunks } from '../../common/InitChunks.js';
 
-import { ThreadCommentsNodes } from './ThreadCommentsNodes';
+import { ThreadCommentsNodes } from './ThreadCommentsNodes.js';
+import { ThreadCommentsLoader } from './ThreadCommentsLoader.js';
 
 /** List of initilization steps.
  * @type {string[]}
@@ -35,6 +36,9 @@ export class ThreadComments {
    */
   __id = undefined;
 
+  /** @type {Record<string, function>} */
+  handlers = {};
+
   /** @param {string} id */
   constructor(id) {
     if (id) {
@@ -42,7 +46,7 @@ export class ThreadComments {
     }
   }
 
-  // TODO: handlers, state, data
+  // TODO: handlers, state, data, events
 
   /** Ensure the modal has initiazlized
    * @return {Promise}
@@ -74,9 +78,15 @@ export class ThreadComments {
   initComponent() {
     if (!this.initChunks.isChunkStarted('component')) {
       this.initChunks.startChunk('component');
-      console.log('[ThreadComments:initComponent]');
-      debugger;
-      // TODO
+      /** @type {TThreadCommentsInitParams} */
+      const initParams = {
+        handlers: this.handlers,
+      };
+
+      console.log('[ThreadComments:initComponent]', { initParams });
+
+      ThreadCommentsLoader.init(initParams);
+
       this.initChunks.finishChunk('component');
     }
   }
@@ -122,8 +132,8 @@ export class ThreadComments {
   init() {
     if (!this.initChunks.isWaitingOrInited()) {
       this.initChunks.start();
-      // this.initCssStyle() // TODO
-      Promise.resolve() // Temporarily: empty promise (replace with first initialization stage, see `CommonModal` as example)
+      this.initCssStyle() // TODO
+        // Promise.resolve() // Temporarily: empty promise (replace with first initialization stage, see `CommonModal` as example)
         .then(() => {
           // Create all dom nodes...
           this.initDomNode();

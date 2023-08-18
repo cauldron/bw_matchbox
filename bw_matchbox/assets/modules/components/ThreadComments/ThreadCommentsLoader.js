@@ -1,33 +1,23 @@
+// @ts-check
+
 import * as CommonHelpers from '../../common/CommonHelpers.js';
 
 import * as ThreadCommentsConstants from './ThreadCommentsConstants.js';
 import { ThreadCommentsData } from './ThreadCommentsData.js';
 import { ThreadCommentsRender } from './ThreadCommentsRender.js';
-// import { ThreadCommentsPrepareLoadedData } from './ThreadCommentsPrepareLoadedData.js';
-// import { ThreadCommentsStates } from './ThreadCommentsStates.js';
+import { ThreadCommentsPrepare } from './ThreadCommentsPrepare.js';
+import { ThreadCommentsStates } from './ThreadCommentsStates.js';
 
 export const ThreadCommentsLoader = /** @lends ThreadCommentsLoader */ {
-  __id: 'ThreadCommentsLoader',
-
   /** Load records data
    */
   loadComments() {
     // const { sharedParams } = ThreadCommentsData;
-    const { readCommentsApiUrl: urlBase } = ThreadCommentsConstants;
-    const params = {
-      // user, // str. Username to filter by
-      // process, // int. Proxy process ID
-      // resolved, // str, either "0" or "1". Whether comment thread is resolved or not
-      // thread, // int. Comment thread id
-    };
-    const urlQuery = CommonHelpers.makeQuery(params, { addQuestionSymbol: true });
-    const url = urlBase + urlQuery;
-    /* console.log('[ThreadCommentsLoader:loadComments]: start', {
-     *   url,
-     *   urlQuery,
-     *   params,
-     * });
-     */
+    const { readCommentsApiUrl: url } = ThreadCommentsConstants;
+    console.log('[ThreadCommentsLoader:loadComments]: start', {
+      url,
+    });
+    debugger;
     ThreadCommentsStates.setLoading(true);
     fetch(url)
       .then((res) => {
@@ -43,9 +33,6 @@ export const ThreadCommentsLoader = /** @lends ThreadCommentsLoader */ {
             reason,
             res,
             url,
-            params,
-            urlQuery,
-            urlBase,
           });
           // eslint-disable-next-line no-debugger
           debugger;
@@ -62,14 +49,14 @@ export const ThreadCommentsLoader = /** @lends ThreadCommentsLoader */ {
           total_threads: totalThreads,
         } = json;
         const hasData = Array.isArray(comments) && !!comments.length;
-        /* console.log('[ThreadCommentsLoader:loadComments]: got comments', {
-         *   json,
-         *   comments,
-         *   threads,
-         *   totalThreads,
-         *   totalComments,
-         * });
-         */
+        console.log('[ThreadCommentsLoader:loadComments]: got comments', {
+          json,
+          comments,
+          threads,
+          totalThreads,
+          totalComments,
+        });
+        debugger;
         // Store data...
         ThreadCommentsData.comments = comments;
         ThreadCommentsData.threads = threads;
@@ -79,21 +66,18 @@ export const ThreadCommentsLoader = /** @lends ThreadCommentsLoader */ {
         ThreadCommentsStates.setError(undefined); // Clear the error: all is ok
         ThreadCommentsStates.setHasData(ThreadCommentsData.hasData || hasData); // Update 'has data' flag
         // Prepare and store data...
-        ThreadCommentsPrepareLoadedData.acceptAndPrepareData();
-        ThreadCommentsPrepareLoadedData.makeDerivedData();
+        ThreadCommentsPrepare.acceptAndPrepareData();
+        ThreadCommentsPrepare.makeDerivedData();
         // Render data...
-        ThreadCommentsDataRender.renderData();
-        ThreadCommentsDataRender.updateVisibleThreadsStatus();
-        ThreadCommentsDataRender.renderDerivedFilters();
+        ThreadCommentsRender.renderData();
+        ThreadCommentsRender.updateVisibleThreadsStatus();
+        ThreadCommentsRender.renderDerivedFilters();
       })
       .catch((error) => {
         // eslint-disable-next-line no-console
         console.error('[ThreadCommentsLoader:loadComments]: error (catched)', {
           error,
           url,
-          params,
-          urlQuery,
-          urlBase,
         });
         // eslint-disable-next-line no-debugger
         debugger;
@@ -106,5 +90,12 @@ export const ThreadCommentsLoader = /** @lends ThreadCommentsLoader */ {
          * CommentsEvents.invokeEvent('updatePage');
          */
       });
+  },
+
+  /** @param {TThreadCommentsInitParams} params */
+  init(params) {
+    const { handlers } = params;
+    // Expose handlers...
+    handlers.loadComments = this.loadComments.bind(this);
   },
 };

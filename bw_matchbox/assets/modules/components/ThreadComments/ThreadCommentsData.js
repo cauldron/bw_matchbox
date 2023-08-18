@@ -41,18 +41,26 @@ export const ThreadCommentsData = {
   // Data params...
 
   // Comments and threads data...
-  comments: [], // TComment[]
-  threads: [], // TThread[]
-  commentsHash: {}, // TCommentsHash = Record<TTreadId, TComment>
-  threadsHash: {}, // TThreadsHash = Record<TTreadId, TThread>
-  commentsByThreads: {}, // TCommentsByThreads = Record<TTreadId, TCommentId[]>
+  /** @type {TComment[]} */
+  comments: [],
+  /** @type {TThread[]} */
+  threads: [],
+  /** @type {Record<TThreadId, TComment>} */
+  commentsHash: {},
+  /** @type {Record<TThreadId, TThread>} */
+  threadsHash: {},
+  /** @type {Record<TThreadId, TCommentId[]>} */
+  commentsByThreads: {},
 
-  /* // On `CommentsPageData`
-   * // Collected data...
-   * users: [],
-   * processIds: [],
-   * processesHash: {},
+  // Collected data...
+  /** All users
+   * @type {TUserName[]}
    */
+  users: [],
+  /** @type {TProcessId[]} */
+  processIds: [],
+  /** @type {Record<TProcessId, TProcess>} */
+  processesHash: {},
 
   // View options...
   sortThreadsBy: defaultParams.sortThreadsBy,

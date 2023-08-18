@@ -15,7 +15,7 @@ const helpers = {
 
   /** getCommentsForThread
    * @param {TThreadId} threadId
-   * @return {TCommentId[]} - Comments data list
+   * @return {TComment[]} - Comments data list
    */
   getCommentsForThread(threadId) {
     const { commentsHash, commentsByThreads } = ThreadCommentsData;
@@ -237,10 +237,12 @@ export const ThreadCommentsRender = {
    */
   renderError(error) {
     // TODO: Set css class for id="processes-list-root" --> error, update local state
-    const isError = !!error;
-    const rootNode = ThreadCommentsNodes.getRootNode();
+    /* // TODO: Set global error status
+     * const isError = !!error;
+     * const rootNode = ThreadCommentsNodes.getRootNode();
+     * rootNode.classList.toggle('error', isError);
+     */
     const errorNode = ThreadCommentsNodes.getErrorNode();
-    rootNode.classList.toggle('error', isError);
     const errorText = error ? error.message || String(error) : '';
     // DEBUG: Show error in console
     if (errorText) {
@@ -289,11 +291,14 @@ export const ThreadCommentsRender = {
   },
 
   updateVisibleThreadsStatus() {
-    const rootNode = ThreadCommentsNodes.getRootNode();
     const threadsListNode = ThreadCommentsNodes.getThreadsListNode();
     const visibleThreadNodes = threadsListNode.querySelectorAll('.thread:not(.hidden)');
+    // eslint-disable-next-line no-unused-vars
     const hasVisibleThreads = !!visibleThreadNodes.length;
-    rootNode.classList.toggle('has-visible-threads', hasVisibleThreads);
+    /* // TODO: Update global status...
+     * const rootNode = ThreadCommentsNodes.getRootNode();
+     * rootNode.classList.toggle('has-visible-threads', hasVisibleThreads);
+     */
   },
 
   // TODO: Is it used?
@@ -364,7 +369,6 @@ export const ThreadCommentsRender = {
 
   /** clearAllHiddenThreadsComments -- Remove all rendered comments from hidden (non-expanded) threads */
   clearAllHiddenThreadsComments() {
-    // const rootNode = ThreadCommentsNodes.getRootNode();
     const threadsListNode = ThreadCommentsNodes.getThreadsListNode();
     const hiddenCommentNodes = threadsListNode.querySelectorAll(
       '.thread:not(.expanded) .comments.ready',
@@ -381,7 +385,6 @@ export const ThreadCommentsRender = {
   },
 
   renderFilterByUserOptions() {
-    const rootNode = ThreadCommentsNodes.getRootNode();
     const { users, filterByUsers, sharedParams } = ThreadCommentsData;
     const { currentUser } = sharedParams;
     const filterByUsersNode = document.getElementById('filterByUsers');
@@ -394,16 +397,19 @@ export const ThreadCommentsRender = {
       }
       return `<option value="${value}"${isSelected ? ' selected' : ''}>${text}</option>`;
     });
-    const hasUsers = !!options.length;
+    filterByUsersNode.innerHTML = options.join('\n');
+    /* // TODO: Update global css state
+     * const hasUsers = !!options.length;
+     * const rootNode = ThreadCommentsNodes.getRootNode();
+     * rootNode.classList.toggle('has-users', hasUsers);
+     */
     /* console.log('[ThreadCommentsRender:renderFilterByUserOptions]', {
      *   options,
-     *   hasUsers,
+     *   // hasUsers,
      *   users,
      *   filterByUsersNode,
      * });
      */
-    filterByUsersNode.innerHTML = options.join('\n');
-    rootNode.classList.toggle('has-users', hasUsers);
   },
 
   renderFilterByProcessOptions() {

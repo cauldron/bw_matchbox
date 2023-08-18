@@ -19,8 +19,7 @@ import { ThreadComments } from '../components/ThreadComments/ThreadComments.js';
  * @property {string} currentUser
  */
 
-/** @typedef {Record<string, function>} TSharedHandlers
- */
+/** @typedef {Record<string, function>} TSharedHandlers */
 
 /** @typedef TInitParams
  * @property {TSharedHandlers} handlers
@@ -105,9 +104,10 @@ export const CommentsPage = {
       .ensureInit()
       .then(() => {
         console.log('[CommentsPage:start] threadComments.ensureInit success');
-        debugger;
         // TODO: Invoke `loadComments`
+        this.threadComments.handlers.loadComments();
         // TODO: Clear loading status
+        CommentsPageStates.setLoading(false);
       })
       .catch((error) => {
         console.error('[CommentsPage:start] threadComments.ensureInit success', error);

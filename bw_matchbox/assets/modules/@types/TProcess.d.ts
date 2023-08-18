@@ -1,5 +1,6 @@
+type TProcessId = string;
 interface TProcess {
-  database: string; // 'new1'
+  database: TProcessId; // 'new1'
   id: number; // 5300
   location: string; // 'United States'
   name: string; // 'Proxy for Ethalfluralin'

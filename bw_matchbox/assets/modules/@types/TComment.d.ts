@@ -2,9 +2,9 @@ type TCommentId = number;
 type TThreadId = number;
 interface TComment {
   id: TCommentId; // 2
+  thread: TThreadId; // 1
   position: number; // 1
-  thread: number; // 1
-  user: string; // 'Puccio Bernini'
+  user: TUserName; // 'Puccio Bernini'
   content: string; // '...'
 }
 interface TThread {
@@ -16,6 +16,6 @@ interface TThread {
   resolved: boolean; // false
   process: TProcess;
 }
-type TThreadsHash = Record<TTreadId, TThread>;
-type TCommentsHash = Record<TTreadId, TComment>;
-type TCommentsByThreads = Record<TTreadId, TCommentId[]>;
+type TThreadsHash = Record<TThreadId, TThread>;
+type TCommentsHash = Record<TThreadId, TComment>;
+type TCommentsByThreads = Record<TThreadId, TCommentId[]>;
