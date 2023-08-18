@@ -18,11 +18,11 @@ import { commonModal } from '../common/CommonModal.js';
  * @property {string} [status]
  */
 
-export const ProcessDetail = {
+export const ProcessDetailPage = {
   /** External data...
    * @type TSharedParams
    */
-  sharedParams: undefined, // Initializing in `ProcessDetail.start` from `bw_matchbox/assets/templates/process_detail.html`
+  sharedParams: undefined, // Initializing in `ProcessDetailPage.start` from `bw_matchbox/assets/templates/process_detail.html`
 
   // Methods...
 
@@ -182,7 +182,7 @@ export const ProcessDetail = {
       if (errorsList.length) {
         // Some errors?
         // eslint-disable-next-line no-console
-        console.error('[ProcessDetail:doMarkWaitlist] Got errors', errorsList);
+        console.error('[ProcessDetailPage:doMarkWaitlist] Got errors', errorsList);
         // eslint-disable-next-line no-debugger
         debugger;
         // Show errors on the page...
@@ -233,7 +233,7 @@ export const ProcessDetail = {
       if (errorsList.length) {
         // Some errors?
         // eslint-disable-next-line no-console
-        console.error('[ProcessDetail:markMatched] Got errors', errorsList);
+        console.error('[ProcessDetailPage:markMatched] Got errors', errorsList);
         // eslint-disable-next-line no-debugger
         debugger;
         // Show errors on the page...
@@ -266,7 +266,7 @@ export const ProcessDetail = {
         if (!res.ok) {
           const error = new Error(`Can't load url '${res.url}': ${res.statusText}, ${res.status}`);
           // eslint-disable-next-line no-console
-          console.error('[ProcessDetail:markAllMatched] Got error', error);
+          console.error('[ProcessDetailPage:markAllMatched] Got error', error);
           // eslint-disable-next-line no-debugger
           debugger;
           // Show errors on the page...

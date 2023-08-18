@@ -1,5 +1,5 @@
 modules.define(
-  'CommentsNodes',
+  'CommentsPageNodes',
   [
     // Required modules...
   ],
@@ -7,10 +7,10 @@ modules.define(
     provide,
     // Resolved modules...
   ) {
-    /** @exports CommentsNodes
+    /** @exports CommentsPageNodes
      */
-    const CommentsNodes = {
-      __id: 'CommentsNodes',
+    const CommentsPageNodes = {
+      __id: 'CommentsPageNodes',
 
       getThreadsListNode() {
         // TODO?
@@ -30,6 +30,6 @@ modules.define(
     };
 
     // Provide module...
-    provide(CommentsNodes);
+    provide(CommentsPageNodes);
   },
 );

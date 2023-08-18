@@ -1,45 +1,45 @@
 modules.define(
-  'Comments',
+  'CommentsPage',
   [
     // Required modules...
-    'CommentsConstants',
-    'CommentsData',
-    'CommentsDataRender',
-    'CommentsHandlers',
-    'CommentsHelpers',
-    'CommentsLoader',
-    'CommentsNodes',
-    'CommentsPrepareLoadedData',
-    'CommentsStates',
-    'CommentsThreadsHelpers',
+    'CommentsPageConstants',
+    'CommentsPageData',
+    'CommentsPageDataRender',
+    'CommentsPageHandlers',
+    'CommentsPageHelpers',
+    'CommentsPageLoader',
+    'CommentsPageNodes',
+    'CommentsPagePrepareLoadedData',
+    'CommentsPageStates',
+    'CommentsPageThreadsHelpers',
   ],
-  function provide_Comments(
+  function provide_CommentsPage(
     provide,
     // Resolved modules...
     /* eslint-disable no-unused-vars */
-    CommentsConstants,
-    CommentsData,
-    CommentsDataRender,
-    CommentsHandlers,
-    CommentsHelpers,
-    CommentsLoader,
-    CommentsNodes,
-    CommentsPrepareLoadedData,
-    CommentsStates,
-    CommentsThreadsHelpers,
+    CommentsPageConstants,
+    CommentsPageData,
+    CommentsPageDataRender,
+    CommentsPageHandlers,
+    CommentsPageHelpers,
+    CommentsPageLoader,
+    CommentsPageNodes,
+    CommentsPagePrepareLoadedData,
+    CommentsPageStates,
+    CommentsPageThreadsHelpers,
     /* eslint-enable no-unused-vars */
   ) {
     /** Used modules list (will be needed for initialization, in `startAllModules`)
      */
     const usedModulesList = Array.from(arguments).splice(1);
 
-    /** @exports Comments
-     * @type {<Comments>}
+    /** @exports CommentsPage
+     * @type {<CommentsPage>}
      */
-    const Comments = {
-      __id: 'Comments',
+    const CommentsPage = {
+      __id: 'CommentsPage',
 
-      // Owner page's provided data (TODO: Move to `CommentsData`, see `start` method)...
+      // Owner page's provided data (TODO: Move to `CommentsPageData`, see `start` method)...
       sharedParams: undefined,
 
       /** Handlers exchange object */
@@ -72,7 +72,7 @@ modules.define(
                */
             } catch (error) {
               // eslint-disable-next-line no-console
-              console.error('[Comments:helpers:startAllModules]: error (catched)', {
+              console.error('[CommentsPage:helpers:startAllModules]: error (catched)', {
                 error,
                 module,
                 start: module.start,
@@ -86,18 +86,18 @@ modules.define(
       /** Start entrypoint */
       start(sharedParams) {
         // Save shared data for future use...
-        CommentsData.sharedParams = sharedParams;
+        CommentsPageData.sharedParams = sharedParams;
         this.sharedParams = sharedParams;
 
         // Initialize all the modules...
         this.startAllModules();
 
         // Load data...
-        CommentsLoader.loadComments();
+        CommentsPageLoader.loadComments();
       },
     };
 
     // Provide module...
-    provide(Comments);
+    provide(CommentsPage);
   },
 );

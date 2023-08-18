@@ -1,34 +1,34 @@
 modules.define(
-  'CommentsLoader',
+  'CommentsPageLoader',
   [
     // Required modules...
-    'CommentsConstants',
-    'CommentsData',
-    'CommentsDataRender',
-    'CommentsPrepareLoadedData',
-    'CommentsStates',
+    'CommentsPageConstants',
+    'CommentsPageData',
+    'CommentsPageDataRender',
+    'CommentsPagePrepareLoadedData',
+    'CommentsPageStates',
     'CommonHelpers',
   ],
   function provide_CommentsLoader(
     provide,
     // Resolved modules...
-    CommentsConstants,
-    CommentsData,
-    CommentsDataRender,
-    CommentsPrepareLoadedData,
-    CommentsStates,
+    CommentsPageConstants,
+    CommentsPageData,
+    CommentsPageDataRender,
+    CommentsPagePrepareLoadedData,
+    CommentsPageStates,
     CommonHelpers,
   ) {
-    /** @exports CommentsLoader
+    /** @exports CommentsPageLoader
      */
-    const CommentsLoader = /** @lends CommentsLoader */ {
-      __id: 'CommentsLoader',
+    const CommentsPageLoader = /** @lends CommentsPageLoader */ {
+      __id: 'CommentsPageLoader',
 
       /** Load records data
        */
       loadComments() {
-        // const { sharedParams } = CommentsData;
-        const { readCommentsApiUrl: urlBase } = CommentsConstants;
+        // const { sharedParams } = CommentsPageData;
+        const { readCommentsApiUrl: urlBase } = CommentsPageConstants;
         const params = {
           // user, // str. Username to filter by
           // process, // int. Proxy process ID
@@ -37,13 +37,13 @@ modules.define(
         };
         const urlQuery = CommonHelpers.makeQuery(params, { addQuestionSymbol: true });
         const url = urlBase + urlQuery;
-        /* console.log('[CommentsLoader:loadComments]: start', {
+        /* console.log('[CommentsPageLoader:loadComments]: start', {
          *   url,
          *   urlQuery,
          *   params,
          * });
          */
-        CommentsStates.setLoading(true);
+        CommentsPageStates.setLoading(true);
         fetch(url)
           .then((res) => {
             const { ok, status, statusText } = res;
@@ -54,7 +54,7 @@ modules.define(
                 'Unknown error';
               const error = new Error('Data loading error: ' + reason);
               // eslint-disable-next-line no-console
-              console.error('[CommentsLoader:loadComments]: error (on then)', {
+              console.error('[CommentsPageLoader:loadComments]: error (on then)', {
                 reason,
                 res,
                 url,
@@ -77,7 +77,7 @@ modules.define(
               total_threads: totalThreads,
             } = json;
             const hasData = Array.isArray(comments) && !!comments.length;
-            /* console.log('[CommentsLoader:loadComments]: got comments', {
+            /* console.log('[CommentsPageLoader:loadComments]: got comments', {
              *   json,
              *   comments,
              *   threads,
@@ -86,24 +86,24 @@ modules.define(
              * });
              */
             // Store data...
-            CommentsData.comments = comments;
-            CommentsData.threads = threads;
+            CommentsPageData.comments = comments;
+            CommentsPageData.threads = threads;
             // Update total comments number...
-            CommentsStates.setTotalCommentsCount(totalComments);
-            CommentsStates.setTotalThreadsCount(totalThreads);
-            CommentsStates.setError(undefined); // Clear the error: all is ok
-            CommentsStates.setHasData(CommentsData.hasData || hasData); // Update 'has data' flag
+            CommentsPageStates.setTotalCommentsCount(totalComments);
+            CommentsPageStates.setTotalThreadsCount(totalThreads);
+            CommentsPageStates.setError(undefined); // Clear the error: all is ok
+            CommentsPageStates.setHasData(CommentsPageData.hasData || hasData); // Update 'has data' flag
             // Prepare and store data...
-            CommentsPrepareLoadedData.acceptAndPrepareData();
-            CommentsPrepareLoadedData.makeDerivedData();
+            CommentsPagePrepareLoadedData.acceptAndPrepareData();
+            CommentsPagePrepareLoadedData.makeDerivedData();
             // Render data...
-            CommentsDataRender.renderData();
-            CommentsDataRender.updateVisibleThreadsStatus();
-            CommentsDataRender.renderDerivedFilters();
+            CommentsPageDataRender.renderData();
+            CommentsPageDataRender.updateVisibleThreadsStatus();
+            CommentsPageDataRender.renderDerivedFilters();
           })
           .catch((error) => {
             // eslint-disable-next-line no-console
-            console.error('[CommentsLoader:loadComments]: error (catched)', {
+            console.error('[CommentsPageLoader:loadComments]: error (catched)', {
               error,
               url,
               params,
@@ -113,10 +113,10 @@ modules.define(
             // eslint-disable-next-line no-debugger
             debugger;
             // Store & display error...
-            CommentsStates.setError(error);
+            CommentsPageStates.setError(error);
           })
           .finally(() => {
-            CommentsStates.setLoading(false);
+            CommentsPageStates.setLoading(false);
             /* // TODO: Update all the page dynamic elements?
              * CommentsEvents.invokeEvent('updatePage');
              */
@@ -125,6 +125,6 @@ modules.define(
     };
 
     // Provide module...
-    provide(CommentsLoader);
+    provide(CommentsPageLoader);
   },
 );

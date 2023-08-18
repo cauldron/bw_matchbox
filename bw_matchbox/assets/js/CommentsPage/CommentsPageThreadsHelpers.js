@@ -1,18 +1,18 @@
 modules.define(
-  'CommentsThreadsHelpers',
+  'CommentsPageThreadsHelpers',
   [
     // Required modules...
-    'CommentsData',
+    'CommentsPageData',
   ],
   function provide_CommentsThreadsHelpers(
     provide,
     // Resolved modules...
-    CommentsData,
+    CommentsPageData,
   ) {
-    /** @exports CommentsThreadsHelpers
+    /** @exports CommentsPageThreadsHelpers
      */
-    const CommentsThreadsHelpers = {
-      __id: 'CommentsThreadsHelpers',
+    const CommentsPageThreadsHelpers = {
+      __id: 'CommentsPageThreadsHelpers',
 
       /** createProcessName
        * @param {<TProcess>} process
@@ -33,7 +33,7 @@ modules.define(
          *   filterByMyThreads, // NOTE: Should override other filters
          *   sharedParams,
          *   commentsHash,
-         * } = CommentsData;
+         * } = CommentsPageData;
          * if (filterByMyThreads) {
          *   const { currentUser } = sharedParams;
          *   const comment = commentsHash[commentId];
@@ -56,18 +56,18 @@ modules.define(
           filterByState,
           filterByUsers,
           filterByProcesses,
-        } = CommentsData;
+        } = CommentsPageData;
         const {
           filterByMyThreads, // NOTE: Should override other filters
           threadsHash,
           commentsByThreads,
           commentsHash,
           sharedParams,
-        } = CommentsData;
+        } = CommentsPageData;
         const { currentUser } = sharedParams;
         const thread = threadsHash[threadId];
         const { resolved, process } = thread;
-        /* console.log('[CommentsThreadsHelpers:isThreadVisible]', {
+        /* console.log('[CommentsPageThreadsHelpers:isThreadVisible]', {
          *   currentUser,
          *   sharedParams,
          *   filterByState,
@@ -81,7 +81,7 @@ modules.define(
           filterByState = 'open';
           filterByUsers = [currentUser];
           filterByProcesses = undefined;
-          /* console.log('[CommentsThreadsHelpers:isThreadVisible] filterByMyThreads', {
+          /* console.log('[CommentsPageThreadsHelpers:isThreadVisible] filterByMyThreads', {
            *   currentUser,
            *   sharedParams,
            *   filterByState,
@@ -126,6 +126,6 @@ modules.define(
     };
 
     // Provide module...
-    provide(CommentsThreadsHelpers);
+    provide(CommentsPageThreadsHelpers);
   },
 );

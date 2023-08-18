@@ -30,17 +30,17 @@
  */
 
 modules.define(
-  'CommentsData',
+  'CommentsPageData',
   [
     // Required modules...
-    'CommentsConstants',
+    'CommentsPageConstants',
   ],
   function provide_CommentsData(
     provide,
     // Resolved modules...
-    CommentsConstants,
+    CommentsPageConstants,
   ) {
-    const { useDebug } = CommentsConstants;
+    const { useDebug } = CommentsPageConstants;
 
     const useFakeData = useDebug && false; // DEBUG: Use fake data for tests
     const useFakeCurrentUser = useDebug && true; // DEBUG: Use first of found users instead provided by page
@@ -63,10 +63,10 @@ modules.define(
       filterByMyThreads: false,
     };
 
-    /** @exports CommentsData
+    /** @exports CommentsPageData
      */
-    const CommentsData = /** @lends CommentsData */ {
-      __id: 'CommentsData',
+    const CommentsPageData = /** @lends CommentsPageData */ {
+      __id: 'CommentsPageData',
 
       // DEBUG
       useFakeData,
@@ -115,6 +115,6 @@ modules.define(
     };
 
     // Provide module...
-    provide(CommentsData);
+    provide(CommentsPageData);
   },
 );

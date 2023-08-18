@@ -1,39 +1,39 @@
 modules.define(
-  'CommentsStates',
+  'CommentsPageStates',
   [
     // Required modules...
-    // 'CommentsConstants',
-    'CommentsHelpers',
-    'CommentsData',
-    'CommentsDataRender',
-    'CommentsNodes',
+    // 'CommentsPageConstants',
+    'CommentsPageHelpers',
+    'CommentsPageData',
+    'CommentsPageDataRender',
+    'CommentsPageNodes',
   ],
   function provide_CommentsStates(
     provide,
     // Resolved modules...
-    // CommentsConstants,
-    CommentsHelpers,
-    CommentsData,
-    CommentsDataRender,
-    CommentsNodes,
+    // CommentsPageConstants,
+    CommentsPageHelpers,
+    CommentsPageData,
+    CommentsPageDataRender,
+    CommentsPageNodes,
   ) {
-    /** @exports CommentsStates
+    /** @exports CommentsPageStates
      */
-    const CommentsStates = {
-      __id: 'CommentsStates',
+    const CommentsPageStates = {
+      __id: 'CommentsPageStates',
 
       setLoading(isLoading) {
         // Set css class for id="processes-list-root" --> loading, set local status
-        const rootNode = CommentsNodes.getRootNode();
+        const rootNode = CommentsPageNodes.getRootNode();
         rootNode.classList.toggle('loading', isLoading);
-        CommentsData.isLoading = isLoading;
+        CommentsPageData.isLoading = isLoading;
       },
 
       setHasData(hasData) {
         // Set css class for root node, update local state
-        const rootNode = CommentsNodes.getRootNode();
+        const rootNode = CommentsPageNodes.getRootNode();
         rootNode.classList.toggle('empty', !hasData);
-        CommentsData.hasData = hasData;
+        CommentsPageData.hasData = hasData;
       },
 
       /**
@@ -42,13 +42,13 @@ modules.define(
        * @param {boolean} [opts.omitUpdate] - Don't automatically state (eg: will be updated manually later).
        */
       setFilterByUsers(values, opts = {}) {
-        /* console.log('[CommentsStates:setFilterByUsers]', {
+        /* console.log('[CommentsPageStates:setFilterByUsers]', {
          *   values,
          * });
          */
-        CommentsData.filterByUsers = values;
+        CommentsPageData.filterByUsers = values;
         if (!opts.omitUpdate) {
-          CommentsDataRender.updateVisibleThreads();
+          CommentsPageDataRender.updateVisibleThreads();
         }
       },
 
@@ -58,13 +58,13 @@ modules.define(
        * @param {boolean} [opts.omitUpdate] - Don't automatically state (eg: will be updated manually later).
        */
       setFilterByProcesses(values, opts = {}) {
-        /* console.log('[CommentsStates:setFilterByProcesses]', {
+        /* console.log('[CommentsPageStates:setFilterByProcesses]', {
          *   values,
          * });
          */
-        CommentsData.filterByProcesses = values;
+        CommentsPageData.filterByProcesses = values;
         if (!opts.omitUpdate) {
-          CommentsDataRender.updateVisibleThreads();
+          CommentsPageDataRender.updateVisibleThreads();
         }
       },
 
@@ -74,9 +74,9 @@ modules.define(
        * @param {boolean} [opts.omitUpdate] - Don't automatically state (eg: will be updated manually later).
        */
       setFilterByState(value, opts = {}) {
-        CommentsData.filterByState = value;
+        CommentsPageData.filterByState = value;
         if (!opts.omitUpdate) {
-          CommentsDataRender.updateVisibleThreads();
+          CommentsPageDataRender.updateVisibleThreads();
         }
       },
 
@@ -86,16 +86,16 @@ modules.define(
        * @param {boolean} [opts.omitUpdate] - Don't automatically state (eg: will be updated manually later).
        */
       setSortThreadsReversedChange(value, opts = {}) {
-        const { threads } = CommentsData;
-        CommentsData.sortThreadsReversed = value;
+        const { threads } = CommentsPageData;
+        CommentsPageData.sortThreadsReversed = value;
         // Re-sort threads...
-        CommentsHelpers.sortThreads(threads);
+        CommentsPageHelpers.sortThreads(threads);
         /* // NOTE: Don't need to re-sort comments
-         * comments.sort(CommentsHelpers.sortCommentsCompare);
+         * comments.sort(CommentsPageHelpers.sortCommentsCompare);
          */
         if (!opts.omitUpdate) {
           // Re-render all threads...
-          CommentsDataRender.renderData();
+          CommentsPageDataRender.renderData();
         }
       },
 
@@ -105,16 +105,16 @@ modules.define(
        * @param {boolean} [opts.omitUpdate] - Don't automatically state (eg: will be updated manually later).
        */
       setSortThreadsByChange(value, opts = {}) {
-        const { threads } = CommentsData;
-        CommentsData.sortThreadsBy = value;
+        const { threads } = CommentsPageData;
+        CommentsPageData.sortThreadsBy = value;
         // Re-sort threads...
-        CommentsHelpers.sortThreads(threads);
+        CommentsPageHelpers.sortThreads(threads);
         /* // NOTE: Don't need to re-sort comments
-         * comments.sort(CommentsHelpers.sortCommentsCompare);
+         * comments.sort(CommentsPageHelpers.sortCommentsCompare);
          */
         if (!opts.omitUpdate) {
           // Re-render all threads...
-          CommentsDataRender.renderData();
+          CommentsPageDataRender.renderData();
         }
       },
 
@@ -124,21 +124,21 @@ modules.define(
        * @param {boolean} [opts.omitUpdate] - Don't automatically state (eg: will be updated manually later).
        */
       setFilterByMyThreads(value, opts = {}) {
-        CommentsData.filterByMyThreads = value;
+        CommentsPageData.filterByMyThreads = value;
         const filterByMyThreadsNode = document.getElementById('filterByMyThreads');
         filterByMyThreadsNode.classList.toggle('button-primary', !!value);
-        const rootNode = CommentsNodes.getRootNode();
+        const rootNode = CommentsPageNodes.getRootNode();
         rootNode.classList.toggle('filterByMyThreads', !!value);
         if (!opts.omitUpdate) {
-          CommentsDataRender.updateVisibleThreads();
-          // CommentsDataRender.rerenderAllVisibleComments(); // Could be used if will filter and particular comments also
+          CommentsPageDataRender.updateVisibleThreads();
+          // CommentsPageDataRender.rerenderAllVisibleComments(); // Could be used if will filter and particular comments also
         }
       },
 
       setTotalCommentsCount(totalComments) {
-        CommentsData.totalComments = totalComments;
+        CommentsPageData.totalComments = totalComments;
         /* // TODO?
-         * const rootNode = CommentsNodes.getRootNode();
+         * const rootNode = CommentsPageNodes.getRootNode();
          * const elems = rootNode.querySelectorAll('#total-comments-number');
          * elems.forEach((node) => {
          *   node.innerHTML = String(totalComments);
@@ -147,7 +147,7 @@ modules.define(
       },
 
       setTotalThreadsCount(totalThreads) {
-        CommentsData.totalThreads = totalThreads;
+        CommentsPageData.totalThreads = totalThreads;
         /* // Set css class for root node, update local state
          * const rootNode = ThreadsNodes.getRootNode();
          * const elems = rootNode.querySelectorAll('#total-threads-number');
@@ -163,14 +163,14 @@ modules.define(
       },
 
       setError(error) {
-        CommentsData.isError = !!error;
-        CommentsData.error = error;
-        CommentsDataRender.renderError(error);
+        CommentsPageData.isError = !!error;
+        CommentsPageData.error = error;
+        CommentsPageDataRender.renderError(error);
       },
 
       clearData() {
         this.setHasData(false);
-        CommentsDataRender.clearRenderedData();
+        CommentsPageDataRender.clearRenderedData();
       },
 
       getRadioGroupValue(groupId) {
@@ -184,6 +184,6 @@ modules.define(
     };
 
     // Provide module...
-    provide(CommentsStates);
+    provide(CommentsPageStates);
   },
 );

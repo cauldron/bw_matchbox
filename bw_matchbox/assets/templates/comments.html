@@ -11,20 +11,20 @@
 <link rel="stylesheet" href="{{ url_for('static', filename='css/comments-filters.css') }}">
 <link rel="stylesheet" href="{{ url_for('static', filename='css/comments-threads-list.css') }}">
 
-<script src="{{ url_for('static', filename='js/Comments/Comments.js') }}"></script>
-<script src="{{ url_for('static', filename='js/Comments/CommentsConstants.js') }}"></script>
-<script src="{{ url_for('static', filename='js/Comments/CommentsData.js') }}"></script>
-<script src="{{ url_for('static', filename='js/Comments/CommentsDataRender.js') }}"></script>
-<script src="{{ url_for('static', filename='js/Comments/CommentsHandlers.js') }}"></script>
-<script src="{{ url_for('static', filename='js/Comments/CommentsHelpers.js') }}"></script>
-<script src="{{ url_for('static', filename='js/Comments/CommentsLoader.js') }}"></script>
-<script src="{{ url_for('static', filename='js/Comments/CommentsNodes.js') }}"></script>
-<script src="{{ url_for('static', filename='js/Comments/CommentsPrepareLoadedData.js') }}"></script>
-<script src="{{ url_for('static', filename='js/Comments/CommentsStates.js') }}"></script>
-<script src="{{ url_for('static', filename='js/Comments/CommentsThreadsHelpers.js') }}"></script>
+<script src="{{ url_for('static', filename='js/CommentsPage/CommentsPage.js') }}"></script>
+<script src="{{ url_for('static', filename='js/CommentsPage/CommentsPageConstants.js') }}"></script>
+<script src="{{ url_for('static', filename='js/CommentsPage/CommentsPageData.js') }}"></script>
+<script src="{{ url_for('static', filename='js/CommentsPage/CommentsPageDataRender.js') }}"></script>
+<script src="{{ url_for('static', filename='js/CommentsPage/CommentsPageHandlers.js') }}"></script>
+<script src="{{ url_for('static', filename='js/CommentsPage/CommentsPageHelpers.js') }}"></script>
+<script src="{{ url_for('static', filename='js/CommentsPage/CommentsPageLoader.js') }}"></script>
+<script src="{{ url_for('static', filename='js/CommentsPage/CommentsPageNodes.js') }}"></script>
+<script src="{{ url_for('static', filename='js/CommentsPage/CommentsPagePrepareLoadedData.js') }}"></script>
+<script src="{{ url_for('static', filename='js/CommentsPage/CommentsPageStates.js') }}"></script>
+<script src="{{ url_for('static', filename='js/CommentsPage/CommentsPageThreadsHelpers.js') }}"></script>
 
 {# Core module:
-  - `Comments` (from `bw_matchbox/assets/js/Comments/Comments.js`)
+  - `CommentsPage` (from `bw_matchbox/assets/js/CommentsPage/CommentsPage.js`)
 #}
 
 <div id="comments-root" class="comments-root container empty loading role-{{ config.role }}">
@@ -38,19 +38,19 @@
   <div class="filters">
     <div id="sortThreadsItem" class="filter-item">
       <label for="sortThreadsBy">Sort threads by:</label>
-      <select id="sortThreadsBy" onChange="Comments.handlers.handleSortThreadsByChange(this)">
+      <select id="sortThreadsBy" onChange="CommentsPage.handlers.handleSortThreadsByChange(this)">
         <option value="modifiedDate" selected>Modified date</option>
         <option value="name">Name</option>
       </select>
       <span class="filter-inline">
         <input type="checkbox" name="sortThreadsReversed" id="sortThreadsReversed"
-          onChange="Comments.handlers.handleSortThreadsReversedChange(this)"
+          onChange="CommentsPage.handlers.handleSortThreadsReversedChange(this)"
         />
         <label for="sortThreadsReversed">Reversed</label>
     </div>
     <div id="filterByStateItem" class="filter-item notByMyThreads">
       <label for="filterByState">Resolved state:</label>
-      <select id="filterByState" size="5" onChange="Comments.handlers.handleFilterByStateChange(this)">
+      <select id="filterByState" size="5" onChange="CommentsPage.handlers.handleFilterByStateChange(this)">
         <option value="none" selected>All</option>
         <option value="resolved">Resolved</option>
         <option value="open">Open</option>
@@ -58,12 +58,12 @@
     </div>
     <div id="filterByUsersItem" class="filter-item notByMyThreads">
       <label for="filterByUsers">Filter by user:</label>
-      <select id="filterByUsers" multiple onChange="Comments.handlers.handleFilterByUserChange(this)">
+      <select id="filterByUsers" multiple onChange="CommentsPage.handlers.handleFilterByUserChange(this)">
       </select>
     </div>
     <div id="filterByProcessesItem" class="filter-item notByMyThreads">
       <label for="filterByProcesses">Filter by process:</label>
-      <select id="filterByProcesses" multiple onChange="Comments.handlers.handleFilterByProcessChange(this)">
+      <select id="filterByProcesses" multiple onChange="CommentsPage.handlers.handleFilterByProcessChange(this)">
       </select>
     </div>
     <div id="filterActions" class="filter-item">
@@ -71,14 +71,14 @@
          TODO: Use special class like 'filter-item-without-label`.
       #}
       <label>&nbsp;</label>
-      <button id="filterByMyThreads" onClick="Comments.handlers.handleFilterByMyThreads(this)">
+      <button id="filterByMyThreads" onClick="CommentsPage.handlers.handleFilterByMyThreads(this)">
         <i id="filterByMyThreadsIcon" class="fa fa-check"></i>
         My threads
       </button>
-      <button id="resetFilters" onClick="Comments.handlers.handleResetFilters(this)">
+      <button id="resetFilters" onClick="CommentsPage.handlers.handleResetFilters(this)">
         Reset all filters
       </button>
-      <button id="expandCollapseAll" onClick="Comments.handlers.handleExpandAllThreads(this)">
+      <button id="expandCollapseAll" onClick="CommentsPage.handlers.handleExpandAllThreads(this)">
         Expand/collapse all
       </button>
     </div>
@@ -97,13 +97,13 @@
 </div>
 
 <script type="text/javascript">
-  modules.require(['Comments', 'CommentsConstants'], (Comments, CommentsConstants) => {
-    const { useDebug } = CommentsConstants;
+  modules.require(['CommentsPage', 'CommentsPageConstants'], (CommentsPage, CommentsPageConstants) => {
+    const { useDebug } = CommentsPageConstants;
     // Initialize page data...
     const sharedData = {
       base_url: '{{ base_url }}',
       currentRole: '{{ config.role }}',
-      // DEBUG: See updating of current user in `CommentsPrepareLoadedData:makeDerivedData` for debug mode
+      // DEBUG: See updating of current user in `CommentsPagePrepareLoadedData:makeDerivedData` for debug mode
       currentUser: '{{ config.user }}',
     };
 
@@ -113,10 +113,10 @@
      */
 
     // Export to global scope (to access from generated html code handlers).
-    window.Comments = Comments;
+    window.CommentsPage = CommentsPage;
 
     // Start core module...
-    Comments.start(sharedData);
+    CommentsPage.start(sharedData);
   });
 </script>
 {% include 'footer.html' %}

@@ -1,18 +1,18 @@
 modules.define(
-  'CommentsHelpers',
+  'CommentsPageHelpers',
   [
     // Required modules...
-    'CommentsData',
+    'CommentsPageData',
   ],
   function provide_CommentsHelpers(
     provide,
     // Resolved modules...
-    CommentsData,
+    CommentsPageData,
   ) {
-    /** @exports CommentsHelpers
+    /** @exports CommentsPageHelpers
      */
-    const CommentsHelpers = /** @lends CommentsHelpers */ {
-      __id: 'CommentsHelpers',
+    const CommentsPageHelpers = /** @lends CommentsPageHelpers */ {
+      __id: 'CommentsPageHelpers',
 
       /**
        * @param {HTMLSelectElement} node
@@ -62,7 +62,7 @@ modules.define(
        * @param {<TThread[]>} threads
        */
       sortThreads(threads) {
-        const { sortThreadsBy, sortThreadsReversed } = CommentsData;
+        const { sortThreadsBy, sortThreadsReversed } = CommentsPageData;
         const opts = {
           key: sortThreadsBy,
           asDate: false,
@@ -85,7 +85,7 @@ modules.define(
        * @return {-1, 0, 1}
        */
       sortCommentIdsCompare(aId, bId) {
-        const { comments } = CommentsData;
+        const { comments } = CommentsPageData;
         const a = comments[aId];
         const b = comments[bId];
         return a.position - b.position;
@@ -102,6 +102,6 @@ modules.define(
     };
 
     // Provide module...
-    provide(CommentsHelpers);
+    provide(CommentsPageHelpers);
   },
 );

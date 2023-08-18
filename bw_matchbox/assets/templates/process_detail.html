@@ -17,11 +17,11 @@
           <div class="tools">
             <div class="tools-wrapper">
               {% if ds.database == source and config.role == 'editors'  %}
-                <a id="mark-waitlist" class="tools-button {{ ' theme-primary' if not ds.get('waitlist') }}" onClick="ProcessDetail.markWaitlist(this)">{{ 'Waitlisted' if ds.waitlist else 'Waitlist' }}</a>
+                <a id="mark-waitlist" class="tools-button {{ ' theme-primary' if not ds.get('waitlist') }}" onClick="ProcessDetailPage.markWaitlist(this)">{{ 'Waitlisted' if ds.waitlist else 'Waitlist' }}</a>
                 {% if not ds.matched %}
-                  <a id="manual-match" class="tools-button theme-primary" onClick="ProcessDetail.markMatched(this)">No match needed</a>
+                  <a id="manual-match" class="tools-button theme-primary" onClick="ProcessDetailPage.markMatched(this)">No match needed</a>
                   {% if same_name_count %}
-                    <a id="manual-multi-match" class="tools-button theme-primary" onClick="ProcessDetail.markAllMatched(this)">Mark all matched</a>
+                    <a id="manual-multi-match" class="tools-button theme-primary" onClick="ProcessDetailPage.markAllMatched(this)">Mark all matched</a>
                   {% endif %}
                   <a id="match-button" class="tools-button theme-primary" href="{{ url_for('match', source=ds.id)}}">Match</a>
                 {% else %}
@@ -137,7 +137,7 @@
 <!-- Start project scripts -->
 <script type="module">
 
-  import { ProcessDetail } from '/assets/modules/ProcessDetail/ProcessDetail.js';
+  import { ProcessDetailPage } from '/assets/modules/ProcessDetailPage/ProcessDetailPage.js';
 
   // Global variables for compare tables feature (via global variable `sharedParams`)...
   const sharedParams = {
@@ -151,9 +151,9 @@
   };
 
   // Export to global scope (to access from generated html code handlers).
-  window.ProcessDetail = ProcessDetail;
+  window.ProcessDetailPage = ProcessDetailPage;
 
   // Start core module...
-  ProcessDetail.start(sharedParams);
+  ProcessDetailPage.start(sharedParams);
 </script>
 {% include 'footer.html' %}

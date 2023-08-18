@@ -1,5 +1,5 @@
 modules.define(
-  'CommentsConstants',
+  'CommentsPageConstants',
   [
     // Required modules...
   ],
@@ -15,8 +15,8 @@ modules.define(
 
     /* @desc Shared constants
      */
-    const CommentsConstants = {
-      __id: 'CommentsConstants',
+    const CommentsPageConstants = {
+      __id: 'CommentsPageConstants',
 
       // Determine environment...
       isDev,
@@ -43,6 +43,6 @@ modules.define(
     };
 
     // Provide module...
-    provide(CommentsConstants);
+    provide(CommentsPageConstants);
   },
 );

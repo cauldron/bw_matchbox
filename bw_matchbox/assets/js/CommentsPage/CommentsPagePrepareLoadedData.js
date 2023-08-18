@@ -1,24 +1,24 @@
 modules.define(
-  'CommentsPrepareLoadedData',
+  'CommentsPagePrepareLoadedData',
   [
     // Required modules...
-    'CommentsData',
-    'CommentsHelpers',
+    'CommentsPageData',
+    'CommentsPageHelpers',
   ],
   function provide_CommentsPrepareLoadedData(
     provide,
     // Resolved modules...
-    CommentsData,
-    CommentsHelpers,
+    CommentsPageData,
+    CommentsPageHelpers,
   ) {
-    /** @exports CommentsPrepareLoadedData
+    /** @exports CommentsPagePrepareLoadedData
      */
-    const CommentsPrepareLoadedData = /** @lends CommentsPrepareLoadedData */ {
-      __id: 'CommentsPrepareLoadedData',
+    const CommentsPagePrepareLoadedData = /** @lends CommentsPagePrepareLoadedData */ {
+      __id: 'CommentsPagePrepareLoadedData',
 
       makeDerivedData() {
-        const { comments, threads, sharedParams, useFakeCurrentUser } = CommentsData;
-        /* console.log('[CommentsPrepareLoadedData:makeDerivedData]', {
+        const { comments, threads, sharedParams, useFakeCurrentUser } = CommentsPageData;
+        /* console.log('[CommentsPagePrepareLoadedData:makeDerivedData]', {
          *   comments,
          *   threads,
          * });
@@ -38,27 +38,27 @@ modules.define(
           }
           return processIds;
         }, []);
-        /* console.log('[CommentsPrepareLoadedData:makeDerivedData] done', {
+        /* console.log('[CommentsPagePrepareLoadedData:makeDerivedData] done', {
          *   users,
          *   processesHash,
          *   processIds,
          * });
          */
-        CommentsData.users = users;
+        CommentsPageData.users = users;
         // DEBUG: Set first given user as current user
         if (useFakeCurrentUser) {
           sharedParams.currentUser = users[0];
         }
-        CommentsData.processesHash = processesHash;
-        CommentsData.processIds = processIds;
+        CommentsPageData.processesHash = processesHash;
+        CommentsPageData.processIds = processIds;
       },
 
       /** acceptAndPrepareData -- Prepare, store and render data...
        */
       acceptAndPrepareData() {
-        const { comments, threads } = CommentsData;
-        CommentsHelpers.sortThreads(threads);
-        comments.sort(CommentsHelpers.sortCommentsCompare);
+        const { comments, threads } = CommentsPageData;
+        CommentsPageHelpers.sortThreads(threads);
+        comments.sort(CommentsPageHelpers.sortCommentsCompare);
         // Create hashes...
         const commentsHash = comments.reduce((hash, comment) => {
           hash[comment.id] = comment;
@@ -69,9 +69,9 @@ modules.define(
           return hash;
         }, {});
         // Save created hashes...
-        CommentsData.commentsHash = commentsHash;
-        CommentsData.threadsHash = threadsHash;
-        /* console.log('[CommentsPrepareLoadedData:acceptAndPrepareData]', {
+        CommentsPageData.commentsHash = commentsHash;
+        CommentsPageData.threadsHash = threadsHash;
+        /* console.log('[CommentsPagePrepareLoadedData:acceptAndPrepareData]', {
          *   comments,
          *   threads,
          *   commentsHash,
@@ -86,8 +86,8 @@ modules.define(
           commentIds.push(id);
         });
         // Save comments data to store...
-        CommentsData.commentsByThreads = commentsByThreads;
-        /* console.log('[CommentsPrepareLoadedData:acceptAndPrepareData]: done', {
+        CommentsPageData.commentsByThreads = commentsByThreads;
+        /* console.log('[CommentsPagePrepareLoadedData:acceptAndPrepareData]: done', {
          *   comments,
          *   threads,
          *   commentsHash,
@@ -99,6 +99,6 @@ modules.define(
     };
 
     // Provide module...
-    provide(CommentsPrepareLoadedData);
+    provide(CommentsPagePrepareLoadedData);
   },
 );

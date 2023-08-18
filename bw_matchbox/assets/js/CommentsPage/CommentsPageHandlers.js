@@ -1,27 +1,27 @@
 modules.define(
-  'CommentsHandlers',
+  'CommentsPageHandlers',
   [
     // Required modules...
     'CommonNotify',
     'CommonModal',
-    'CommentsData',
-    'CommentsDataRender',
-    'CommentsStates',
-    'CommentsHelpers',
-    'CommentsNodes',
-    'CommentsConstants',
+    'CommentsPageData',
+    'CommentsPageDataRender',
+    'CommentsPageStates',
+    'CommentsPageHelpers',
+    'CommentsPageNodes',
+    'CommentsPageConstants',
   ],
   function provide_CommentsHandlers(
     provide,
     // Resolved modules...
     CommonNotify,
     CommonModal,
-    CommentsData,
-    CommentsDataRender,
-    CommentsStates,
-    CommentsHelpers,
-    CommentsNodes,
-    CommentsConstants,
+    CommentsPageData,
+    CommentsPageDataRender,
+    CommentsPageStates,
+    CommentsPageHelpers,
+    CommentsPageNodes,
+    CommentsPageConstants,
   ) {
     /* // Types (TS):
      * interface TApiHandlerParams {
@@ -105,9 +105,9 @@ modules.define(
        */
       threadAddCommentRequest(params, comment) {
         // TODO: Check roles for editors, reviewers?
-        const { createCommentApiUrl: urlBase } = CommentsConstants;
+        const { createCommentApiUrl: urlBase } = CommentsPageConstants;
         const { threadId, threadNode } = params;
-        const { threadsHash, sharedParams } = CommentsData;
+        const { threadsHash, sharedParams } = CommentsPageData;
         const { currentUser } = sharedParams;
         const thread = threadsHash[threadId];
         const requestParams = {
@@ -129,7 +129,7 @@ modules.define(
           body: JSON.stringify(requestParams),
         };
         const url = urlBase;
-        /* console.log('[CommentsHandlers:apiHandlers:threadAddCommentRequest]: start', {
+        /* console.log('[CommentsPageHandlers:apiHandlers:threadAddCommentRequest]: start', {
          *   threadId,
          *   thread,
          *   params,
@@ -140,7 +140,7 @@ modules.define(
          *   url,
          * });
          */
-        CommentsStates.setLoading(true);
+        CommentsPageStates.setLoading(true);
         return (
           fetch(url, fetchParams)
             .then((res) => {
@@ -152,13 +152,16 @@ modules.define(
                   'Unknown error';
                 const error = new Error('Data loading error: ' + reason);
                 // eslint-disable-next-line no-console
-                console.error('[CommentsHandlers:apiHandlers:threadAddCommentRequest]: on then', {
-                  reason,
-                  res,
-                  url,
-                  params,
-                  urlBase,
-                });
+                console.error(
+                  '[CommentsPageHandlers:apiHandlers:threadAddCommentRequest]: on then',
+                  {
+                    reason,
+                    res,
+                    url,
+                    params,
+                    urlBase,
+                  },
+                );
                 // eslint-disable-next-line no-debugger
                 debugger;
                 throw error;
@@ -171,7 +174,7 @@ modules.define(
              */
             .then((comment) => {
               const { id: commentId } = comment;
-              const { comments, threads, commentsHash, commentsByThreads } = CommentsData;
+              const { comments, threads, commentsHash, commentsByThreads } = CommentsPageData;
               // Update thread modified date (manually!)
               const currDate = new Date();
               const currDateStr = currDate.toUTCString();
@@ -182,13 +185,13 @@ modules.define(
               commentsByThreads[threadId].push(commentId);
               commentsHash[commentId] = comment;
               // Sort comments...
-              comments.sort(CommentsHelpers.sortCommentsCompare);
-              CommentsHelpers.sortThreads(threads);
+              comments.sort(CommentsPageHelpers.sortCommentsCompare);
+              CommentsPageHelpers.sortThreads(threads);
               // Update content...
               const threadTitleTextNode = threadNode.querySelector('.title-text');
               const threadTitleTextContent =
-                CommentsDataRender.helpers.createThreadTitleTextContent(thread);
-              /* console.log('[CommentsHandlers:apiHandlers:threadAddCommentRequest]: done', {
+                CommentsPageDataRender.helpers.createThreadTitleTextContent(thread);
+              /* console.log('[CommentsPageHandlers:apiHandlers:threadAddCommentRequest]: done', {
                *   commentId,
                *   comment,
                *   commentsHash,
@@ -203,17 +206,17 @@ modules.define(
                */
               // Update data & elements' states...
               threadTitleTextNode.innerHTML = threadTitleTextContent;
-              // CommentsDataRender.renderData();
-              CommentsDataRender.updateThreadComments(threadId);
-              CommentsDataRender.updateVisibleThreads();
-              CommentsHelpers.sortThreads(threads);
-              CommentsDataRender.reorderRenderedThreads();
+              // CommentsPageDataRender.renderData();
+              CommentsPageDataRender.updateThreadComments(threadId);
+              CommentsPageDataRender.updateVisibleThreads();
+              CommentsPageHelpers.sortThreads(threads);
+              CommentsPageDataRender.reorderRenderedThreads();
               // Show noitification...
               CommonNotify.showSuccess('Comment successfully added');
             })
             .catch((error) => {
               // eslint-disable-next-line no-console
-              console.error('[CommentsHandlers:apiHandlers:threadAddCommentRequest]: catched', {
+              console.error('[CommentsPageHandlers:apiHandlers:threadAddCommentRequest]: catched', {
                 error,
                 url,
                 params,
@@ -222,11 +225,11 @@ modules.define(
               // eslint-disable-next-line no-debugger
               debugger;
               // Store & display error...
-              CommentsStates.setError(error);
+              CommentsPageStates.setError(error);
               CommonNotify.showError(error);
             })
             .finally(() => {
-              CommentsStates.setLoading(false);
+              CommentsPageStates.setLoading(false);
             })
         );
       },
@@ -236,7 +239,7 @@ modules.define(
        * @return {Promise}
        */
       threadAddComment(params) {
-        const { sharedParams } = CommentsData;
+        const { sharedParams } = CommentsPageData;
         const { currentRole } = sharedParams;
         // Check roles...
         if (currentRole !== 'editors' && currentRole !== 'reviewers') {
@@ -260,9 +263,9 @@ modules.define(
        * @return {Promise}
        */
       threadResolve(params) {
-        const { resolveThreadApiUrl: urlBase } = CommentsConstants;
+        const { resolveThreadApiUrl: urlBase } = CommentsPageConstants;
         const { threadId, threadNode } = params;
-        const { threadsHash, sharedParams } = CommentsData;
+        const { threadsHash, sharedParams } = CommentsPageData;
         const { currentRole } = sharedParams;
         // Check roles...
         if (currentRole !== 'editors') {
@@ -292,7 +295,7 @@ modules.define(
         };
         // const urlQuery = CommonHelpers.makeQuery(requestParams, { addQuestionSymbol: true });
         const url = urlBase; // + urlQuery;
-        /* console.log('[CommentsHandlers:apiHandlers:threadResolve]: start', {
+        /* console.log('[CommentsPageHandlers:apiHandlers:threadResolve]: start', {
          *   resolved,
          *   currResolved,
          *   threadId,
@@ -305,7 +308,7 @@ modules.define(
          *   url,
          * });
          */
-        CommentsStates.setLoading(true);
+        CommentsPageStates.setLoading(true);
         return fetch(url, fetchParams)
           .then((res) => {
             const { ok, status, statusText } = res;
@@ -316,7 +319,7 @@ modules.define(
                 'Unknown error';
               const error = new Error('Data loading error: ' + reason);
               // eslint-disable-next-line no-console
-              console.error('[CommentsHandlers:apiHandlers:threadResolve]: error (on then)', {
+              console.error('[CommentsPageHandlers:apiHandlers:threadResolve]: error (on then)', {
                 reason,
                 res,
                 url,
@@ -341,8 +344,8 @@ modules.define(
             // Update content...
             const threadTitleTextNode = threadNode.querySelector('.title-text');
             const threadTitleTextContent =
-              CommentsDataRender.helpers.createThreadTitleTextContent(thread);
-            /* console.log('[CommentsHandlers:apiHandlers:threadResolve]: done', {
+              CommentsPageDataRender.helpers.createThreadTitleTextContent(thread);
+            /* console.log('[CommentsPageHandlers:apiHandlers:threadResolve]: done', {
              *   resolved,
              *   thread,
              *   // currDate,
@@ -357,15 +360,15 @@ modules.define(
             // Update thread node class...
             threadNode.classList.toggle('resolved', resolved);
             // Update/re-render data...
-            // CommentsDataRender.renderData();
-            CommentsDataRender.updateVisibleThreads();
+            // CommentsPageDataRender.renderData();
+            CommentsPageDataRender.updateVisibleThreads();
             // Show noitification...
             CommonNotify.showSuccess('Thread data successfully updated');
-            CommentsStates.setError();
+            CommentsPageStates.setError();
           })
           .catch((error) => {
             // eslint-disable-next-line no-console
-            console.error('[CommentsHandlers:apiHandlers:threadResolve]: error (catched)', {
+            console.error('[CommentsPageHandlers:apiHandlers:threadResolve]: error (catched)', {
               error,
               url,
               params,
@@ -374,19 +377,19 @@ modules.define(
             // eslint-disable-next-line no-debugger
             debugger;
             // Store & display error...
-            CommentsStates.setError(error);
+            CommentsPageStates.setError(error);
             CommonNotify.showError(error);
           })
           .finally(() => {
-            CommentsStates.setLoading(false);
+            CommentsPageStates.setLoading(false);
           });
       },
     };
 
-    /** @exports CommentsHandlers
+    /** @exports CommentsPageHandlers
      */
-    const CommentsHandlers = /** @lends CommentsHandlers */ {
-      __id: 'CommentsHandlers',
+    const CommentsPageHandlers = /** @lends CommentsPageHandlers */ {
+      __id: 'CommentsPageHandlers',
 
       handleTitleActionClick(event) {
         event.preventDefault();
@@ -409,7 +412,7 @@ modules.define(
             const error = new Error('Cannot find api handler for id ' + actionId);
             throw error;
           }
-          /* console.log('[CommentsHandlers:handleTitleActionClick]', actionId, {
+          /* console.log('[CommentsPageHandlers:handleTitleActionClick]', actionId, {
            *   actionId,
            *   func,
            *   node,
@@ -422,55 +425,55 @@ modules.define(
           func(params);
         } catch (error) {
           // eslint-disable-next-line no-console
-          console.error('[CommentsHandlers:handleTitleActionClick] error', error);
+          console.error('[CommentsPageHandlers:handleTitleActionClick] error', error);
           // eslint-disable-next-line no-debugger
           debugger;
         }
       },
 
       handleFilterByUserChange(node) {
-        const values = CommentsHelpers.getMultipleSelectValues(node);
-        /* console.log('[CommentsHandlers:handleFilterByUserChange]', {
+        const values = CommentsPageHelpers.getMultipleSelectValues(node);
+        /* console.log('[CommentsPageHandlers:handleFilterByUserChange]', {
          *   values,
          * });
          */
-        CommentsStates.setFilterByUsers(values);
+        CommentsPageStates.setFilterByUsers(values);
       },
 
       handleFilterByProcessChange(node) {
-        const values = CommentsHelpers.getMultipleSelectValues(node).map(Number);
-        /* console.log('[CommentsHandlers:handleFilterByProcessChange]', {
+        const values = CommentsPageHelpers.getMultipleSelectValues(node).map(Number);
+        /* console.log('[CommentsPageHandlers:handleFilterByProcessChange]', {
          *   values,
          * });
          */
-        CommentsStates.setFilterByProcesses(values);
+        CommentsPageStates.setFilterByProcesses(values);
       },
 
       handleFilterByStateChange(node) {
         const { value } = node;
-        /* console.log('[CommentsHandlers:handleFilterByStateChange]', {
+        /* console.log('[CommentsPageHandlers:handleFilterByStateChange]', {
          *   value,
          * });
          */
-        CommentsStates.setFilterByState(value);
+        CommentsPageStates.setFilterByState(value);
       },
 
       handleSortThreadsReversedChange(node) {
         const { checked: value } = node;
-        /* console.log('[CommentsHandlers:handleSortThreadsChange]', {
+        /* console.log('[CommentsPageHandlers:handleSortThreadsChange]', {
          *   value,
          * });
          */
-        CommentsStates.setSortThreadsReversedChange(value);
+        CommentsPageStates.setSortThreadsReversedChange(value);
       },
 
       handleSortThreadsByChange(node) {
         const { value } = node;
-        /* console.log('[CommentsHandlers:handleSortThreadsByChange]', {
+        /* console.log('[CommentsPageHandlers:handleSortThreadsByChange]', {
          *   value,
          * });
          */
-        CommentsStates.setSortThreadsByChange(value);
+        CommentsPageStates.setSortThreadsByChange(value);
       },
 
       /** Reset `filterByState` filter
@@ -479,10 +482,10 @@ modules.define(
        */
       resetFilterByState(opts = {}) {
         const filterByStateNode = document.getElementById('filterByState');
-        const { defaultParams } = CommentsData;
+        const { defaultParams } = CommentsPageData;
         const { filterByState: value } = defaultParams;
         filterByStateNode.value = value;
-        CommentsStates.setFilterByState(value, opts);
+        CommentsPageStates.setFilterByState(value, opts);
       },
 
       /** Reset `filterByUsers` filter
@@ -491,10 +494,10 @@ modules.define(
        */
       resetFilterByUsers(opts = {}) {
         const filterByUsersNode = document.getElementById('filterByUsers');
-        const { defaultParams } = CommentsData;
+        const { defaultParams } = CommentsPageData;
         const { filterByUsers: values } = defaultParams;
-        CommentsHelpers.setMultipleSelectValues(filterByUsersNode, values);
-        CommentsStates.setFilterByUsers(values, opts);
+        CommentsPageHelpers.setMultipleSelectValues(filterByUsersNode, values);
+        CommentsPageStates.setFilterByUsers(values, opts);
       },
 
       /** Reset `filterByProcesses` filter
@@ -503,15 +506,15 @@ modules.define(
        */
       resetFilterByProcesses(opts = {}) {
         const filterByProcessesNode = document.getElementById('filterByProcesses');
-        const { defaultParams } = CommentsData;
+        const { defaultParams } = CommentsPageData;
         const { filterByProcesses: values } = defaultParams;
-        CommentsHelpers.setMultipleSelectValues(filterByProcessesNode, values);
-        CommentsStates.setFilterByProcesses(values, opts);
+        CommentsPageHelpers.setMultipleSelectValues(filterByProcessesNode, values);
+        CommentsPageStates.setFilterByProcesses(values, opts);
       },
 
       handleFilterByMyThreads() {
-        const { filterByMyThreads } = CommentsData;
-        CommentsStates.setFilterByMyThreads(!filterByMyThreads);
+        const { filterByMyThreads } = CommentsPageData;
+        CommentsPageStates.setFilterByMyThreads(!filterByMyThreads);
       },
 
       /** Reset `filterByMyThreads` filter
@@ -519,9 +522,9 @@ modules.define(
        * @param {boolean} [opts.omitUpdate] - Don't automatically state (eg: will be updated manually later).
        */
       resetFilterByMyThreads(opts = {}) {
-        const { defaultParams } = CommentsData;
+        const { defaultParams } = CommentsPageData;
         const { filterByMyThreads: value } = defaultParams;
-        CommentsStates.setFilterByMyThreads(value, opts);
+        CommentsPageStates.setFilterByMyThreads(value, opts);
       },
 
       handleExpandThread(node) {
@@ -529,21 +532,21 @@ modules.define(
         const threadId = Number(threadEl.getAttribute('data-thread-id'));
         const wasExpanded = threadEl.classList.contains('expanded');
         const setExpanded = !wasExpanded;
-        /* console.log('[CommentsHandlers:handleExpandThread]', {
+        /* console.log('[CommentsPageHandlers:handleExpandThread]', {
          *   threadEl,
          *   node,
          * });
          */
         // Ensure that all the thread comments had already rendered...
         if (setExpanded) {
-          CommentsDataRender.ensureThreadCommentsReady(threadId);
+          CommentsPageDataRender.ensureThreadCommentsReady(threadId);
         }
         // Toggle `expanded` class name...
         threadEl.classList.toggle('expanded', setExpanded);
       },
 
       handleExpandAllThreads() {
-        const threadsListNode = CommentsNodes.getThreadsListNode();
+        const threadsListNode = CommentsPageNodes.getThreadsListNode();
         // const threadNodes = threadsListNode.getElementsByClassName('thread');
         const threadNodes = threadsListNode.querySelectorAll('.thread:not(.hidden)');
         const threadNodesList = Array.from(threadNodes);
@@ -557,7 +560,7 @@ modules.define(
         const isSome = !isCollapsed && !isExpanded;
         const isAll = !isSome;
         const setExpanded = isAll ? !isExpanded : false;
-        /* console.log('[CommentsHandlers:handleExpandAllThreads]', {
+        /* console.log('[CommentsPageHandlers:handleExpandAllThreads]', {
          *   threadsListNode,
          *   threadNodes,
          *   threadNodesList,
@@ -574,7 +577,7 @@ modules.define(
         threadNodesList.forEach((node) => {
           if (setExpanded) {
             const threadId = Number(node.getAttribute('data-thread-id'));
-            CommentsDataRender.ensureThreadCommentsReady(threadId);
+            CommentsPageDataRender.ensureThreadCommentsReady(threadId);
           }
           node.classList.toggle('expanded', setExpanded);
         });
@@ -588,7 +591,7 @@ modules.define(
         this.resetFilterByUsers(commonOpts);
         this.resetFilterByProcesses(commonOpts);
         this.resetFilterByMyThreads(commonOpts);
-        CommentsDataRender.updateVisibleThreads();
+        CommentsPageDataRender.updateVisibleThreads();
       },
 
       start({ handlers }) {
@@ -604,6 +607,6 @@ modules.define(
     };
 
     // Provide module...
-    provide(CommentsHandlers);
+    provide(CommentsPageHandlers);
   },
 );

@@ -1,21 +1,21 @@
 modules.define(
-  'CommentsDataRender',
+  'CommentsPageDataRender',
   [
     // Required modules...
-    'CommentsConstants',
-    'CommentsData',
-    'CommentsNodes',
+    'CommentsPageConstants',
+    'CommentsPageData',
+    'CommentsPageNodes',
     'CommonHelpers',
-    'CommentsThreadsHelpers',
+    'CommentsPageThreadsHelpers',
   ],
   function provide_CommentsDataRender(
     provide,
     // Resolved modules...
-    CommentsConstants,
-    CommentsData,
-    CommentsNodes,
+    CommentsPageConstants,
+    CommentsPageData,
+    CommentsPageNodes,
     CommonHelpers,
-    CommentsThreadsHelpers,
+    CommentsPageThreadsHelpers,
   ) {
     /** Local (not public) helpers... */
     const helpers = {
@@ -27,17 +27,17 @@ modules.define(
        * @return {<TCommentId[]>} - Comments data list
        */
       getCommentsForThread(threadId) {
-        const { commentsHash, commentsByThreads } = CommentsData;
+        const { commentsHash, commentsByThreads } = CommentsPageData;
         const commentsByThreadsIds = commentsByThreads[threadId];
         const commentsList = commentsByThreadsIds.map((id) => commentsHash[id]);
         return commentsList;
       },
 
       getVisibleCommentsForThread(threadId) {
-        const { commentsHash, commentsByThreads } = CommentsData;
+        const { commentsHash, commentsByThreads } = CommentsPageData;
         const commentsByThreadsIds = commentsByThreads[threadId];
         const visibleCommentIds = commentsByThreadsIds.filter(
-          CommentsThreadsHelpers.isCommentVisible,
+          CommentsPageThreadsHelpers.isCommentVisible,
         );
         const commentsList = visibleCommentIds.map((id) => commentsHash[id]);
         return commentsList;
@@ -46,8 +46,8 @@ modules.define(
       getDateTimeFormatter() {
         if (!helpers.dateTimeFormatter) {
           helpers.dateTimeFormatter = new Intl.DateTimeFormat(
-            CommentsConstants.dateTimeFormatLocale,
-            CommentsConstants.dateTimeFormatOptions,
+            CommentsPageConstants.dateTimeFormatLocale,
+            CommentsPageConstants.dateTimeFormatOptions,
           );
         }
         return helpers.dateTimeFormatter;
@@ -68,7 +68,7 @@ modules.define(
         const modifiedDate = new Date(modified);
         const dateTimeFormatter = helpers.getDateTimeFormatter();
         const modifiedStr = dateTimeFormatter.format(modifiedDate);
-        const processName = CommentsThreadsHelpers.createProcessName(process);
+        const processName = CommentsPageThreadsHelpers.createProcessName(process);
         const infoText = [
           reporter && `<label>reporter:</label> ${reporter}`,
           commentsCount && `<label>comments:</label> ${commentsCount}`,
@@ -99,7 +99,7 @@ modules.define(
           // reporter, // string, eg: '阿部 篤司'
           // process, // TProcess;
         } = thread;
-        const isVisible = CommentsThreadsHelpers.isThreadVisible(threadId);
+        const isVisible = CommentsPageThreadsHelpers.isThreadVisible(threadId);
         const commentsList = helpers.getVisibleCommentsForThread(threadId);
         const commentPositions = commentsList.map((comment) => comment.position);
         const commentsCount = commentsList.length;
@@ -123,7 +123,7 @@ modules.define(
         const threadTitleTextContent = helpers.createThreadTitleTextContent(thread);
         const content = `
           <div data-thread-id="${threadId}" id="thread-${threadId}" class="${className}">
-            <div class="main-row" onClick="Comments.CommentsHandlers.handleExpandThread(this)">
+            <div class="main-row" onClick="Comments.CommentsPageHandlers.handleExpandThread(this)">
               <div class="expand-button-wrapper" title="Expand/collapse comments">
                 <a class="expand-button">
                   <i class="fa-solid fa-chevron-right"></i>
@@ -142,7 +142,7 @@ modules.define(
             <div class="comments" data-for-thread-id="${threadId}" id="comments-for-thread-${threadId}">${commentsContent}</div>
           </div>
         `;
-        /* console.log('[CommentsDataRender:helpers:renderThread]', {
+        /* console.log('[CommentsPageDataRender:helpers:renderThread]', {
          *   content,
          *   commentPositions,
          *   threadId,
@@ -156,7 +156,7 @@ modules.define(
       },
 
       renderComment(comment) {
-        const { sharedParams } = CommentsData;
+        const { sharedParams } = CommentsPageData;
         const { currentUser } = sharedParams;
         const {
           id, // number; // 2
@@ -198,7 +198,7 @@ modules.define(
             </div>
           </div>
         `;
-        /* console.log('[CommentsDataRender:helpers:renderComment]', {
+        /* console.log('[CommentsPageDataRender:helpers:renderComment]', {
          *   html,
          *   //\\
          *   id, // number; // 2
@@ -214,11 +214,11 @@ modules.define(
       },
 
       renderThreadCommentsContent(threadId) {
-        // const { filterByState } = CommentsData;
+        // const { filterByState } = CommentsPageData;
         // TODO: Use some filters?
         const comments = helpers.getVisibleCommentsForThread(threadId);
         const commentsHtml = comments.map(helpers.renderComment).join('\n');
-        /* console.log('[CommentsDataRender:helpers:renderThreadCommentsContent]', {
+        /* console.log('[CommentsPageDataRender:helpers:renderThreadCommentsContent]', {
          *   commentsHtml,
          *   comments,
          *   threadId,
@@ -228,24 +228,24 @@ modules.define(
       },
     };
 
-    /** @exports CommentsDataRender
+    /** @exports CommentsPageDataRender
      */
-    const CommentsDataRender = {
-      __id: 'CommentsDataRender',
+    const CommentsPageDataRender = {
+      __id: 'CommentsPageDataRender',
 
       helpers, // Expose helpers (TODO: Refactor to make it hidden?)
 
       renderError(error) {
         // TODO: Set css class for id="processes-list-root" --> error, update local state
         const isError = !!error;
-        const rootNode = CommentsNodes.getRootNode();
-        const errorNode = CommentsNodes.getErrorNode();
+        const rootNode = CommentsPageNodes.getRootNode();
+        const errorNode = CommentsPageNodes.getErrorNode();
         rootNode.classList.toggle('error', isError);
         const errorText = error ? error.message || String(error) : '';
         // DEBUG: Show error in console
         if (errorText) {
           // eslint-disable-next-line no-console
-          console.error('[CommentsDataRender:renderError]: got the error', {
+          console.error('[CommentsPageDataRender:renderError]: got the error', {
             error,
             errorText,
           });
@@ -261,7 +261,7 @@ modules.define(
         const commentsNode = document.getElementById(commentsNodeId);
         // Else render the comments list...
         const commentsContent = helpers.renderThreadCommentsContent(threadId);
-        /* console.log('[CommentsDataRender:updateThreadComments]', {
+        /* console.log('[CommentsPageDataRender:updateThreadComments]', {
          *   commentsContent,
          *   threadId,
          *   commentsNodeId,
@@ -283,8 +283,8 @@ modules.define(
       },
 
       updateVisibleThreadsStatus() {
-        const rootNode = CommentsNodes.getRootNode();
-        const threadsListNode = CommentsNodes.getThreadsListNode();
+        const rootNode = CommentsPageNodes.getRootNode();
+        const threadsListNode = CommentsPageNodes.getThreadsListNode();
         const visibleThreadNodes = threadsListNode.querySelectorAll('.thread:not(.hidden)');
         const hasVisibleThreads = !!visibleThreadNodes.length;
         rootNode.classList.toggle('has-visible-threads', hasVisibleThreads);
@@ -292,7 +292,7 @@ modules.define(
 
       // TODO: Is it used?
       clearRenderedData() {
-        const threadsListNode = CommentsNodes.getThreadsListNode();
+        const threadsListNode = CommentsPageNodes.getThreadsListNode();
         threadsListNode.replaceChildren();
       },
 
@@ -301,10 +301,10 @@ modules.define(
        * @param {boolean} [opts.append] - Append data to the end of the table (default behavior: replace)
        */
       renderData(opts = {}) {
-        const { threads } = CommentsData;
-        const threadsListNode = CommentsNodes.getThreadsListNode();
+        const { threads } = CommentsPageData;
+        const threadsListNode = CommentsPageNodes.getThreadsListNode();
         const content = threads.map(helpers.renderThread).join('\n');
-        /* console.log('[CommentsDataRender:renderData]', {
+        /* console.log('[CommentsPageDataRender:renderData]', {
          *   threadsListNode,
          *   content,
          *   threads,
@@ -326,8 +326,8 @@ modules.define(
       },
 
       reorderRenderedThreads() {
-        const { threads } = CommentsData;
-        const threadsListNode = CommentsNodes.getThreadsListNode();
+        const { threads } = CommentsPageData;
+        const threadsListNode = CommentsPageNodes.getThreadsListNode();
         const threadNodes = threadsListNode.children;
         const threadNodesList = Array.from(threadNodes);
         const actualIds = threads.map(({ id }) => id);
@@ -339,7 +339,7 @@ modules.define(
         });
         // TODO: Compare `actualIds` and `renderedIds`...
         const isTheSameOrder = CommonHelpers.compareArrays(actualIds, renderedIds);
-        /* console.log('[CommentsDataRender:reorderRenderedThreads]', {
+        /* console.log('[CommentsPageDataRender:reorderRenderedThreads]', {
          *   isTheSameOrder,
          *   threads,
          *   threadsListNode,
@@ -358,12 +358,12 @@ modules.define(
 
       /** clearAllHiddenThreadsComments -- Remove all rendered comments from hidden (non-expanded) threads */
       clearAllHiddenThreadsComments() {
-        // const rootNode = CommentsNodes.getRootNode();
-        const threadsListNode = CommentsNodes.getThreadsListNode();
+        // const rootNode = CommentsPageNodes.getRootNode();
+        const threadsListNode = CommentsPageNodes.getThreadsListNode();
         const hiddenCommentNodes = threadsListNode.querySelectorAll(
           '.thread:not(.expanded) .comments.ready',
         );
-        /* console.log('[CommentsDataRender:clearAllHiddenThreadsComments]', {
+        /* console.log('[CommentsPageDataRender:clearAllHiddenThreadsComments]', {
          *   threadsListNode,
          *   hiddenCommentNodes,
          * });
@@ -375,8 +375,8 @@ modules.define(
       },
 
       renderFilterByUserOptions() {
-        const rootNode = CommentsNodes.getRootNode();
-        const { users, filterByUsers, sharedParams } = CommentsData;
+        const rootNode = CommentsPageNodes.getRootNode();
+        const { users, filterByUsers, sharedParams } = CommentsPageData;
         const { currentUser } = sharedParams;
         const filterByUsersNode = document.getElementById('filterByUsers');
         const options = users.map((user) => {
@@ -389,7 +389,7 @@ modules.define(
           return `<option value="${value}"${isSelected ? ' selected' : ''}>${text}</option>`;
         });
         const hasUsers = !!options.length;
-        /* console.log('[CommentsDataRender:renderFilterByUserOptions]', {
+        /* console.log('[CommentsPageDataRender:renderFilterByUserOptions]', {
          *   options,
          *   hasUsers,
          *   users,
@@ -401,17 +401,17 @@ modules.define(
       },
 
       renderFilterByProcessOptions() {
-        const rootNode = CommentsNodes.getRootNode();
-        const { processIds, processesHash, filterByProcesses } = CommentsData;
+        const rootNode = CommentsPageNodes.getRootNode();
+        const { processIds, processesHash, filterByProcesses } = CommentsPageData;
         const filterByProcessesNode = document.getElementById('filterByProcesses');
         const options = processIds.map((id) => {
           const process = processesHash[id];
-          const processName = CommentsThreadsHelpers.createProcessName(process);
+          const processName = CommentsPageThreadsHelpers.createProcessName(process);
           const isSelected = filterByProcesses.includes(id);
           return `<option value="${id}"${isSelected ? ' selected' : ''}>${processName}</option>`;
         });
         const hasProcesses = !!options.length;
-        /* console.log('[CommentsDataRender:renderFilterByProcessOptions]', {
+        /* console.log('[CommentsPageDataRender:renderFilterByProcessOptions]', {
          *   options,
          *   hasProcesses,
          *   processIds,
@@ -432,17 +432,17 @@ modules.define(
         // Remove all hidden threads comments blocks.
         this.clearAllHiddenThreadsComments();
         // Find all expanded threads...
-        const threadsListNode = CommentsNodes.getThreadsListNode();
+        const threadsListNode = CommentsPageNodes.getThreadsListNode();
         const visibleThreadNodes = threadsListNode.querySelectorAll(
           '.thread:not(.hidden).expanded',
         );
-        /* console.log('[CommentsDataRender:rerenderAllVisibleComments]', {
+        /* console.log('[CommentsPageDataRender:rerenderAllVisibleComments]', {
          *   visibleThreadNodes,
          * });
          */
         visibleThreadNodes.forEach((commentsNode) => {
           const threadId = Number(commentsNode.getAttribute('data-thread-id'));
-          /* console.log('[CommentsDataRender:rerenderAllVisibleComments] iteration', {
+          /* console.log('[CommentsPageDataRender:rerenderAllVisibleComments] iteration', {
            *   commentsNode,
            *   threadId,
            * });
@@ -452,10 +452,10 @@ modules.define(
       },
 
       updateThreadVisibleState(threadId) {
-        const isVisible = CommentsThreadsHelpers.isThreadVisible(threadId);
+        const isVisible = CommentsPageThreadsHelpers.isThreadVisible(threadId);
         const threadNode = document.getElementById(`thread-${threadId}`);
         const isExpanded = threadNode.classList.contains('expanded');
-        /* console.log('[CommentsDataRender:updateThreadVisibleState]', {
+        /* console.log('[CommentsPageDataRender:updateThreadVisibleState]', {
          *   isExpanded,
          *   threadId,
          *   isVisible,
@@ -468,9 +468,9 @@ modules.define(
       },
 
       updateVisibleThreads() {
-        const { threads } = CommentsData;
+        const { threads } = CommentsPageData;
         const threadIds = threads.map(({ id }) => id);
-        /* console.log('[CommentsDataRender:updateVisibleThreads]', {
+        /* console.log('[CommentsPageDataRender:updateVisibleThreads]', {
          *   threadIds,
          * });
          */
@@ -506,6 +506,6 @@ modules.define(
     };
 
     // Provide module...
-    provide(CommentsDataRender);
+    provide(CommentsPageDataRender);
   },
 );
