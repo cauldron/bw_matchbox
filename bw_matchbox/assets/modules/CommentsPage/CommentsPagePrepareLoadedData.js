@@ -1,6 +1,6 @@
-// // Required modules...
-// 'CommentsPageData',
-// 'CommentsPageHelpers',
+import { CommentsPageData } from './CommentsPageData.js';
+import { CommentsPageHelpers } from './CommentsPageHelpers.js';
+
 export const CommentsPagePrepareLoadedData = /** @lends CommentsPagePrepareLoadedData */ {
   __id: 'CommentsPagePrepareLoadedData',
 

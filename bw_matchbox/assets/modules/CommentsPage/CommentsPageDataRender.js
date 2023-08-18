@@ -1,9 +1,10 @@
-// // Required modules...
-// 'CommentsPageConstants',
-// 'CommentsPageData',
-// 'CommentsPageNodes',
-// 'CommonHelpers',
-// 'CommentsPageThreadsHelpers',
+import * as CommonHelpers from '../common/CommonHelpers.js';
+
+import { CommentsPageConstants } from './CommentsPageConstants.js';
+import { CommentsPageData } from './CommentsPageData.js';
+import { CommentsPageNodes } from './CommentsPageNodes.js';
+import { CommentsPageThreadsHelpers } from './CommentsPageThreadsHelpers.js';
+
 /** Local (not public) helpers... */
 const helpers = {
   /** @type {Intl.DateTimeFormat} */
@@ -110,7 +111,7 @@ const helpers = {
     const threadTitleTextContent = helpers.createThreadTitleTextContent(thread);
     const content = `
           <div data-thread-id="${threadId}" id="thread-${threadId}" class="${className}">
-            <div class="main-row" onClick="Comments.CommentsPageHandlers.handleExpandThread(this)">
+            <div class="main-row" onClick="CommentsPage.handlers.handleExpandThread(this)">
               <div class="expand-button-wrapper" title="Expand/collapse comments">
                 <a class="expand-button">
                   <i class="fa-solid fa-chevron-right"></i>
@@ -215,8 +216,6 @@ const helpers = {
   },
 };
 
-/** @exports CommentsPageDataRender
- */
 export const CommentsPageDataRender = {
   __id: 'CommentsPageDataRender',
 

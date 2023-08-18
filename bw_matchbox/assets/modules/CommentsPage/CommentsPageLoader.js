@@ -1,10 +1,10 @@
-// // Required modules...
-// 'CommentsPageConstants',
-// 'CommentsPageData',
-// 'CommentsPageDataRender',
-// 'CommentsPagePrepareLoadedData',
-// 'CommentsPageStates',
-// 'CommonHelpers',
+import * as CommonHelpers from '../common/CommonHelpers.js';
+import { CommentsPageConstants } from './CommentsPageConstants.js';
+import { CommentsPageData } from './CommentsPageData.js';
+import { CommentsPageDataRender } from './CommentsPageDataRender.js';
+import { CommentsPagePrepareLoadedData } from './CommentsPagePrepareLoadedData.js';
+import { CommentsPageStates } from './CommentsPageStates.js';
+
 export const CommentsPageLoader = /** @lends CommentsPageLoader */ {
   __id: 'CommentsPageLoader',
 

@@ -1,50 +1,74 @@
-// // Resolved modules...
-// CommentsPageConstants,
-// CommentsPageData,
-// CommentsPageDataRender,
-// CommentsPageHandlers,
-// CommentsPageHelpers,
-// CommentsPageLoader,
-// CommentsPageNodes,
-// CommentsPagePrepareLoadedData,
-// CommentsPageStates,
-// CommentsPageThreadsHelpers,
+// @ts-check
+
+import { CommentsPageConstants } from './CommentsPageConstants.js';
+import { CommentsPageData } from './CommentsPageData.js';
+import { CommentsPageDataRender } from './CommentsPageDataRender.js';
+import { CommentsPageHandlers } from './CommentsPageHandlers.js';
+import { CommentsPageHelpers } from './CommentsPageHelpers.js';
+import { CommentsPageLoader } from './CommentsPageLoader.js';
+import { CommentsPageNodes } from './CommentsPageNodes.js';
+import { CommentsPagePrepareLoadedData } from './CommentsPagePrepareLoadedData.js';
+import { CommentsPageStates } from './CommentsPageStates.js';
+import { CommentsPageThreadsHelpers } from './CommentsPageThreadsHelpers.js';
+
+/** @typedef TSharedParams
+ * @property {string} base_url
+ * @property {string} currentRole
+ * @property {string} currentUser
+ */
+
+/** @typedef {Record<string, function>} TSharedHandlers
+ */
+
+/** @typedef TInitParams
+ * @property {TSharedHandlers} handlers
+ * @property {TSharedParams} sharedParams
+ */
 
 /** Used modules list (will be needed for initialization, in `startAllModules`)
  */
-const usedModulesList = Array.from(arguments).splice(1);
+const usedModulesList = [
+  CommentsPageConstants,
+  CommentsPageData,
+  CommentsPageDataRender,
+  CommentsPageHandlers,
+  CommentsPageHelpers,
+  CommentsPageLoader,
+  CommentsPageNodes,
+  CommentsPagePrepareLoadedData,
+  CommentsPageStates,
+  CommentsPageThreadsHelpers,
+];
 
-/** @exports CommentsPage
- * @type {<CommentsPage>}
- */
 export const CommentsPage = {
   __id: 'CommentsPage',
 
-  // Owner page's provided data (TODO: Move to `CommentsPageData`, see `start` method)...
-  sharedParams: undefined,
-
-  /** Handlers exchange object */
+  /** Handlers exchange object
+   * @type {TSharedHandlers}
+   */
   handlers: {},
 
   // Initialization...
 
   /** startAllModules -- Start all the modules
+   * @param {TSharedParams} sharedParams
    */
-  startAllModules() {
+  startAllModules(sharedParams) {
+    /** @type {TInitParams} */
     const initParams = {
       handlers: this.handlers,
-      sharedParams: this.sharedParams,
+      sharedParams,
     };
     // Start all the modules...
     usedModulesList.forEach((module) => {
       if (!module) {
-        // WTF?
-        return;
+        return; // WTF?
       }
-      if (module.__id) {
-        // Expose module (is it safe and neccessary?)...
-        this[module.__id] = module;
-      }
+      /* // Expose module (is it safe and neccessary?)...
+       * if (module.__id) {
+       *   this[module.__id] = module;
+       * }
+       */
       if (typeof module.start === 'function') {
         try {
           module.start(initParams);
@@ -64,14 +88,16 @@ export const CommentsPage = {
       }
     });
   },
-  /** Start entrypoint */
+
+  /** Start entrypoint
+   * @param {TSharedParams} sharedParams
+   */
   start(sharedParams) {
     // Save shared data for future use...
     CommentsPageData.sharedParams = sharedParams;
-    this.sharedParams = sharedParams;
 
     // Initialize all the modules...
-    this.startAllModules();
+    this.startAllModules(sharedParams);
 
     // Load data...
     CommentsPageLoader.loadComments();

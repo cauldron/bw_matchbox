@@ -1,12 +1,12 @@
-// // Required modules...
-// 'CommonNotify',
-// 'CommonModal',
-// 'CommentsPageData',
-// 'CommentsPageDataRender',
-// 'CommentsPageStates',
-// 'CommentsPageHelpers',
-// 'CommentsPageNodes',
-// 'CommentsPageConstants',
+import { commonModal } from '../common/CommonModal.js';
+import { commonNotify } from '../common/CommonNotify.js';
+
+import { CommentsPageConstants } from './CommentsPageConstants.js';
+import { CommentsPageData } from './CommentsPageData.js';
+import { CommentsPageDataRender } from './CommentsPageDataRender.js';
+import { CommentsPageHelpers } from './CommentsPageHelpers.js';
+import { CommentsPageNodes } from './CommentsPageNodes.js';
+import { CommentsPageStates } from './CommentsPageStates.js';
 
 const commentModal = {
   getCommentModalContent() {
@@ -31,44 +31,47 @@ const commentModal = {
       const title = 'Enter comment text';
       const content = this.getCommentModalContent();
       let isOpened = true;
-      CommonModal.setModalContentId('comment-dialog-modal')
-        .setTitle(title)
-        .setModalWindowOptions({
-          autoHeight: true,
-          width: 'md',
-        })
-        .setModalContentOptions({
-          scrollable: true,
-          padded: true,
-        })
-        .setContent(content)
-        .onHide(() => {
-          // It will be called on modal close...
+      commonModal.ensureInit().then(() => {
+        commonModal
+          .setModalContentId('comment-dialog-modal')
+          .setTitle(title)
+          .setModalWindowOptions({
+            autoHeight: true,
+            width: 'md',
+          })
+          .setModalContentOptions({
+            scrollable: true,
+            padded: true,
+          })
+          .setContent(content)
+          .onHide(() => {
+            // It will be called on modal close...
+            if (isOpened) {
+              isOpened = false;
+              // Don't proceed the operation!
+              resolve(false);
+            }
+          })
+          .showModal();
+        // Store comment value...
+        const okButtonEl = document.getElementById('comment-modal-ok');
+        const commentTextEl = document.getElementById('comment-modal-text');
+        commentTextEl.focus();
+        // TODO: Add handlers for modal actions
+        okButtonEl.addEventListener('click', () => {
           if (isOpened) {
             isOpened = false;
-            // Don't proceed the operation!
-            resolve(false);
+            commonModal.hideModal({ dontNotify: true });
+            // Success: proceed with comment text
+            const comment = commentTextEl.value;
+            const userAction = { comment, status: 'comment from promiseCommentModal' };
+            resolve(userAction);
           }
-        })
-        .showModal();
-      // Store comment value...
-      const okButtonEl = document.getElementById('comment-modal-ok');
-      const commentTextEl = document.getElementById('comment-modal-text');
-      commentTextEl.focus();
-      // TODO: Add handlers for modal actions
-      okButtonEl.addEventListener('click', () => {
-        if (isOpened) {
-          isOpened = false;
-          CommonModal.hideModal({ dontNotify: true });
-          // Success: proceed with comment text
-          const comment = commentTextEl.value;
-          const userAction = { comment, status: 'comment from promiseCommentModal' };
-          resolve(userAction);
-        }
+        });
+        document
+          .getElementById('comment-modal-cancel')
+          .addEventListener('click', commonModal.boundHideModal);
       });
-      document
-        .getElementById('comment-modal-cancel')
-        .addEventListener('click', CommonModal.boundHideModal);
     });
   },
 };
@@ -185,7 +188,7 @@ const apiHandlers = {
           CommentsPageHelpers.sortThreads(threads);
           CommentsPageDataRender.reorderRenderedThreads();
           // Show noitification...
-          CommonNotify.showSuccess('Comment successfully added');
+          commonNotify.showSuccess('Comment successfully added');
         })
         .catch((error) => {
           // eslint-disable-next-line no-console
@@ -199,7 +202,7 @@ const apiHandlers = {
           debugger;
           // Store & display error...
           CommentsPageStates.setError(error);
-          CommonNotify.showError(error);
+          commonNotify.showError(error);
         })
         .finally(() => {
           CommentsPageStates.setLoading(false);
@@ -216,7 +219,7 @@ const apiHandlers = {
     const { currentRole } = sharedParams;
     // Check roles...
     if (currentRole !== 'editors' && currentRole !== 'reviewers') {
-      CommonNotify.showError(`This role (${currentRole}) hasn't allowed to add comments`);
+      commonNotify.showError(`This role (${currentRole}) hasn't allowed to add comments`);
       return;
     }
     // Show comment text form modal first and wait for user action...
@@ -242,7 +245,7 @@ const apiHandlers = {
     const { currentRole } = sharedParams;
     // Check roles...
     if (currentRole !== 'editors') {
-      CommonNotify.showError(
+      commonNotify.showError(
         `This role (${currentRole}) hasn't allowed to resolve/open the threads`,
       );
       return;
@@ -336,7 +339,7 @@ const apiHandlers = {
         // CommentsPageDataRender.renderData();
         CommentsPageDataRender.updateVisibleThreads();
         // Show noitification...
-        CommonNotify.showSuccess('Thread data successfully updated');
+        commonNotify.showSuccess('Thread data successfully updated');
         CommentsPageStates.setError();
       })
       .catch((error) => {
@@ -351,7 +354,7 @@ const apiHandlers = {
         debugger;
         // Store & display error...
         CommentsPageStates.setError(error);
-        CommonNotify.showError(error);
+        commonNotify.showError(error);
       })
       .finally(() => {
         CommentsPageStates.setLoading(false);
@@ -359,8 +362,6 @@ const apiHandlers = {
   },
 };
 
-/** @exports CommentsPageHandlers
- */
 export const CommentsPageHandlers = /** @lends CommentsPageHandlers */ {
   __id: 'CommentsPageHandlers',
 

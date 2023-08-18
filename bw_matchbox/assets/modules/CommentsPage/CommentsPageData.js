@@ -1,36 +1,5 @@
-/* // Data types decription (TS-style):
- * interface TProcess {
- *   database: string; // 'new1'
- *   id: number; // 5300
- *   location: string; // 'United States'
- *   name: string; // 'Proxy for Ethalfluralin'
- *   product?: string; // null
- *   unit: string; // 'USD'
- *   url: string; // '/process/5300'
- * }
- * interface TComment {
- *   id: number; // 2
- *   position: number; // 1
- *   thread: number; // 1
- *   user: string; // 'Puccio Bernini'
- *   content: string; // '...'
- * }
- * interface TThread {
- *   id: number; // 1
- *   created: TDateStr; // 'Sat, 12 Aug 2023 12:36:08 GMT'
- *   modified: TDateStr; // 'Sat, 12 Aug 2023 12:36:08 GMT'
- *   name: string; // 'Возмутиться кпсс гул'
- *   reporter: string; // '阿部 篤司'
- *   resolved: boolean; // false
- *   process: TProcess;
- * }
- * type TCommentsHash = Record<TTreadId, TComment>;
- * type TThreadsHash = Record<TTreadId, TThread>;
- * type TCommentsByThreads = Record<TTreadId, TCommentId[]>;
- */
+import { CommentsPageConstants } from './CommentsPageConstants.js';
 
-// // Required modules...
-// 'CommentsPageConstants',
 const { useDebug } = CommentsPageConstants;
 
 const useFakeData = useDebug && false; // DEBUG: Use fake data for tests

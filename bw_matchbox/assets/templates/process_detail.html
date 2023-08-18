@@ -2,8 +2,6 @@
 
 {# NOTE: All reusable modules and all related stuff like css are dynamically connecting as ES6 modules, inside the code #}
 
-{# Module-specific dependencies... #}
-
 {# TODO: It's possible to dynamically load all required styles using `CommonHelpers.addCssStyle` method. #}
 <link rel="stylesheet" href="{{ url_for('static', filename='css/process-detail.css') }}">
 
@@ -134,9 +132,10 @@
 
 <script type="text/javascript">
 </script>
-<!-- Start project scripts -->
+<!-- Start page scripts -->
 <script type="module">
 
+  // Core module
   import { ProcessDetailPage } from '/assets/modules/ProcessDetailPage/ProcessDetailPage.js';
 
   // Global variables for compare tables feature (via global variable `sharedParams`)...
@@ -155,5 +154,6 @@
 
   // Start core module...
   ProcessDetailPage.start(sharedParams);
+
 </script>
 {% include 'footer.html' %}

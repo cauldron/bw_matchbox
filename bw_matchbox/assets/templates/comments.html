@@ -1,31 +1,11 @@
 {% include 'header.html' %}
 
-{# Common dependencies... #}
+{# NOTE: All reusable modules and all related stuff like css are dynamically connecting as ES6 modules, inside the code #}
 
-{% include 'common-modal.html' %}
-{% include 'common-notify.html' %}
-
-{# Module-specific dependencies... #}
-
+{# TODO: It's possible to dynamically load all required styles using `CommonHelpers.addCssStyle` method. #}
 <link rel="stylesheet" href="{{ url_for('static', filename='css/comments.css') }}">
 <link rel="stylesheet" href="{{ url_for('static', filename='css/comments-filters.css') }}">
 <link rel="stylesheet" href="{{ url_for('static', filename='css/comments-threads-list.css') }}">
-
-<script src="{{ url_for('static', filename='js/CommentsPage/CommentsPage.js') }}"></script>
-<script src="{{ url_for('static', filename='js/CommentsPage/CommentsPageConstants.js') }}"></script>
-<script src="{{ url_for('static', filename='js/CommentsPage/CommentsPageData.js') }}"></script>
-<script src="{{ url_for('static', filename='js/CommentsPage/CommentsPageDataRender.js') }}"></script>
-<script src="{{ url_for('static', filename='js/CommentsPage/CommentsPageHandlers.js') }}"></script>
-<script src="{{ url_for('static', filename='js/CommentsPage/CommentsPageHelpers.js') }}"></script>
-<script src="{{ url_for('static', filename='js/CommentsPage/CommentsPageLoader.js') }}"></script>
-<script src="{{ url_for('static', filename='js/CommentsPage/CommentsPageNodes.js') }}"></script>
-<script src="{{ url_for('static', filename='js/CommentsPage/CommentsPagePrepareLoadedData.js') }}"></script>
-<script src="{{ url_for('static', filename='js/CommentsPage/CommentsPageStates.js') }}"></script>
-<script src="{{ url_for('static', filename='js/CommentsPage/CommentsPageThreadsHelpers.js') }}"></script>
-
-{# Core module:
-  - `CommentsPage` (from `bw_matchbox/assets/js/CommentsPage/CommentsPage.js`)
-#}
 
 <div id="comments-root" class="comments-root container empty loading role-{{ config.role }}">
   {% include 'navigation.html' %}
@@ -96,27 +76,25 @@
 
 </div>
 
-<script type="text/javascript">
-  modules.require(['CommentsPage', 'CommentsPageConstants'], (CommentsPage, CommentsPageConstants) => {
-    const { useDebug } = CommentsPageConstants;
-    // Initialize page data...
-    const sharedData = {
-      base_url: '{{ base_url }}',
-      currentRole: '{{ config.role }}',
-      // DEBUG: See updating of current user in `CommentsPagePrepareLoadedData:makeDerivedData` for debug mode
-      currentUser: '{{ config.user }}',
-    };
+<!-- Start page scripts -->
+<script type="module">
 
-    /* // DEBUG
-     * console.log('[comments]', sharedData);
-     * debugger;
-     */
+  // Core module
+  import { CommentsPage } from '/assets/modules/CommentsPage/CommentsPage.js';
 
-    // Export to global scope (to access from generated html code handlers).
-    window.CommentsPage = CommentsPage;
+  // Global variables for compare tables feature (via global variable `sharedParams`)...
+  const sharedParams = {
+    base_url: '{{ base_url }}',
+    currentRole: '{{ config.role }}',
+    // DEBUG: See updating of current user in `CommentsPagePrepareLoadedData:makeDerivedData` for debug mode
+    currentUser: '{{ config.user }}',
+  };
 
-    // Start core module...
-    CommentsPage.start(sharedData);
-  });
+  // Export to global scope (to access from generated html code handlers).
+  window.CommentsPage = CommentsPage;
+
+  // Start core module...
+  CommentsPage.start(sharedParams);
+
 </script>
 {% include 'footer.html' %}

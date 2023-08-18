@@ -20,7 +20,7 @@ import { commonModal } from '../common/CommonModal.js';
 
 export const ProcessDetailPage = {
   /** External data...
-   * @type TSharedParams
+   * @type {TSharedParams}
    */
   sharedParams: undefined, // Initializing in `ProcessDetailPage.start` from `bw_matchbox/assets/templates/process_detail.html`
 

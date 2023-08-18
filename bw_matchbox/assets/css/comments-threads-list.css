@@ -25,9 +25,6 @@
 .comments-root .threads-list .thread:hover {
   background-color: rgb(0 0 0 / 5%);
 }
-.comments-root .threads-list .thread.expanded:hover {
-  /* background-color: rgba(0,0,0,0.08); */
-}
 .comments-root .threads-list .thread .main-row {
   display: flex;
   align-items: flex-start;
@@ -67,15 +64,15 @@
 }
 .comments-root .threads-list .thread:not(.empty) .main-row .expand-button {
   cursor: pointer;
-  color: var(--layout-theme-primary-color);
+  color: #bbb;
   opacity: 0.75;
+}
+.comments-root .threads-list .thread:not(.empty):hover .main-row .expand-button {
+  color: var(--layout-theme-primary-color);
 }
 .comments-root .threads-list .thread:not(.empty) .main-row {
   cursor: pointer;
   transition: all var(--common-animation-time);
-}
-.comments-root .threads-list .thread:not(.empty) .main-row:hover {
-  /* background-color: var(--layout-theme-primary-color); */
 }
 .comments-root .threads-list .thread:not(.empty) .main-row:hover .expand-button {
   background-color: var(--layout-theme-primary-color);
@@ -132,23 +129,14 @@
   transition: all var(--common-animation-time);
   background-color: rgb(255 255 255 / 50%);
 }
-.comments-root .threads-list .thread .comment:hover {
-  /* background-color: rgb(0 0 0 / 5%); */
-}
 .comments-root .threads-list .thread .comment > * {
   margin: 5px 0;
 }
 .comments-root .threads-list .thread .comment .title {
-  /* font-weight: bold; */
   display: flex;
   justify-content: space-between;
   align-items: center;
   gap: 10px;
-}
-.comments-root .threads-list .thread .comment .title-text,
-.comments-root .threads-list .thread .comment .content {
-  /* font-size: 0.95em; */
-  /* opacity: 0.75; */
 }
 .comments-root .threads-list .thread .comment .title-text {
   margin: 5px 0;
@@ -205,7 +193,6 @@
   opacity: 0.5;
   cursor: pointer;
 }
-.comments-root .threads-list .thread.expanded .title-actions a:not(.disabled),
 .comments-root .threads-list .thread:hover .title-actions a:not(.disabled) {
   color: var(--layout-theme-primary-color);
 }

@@ -1,8 +1,8 @@
-// // Required modules...
-// 'CommentsPageHelpers',
-// 'CommentsPageData',
-// 'CommentsPageDataRender',
-// 'CommentsPageNodes',
+import { CommentsPageData } from './CommentsPageData.js';
+import { CommentsPageDataRender } from './CommentsPageDataRender.js';
+import { CommentsPageHelpers } from './CommentsPageHelpers.js';
+import { CommentsPageNodes } from './CommentsPageNodes.js';
+
 export const CommentsPageStates = {
   __id: 'CommentsPageStates',
 

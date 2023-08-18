@@ -1,3 +1,5 @@
+import { CommentsPageData } from './CommentsPageData.js';
+
 export const CommentsPageHelpers = /** @lends CommentsPageHelpers */ {
   __id: 'CommentsPageHelpers',
 

@@ -1,5 +1,5 @@
-// Required modules...
-// 'CommentsPageData',
+import { CommentsPageData } from './CommentsPageData.js';
+
 export const CommentsPageThreadsHelpers = {
   __id: 'CommentsPageThreadsHelpers',
 
