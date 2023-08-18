@@ -7,8 +7,8 @@ interface TComment {
 }
 interface TThread {
   id: number; // 1
-  created: TDateStr; // 'Sat, 12 Aug 2023 12:36:08 GMT'
-  modified: TDateStr; // 'Sat, 12 Aug 2023 12:36:08 GMT'
+  created: TGmtDateStr; // 'Sat, 12 Aug 2023 12:36:08 GMT'
+  modified: TGmtDateStr; // 'Sat, 12 Aug 2023 12:36:08 GMT'
   name: string; // 'Возмутиться кпсс гул'
   reporter: string; // '阿部 篤司'
   resolved: boolean; // false

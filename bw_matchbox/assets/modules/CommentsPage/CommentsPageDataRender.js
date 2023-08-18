@@ -44,8 +44,8 @@ const helpers = {
   createThreadTitleTextContent(thread) {
     const {
       id: threadId,
-      // created, // TDateStr, eg: 'Sat, 12 Aug 2023 12:36:08 GMT'
-      modified, // TDateStr, eg: 'Sat, 12 Aug 2023 12:36:08 GMT'
+      // created, // TGmtDateStr, eg: 'Sat, 12 Aug 2023 12:36:08 GMT'
+      modified, // TGmtDateStr, eg: 'Sat, 12 Aug 2023 12:36:08 GMT'
       name, // string, eg: 'Возмутиться кпсс гул'
       reporter, // string, eg: '阿部 篤司'
       resolved, // boolean, eg: false
@@ -81,8 +81,8 @@ const helpers = {
     const {
       id: threadId,
       resolved, // boolean, eg: false
-      // created, // TDateStr, eg: 'Sat, 12 Aug 2023 12:36:08 GMT'
-      // modified, // TDateStr, eg: 'Sat, 12 Aug 2023 12:36:08 GMT'
+      // created, // TGmtDateStr, eg: 'Sat, 12 Aug 2023 12:36:08 GMT'
+      // modified, // TGmtDateStr, eg: 'Sat, 12 Aug 2023 12:36:08 GMT'
       // name, // string, eg: 'Возмутиться кпсс гул'
       // reporter, // string, eg: '阿部 篤司'
       // process, // TProcess;
