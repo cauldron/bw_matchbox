@@ -70,10 +70,10 @@ export const ThreadCommentsStates = {
    * @param {boolean} [opts.omitUpdate] - Don't automatically state (eg: will be updated manually later).
    */
   setFilterByProcesses(values, opts = {}) {
-    /* console.log('[ThreadCommentsStates:setFilterByProcesses]', {
-     *   values,
-     * });
-     */
+    console.log('[ThreadCommentsStates:setFilterByProcesses]', {
+      values,
+    });
+    debugger;
     ThreadCommentsData.filterByProcesses = values;
     if (!opts.omitUpdate) {
       ThreadCommentsRender.updateVisibleThreads();

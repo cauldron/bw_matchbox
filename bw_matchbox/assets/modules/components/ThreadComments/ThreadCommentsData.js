@@ -40,6 +40,10 @@ export const ThreadCommentsData = {
 
   // Data params...
 
+  /* // API params (regexp, for refactor):
+   * \<\(comments\|threads\|commentsHash\|threadsHash\|commentsByThreads\|users\|processIds\|processesHash\)\>
+   */
+
   // Comments and threads data...
   /** @type {TComment[]} */
   comments: [],

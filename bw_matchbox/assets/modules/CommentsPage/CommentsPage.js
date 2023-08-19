@@ -22,6 +22,7 @@ import { ThreadComments } from '../components/ThreadComments/ThreadComments.js';
 /** @typedef {Record<string, function>} TSharedHandlers */
 
 /** @typedef TInitParams
+ * @property {ThreadComments} threadComments
  * @property {TSharedHandlers} handlers
  * @property {TSharedParams} sharedParams
  */
@@ -57,9 +58,11 @@ export const CommentsPage = {
    * @param {TSharedParams} sharedParams
    */
   startAllModules(sharedParams) {
+    const { handlers, threadComments } = this;
     /** @type {TInitParams} */
     const initParams = {
-      handlers: this.handlers,
+      handlers,
+      threadComments,
       sharedParams,
     };
     // Start all the modules...

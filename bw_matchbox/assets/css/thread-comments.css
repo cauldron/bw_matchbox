@@ -1,8 +1,6 @@
 .thread-comments {
-  border: 1px solid red;
   position: relative;
   min-height: 80px; /* Ensure space for loading splash */
-  /* overflow: hidden; */
 }
 
 /* Basic rules... */

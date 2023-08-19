@@ -1,19 +1,10 @@
 // @ts-check
 
-// import * as CommonConstants from '../../common/CommonConstants.js';
-// import * as CommonHelpers from '../../common/CommonHelpers.js';
-// import * as CommonPromises from '../../common/CommonPromises.js';
-
 import { ThreadCommentsNodes } from './ThreadCommentsNodes.js';
 import { ThreadCommentsData } from './ThreadCommentsData.js';
 import { ThreadCommentsInit } from './ThreadCommentsInit.js';
 import { ThreadCommentsStates } from './ThreadCommentsStates.js';
-
-/** @typedef TParams
- * @property {Element} rootNode
- * @property {string} currentUser,
- * @property {string} role,
- */
+import { ThreadCommentsRender } from './ThreadCommentsRender.js';
 
 export class ThreadComments {
   /** @type {ThreadCommentsInit} */
@@ -31,6 +22,53 @@ export class ThreadComments {
   events = undefined;
 
   // TODO: handlers, state, data, events
+
+  /** External API...
+   * @type {TThreadCommentsApi}
+   */
+  api = {
+    /** @return {TComment[]} */
+    getComments() {
+      return ThreadCommentsData.comments;
+    },
+    /** @return {TThread[]} */
+    getThreads() {
+      return ThreadCommentsData.threads;
+    },
+    /** @return {Record<TThreadId, TComment>} */
+    getCommentsHash() {
+      return ThreadCommentsData.commentsHash;
+    },
+    /** @return {Record<TThreadId, TThread>} */
+    getThreadsHash() {
+      return ThreadCommentsData.threadsHash;
+    },
+    /** @return {Record<TThreadId, TCommentId[]>} */
+    getCommentsByThreads() {
+      return ThreadCommentsData.commentsByThreads;
+    },
+    /** @return {TUserName[]} */
+    getUsers() {
+      return ThreadCommentsData.users;
+    },
+    /** @return {TProcessId[]} */
+    getProcessIds() {
+      return ThreadCommentsData.processIds;
+    },
+    /** @return {Record<TProcessId, TProcess>} */
+    getProcessesHash() {
+      return ThreadCommentsData.processesHash;
+    },
+    updateVisibleThreads() {
+      return ThreadCommentsRender.updateVisibleThreads();
+    },
+    setFilterByUsers(values) {
+      return ThreadCommentsStates.setFilterByUsers(values);
+    },
+    setFilterByProcesses(values) {
+      return ThreadCommentsStates.setFilterByProcesses(values);
+    },
+  };
 
   /** @param {string} parentId */
   constructor(parentId) {
@@ -56,7 +94,7 @@ export class ThreadComments {
     return this.threadCommentsInit.preInit();
   }
 
-  /** @param {TParams} params
+  /** @param {TThreadCommentsParams} params
    */
   setParams(params) {
     ThreadCommentsNodes.setRootNode(params.rootNode);

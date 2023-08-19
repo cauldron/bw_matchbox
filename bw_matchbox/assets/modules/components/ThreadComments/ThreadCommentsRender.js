@@ -388,63 +388,6 @@ export const ThreadCommentsRender = {
     });
   },
 
-  renderFilterByUserOptions() {
-    const { users, filterByUsers, currentUser } = ThreadCommentsData;
-    const filterByUsersNode = document.getElementById('filterByUsers');
-    const options = users.map((user) => {
-      const isSelected = filterByUsers.includes(user);
-      const value = CommonHelpers.quoteHtmlAttr(user);
-      let text = user;
-      if (user === currentUser) {
-        text += ' (me)';
-      }
-      return `<option value="${value}"${isSelected ? ' selected' : ''}>${text}</option>`;
-    });
-    filterByUsersNode.innerHTML = options.join('\n');
-    // TODO: Update global css state
-    const hasUsers = !!options.length;
-    const rootNode = ThreadCommentsNodes.getRootNode();
-    rootNode.classList.toggle('has-users', hasUsers);
-    this.events.emit('hasUsers', hasUsers);
-    /* console.log('[ThreadCommentsRender:renderFilterByUserOptions]', {
-     *   options,
-     *   // hasUsers,
-     *   users,
-     *   filterByUsersNode,
-     * });
-     */
-  },
-
-  renderFilterByProcessOptions() {
-    const rootNode = ThreadCommentsNodes.getRootNode();
-    const { processIds, processesHash, filterByProcesses } = ThreadCommentsData;
-    const filterByProcessesNode = document.getElementById('filterByProcesses');
-    const options = processIds.map((id) => {
-      const process = processesHash[id];
-      const processName = ThreadCommentsHelpers.createProcessName(process);
-      const isSelected = filterByProcesses.includes(id);
-      return `<option value="${id}"${isSelected ? ' selected' : ''}>${processName}</option>`;
-    });
-    const hasProcesses = !!options.length;
-    /* console.log('[ThreadCommentsRender:renderFilterByProcessOptions]', {
-     *   options,
-     *   hasProcesses,
-     *   processIds,
-     *   filterByProcessesNode,
-     * });
-     */
-    filterByProcessesNode.innerHTML = options.join('\n');
-    rootNode.classList.toggle('has-processes', hasProcesses);
-    this.events.emit('hasProcesses', hasProcesses);
-  },
-
-  /* // TODO: This code should be only in owner presentation component (`CommentsPae`, etc).
-   * renderDerivedFilters() {
-   *   this.renderFilterByUserOptions();
-   *   this.renderFilterByProcessOptions();
-   * },
-   */
-
   /** Re-render all comments in visible and expanded threads */
   rerenderAllVisibleComments() {
     // Remove all hidden threads comments blocks.
@@ -489,10 +432,9 @@ export const ThreadCommentsRender = {
   updateVisibleThreads() {
     const { threads } = ThreadCommentsData;
     const threadIds = threads.map(({ id }) => id);
-    /* console.log('[ThreadCommentsRender:updateVisibleThreads]', {
-     *   threadIds,
-     * });
-     */
+    console.log('[ThreadCommentsRender:updateVisibleThreads]', {
+      threadIds,
+    });
     threadIds.forEach((threadId) => {
       this.updateThreadVisibleState(threadId);
     });

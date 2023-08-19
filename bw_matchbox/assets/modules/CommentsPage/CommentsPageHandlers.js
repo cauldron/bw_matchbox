@@ -407,10 +407,9 @@ export const CommentsPageHandlers = /** @lends CommentsPageHandlers */ {
 
   handleFilterByUserChange(node) {
     const values = CommentsPageHelpers.getMultipleSelectValues(node);
-    /* console.log('[CommentsPageHandlers:handleFilterByUserChange]', {
-     *   values,
-     * });
-     */
+    console.log('[CommentsPageHandlers:handleFilterByUserChange]', {
+      values,
+    });
     CommentsPageStates.setFilterByUsers(values);
   },
 

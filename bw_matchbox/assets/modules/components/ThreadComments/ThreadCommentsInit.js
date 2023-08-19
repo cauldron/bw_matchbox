@@ -26,14 +26,6 @@ const initChunksList = [
   'dom', // Created required dom elements
 ];
 
-/** @typedef TParams
- * @property {Element} rootNode
- * @property {string} currentUser,
- * @property {string} currentRole,
- */
-
-// TODO: Load styles
-
 export class ThreadCommentsInit {
   /** Initializer
    * @type {InitChunks}

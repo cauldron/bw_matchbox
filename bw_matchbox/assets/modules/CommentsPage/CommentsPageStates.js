@@ -6,6 +6,9 @@ import { CommentsPageNodes } from './CommentsPageNodes.js';
 export const CommentsPageStates = {
   __id: 'CommentsPageStates',
 
+  /** @type {TThreadComments} */
+  threadComments: undefined,
+
   setLoading(isLoading) {
     // Set css class for id="processes-list-root" --> loading, set local status
     const rootNode = CommentsPageNodes.getRootNode();
@@ -30,10 +33,8 @@ export const CommentsPageStates = {
      *   values,
      * });
      */
-    CommentsPageData.filterByUsers = values;
-    if (!opts.omitUpdate) {
-      CommentsPageDataRender.updateVisibleThreads();
-    }
+    // CommentsPageData.filterByUsers = values;
+    this.threadComments.api.setFilterByUsers(values, opts);
   },
 
   /**
@@ -46,10 +47,8 @@ export const CommentsPageStates = {
      *   values,
      * });
      */
-    CommentsPageData.filterByProcesses = values;
-    if (!opts.omitUpdate) {
-      CommentsPageDataRender.updateVisibleThreads();
-    }
+    // CommentsPageData.filterByProcesses = values;
+    this.threadComments.api.setFilterByProcesses(values, opts);
   },
 
   /**
@@ -60,7 +59,8 @@ export const CommentsPageStates = {
   setFilterByState(value, opts = {}) {
     CommentsPageData.filterByState = value;
     if (!opts.omitUpdate) {
-      CommentsPageDataRender.updateVisibleThreads();
+      // CommentsPageDataRender.updateVisibleThreads();
+      this.threadComments.api.updateVisibleThreads();
     }
   },
 
@@ -114,7 +114,8 @@ export const CommentsPageStates = {
     const rootNode = CommentsPageNodes.getRootNode();
     rootNode.classList.toggle('filterByMyThreads', !!value);
     if (!opts.omitUpdate) {
-      CommentsPageDataRender.updateVisibleThreads();
+      // CommentsPageDataRender.updateVisibleThreads();
+      this.threadComments.api.updateVisibleThreads();
       // CommentsPageDataRender.rerenderAllVisibleComments(); // Could be used if will filter and particular comments also
     }
   },
@@ -158,7 +159,8 @@ export const CommentsPageStates = {
   },
 
   start(params) {
-    const { handlers } = params;
+    const { handlers, threadComments } = params;
+    this.threadComments = threadComments;
     // Addd all methods as bound handlers...
     Object.keys(this).forEach((key) => {
       const cb = this[key];

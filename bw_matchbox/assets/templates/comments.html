@@ -10,13 +10,16 @@
 #}
 
 <div id="comments-root" class="comments-root container empty loading role-{{ config.role }}">
+
   {% include 'navigation.html' %}
+
   <div class="common-page-header">
     <h3 class="title">
       Comments
       {# // TODO: It's possible to have here `tools tools-wrapper tools-icon` elements #}
     </h3>
   </div>
+
   <div class="filters">
     <div id="sortThreadsItem" class="filter-item">
       <label for="sortThreadsBy">Sort threads by:</label>
@@ -70,15 +73,6 @@
   </div>
 
   <div id="thread-comments" class="thread-comments"><!-- Placeholder for ThreadComments component --></div>
-
-  {#
-  <div id="threads-list-empty" class="threads-list-empty">No avaialable comment threads</div>
-  <div id="threads-list" class="threads-list">Data...</div>
-  <div class="bottom-actions">
-    { # // TODO: For example of `bottom-actions` interactive elements see processes-list (`index`) page. # }
-    <div id="loader-splash" class="loader-splash full-cover"><div class="loader-spinner"></div></div>
-  </div>
-  #}
 
 </div>
 
