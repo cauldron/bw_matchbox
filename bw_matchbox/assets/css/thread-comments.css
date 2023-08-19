@@ -1,3 +1,49 @@
 .thread-comments {
   border: 1px solid red;
+  position: relative;
+  min-height: 80px; /* Ensure space for loading splash */
+  /* overflow: hidden; */
 }
+
+/* Basic rules... */
+.thread-comments > * {
+  transition: all var(--common-animation-time);
+}
+
+/* Empty state: hide some elements... */
+.thread-comments.empty .threads-list,
+/* .thread-comments:not(.empty) .threads-list-empty, */
+.thread-comments.loading .threads-list-empty,
+.thread-comments.has-visible-threads .threads-list-empty {
+  display: none;
+}
+.thread-comments .threads-list-empty {
+  padding: 10px;
+  margin: 10px auto;
+  text-align: center;
+  opacity: 0.5;
+}
+
+/* Loader splash */
+.thread-comments .loader-splash {
+  padding: 20px;
+}
+.thread-comments:not(.loading) .loader-splash {
+  /* Inherited from `.loader-splash.hidden`, see `bw_matchbox/assets/css/common.css` */
+  opacity: 0;
+  pointer-events: none;
+}
+
+/* Error */
+.thread-comments .error {
+  border-radius: 4px;
+  background-color: var(--common-error-color);
+  color: #fff;
+  margin: 20px auto;
+  padding: 10px 20px;
+}
+.thread-comments:not(.error) .error {
+  display: none;
+}
+
+

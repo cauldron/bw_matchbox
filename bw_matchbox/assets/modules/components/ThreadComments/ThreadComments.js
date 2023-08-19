@@ -7,13 +7,12 @@
 import { ThreadCommentsNodes } from './ThreadCommentsNodes.js';
 import { ThreadCommentsData } from './ThreadCommentsData.js';
 import { ThreadCommentsInit } from './ThreadCommentsInit.js';
-// import { ThreadCommentsLoader } from './ThreadCommentsLoader.js';
-// import { ThreadCommentsRender } from './ThreadCommentsRender.js';
+import { ThreadCommentsStates } from './ThreadCommentsStates.js';
 
 /** @typedef TParams
  * @property {Element} rootNode
  * @property {string} currentUser,
- * @property {string} currentRole,
+ * @property {string} role,
  */
 
 export class ThreadComments {
@@ -61,7 +60,7 @@ export class ThreadComments {
    */
   setParams(params) {
     ThreadCommentsNodes.setRootNode(params.rootNode);
+    ThreadCommentsStates.setRole(params.role);
     ThreadCommentsData.currentUser = params.currentUser;
-    ThreadCommentsData.currentRole = params.currentRole;
   }
 }

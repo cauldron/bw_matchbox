@@ -8,10 +8,12 @@ import { ThreadCommentsNodes } from './ThreadCommentsNodes.js';
 import { ThreadCommentsLoader } from './ThreadCommentsLoader.js';
 import { ThreadCommentsRender } from './ThreadCommentsRender.js';
 import { ThreadCommentsStates } from './ThreadCommentsStates.js';
+import { ThreadCommentsHandlers } from './ThreadCommentsHandlers.js';
 
 const cssStyleUrls = [
   // Styles urls...
   '/assets/css/thread-comments.css',
+  '/assets/css/thread-comments-threads-list.css',
 ];
 
 /** List of initilization steps.
@@ -25,7 +27,6 @@ const initChunksList = [
 ];
 
 /** @typedef TParams
- * property {Element} errorNode
  * @property {Element} rootNode
  * @property {string} currentUser,
  * @property {string} currentRole,
@@ -82,6 +83,7 @@ export class ThreadCommentsInit {
       ThreadCommentsLoader.init(initParams);
       ThreadCommentsRender.init(initParams);
       ThreadCommentsStates.init(initParams);
+      ThreadCommentsHandlers.init(initParams);
 
       // Finish initialization stage...
       this.initChunks.finishChunk('component');

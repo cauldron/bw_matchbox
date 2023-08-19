@@ -118,7 +118,7 @@ const helpers = {
     const threadTitleTextContent = helpers.createThreadTitleTextContent(thread);
     const content = `
           <div data-thread-id="${threadId}" id="thread-${threadId}" class="${className}">
-            <div class="main-row" onClick="ThreadComments.handlers.handleExpandThread(this)">
+            <div class="main-row">
               <div class="expand-button-wrapper" title="Expand/collapse comments">
                 <a class="expand-button">
                   <i class="fa-solid fa-chevron-right"></i>
@@ -496,27 +496,30 @@ export const ThreadCommentsRender = {
     threadIds.forEach((threadId) => {
       this.updateThreadVisibleState(threadId);
     });
-    /* // TODO: This code should be only in owner presentation component (`CommentsPae`, etc).
-     * this.updateVisibleThreadsStatus();
-     */
+    this.updateVisibleThreadsStatus();
+    // TODO: Emit event?
   },
 
   /**
    * @param {Element} node
    */
   addActionHandlersToNodeChildren(node) {
-    const elems = node.querySelectorAll('.title-actions a');
     const { handlers } = this;
-    const { handleTitleActionClick } = handlers;
-    elems.forEach((elem) => {
+    const { handleTitleActionClick, handleExpandThread } = handlers;
+    const mainRowElems = node.querySelectorAll('.main-row');
+    mainRowElems.forEach((elem) => {
+      elem.addEventListener('click', handleExpandThread);
+    });
+    const tltleActionElems = node.querySelectorAll('.title-actions a');
+    tltleActionElems.forEach((elem) => {
       elem.addEventListener('click', handleTitleActionClick);
     });
   },
 
-  /** @param {TThreadCommentsInitParams} params */
-  init(params) {
+  /** @param {TThreadCommentsInitParams} initParams */
+  init(initParams) {
     // TODO: Check for `hasInited` before cruical operations?
-    const { handlers, events } = params;
+    const { handlers, events } = initParams;
     // Save handlers and events...
     this.handlers = handlers;
     this.events = events;

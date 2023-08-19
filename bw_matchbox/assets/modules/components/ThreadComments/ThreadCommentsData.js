@@ -36,7 +36,7 @@ export const ThreadCommentsData = {
   /** @type {string} */
   currentUser: undefined,
   /** @type {string} */
-  currentRole: undefined,
+  role: undefined,
 
   // Data params...
 

@@ -101,7 +101,7 @@ export const CommentsPage = {
       // errorNode: CommentsPageNodes.getErrorNode(),
       rootNode: CommentsPageNodes.getThreadCommentsNode(),
       currentUser,
-      currentRole,
+      role: currentRole,
     });
 
     // Init sub-components...
@@ -123,7 +123,17 @@ export const CommentsPage = {
       });
     // Register events...
     this.threadComments.events.add('loading', handlers.setLoading);
-    // TODO: hasData, error, totalCommentsCount, totalThreadsCount, hasVisibleThreads, hasUsers, hasProcesses
+    this.threadComments.events.add('updatedData', handlers.renderDerivedFilters);
+    /* // TODO Avalable events:
+     * error
+     * hasData
+     * hasProcesses
+     * hasUsers
+     * hasVisibleThreads
+     * totalCommentsCount
+     * totalThreadsCount
+     * updatedData: update filters (renderDerivedFilters)
+     */
   },
 
   /** Start entrypoint

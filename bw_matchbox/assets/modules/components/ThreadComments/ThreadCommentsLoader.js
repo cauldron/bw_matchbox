@@ -9,6 +9,9 @@ import { ThreadCommentsPrepare } from './ThreadCommentsPrepare.js';
 import { ThreadCommentsStates } from './ThreadCommentsStates.js';
 
 export const ThreadCommentsLoader = /** @lends ThreadCommentsLoader */ {
+  /** @type {TEvents} */
+  events: undefined,
+
   /** Load records data
    */
   loadComments() {
@@ -81,10 +84,11 @@ export const ThreadCommentsLoader = /** @lends ThreadCommentsLoader */ {
         ThreadCommentsPrepare.makeDerivedData();
         // Render data...
         ThreadCommentsRender.renderData();
+        ThreadCommentsRender.updateVisibleThreadsStatus();
         /* // TODO: Make signal to owner?
-         * ThreadCommentsRender.updateVisibleThreadsStatus();
          * ThreadCommentsRender.renderDerivedFilters();
          */
+        this.events.emit('updatedData');
       })
       .catch((error) => {
         // eslint-disable-next-line no-console
@@ -99,15 +103,13 @@ export const ThreadCommentsLoader = /** @lends ThreadCommentsLoader */ {
       })
       .finally(() => {
         ThreadCommentsStates.setLoading(false);
-        /* // TODO: Update all the page dynamic elements?
-         * CommentsEvents.invokeEvent('updatePage');
-         */
       });
   },
 
   /** @param {TThreadCommentsInitParams} params */
   init(params) {
-    const { handlers } = params;
+    const { handlers, events } = params;
+    this.events = events;
     // Expose handlers...
     handlers.loadComments = this.loadComments.bind(this);
   },

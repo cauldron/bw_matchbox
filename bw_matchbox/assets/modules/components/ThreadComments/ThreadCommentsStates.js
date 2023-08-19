@@ -35,6 +35,20 @@ export const ThreadCommentsStates = {
   },
 
   /**
+   * @param {string} role
+   */
+  setRole(role) {
+    const rootNode = ThreadCommentsNodes.getRootNode();
+    if (ThreadCommentsData.role && ThreadCommentsData.role !== role) {
+      rootNode.classList.toggle('role-' + ThreadCommentsData.role, false);
+    }
+    if (role) {
+      rootNode.classList.toggle('role-' + role, true);
+    }
+    ThreadCommentsData.role = role;
+  },
+
+  /**
    * @param {string[]} values
    * @param {object} [opts]
    * @param {boolean} [opts.omitUpdate] - Don't automatically state (eg: will be updated manually later).
