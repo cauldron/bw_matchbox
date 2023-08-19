@@ -13,6 +13,7 @@ export const ThreadCommentsLoader = /** @lends ThreadCommentsLoader */ {
   events: undefined,
 
   /** Load records data
+   * @return {Promise}
    */
   loadComments() {
     // const { sharedParams } = ThreadCommentsData;
@@ -30,9 +31,8 @@ export const ThreadCommentsLoader = /** @lends ThreadCommentsLoader */ {
     console.log('[ThreadCommentsLoader:loadComments]: start', {
       url,
     });
-    // debugger;
     ThreadCommentsStates.setLoading(true);
-    fetch(url)
+    return fetch(url)
       .then((res) => {
         const { ok, status, statusText } = res;
         if (!ok) {
@@ -85,9 +85,6 @@ export const ThreadCommentsLoader = /** @lends ThreadCommentsLoader */ {
         // Render data...
         ThreadCommentsRender.renderData();
         ThreadCommentsRender.updateVisibleThreadsStatus();
-        /* // TODO: Make signal to owner?
-         * ThreadCommentsRender.renderDerivedFilters();
-         */
         this.events.emit('updatedData');
       })
       .catch((error) => {
@@ -100,6 +97,7 @@ export const ThreadCommentsLoader = /** @lends ThreadCommentsLoader */ {
         debugger;
         // Store & display error...
         ThreadCommentsStates.setError(error);
+        // TODO: Show notify?
       })
       .finally(() => {
         ThreadCommentsStates.setLoading(false);

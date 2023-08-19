@@ -65,7 +65,7 @@ export const ThreadCommentsStates = {
   },
 
   /**
-   * @param {string[]} values
+   * @param {TProcessId[]} values
    * @param {object} [opts]
    * @param {boolean} [opts.omitUpdate] - Don't automatically state (eg: will be updated manually later).
    */
@@ -73,7 +73,6 @@ export const ThreadCommentsStates = {
     console.log('[ThreadCommentsStates:setFilterByProcesses]', {
       values,
     });
-    debugger;
     ThreadCommentsData.filterByProcesses = values;
     if (!opts.omitUpdate) {
       ThreadCommentsRender.updateVisibleThreads();
@@ -81,7 +80,7 @@ export const ThreadCommentsStates = {
   },
 
   /**
-   * @param {TFilterByState} value
+   * @param {TThreadCommentsFilterByState} value
    * @param {object} [opts]
    * @param {boolean} [opts.omitUpdate] - Don't automatically state (eg: will be updated manually later).
    */
@@ -97,7 +96,7 @@ export const ThreadCommentsStates = {
    * @param {object} [opts]
    * @param {boolean} [opts.omitUpdate] - Don't automatically state (eg: will be updated manually later).
    */
-  setSortThreadsReversedChange(value, opts = {}) {
+  setSortThreadsReversed(value, opts = {}) {
     const { threads } = ThreadCommentsData;
     ThreadCommentsData.sortThreadsReversed = value;
     // Re-sort threads...
@@ -112,11 +111,11 @@ export const ThreadCommentsStates = {
   },
 
   /**
-   * @param {TFilterByState} value
+   * @param {TThreadCommentsSortThreadsBy} value
    * @param {object} [opts]
    * @param {boolean} [opts.omitUpdate] - Don't automatically state (eg: will be updated manually later).
    */
-  setSortThreadsByChange(value, opts = {}) {
+  setSortThreadsBy(value, opts = {}) {
     const { threads } = ThreadCommentsData;
     ThreadCommentsData.sortThreadsBy = value;
     // Re-sort threads...
@@ -137,11 +136,6 @@ export const ThreadCommentsStates = {
    */
   setFilterByMyThreads(value, opts = {}) {
     ThreadCommentsData.filterByMyThreads = value;
-    const filterByMyThreadsNode = document.getElementById('filterByMyThreads');
-    filterByMyThreadsNode.classList.toggle('button-primary', !!value);
-    // TODO: Update root state?
-    const rootNode = ThreadCommentsNodes.getRootNode();
-    rootNode.classList.toggle('filterByMyThreads', !!value);
     if (!opts.omitUpdate) {
       ThreadCommentsRender.updateVisibleThreads();
       // ThreadCommentsRender.rerenderAllVisibleComments(); // Could be used if will filter particular comments
@@ -178,7 +172,7 @@ export const ThreadCommentsStates = {
     this.events.emit('totalThreadsCount', totalThreads);
   },
 
-  /** setError -- Shorthand for `setHasData`
+  /** setEmpty -- Shorthand for `setHasData`
    * @param {boolean} isEmpty
    */
   setEmpty(isEmpty) {

@@ -1,1 +1,0 @@
-type TSortThreadsBy = 'name' | 'modifiedDate';

@@ -1,13 +1,13 @@
 // @ts-check
 
+import { commonNotify } from '../common/CommonNotify.js';
+
 import { CommentsPageConstants } from './CommentsPageConstants.js';
 import { CommentsPageData } from './CommentsPageData.js';
 import { CommentsPageDataRender } from './CommentsPageDataRender.js';
 import { CommentsPageHandlers } from './CommentsPageHandlers.js';
 import { CommentsPageHelpers } from './CommentsPageHelpers.js';
-import { CommentsPageLoader } from './CommentsPageLoader.js';
 import { CommentsPageNodes } from './CommentsPageNodes.js';
-import { CommentsPagePrepareLoadedData } from './CommentsPagePrepareLoadedData.js';
 import { CommentsPageStates } from './CommentsPageStates.js';
 import { CommentsPageThreadsHelpers } from './CommentsPageThreadsHelpers.js';
 
@@ -35,9 +35,7 @@ const usedModulesList = [
   CommentsPageDataRender,
   CommentsPageHandlers,
   CommentsPageHelpers,
-  CommentsPageLoader,
   CommentsPageNodes,
-  CommentsPagePrepareLoadedData,
   CommentsPageStates,
   CommentsPageThreadsHelpers,
 ];
@@ -99,30 +97,39 @@ export const CommentsPage = {
   initComments(sharedParams) {
     const { currentUser, currentRole } = sharedParams;
     const { handlers } = this;
+    const threadCommentsNode = CommentsPageNodes.getThreadCommentsNode();
     // Init comments module parameters
-    this.threadComments.setParams({
-      // errorNode: CommentsPageNodes.getErrorNode(),
-      rootNode: CommentsPageNodes.getThreadCommentsNode(),
-      currentUser,
-      role: currentRole,
-    });
-
+    this.threadComments.setParams(
+      /** @type {TThreadCommentsParams} */ {
+        rootNode: threadCommentsNode,
+        currentUser,
+        role: currentRole,
+        noTableau: true,
+        noLoader: true,
+        noError: true,
+      },
+    );
     // Init sub-components...
     this.threadComments
       .ensureInit()
       .then(() => {
-        console.log('[CommentsPage:start] threadComments.ensureInit success');
-        // TODO: Invoke `loadComments`
-        this.threadComments.handlers.loadComments();
-        /* // NOTE: Loading state is controlling by ThreadComments component
-         * // TODO: Clear loading status
-         * CommentsPageStates.setLoading(false);
-         */
+        // Update default values from ThreadComments...
+        CommentsPageStates.updateViewParamsFromThreadComments();
+        // Invoke `loadComments`
+        return this.threadComments.handlers.loadComments();
+      })
+      .then(() => {
+        const rootNode = CommentsPageNodes.getRootNode();
+        rootNode.classList.toggle('inited', true);
       })
       .catch((error) => {
-        console.error('[CommentsPage:start] threadComments.ensureInit success', error);
+        // eslint-disable-next-line no-console
+        console.error('[CommentsPage:start] threadComments.ensureInit error', error);
+        // eslint-disable-next-line no-debugger
         debugger;
         // Set error
+        CommentsPageStates.setError(error);
+        commonNotify.showError(error);
       });
     // Register events...
     this.threadComments.events.add('loading', handlers.setLoading);
@@ -148,11 +155,6 @@ export const CommentsPage = {
 
     // Initialize all the modules...
     this.startAllModules(sharedParams);
-
-    /* // Should be called from `ThreadComments`.
-     * // Load data...
-     * CommentsPageLoader.loadComments();
-     */
 
     // Init comments module
     this.initComments(sharedParams);

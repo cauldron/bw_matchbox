@@ -344,3 +344,19 @@ export function addCssStyle(url) {
     document.head.appendChild(script);
   });
 }
+
+/**
+ * @param {HTMLSelectElement} node
+ * @param {(string|number)[]} values
+ */
+export function setMultipleSelectValues(node, values) {
+  const strValues = values.map(String);
+  const options = Array.from(node.options);
+  options.forEach((item) => {
+    const { value, selected } = item;
+    const isSelected = strValues.includes(value);
+    if (isSelected !== selected) {
+      item.selected = isSelected;
+    }
+  });
+}

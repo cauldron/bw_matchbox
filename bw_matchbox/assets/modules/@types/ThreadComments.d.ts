@@ -1,8 +1,26 @@
-
 interface TThreadCommentsParams {
   rootNode: Element;
   currentUser: string;
   role: string;
+  noTableau?: boolean; // Do not show tableau block
+  noLoader?: boolean; // Do not show inner loader
+  noError?: boolean; // Do not show inner error block
+}
+
+interface TThreadCommentsSetFilterOpts {
+  omitUpdate?: boolean;
+}
+
+type TThreadCommentsFilterByState = 'none' | 'resolved' | 'open';
+type TThreadCommentsSortThreadsBy = 'name' | 'modifiedDate';
+
+interface TThreadCommentsViewParams {
+  sortThreadsBy: TThreadCommentsSortThreadsBy;
+  sortThreadsReversed: boolean;
+  filterByState: TThreadCommentsFilterByState;
+  filterByUsers: TUserName[];
+  filterByProcesses: TProcessId[];
+  filterByMyThreads: boolean;
 }
 
 interface TThreadCommentsApi {
@@ -15,8 +33,21 @@ interface TThreadCommentsApi {
   getProcessIds: () => TProcessId[];
   getProcessesHash: () => Record<TProcessId, TProcess>;
   updateVisibleThreads: () => void;
-  setFilterByUsers: (users: TUserName[]) => void;
-  setFilterByProcesses: (processs: TProcessName[]) => void;
+  setFilterByUsers: (users: TUserName[], opts?: TThreadCommentsSetFilterOpts) => void;
+  setFilterByProcesses: (processes: TProcessName[], opts?: TThreadCommentsSetFilterOpts) => void;
+  setFilterByState: (
+    state: TThreadCommentsFilterByState,
+    opts?: TThreadCommentsSetFilterOpts,
+  ) => void;
+  setSortThreadsBy: (
+    value: TThreadCommentsSortThreadsBy,
+    opts?: TThreadCommentsSetFilterOpts,
+  ) => void;
+  setSortThreadsReversed: (value: boolean, opts?: TThreadCommentsSetFilterOpts) => void;
+  setFilterByMyThreads: (value: boolean, opts?: TThreadCommentsSetFilterOpts) => void;
+  resetFilters: () => void;
+  expandAllThreads: () => void;
+  getDefaultViewParams: () => TThreadCommentsViewParams;
 }
 
 // Public interface

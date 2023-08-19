@@ -5,9 +5,6 @@
 {# TODO: It's possible to dynamically load all required styles using `CommonHelpers.addCssStyle` method. #}
 <link rel="stylesheet" href="{{ url_for('static', filename='css/comments.css') }}">
 <link rel="stylesheet" href="{{ url_for('static', filename='css/comments-filters.css') }}">
-{#
-<link rel="stylesheet" href="{{ url_for('static', filename='css/comments-threads-list.css') }}">
-#}
 
 <div id="comments-root" class="comments-root container empty loading role-{{ config.role }}">
 
@@ -68,11 +65,15 @@
       </button>
     </div>
   </div>
-  <div id="comments-error" class="error">
-    <!-- Error text comes here -->
-  </div>
 
   <div id="thread-comments" class="thread-comments"><!-- Placeholder for ThreadComments component --></div>
+
+  <div id="comments-tableau" class="comments-tableau">
+    <div id="comments-error" class="error">Error<!-- Error text comes here --></div>
+    <div id="loader-splash" class="loader-splash full-cover bg-white"><div class="loader-spinner"></div></div>
+  </div>
+
+  <div class="comments-not-inited">Component is initializing...</div>
 
 </div>
 

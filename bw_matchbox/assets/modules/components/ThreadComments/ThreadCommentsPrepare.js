@@ -5,7 +5,7 @@ import { ThreadCommentsHelpers } from './ThreadCommentsHelpers.js';
 
 export const ThreadCommentsPrepare = /** @lends ThreadCommentsPrepare */ {
   makeDerivedData() {
-    const { comments, threads } = ThreadCommentsData;
+    const { comments, threads, useFakeCurrentUser } = ThreadCommentsData;
     /* console.log('[ThreadCommentsPrepare:makeDerivedData]', {
      *   comments,
      *   threads,
@@ -36,11 +36,10 @@ export const ThreadCommentsPrepare = /** @lends ThreadCommentsPrepare */ {
      * });
      */
     ThreadCommentsData.users = users;
-    /* // DEBUG: Set first given user as current user
-     * if (useFakeCurrentUser) {
-     *   sharedParams.currentUser = users[0];
-     * }
-     */
+    // DEBUG: Set first given user as current user
+    if (useFakeCurrentUser) {
+      ThreadCommentsData.currentUser = users[0];
+    }
     ThreadCommentsData.processesHash = processesHash;
     ThreadCommentsData.processIds = processIds;
   },

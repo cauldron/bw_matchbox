@@ -5,6 +5,7 @@ import { ThreadCommentsData } from './ThreadCommentsData.js';
 import { ThreadCommentsInit } from './ThreadCommentsInit.js';
 import { ThreadCommentsStates } from './ThreadCommentsStates.js';
 import { ThreadCommentsRender } from './ThreadCommentsRender.js';
+import { ThreadCommentsHandlers } from './ThreadCommentsHandlers.js';
 
 export class ThreadComments {
   /** @type {ThreadCommentsInit} */
@@ -27,46 +28,59 @@ export class ThreadComments {
    * @type {TThreadCommentsApi}
    */
   api = {
-    /** @return {TComment[]} */
     getComments() {
       return ThreadCommentsData.comments;
     },
-    /** @return {TThread[]} */
     getThreads() {
       return ThreadCommentsData.threads;
     },
-    /** @return {Record<TThreadId, TComment>} */
     getCommentsHash() {
       return ThreadCommentsData.commentsHash;
     },
-    /** @return {Record<TThreadId, TThread>} */
     getThreadsHash() {
       return ThreadCommentsData.threadsHash;
     },
-    /** @return {Record<TThreadId, TCommentId[]>} */
     getCommentsByThreads() {
       return ThreadCommentsData.commentsByThreads;
     },
-    /** @return {TUserName[]} */
     getUsers() {
       return ThreadCommentsData.users;
     },
-    /** @return {TProcessId[]} */
     getProcessIds() {
       return ThreadCommentsData.processIds;
     },
-    /** @return {Record<TProcessId, TProcess>} */
     getProcessesHash() {
       return ThreadCommentsData.processesHash;
     },
     updateVisibleThreads() {
       return ThreadCommentsRender.updateVisibleThreads();
     },
-    setFilterByUsers(values) {
-      return ThreadCommentsStates.setFilterByUsers(values);
+    setFilterByUsers(values, opts) {
+      return ThreadCommentsStates.setFilterByUsers(values, opts);
     },
-    setFilterByProcesses(values) {
-      return ThreadCommentsStates.setFilterByProcesses(values);
+    setFilterByProcesses(values, opts) {
+      return ThreadCommentsStates.setFilterByProcesses(values, opts);
+    },
+    setFilterByState(value, opts) {
+      return ThreadCommentsStates.setFilterByState(value, opts);
+    },
+    setSortThreadsReversed(value, opts) {
+      return ThreadCommentsStates.setSortThreadsReversed(value, opts);
+    },
+    setSortThreadsBy(value, opts) {
+      return ThreadCommentsStates.setSortThreadsBy(value, opts);
+    },
+    setFilterByMyThreads(value, opts) {
+      return ThreadCommentsStates.setFilterByMyThreads(value, opts);
+    },
+    resetFilters() {
+      return ThreadCommentsHandlers.resetFilters();
+    },
+    expandAllThreads() {
+      return ThreadCommentsHandlers.expandAllThreads();
+    },
+    getDefaultViewParams() {
+      return ThreadCommentsData.defaultViewParams;
     },
   };
 
@@ -97,8 +111,20 @@ export class ThreadComments {
   /** @param {TThreadCommentsParams} params
    */
   setParams(params) {
-    ThreadCommentsNodes.setRootNode(params.rootNode);
-    ThreadCommentsStates.setRole(params.role);
-    ThreadCommentsData.currentUser = params.currentUser;
+    const {
+      // Parameters..
+      rootNode,
+      currentUser,
+      role,
+      noTableau,
+      noLoader,
+      noError,
+    } = params;
+    ThreadCommentsNodes.setRootNode(rootNode);
+    ThreadCommentsStates.setRole(role);
+    ThreadCommentsData.currentUser = currentUser;
+    rootNode.classList.toggle('noTableau', !!noTableau);
+    rootNode.classList.toggle('noLoader', !!noLoader);
+    rootNode.classList.toggle('noError', !!noError);
   }
 }

@@ -57,6 +57,9 @@
 .loader-splash.bg-page {
   background-color: #fff;
 }
+.loader-splash.bg-white-half {
+  background-color: rgb(255 255 255 / 50%);
+}
 .loader-splash.bg-black {
   background-color: #000;
 }

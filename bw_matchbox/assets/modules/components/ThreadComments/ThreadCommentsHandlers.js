@@ -99,8 +99,7 @@ const apiHandlers = {
     // TODO: Check roles for editors, reviewers?
     const { createCommentApiUrl: urlBase } = ThreadCommentsConstants;
     const { threadId, threadNode } = params;
-    const { threadsHash, sharedParams } = ThreadCommentsData;
-    const { currentUser } = sharedParams;
+    const { threadsHash, currentUser } = ThreadCommentsData;
     const thread = threadsHash[threadId];
     const requestParams = {
       /* // @matchbox_app.route("/comments/create-comment", methods=["POST"])
@@ -420,106 +419,11 @@ export const ThreadCommentsHandlers = /** @lends ThreadCommentsHandlers */ {
     }
   },
 
-  handleFilterByUserChange(node) {
-    const values = ThreadCommentsHelpers.getMultipleSelectValues(node);
-    /* console.log('[ThreadCommentsHandlers:handleFilterByUserChange]', {
-     *   values,
-     * });
-     */
-    ThreadCommentsStates.setFilterByUsers(values);
-  },
-
-  handleFilterByProcessChange(node) {
-    const values = ThreadCommentsHelpers.getMultipleSelectValues(node).map(Number);
-    /* console.log('[ThreadCommentsHandlers:handleFilterByProcessChange]', {
-     *   values,
-     * });
-     */
-    ThreadCommentsStates.setFilterByProcesses(values);
-  },
-
-  handleFilterByStateChange(node) {
-    const { value } = node;
-    /* console.log('[ThreadCommentsHandlers:handleFilterByStateChange]', {
-     *   value,
-     * });
-     */
-    ThreadCommentsStates.setFilterByState(value);
-  },
-
-  handleSortThreadsReversedChange(node) {
-    const { checked: value } = node;
-    /* console.log('[ThreadCommentsHandlers:handleSortThreadsChange]', {
-     *   value,
-     * });
-     */
-    ThreadCommentsStates.setSortThreadsReversedChange(value);
-  },
-
-  handleSortThreadsByChange(node) {
-    const { value } = node;
-    /* console.log('[ThreadCommentsHandlers:handleSortThreadsByChange]', {
-     *   value,
-     * });
-     */
-    ThreadCommentsStates.setSortThreadsByChange(value);
-  },
-
-  /** Reset `filterByState` filter
-   * @param {object} [opts]
-   * @param {boolean} [opts.omitUpdate] - Don't automatically state (eg: will be updated manually later).
+  /**
+   * @param {MouseEvent} event
    */
-  resetFilterByState(opts = {}) {
-    const filterByStateNode = /** @type {HTMLInputElement} */ (
-      document.getElementById('filterByState')
-    );
-    const { defaultParams } = ThreadCommentsData;
-    const { filterByState: value } = defaultParams;
-    filterByStateNode.value = value;
-    ThreadCommentsStates.setFilterByState(value, opts);
-  },
-
-  /** Reset `filterByUsers` filter
-   * @param {object} [opts]
-   * @param {boolean} [opts.omitUpdate] - Don't automatically state (eg: will be updated manually later).
-   */
-  resetFilterByUsers(opts = {}) {
-    const filterByUsersNode = document.getElementById('filterByUsers');
-    const { defaultParams } = ThreadCommentsData;
-    const { filterByUsers: values } = defaultParams;
-    ThreadCommentsHelpers.setMultipleSelectValues(filterByUsersNode, values);
-    ThreadCommentsStates.setFilterByUsers(values, opts);
-  },
-
-  /** Reset `filterByProcesses` filter
-   * @param {object} [opts]
-   * @param {boolean} [opts.omitUpdate] - Don't automatically state (eg: will be updated manually later).
-   */
-  resetFilterByProcesses(opts = {}) {
-    const filterByProcessesNode = document.getElementById('filterByProcesses');
-    const { defaultParams } = ThreadCommentsData;
-    const { filterByProcesses: values } = defaultParams;
-    ThreadCommentsHelpers.setMultipleSelectValues(filterByProcessesNode, values);
-    ThreadCommentsStates.setFilterByProcesses(values, opts);
-  },
-
-  handleFilterByMyThreads() {
-    const { filterByMyThreads } = ThreadCommentsData;
-    ThreadCommentsStates.setFilterByMyThreads(!filterByMyThreads);
-  },
-
-  /** Reset `filterByMyThreads` filter
-   * @param {object} [opts]
-   * @param {boolean} [opts.omitUpdate] - Don't automatically state (eg: will be updated manually later).
-   */
-  resetFilterByMyThreads(opts = {}) {
-    const { defaultParams } = ThreadCommentsData;
-    const { filterByMyThreads: value } = defaultParams;
-    ThreadCommentsStates.setFilterByMyThreads(value, opts);
-  },
-
   handleExpandThread(event) {
-    const { target } = event;
+    const target = /** @type {HTMLElement} */ (event.target);
     const threadEl = target.closest('.thread');
     const threadId = Number(threadEl.getAttribute('data-thread-id'));
     const wasExpanded = threadEl.classList.contains('expanded');
@@ -537,9 +441,8 @@ export const ThreadCommentsHandlers = /** @lends ThreadCommentsHandlers */ {
     threadEl.classList.toggle('expanded', setExpanded);
   },
 
-  handleExpandAllThreads() {
-    const threadsListNode = ThreadCommentsNodes.getThreadCommentsNode();
-    // const threadNodes = threadsListNode.getElementsByClassName('thread');
+  expandAllThreads() {
+    const threadsListNode = ThreadCommentsNodes.getThreadsListNode();
     const threadNodes = threadsListNode.querySelectorAll('.thread:not(.hidden)');
     const threadNodesList = Array.from(threadNodes);
     const allCount = threadNodesList.length;
@@ -550,7 +453,7 @@ export const ThreadCommentsHandlers = /** @lends ThreadCommentsHandlers */ {
     const isSome = !isCollapsed && !isExpanded;
     const isAll = !isSome;
     const setExpanded = isAll ? !isExpanded : false;
-    /* console.log('[ThreadCommentsHandlers:handleExpandAllThreads]', {
+    /* console.log('[ThreadCommentsHandlers:expandAllThreads]', {
      *   threadsListNode,
      *   threadNodes,
      *   threadNodesList,
@@ -571,17 +474,6 @@ export const ThreadCommentsHandlers = /** @lends ThreadCommentsHandlers */ {
       }
       node.classList.toggle('expanded', setExpanded);
     });
-  },
-
-  /** Reset all the filters to default values
-   */
-  handleResetFilters() {
-    const commonOpts = { omitUpdate: true };
-    this.resetFilterByState(commonOpts);
-    this.resetFilterByUsers(commonOpts);
-    this.resetFilterByProcesses(commonOpts);
-    this.resetFilterByMyThreads(commonOpts);
-    ThreadCommentsRender.updateVisibleThreads();
   },
 
   init({ handlers }) {

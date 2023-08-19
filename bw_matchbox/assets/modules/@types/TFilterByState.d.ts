@@ -1,1 +1,0 @@
-type TFilterByState = 'modifiedDate' | 'name';

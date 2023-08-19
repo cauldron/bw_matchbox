@@ -18,7 +18,7 @@ export const CommentsPageDataRender = {
     const isError = !!error;
     const rootNode = CommentsPageNodes.getRootNode();
     const errorNode = CommentsPageNodes.getErrorNode();
-    rootNode.classList.toggle('error', isError);
+    rootNode.classList.toggle('has-error', isError);
     const errorText = error ? error.message || String(error) : '';
     // DEBUG: Show error in console
     if (errorText) {

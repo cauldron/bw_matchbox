@@ -60,27 +60,25 @@ export const ThreadCommentsHelpers = {
     } = ThreadCommentsData;
     const thread = threadsHash[threadId];
     const { resolved, process } = thread;
-    /* console.log('[ThreadCommentsHelpers:isThreadVisible]', {
-     *   currentUser,
-     *   filterByState,
-     *   filterByUsers,
-     *   filterByProcesses,
-     *   filterByMyThreads,
-     * });
-     */
+    console.log('[ThreadCommentsHelpers:isThreadVisible]', {
+      currentUser,
+      filterByState,
+      filterByUsers,
+      filterByProcesses,
+      filterByMyThreads,
+    });
     if (filterByMyThreads) {
       // Filter for current user' and open threads
       filterByState = 'open';
       filterByUsers = [currentUser];
       filterByProcesses = undefined;
-      /* console.log('[ThreadCommentsHelpers:isThreadVisible] filterByMyThreads', {
-       *   currentUser,
-       *   filterByState,
-       *   filterByUsers,
-       *   filterByProcesses,
-       *   filterByMyThreads,
-       * });
-       */
+      console.log('[ThreadCommentsHelpers:isThreadVisible] filterByMyThreads', {
+        currentUser,
+        filterByState,
+        filterByUsers,
+        filterByProcesses,
+        filterByMyThreads,
+      });
     }
     // Filter with `filterByState`...
     if (filterByState) {

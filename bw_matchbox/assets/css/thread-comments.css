@@ -1,6 +1,15 @@
+/* stylelint-disable selector-class-pattern */
+
 .thread-comments {
   position: relative;
+}
+
+.thread-comments .threads-list-tableau {
+  position: relative;
   min-height: 80px; /* Ensure space for loading splash */
+}
+.thread-comments.noTableau .threads-list-tableau {
+  display: none;
 }
 
 /* Basic rules... */
@@ -10,7 +19,6 @@
 
 /* Empty state: hide some elements... */
 .thread-comments.empty .threads-list,
-/* .thread-comments:not(.empty) .threads-list-empty, */
 .thread-comments.loading .threads-list-empty,
 .thread-comments.has-visible-threads .threads-list-empty {
   display: none;
@@ -22,7 +30,17 @@
   opacity: 0.5;
 }
 
+/** Loading elements */
+.thread-comments.loading .threads-list,
+.thread-comments.loading .threads-list-empty {
+  opacity: 0.5;
+  pointer-events: none;
+}
+
 /* Loader splash */
+.thread-comments.noError .loader-splash {
+  display: none;
+}
 .thread-comments .loader-splash {
   padding: 20px;
 }
@@ -40,8 +58,7 @@
   margin: 20px auto;
   padding: 10px 20px;
 }
-.thread-comments:not(.error) .error {
+.thread-comments.noError .error,
+.thread-comments:not(.has-error) .error {
   display: none;
 }
-
-

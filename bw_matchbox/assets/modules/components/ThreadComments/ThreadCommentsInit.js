@@ -107,10 +107,12 @@ export class ThreadCommentsInit {
 
   getDomNodeContent() {
     return `
-      <div id="threads-list-error" class="error">Error<!-- Error text comes here --></div>
+      <div id="threads-list-tableau" class="threads-list-tableau">
+        <div id="threads-list-error" class="error"><!-- Error text comes here --></div>
+        <div id="loader-splash" class="loader-splash full-cover bg-white"><div class="loader-spinner"></div></div>
+      </div>
       <div id="threads-list-empty" class="threads-list-empty">No avaialable comment threads</div>
       <div id="threads-list" class="threads-list"><!-- List placeholder --></div>
-      <div id="loader-splash" class="loader-splash full-cover"><div class="loader-spinner"></div></div>
     `;
   }
 

@@ -5,6 +5,44 @@
   margin-bottom: 20px;
 }
 
+/* Not initialized message */
+.comments-root .comments-not-inited {
+  margin: 10px 0;
+  text-align: center;
+  opacity: 0.5;
+}
+.comments-root.inited .comments-not-inited {
+  display: none;
+}
+
+/* Information ppanel */
+.comments-root .comments-tableau {
+  position: relative;
+  min-height: 80px; /* Ensure space for loading splash */
+}
+
+/* Loader splash */
+.comments-root .loader-splash {
+  padding: 20px;
+}
+.comments-root:not(.loading) .loader-splash {
+  /* Inherited from `.loader-splash.hidden`, see `bw_matchbox/assets/css/common.css` */
+  opacity: 0;
+  pointer-events: none;
+}
+
+/* Error */
+.comments-root .error {
+  border-radius: 4px;
+  background-color: var(--common-error-color);
+  color: #fff;
+  margin: 20px auto;
+  padding: 10px 20px;
+}
+.comments-root:not(.has-error) .error {
+  display: none;
+}
+
 /* ByMyThreads filter */
 .comments-root .notByMyThreads {
   transition: all var(--common-animation-time);
@@ -22,6 +60,9 @@
 .comments-root > * {
   transition: all var(--common-animation-time);
 }
+.comments-root:not(.inited) .filters {
+  display: none;
+}
 .comments-root.loading .filters {
   opacity: 0.5;
   pointer-events: none;
@@ -30,16 +71,4 @@
 /* Data table */
 .comments-root .threads-list {
   margin: 20px 0;
-}
-
-/* Bottom actions (TODO: Just copied from `processes-list.css`) */
-.comments-root .bottom-actions {
-  position: relative;
-  margin: 10px 0;
-  min-height: 40px;
-  text-align: center;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  align-content: center;
 }

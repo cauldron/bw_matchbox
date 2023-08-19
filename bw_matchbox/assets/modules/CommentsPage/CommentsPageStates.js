@@ -1,6 +1,5 @@
 import { CommentsPageData } from './CommentsPageData.js';
 import { CommentsPageDataRender } from './CommentsPageDataRender.js';
-import { CommentsPageHelpers } from './CommentsPageHelpers.js';
 import { CommentsPageNodes } from './CommentsPageNodes.js';
 
 export const CommentsPageStates = {
@@ -8,6 +7,15 @@ export const CommentsPageStates = {
 
   /** @type {TThreadComments} */
   threadComments: undefined,
+
+  updateViewParamsFromThreadComments() {
+    const defaultViewParams = this.threadComments.api.getDefaultViewParams();
+    CommentsPageData.defaultViewParams = defaultViewParams;
+    Object.keys(defaultViewParams).forEach((key) => {
+      const value = defaultViewParams[key];
+      CommentsPageData[key] = Array.isArray(value) ? [...value] : value;
+    });
+  },
 
   setLoading(isLoading) {
     // Set css class for id="processes-list-root" --> loading, set local status
@@ -38,7 +46,7 @@ export const CommentsPageStates = {
   },
 
   /**
-   * @param {string[]} values
+   * @param {TProcessId[]} values
    * @param {object} [opts]
    * @param {boolean} [opts.omitUpdate] - Don't automatically state (eg: will be updated manually later).
    */
@@ -52,16 +60,13 @@ export const CommentsPageStates = {
   },
 
   /**
-   * @param {TFilterByState} value
+   * @param {TThreadCommentsFilterByState} value
    * @param {object} [opts]
    * @param {boolean} [opts.omitUpdate] - Don't automatically state (eg: will be updated manually later).
    */
   setFilterByState(value, opts = {}) {
-    CommentsPageData.filterByState = value;
-    if (!opts.omitUpdate) {
-      // CommentsPageDataRender.updateVisibleThreads();
-      this.threadComments.api.updateVisibleThreads();
-    }
+    // CommentsPageData.filterByState = value;
+    this.threadComments.api.setFilterByState(value, opts);
   },
 
   /**
@@ -69,37 +74,19 @@ export const CommentsPageStates = {
    * @param {object} [opts]
    * @param {boolean} [opts.omitUpdate] - Don't automatically state (eg: will be updated manually later).
    */
-  setSortThreadsReversedChange(value, opts = {}) {
-    const { threads } = CommentsPageData;
-    CommentsPageData.sortThreadsReversed = value;
-    // Re-sort threads...
-    CommentsPageHelpers.sortThreads(threads);
-    /* // NOTE: Don't need to re-sort comments
-     * comments.sort(CommentsPageHelpers.sortCommentsCompare);
-     */
-    if (!opts.omitUpdate) {
-      // Re-render all threads...
-      CommentsPageDataRender.renderData();
-    }
+  setSortThreadsReversed(value, opts = {}) {
+    // CommentsPageData.sortThreadsReversed = value;
+    this.threadComments.api.setSortThreadsReversed(value, opts);
   },
 
   /**
-   * @param {TFilterByState} value
+   * @param {string} value
    * @param {object} [opts]
    * @param {boolean} [opts.omitUpdate] - Don't automatically state (eg: will be updated manually later).
    */
-  setSortThreadsByChange(value, opts = {}) {
-    const { threads } = CommentsPageData;
+  setSortThreadsBy(value, opts = {}) {
     CommentsPageData.sortThreadsBy = value;
-    // Re-sort threads...
-    CommentsPageHelpers.sortThreads(threads);
-    /* // NOTE: Don't need to re-sort comments
-     * comments.sort(CommentsPageHelpers.sortCommentsCompare);
-     */
-    if (!opts.omitUpdate) {
-      // Re-render all threads...
-      CommentsPageDataRender.renderData();
-    }
+    this.threadComments.api.setSortThreadsBy(value, opts);
   },
 
   /**
@@ -108,16 +95,12 @@ export const CommentsPageStates = {
    * @param {boolean} [opts.omitUpdate] - Don't automatically state (eg: will be updated manually later).
    */
   setFilterByMyThreads(value, opts = {}) {
-    CommentsPageData.filterByMyThreads = value;
+    // CommentsPageData.filterByMyThreads = value;
+    this.threadComments.api.setFilterByMyThreads(value, opts);
     const filterByMyThreadsNode = document.getElementById('filterByMyThreads');
     filterByMyThreadsNode.classList.toggle('button-primary', !!value);
     const rootNode = CommentsPageNodes.getRootNode();
     rootNode.classList.toggle('filterByMyThreads', !!value);
-    if (!opts.omitUpdate) {
-      // CommentsPageDataRender.updateVisibleThreads();
-      this.threadComments.api.updateVisibleThreads();
-      // CommentsPageDataRender.rerenderAllVisibleComments(); // Could be used if will filter and particular comments also
-    }
   },
 
   setTotalCommentsCount(totalComments) {
@@ -142,7 +125,7 @@ export const CommentsPageStates = {
      */
   },
 
-  // setError -- Shorthand for `setHasData`
+  // setEmpty -- Shorthand for `setHasData`
   setEmpty(isEmpty) {
     this.setHasData(!isEmpty);
   },
