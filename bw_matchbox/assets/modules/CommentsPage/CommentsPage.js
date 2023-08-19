@@ -95,10 +95,11 @@ export const CommentsPage = {
   /** @param {TSharedParams} sharedParams */
   initComments(sharedParams) {
     const { currentUser, currentRole } = sharedParams;
+    const { handlers } = this;
     // Init comments module parameters
     this.threadComments.setParams({
-      errorNode: CommentsPageNodes.getErrorNode(),
-      threadsListNode: CommentsPageNodes.getThreadsListNode(),
+      // errorNode: CommentsPageNodes.getErrorNode(),
+      rootNode: CommentsPageNodes.getThreadCommentsNode(),
       currentUser,
       currentRole,
     });
@@ -110,15 +111,19 @@ export const CommentsPage = {
         console.log('[CommentsPage:start] threadComments.ensureInit success');
         // TODO: Invoke `loadComments`
         this.threadComments.handlers.loadComments();
-        // TODO: Clear loading status
-        CommentsPageStates.setLoading(false);
+        /* // NOTE: Loading state is controlling by ThreadComments component
+         * // TODO: Clear loading status
+         * CommentsPageStates.setLoading(false);
+         */
       })
       .catch((error) => {
         console.error('[CommentsPage:start] threadComments.ensureInit success', error);
         debugger;
         // Set error
       });
-    // TODO: Register events in `this.threadComments.events()` for `onInitFinished`, `onInitFailed`, etc...
+    // Register events...
+    this.threadComments.events.add('loading', handlers.setLoading);
+    // TODO: hasData, error, totalCommentsCount, totalThreadsCount, hasVisibleThreads, hasUsers, hasProcesses
   },
 
   /** Start entrypoint

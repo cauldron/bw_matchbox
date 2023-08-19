@@ -520,7 +520,7 @@ export const CommentsPageHandlers = /** @lends CommentsPageHandlers */ {
   },
 
   handleExpandAllThreads() {
-    const threadsListNode = CommentsPageNodes.getThreadsListNode();
+    const threadsListNode = CommentsPageNodes.getThreadCommentsNode();
     // const threadNodes = threadsListNode.getElementsByClassName('thread');
     const threadNodes = threadsListNode.querySelectorAll('.thread:not(.hidden)');
     const threadNodesList = Array.from(threadNodes);

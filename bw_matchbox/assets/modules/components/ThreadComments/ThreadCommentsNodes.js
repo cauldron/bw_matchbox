@@ -2,30 +2,55 @@
 
 export const ThreadCommentsNodes = {
   /** @type {Element} */
-  threadsListNode: undefined,
+  rootNode: undefined,
   /** @type {Element} */
   errorNode: undefined,
 
   /**
-   * @param {Element} node
+   * @param {Element} rootNode
    */
-  setThreadsListNode(node) {
-    this.threadsListNode = node;
+  setRootNode(rootNode) {
+    if (!rootNode) {
+      const error = new Error('Trying to set undefined root node');
+      // eslint-disable-next-line no-console
+      console.error('[ThreadCommentsNodes:setRootNode]: error', error);
+      // eslint-disable-next-line no-debugger
+      debugger;
+      throw error;
+    }
+    this.rootNode = rootNode;
   },
 
-  /**
-   * @param {Element} node
-   */
-  setErrorNode(node) {
-    this.errorNode = node;
-  },
-
-  getThreadsListNode() {
-    return this.threadsListNode;
+  getRootNode() {
+    if (!this.rootNode) {
+      const error = new Error('Root node should be defined with setErrorNode');
+      // eslint-disable-next-line no-console
+      console.error('[ThreadCommentsNodes:getRootNode]: error', error);
+      // eslint-disable-next-line no-debugger
+      debugger;
+      throw error;
+    }
+    return this.rootNode;
   },
 
   getErrorNode() {
-    return this.errorNode;
+    const rootNode = this.getRootNode();
+    return rootNode.querySelector('#threads-list-error');
+  },
+
+  getEmptyInfoNode() {
+    const rootNode = this.getRootNode();
+    return rootNode.querySelector('#threads-list-empty');
+  },
+
+  getThreadsListNode() {
+    const rootNode = this.getRootNode();
+    return rootNode.querySelector('#threads-list');
+  },
+
+  getLoaderSplashNode() {
+    const rootNode = this.getRootNode();
+    return rootNode.querySelector('#loader-splash');
   },
 
   /* // UNUSED: getRootNode

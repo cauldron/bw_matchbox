@@ -157,12 +157,22 @@ export const CommentsPageStates = {
     CommentsPageDataRender.clearRenderedData();
   },
 
-  getRadioGroupValue(groupId) {
-    const elem = document.querySelector('input[type="radio"][name="' + groupId + '"]:checked');
-    return elem && elem.value;
-  },
-
-  start() {
-    // TODO: Update all the dynamic parameters...
+  start(params) {
+    const { handlers } = params;
+    // Addd all methods as bound handlers...
+    Object.keys(this).forEach((key) => {
+      const cb = this[key];
+      if (cb && typeof cb === 'function' && key !== 'start') {
+        if (handlers[key]) {
+          const error = new Error('Doubled handler: ' + key);
+          // eslint-disable-next-line no-console
+          console.error('[CommentsPageStates:start] init handlers error', error);
+          // eslint-disable-next-line no-debugger
+          debugger;
+          throw error;
+        }
+        handlers[key] = cb.bind(this);
+      }
+    });
   },
 };

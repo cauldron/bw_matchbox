@@ -13,7 +13,17 @@ export const ThreadCommentsLoader = /** @lends ThreadCommentsLoader */ {
    */
   loadComments() {
     // const { sharedParams } = ThreadCommentsData;
-    const { readCommentsApiUrl: url } = ThreadCommentsConstants;
+    const { readCommentsApiUrl: urlBase } = ThreadCommentsConstants;
+    // NOTE: Now loading all the comments...
+    const params = {
+      // user, // str. Username to filter by
+      // process, // int. Proxy process ID
+      // resolved, // str, either "0" or "1". Whether comment thread is resolved or not
+      // thread, // int. Comment thread id
+    };
+    // @see @matchbox_app.route("/comments/read", methods=["GET"])
+    const urlQuery = CommonHelpers.makeQuery(params, { addQuestionSymbol: true });
+    const url = urlBase + urlQuery;
     console.log('[ThreadCommentsLoader:loadComments]: start', {
       url,
     });

@@ -113,7 +113,7 @@ export class InitChunks {
     if (this._initDefer) {
       this._initDefer.reject(error);
     }
-    // TODO: Show notify?
+    // NOTE: Don't show notify here because this module uses in CommonNotify too.
   }
 
   initFinished() {
@@ -186,10 +186,10 @@ export class InitChunks {
       // Create init defer, start initialization...
       this._initDefer = CommonPromises.Deferred();
       const promise = this._initDefer.promise;
-      promise.then(this.events.invoke.bind(this.events, 'onInitFinished'));
-      promise.catch(this.events.invoke.bind(this.events, 'onInitFailed'));
+      promise.then(this.events.emit.bind(this.events, 'onInitFinished'));
+      promise.catch(this.events.emit.bind(this.events, 'onInitFailed'));
       // promise.catch((e) => e); // Suppress uncaught promise errors
-      this.events.invoke('onInitStarted');
+      this.events.emit('onInitStarted');
       if (!this.waiting) {
         // NOTE: Check init/error state and resolve the promise immediately if this state has defined.
         // The case: _initDefer was requested after the state has initialized.

@@ -176,4 +176,14 @@ export const ThreadCommentsHelpers = {
   sortCommentsCompare(a, b) {
     return a.position - b.position;
   },
+
+  /**
+   * @param {Element} node
+   * @param {string} groupId
+   */
+  getRadioGroupValue(node, groupId) {
+    /** @type {HTMLInputElement} */
+    const elem = node.querySelector('input[type="radio"][name="' + groupId + '"]:checked');
+    return elem && elem.value;
+  },
 };

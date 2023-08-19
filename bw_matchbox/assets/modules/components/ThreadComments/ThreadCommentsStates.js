@@ -6,27 +6,32 @@ import { ThreadCommentsHelpers } from './ThreadCommentsHelpers.js';
 import { ThreadCommentsNodes } from './ThreadCommentsNodes.js';
 
 export const ThreadCommentsStates = {
+  /** @type {TSharedHandlers} */
+  handlers: undefined,
+
+  /** @type {TEvents} */
+  events: undefined,
+
   /**
    * @param {boolean} isLoading
    */
   setLoading(isLoading) {
-    /* // Set css class for id="processes-list-root" --> loading, set local status
-     * const rootNode = ThreadCommentsNodes.getRootNode();
-     * rootNode.classList.toggle('loading', isLoading);
-     */
+    // Set css class for id="processes-list-root" --> loading, set local status
+    const rootNode = ThreadCommentsNodes.getRootNode();
+    rootNode.classList.toggle('loading', isLoading);
     ThreadCommentsData.isLoading = isLoading;
+    this.events.emit('loading', isLoading);
   },
 
   /**
    * @param {boolean} hasData
    */
   setHasData(hasData) {
-    /* // TODO: Update root state?
-     * // Set css class for root node, update local state
-     * const rootNode = ThreadCommentsNodes.getRootNode();
-     * rootNode.classList.toggle('empty', !hasData);
-     */
+    // Set css class for root node, update local state
+    const rootNode = ThreadCommentsNodes.getRootNode();
+    rootNode.classList.toggle('empty', !hasData);
     ThreadCommentsData.hasData = hasData;
+    this.events.emit('hasData', hasData);
   },
 
   /**
@@ -120,13 +125,12 @@ export const ThreadCommentsStates = {
     ThreadCommentsData.filterByMyThreads = value;
     const filterByMyThreadsNode = document.getElementById('filterByMyThreads');
     filterByMyThreadsNode.classList.toggle('button-primary', !!value);
-    /* // TODO: Update root state?
-     * const rootNode = ThreadCommentsNodes.getRootNode();
-     * rootNode.classList.toggle('filterByMyThreads', !!value);
-     */
+    // TODO: Update root state?
+    const rootNode = ThreadCommentsNodes.getRootNode();
+    rootNode.classList.toggle('filterByMyThreads', !!value);
     if (!opts.omitUpdate) {
       ThreadCommentsRender.updateVisibleThreads();
-      // ThreadCommentsRender.rerenderAllVisibleComments(); // Could be used if will filter and particular comments also
+      // ThreadCommentsRender.rerenderAllVisibleComments(); // Could be used if will filter particular comments
     }
   },
 
@@ -142,6 +146,7 @@ export const ThreadCommentsStates = {
      *   node.innerHTML = String(totalComments);
      * });
      */
+    this.events.emit('totalCommentsCount', totalComments);
   },
 
   /**
@@ -156,6 +161,7 @@ export const ThreadCommentsStates = {
      *   node.innerHTML = String(totalThreads);
      * });
      */
+    this.events.emit('totalThreadsCount', totalThreads);
   },
 
   /** setError -- Shorthand for `setHasData`
@@ -172,6 +178,7 @@ export const ThreadCommentsStates = {
     ThreadCommentsData.isError = !!error;
     ThreadCommentsData.error = error;
     ThreadCommentsRender.renderError(error);
+    this.events.emit('error', error);
   },
 
   clearData() {
@@ -179,16 +186,11 @@ export const ThreadCommentsStates = {
     ThreadCommentsRender.clearRenderedData();
   },
 
-  /**
-   * @param {string} groupId
-   */
-  getRadioGroupValue(groupId) {
-    /** @type {HTMLInputElement} */
-    const elem = document.querySelector('input[type="radio"][name="' + groupId + '"]:checked');
-    return elem && elem.value;
-  },
-
-  start() {
+  /** @param {TThreadCommentsInitParams} initParams */
+  init(initParams) {
+    const { events, handlers } = initParams;
+    this.events = events;
+    this.handlers = handlers;
     // TODO: Update all the dynamic parameters...
   },
 };

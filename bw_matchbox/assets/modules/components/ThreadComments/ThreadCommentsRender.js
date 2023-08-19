@@ -236,11 +236,10 @@ export const ThreadCommentsRender = {
    */
   renderError(error) {
     // TODO: Set css class for id="processes-list-root" --> error, update local state
-    /* // TODO: Set global error status
-     * const isError = !!error;
-     * const rootNode = ThreadCommentsNodes.getRootNode();
-     * rootNode.classList.toggle('error', isError);
-     */
+    // TODO: Set global error status
+    const isError = !!error;
+    const rootNode = ThreadCommentsNodes.getRootNode();
+    rootNode.classList.toggle('has-error', isError);
     const errorNode = ThreadCommentsNodes.getErrorNode();
     const errorText = error ? error.message || String(error) : '';
     // DEBUG: Show error in console
@@ -273,7 +272,7 @@ export const ThreadCommentsRender = {
      * });
      */
     commentsNode.innerHTML = commentsContent;
-    this.addTitleActionHandlersToNodeChildren(commentsNode);
+    this.addActionHandlersToNodeChildren(commentsNode);
     commentsNode.classList.toggle('ready', true);
   },
 
@@ -289,23 +288,26 @@ export const ThreadCommentsRender = {
     }
   },
 
-  /* // TODO: This code should be only in owner presentation component (`CommentsPae`, etc).
-   * updateVisibleThreadsStatus() {
-   *   const threadsListNode = ThreadCommentsNodes.getThreadsListNode();
-   *   const visibleThreadNodes = threadsListNode.querySelectorAll('.thread:not(.hidden)');
-   *   // eslint-disable-next-line no-unused-vars
-   *   const hasVisibleThreads = !!visibleThreadNodes.length;
-   *   [> // TODO: Update global status...
-   *    * const rootNode = ThreadCommentsNodes.getRootNode();
-   *    * rootNode.classList.toggle('has-visible-threads', hasVisibleThreads);
-   *    <]
-   * },
-   */
+  // TODO: This code should be exists only in owner presentation component (`CommentsPage`, etc).
+  updateVisibleThreadsStatus() {
+    const rootNode = ThreadCommentsNodes.getRootNode();
+    const threadsListNode = ThreadCommentsNodes.getThreadsListNode();
+    const visibleThreadNodes = threadsListNode.querySelectorAll('.thread:not(.hidden)');
+    // eslint-disable-next-line no-unused-vars
+    const hasVisibleThreads = !!visibleThreadNodes.length;
+    // TODO: Update global status...
+    rootNode.classList.toggle('has-visible-threads', hasVisibleThreads);
+    this.events.emit('hasVisibleThreads', hasVisibleThreads);
+  },
 
   // TODO: Is it used?
   clearRenderedData() {
     const threadsListNode = ThreadCommentsNodes.getThreadsListNode();
-    threadsListNode.replaceChildren();
+    threadsListNode.innerHTML = '';
+    /* // Old approach...
+     * threadsListNode.replaceChildren();
+     */
+    // TODO: Update status?
   },
 
   /** renderData -- Display new data rows at the end of the table.
@@ -314,24 +316,25 @@ export const ThreadCommentsRender = {
    */
   renderData(opts = {}) {
     const { threads } = ThreadCommentsData;
+    const rootNode = ThreadCommentsNodes.getRootNode();
     const threadsListNode = ThreadCommentsNodes.getThreadsListNode();
     const content = threads.map(helpers.renderThread).join('\n');
-    /* console.log('[ThreadCommentsRender:renderData]', {
-     *   threadsListNode,
-     *   content,
-     *   threads,
-     * });
-     */
+    console.log('[ThreadCommentsRender:renderData]', {
+      rootNode,
+      threadsListNode,
+      content,
+      threads,
+    });
     if (!opts.append) {
       // Replace data...
       threadsListNode.innerHTML = content; // Insert content just as raw html
-      this.addTitleActionHandlersToNodeChildren(threadsListNode);
+      this.addActionHandlersToNodeChildren(threadsListNode);
       // threadsListNode.replaceChildren.apply(threadsListNode, contentNodes); // Old approach
     } else {
       // Append new data (will be used for incremental update)...
       const contentNodes = CommonHelpers.htmlToElements(content);
       Array.from(contentNodes).forEach((node) => {
-        this.addTitleActionHandlersToNodeChildren(node);
+        this.addActionHandlersToNodeChildren(node);
       });
       threadsListNode.append.apply(threadsListNode, contentNodes);
     }
@@ -398,11 +401,11 @@ export const ThreadCommentsRender = {
       return `<option value="${value}"${isSelected ? ' selected' : ''}>${text}</option>`;
     });
     filterByUsersNode.innerHTML = options.join('\n');
-    /* // TODO: Update global css state
-     * const hasUsers = !!options.length;
-     * const rootNode = ThreadCommentsNodes.getRootNode();
-     * rootNode.classList.toggle('has-users', hasUsers);
-     */
+    // TODO: Update global css state
+    const hasUsers = !!options.length;
+    const rootNode = ThreadCommentsNodes.getRootNode();
+    rootNode.classList.toggle('has-users', hasUsers);
+    this.events.emit('hasUsers', hasUsers);
     /* console.log('[ThreadCommentsRender:renderFilterByUserOptions]', {
      *   options,
      *   // hasUsers,
@@ -432,6 +435,7 @@ export const ThreadCommentsRender = {
      */
     filterByProcessesNode.innerHTML = options.join('\n');
     rootNode.classList.toggle('has-processes', hasProcesses);
+    this.events.emit('hasProcesses', hasProcesses);
   },
 
   /* // TODO: This code should be only in owner presentation component (`CommentsPae`, etc).
@@ -500,7 +504,7 @@ export const ThreadCommentsRender = {
   /**
    * @param {Element} node
    */
-  addTitleActionHandlersToNodeChildren(node) {
+  addActionHandlersToNodeChildren(node) {
     const elems = node.querySelectorAll('.title-actions a');
     const { handlers } = this;
     const { handleTitleActionClick } = handlers;
@@ -512,8 +516,9 @@ export const ThreadCommentsRender = {
   /** @param {TThreadCommentsInitParams} params */
   init(params) {
     // TODO: Check for `hasInited` before cruical operations?
-    const { handlers } = params;
-    // Save handlers...
+    const { handlers, events } = params;
+    // Save handlers and events...
     this.handlers = handlers;
+    this.events = events;
   },
 };

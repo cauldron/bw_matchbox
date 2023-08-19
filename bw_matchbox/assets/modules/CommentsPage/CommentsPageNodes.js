@@ -1,8 +1,8 @@
 export const CommentsPageNodes = {
   __id: 'CommentsPageNodes',
 
-  getThreadsListNode() {
-    return document.getElementById('threads-list');
+  getThreadCommentsNode() {
+    return document.getElementById('thread-comments');
   },
 
   getErrorNode() {

@@ -249,7 +249,7 @@ export function parseQuery(search) {
 }
 
 /** makeQuery
- * @param {Record<string, string | number | boolean>} params
+ * @param {Record<string, string | number | boolean> | {}} params
  * @param {{ addQuestionSymbol?: boolean; useEmptyStrings?: boolean; useUndefinedValues?: boolean }} opts
  * @returns {string}
  */
@@ -283,7 +283,27 @@ export function addScript(url) {
     const script = document.createElement('script');
     script.setAttribute('src', url);
     script.addEventListener('load', resolve);
-    script.addEventListener('error', reject);
+    script.addEventListener('error', (event) => {
+      const {
+        target,
+        // srcElement,
+      } = event;
+      // @ts-ignore
+      const { href, baseURI } = target;
+      const error = new Error(`Cannot load script resurce by url '${url}'`);
+      // eslint-disable-next-line no-console
+      console.error('[CommonHelpers:addScript]', {
+        error,
+        url,
+        href,
+        baseURI,
+        target,
+        event,
+      });
+      // eslint-disable-next-line no-debugger
+      debugger;
+      reject(error);
+    });
     document.head.appendChild(script);
   });
 }
@@ -300,7 +320,27 @@ export function addCssStyle(url) {
     script.setAttribute('type', 'text/css');
     script.setAttribute('rel', 'stylesheet');
     script.addEventListener('load', resolve);
-    script.addEventListener('error', reject);
+    script.addEventListener('error', (event) => {
+      const {
+        target,
+        // srcElement,
+      } = event;
+      // @ts-ignore
+      const { href, baseURI } = target;
+      const error = new Error(`Cannot load css resurce by url '${url}'`);
+      // eslint-disable-next-line no-console
+      console.error('[CommonHelpers:addCssStyle]', {
+        error,
+        url,
+        href,
+        baseURI,
+        target,
+        event,
+      });
+      // eslint-disable-next-line no-debugger
+      debugger;
+      reject(error);
+    });
     document.head.appendChild(script);
   });
 }

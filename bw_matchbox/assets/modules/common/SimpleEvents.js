@@ -49,7 +49,7 @@ export class SimpleEvents {
    * @param {string} id
    * @param {any} [arg]
    */
-  invoke(id, arg) {
+  emit(id, arg) {
     const handlers = this.handlers[id];
     /** console.log('[SimpleEvents:invokeEvent]: start', {
      *   id,
@@ -60,7 +60,7 @@ export class SimpleEvents {
     if (!handlers) {
       /* // NOTE: No error
        * // Error if no event exist!
-       * const error = new Error('Trying to invoke absent event: ' + id);
+       * const error = new Error('Trying to emit absent event: ' + id);
        * // eslint-disable-next-line no-console
        * console.warn('[SimpleEvents:invokeEvent]: warning', error);
        * // throw error;
@@ -87,6 +87,7 @@ export class SimpleEvents {
         });
         // eslint-disable-next-line no-debugger
         debugger;
+        return this;
       }
     });
     return this;

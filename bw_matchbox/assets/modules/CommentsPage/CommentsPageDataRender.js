@@ -270,7 +270,7 @@ export const CommentsPageDataRender = {
 
   updateVisibleThreadsStatus() {
     const rootNode = CommentsPageNodes.getRootNode();
-    const threadsListNode = CommentsPageNodes.getThreadsListNode();
+    const threadsListNode = CommentsPageNodes.getThreadCommentsNode();
     const visibleThreadNodes = threadsListNode.querySelectorAll('.thread:not(.hidden)');
     const hasVisibleThreads = !!visibleThreadNodes.length;
     rootNode.classList.toggle('has-visible-threads', hasVisibleThreads);
@@ -278,7 +278,7 @@ export const CommentsPageDataRender = {
 
   // TODO: Is it used?
   clearRenderedData() {
-    const threadsListNode = CommentsPageNodes.getThreadsListNode();
+    const threadsListNode = CommentsPageNodes.getThreadCommentsNode();
     threadsListNode.replaceChildren();
   },
 
@@ -288,7 +288,7 @@ export const CommentsPageDataRender = {
    */
   renderData(opts = {}) {
     const { threads } = CommentsPageData;
-    const threadsListNode = CommentsPageNodes.getThreadsListNode();
+    const threadsListNode = CommentsPageNodes.getThreadCommentsNode();
     const content = threads.map(helpers.renderThread).join('\n');
     /* console.log('[CommentsPageDataRender:renderData]', {
      *   threadsListNode,
@@ -313,7 +313,7 @@ export const CommentsPageDataRender = {
 
   reorderRenderedThreads() {
     const { threads } = CommentsPageData;
-    const threadsListNode = CommentsPageNodes.getThreadsListNode();
+    const threadsListNode = CommentsPageNodes.getThreadCommentsNode();
     const threadNodes = threadsListNode.children;
     const threadNodesList = Array.from(threadNodes);
     const actualIds = threads.map(({ id }) => id);
@@ -345,7 +345,7 @@ export const CommentsPageDataRender = {
   /** clearAllHiddenThreadsComments -- Remove all rendered comments from hidden (non-expanded) threads */
   clearAllHiddenThreadsComments() {
     // const rootNode = CommentsPageNodes.getRootNode();
-    const threadsListNode = CommentsPageNodes.getThreadsListNode();
+    const threadsListNode = CommentsPageNodes.getThreadCommentsNode();
     const hiddenCommentNodes = threadsListNode.querySelectorAll(
       '.thread:not(.expanded) .comments.ready',
     );
@@ -418,7 +418,7 @@ export const CommentsPageDataRender = {
     // Remove all hidden threads comments blocks.
     this.clearAllHiddenThreadsComments();
     // Find all expanded threads...
-    const threadsListNode = CommentsPageNodes.getThreadsListNode();
+    const threadsListNode = CommentsPageNodes.getThreadCommentsNode();
     const visibleThreadNodes = threadsListNode.querySelectorAll('.thread:not(.hidden).expanded');
     /* console.log('[CommentsPageDataRender:rerenderAllVisibleComments]', {
      *   visibleThreadNodes,
