@@ -24,12 +24,16 @@ class CommentThread(peewee.Model):
 
     @property
     def reporter(self):
-        min_position = (
-            Comment.select(peewee.fn.Min(Comment.position))
-            .where(Comment.thread == self)
-            .scalar()
-        )
-        return Comment.get(position=min_position, thread=self).user
+        try:
+            min_position = (
+                Comment.select(peewee.fn.Min(Comment.position))
+                .where(Comment.thread == self)
+                .scalar()
+            )
+            return Comment.get(position=min_position, thread=self).user
+        except Exception as err:
+            print("Error:", err)
+            raise err
 
     def next_position(self):
         if not len(self):
