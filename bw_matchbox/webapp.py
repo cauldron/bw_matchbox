@@ -17,13 +17,9 @@ from peewee import DoesNotExist, IntegrityError, fn
 from werkzeug.security import check_password_hash, generate_password_hash
 
 from .comments import Comment, CommentThread
-from .matching import MATCH_TYPE_ABBREVIATIONS, get_match_types
 from .export import export_database_to_csv
-from .utils import (
-    name_close_enough,
-    normalize_name,
-    similar_location,
-)
+from .matching import MATCH_TYPE_ABBREVIATIONS, get_match_types
+from .utils import name_close_enough, normalize_name, similar_location
 
 BASE_DIR = Path(__file__).resolve().parent
 DATA_DIR = BASE_DIR / "data"
@@ -189,10 +185,10 @@ def format_process(obj_id):
     return {
         "id": node.id,
         "database": node["database"],
-        "name": node["name"],
-        "unit": node["unit"],
-        "location": node["location"],
-        "product": node["reference product"],
+        "name": node.get("name"),
+        "unit": node.get("unit"),
+        "location": node.get("location"),
+        "product": node.get("reference product"),
         "url": flask.url_for("process_detail", id=node.id),
     }
 
