@@ -244,7 +244,7 @@ def comments_create_thread():
             name=content["thread"]["name"], process_id=content["thread"]["process_id"]
         )
         Comment.create(thread=thread, content=content["comment"]["content"], user=content["comment"]["user"])
-        return flask.redirect(flask.url_for("/comments/read", thread=thread.id))
+        return flask.redirect(flask.url_for("comments_read", thread=thread.id))
     except (IntegrityError, KeyError):
         flask.abort(400)
 
