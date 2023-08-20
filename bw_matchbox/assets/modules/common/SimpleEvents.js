@@ -19,7 +19,15 @@ export class SimpleEvents {
    * @param {function} cb
    */
   add(id, cb) {
-    if (cb && typeof cb === 'function') {
+    if (!cb) {
+      const error = new Error(`Trying to add empty handler for event '${id}'`);
+      // eslint-disable-next-line no-console
+      console.warn('[SimpleEvents:add]', error);
+    } else if (typeof cb !== 'function') {
+      const error = new Error(`Trying to add non-function as a handler for event '${id}'`);
+      // eslint-disable-next-line no-console
+      console.warn('[SimpleEvents:add]', error);
+    } else {
       if (!this.handlers[id]) {
         this.handlers[id] = [];
       }
@@ -33,6 +41,7 @@ export class SimpleEvents {
    * @param {function} cb
    */
   remove(id, cb) {
+    // TODO: Check for attempts to remove absent handler?
     if (cb && typeof cb === 'function') {
       const handlers = this.handlers[id];
       if (handlers) {
