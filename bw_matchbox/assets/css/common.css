@@ -24,6 +24,7 @@
   --panels-layout-side-panel-width: 500px;
   --panels-layout-button-size: 32px;
   --panels-layout-actions-offset: 20px;
+  --minor-border-color: #eee;
 }
 
 /* Basic layout */
@@ -109,7 +110,7 @@
 /* Multicolumn process detail list */
 .details-list {
   column-gap: 20px;
-  column-rule: 1px solid #eee;
+  column-rule: 1px solid var(--minor-border-color);
   column-width: 300px;
   list-style-type: none;
   line-height: 1.3;
@@ -133,7 +134,7 @@
 /* Panels layout */
 /* TODO: Make width adaptive depending on the screen size? */
 .panels-layout-side.hidden {
-  visibility: hidden;
+  display: none;
 }
 
 /* Panels layout actions */
@@ -166,9 +167,22 @@
 .panels-layout .panels-layout-actions-button.turnaround.turned {
   transform: rotate(90deg);
 }
+.panels-layout-content {
+  margin: 20px auto;
+}
+.panels-layout-side:not(.hidden) {
+  border-bottom: 1px solid var(--minor-border-color);
+}
 
 /* TODO: To use vars for media queries? Eg, for `panels-layout-min-threshold`? */
-@media (width >= 700px) {
+@media (width >= 900px) {
+  .panels-layout-content {
+    margin: 20px;
+    width: auto;
+  }
+  .panels-layout-side {
+    border-bottom: none;
+  }
   .panels-layout {
     position: fixed;
     overflow: hidden;
@@ -182,7 +196,7 @@
   }
   .panels-layout-side.hidden,
   .panels-layout-side {
-    visibility: visible;
+    display: block;
   }
   .panels-layout-main,
   .panels-layout-side {
@@ -203,7 +217,7 @@
     opacity: 1;
   }
   .panels-layout-side:not(.hidden).panels-layout-right {
-    border-left: 1px solid #eee;
+    border-left: 1px solid var(--minor-border-color);
   }
   .panels-layout-side.hidden {
     opacity: 0;
@@ -211,9 +225,6 @@
   }
   .panels-layout-side.hidden.panels-layout-right {
     margin-right: calc(var(--panels-layout-side-panel-width) * -1);
-  }
-  .panels-layout-content {
-    margin: 20px;
   }
 
   .panels-layout .panels-layout-actions-button.turnaround {
