@@ -19,8 +19,6 @@ import { ThreadComments } from '../components/ThreadComments/ThreadComments.js';
  * @property {string} currentUser
  */
 
-/** @typedef {Record<string, function>} TSharedHandlers */
-
 /** @typedef TInitParams
  * @property {ThreadComments} threadComments
  * @property {TSharedHandlers} handlers

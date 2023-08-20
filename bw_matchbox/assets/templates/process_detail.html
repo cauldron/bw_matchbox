@@ -15,11 +15,11 @@
           <div class="tools">
             <div class="tools-wrapper">
               {% if ds.database == source and config.role == 'editors'  %}
-                <a id="mark-waitlist" class="tools-button {{ ' theme-primary' if not ds.get('waitlist') }}" onClick="ProcessDetailPage.markWaitlist(this)">{{ 'Waitlisted' if ds.waitlist else 'Waitlist' }}</a>
+                <a id="mark-waitlist" class="tools-button {{ ' theme-primary' if not ds.get('waitlist') }}" onClick="ProcessDetailPage.callbacks.markWaitlist(this)">{{ 'Waitlisted' if ds.waitlist else 'Waitlist' }}</a>
                 {% if not ds.matched %}
-                  <a id="manual-match" class="tools-button theme-primary" onClick="ProcessDetailPage.markMatched(this)">No match needed</a>
+                  <a id="manual-match" class="tools-button theme-primary" onClick="ProcessDetailPage.callbacks.markMatched(this)">No match needed</a>
                   {% if same_name_count %}
-                    <a id="manual-multi-match" class="tools-button theme-primary" onClick="ProcessDetailPage.markAllMatched(this)">Mark all matched</a>
+                    <a id="manual-multi-match" class="tools-button theme-primary" onClick="ProcessDetailPage.callbacks.markAllMatched(this)">Mark all matched</a>
                   {% endif %}
                   <a id="match-button" class="tools-button theme-primary" href="{{ url_for('match', source=ds.id)}}">Match</a>
                 {% else %}

@@ -144,7 +144,7 @@ export const CommentsPageStates = {
   start(params) {
     const { handlers, threadComments } = params;
     this.threadComments = threadComments;
-    // Addd all methods as bound handlers...
+    // Add all methods as bound handlers...
     Object.keys(this).forEach((key) => {
       const cb = this[key];
       if (cb && typeof cb === 'function' && key !== 'start') {
