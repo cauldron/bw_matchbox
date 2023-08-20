@@ -4,8 +4,9 @@ import * as CommonHelpers from '../common/CommonHelpers.js';
 
 /** @typedef TCreateParams
  * @property {boolean} isWaitlist
- * @property {string} currentUser
- * @property {string} currentRole
+ * @property {TUserName} currentUser
+ * @property {TUserRole} currentRole
+ * @property {TProcessId} currentProcess
  */
 
 /**
@@ -15,10 +16,12 @@ import * as CommonHelpers from '../common/CommonHelpers.js';
 export class ProcessDetailPageState {
   /** @type {boolean} */
   isWaitlist;
-  /** @type {string} */
+  /** @type {TUserName} */
   currentUser;
-  /** @type {string} */
+  /** @type {TUserRole} */
   currentRole;
+  /** @type {TProcessId} */
+  currentProcess;
 
   /** @param {TCreateParams} params */
   constructor(params) {
@@ -27,10 +30,12 @@ export class ProcessDetailPageState {
       isWaitlist,
       currentUser,
       currentRole,
+      currentProcess,
     } = params;
     this.isWaitlist = isWaitlist;
     this.currentUser = currentUser;
     this.currentRole = currentRole;
+    this.currentProcess = currentProcess;
   }
 
   /**

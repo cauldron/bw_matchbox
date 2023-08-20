@@ -4,7 +4,8 @@ class ProcessDetailPageState {
   setWaitlist: (isWaitlist: boolean) => void;
   setError: (error: string | Error | string[] | Error[]) => void;
   clearError: () => void;
-  currentUser: string;
-  currentRole: string;
+  currentUser: TUserName;
+  currentRole: TUserRole;
+  currentProcess?: TProcessId;
 }
 type TProcessDetailPageState = ProcessDetailPageState;

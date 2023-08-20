@@ -185,6 +185,7 @@
     isWaitlist: {{ 'true' if ds.waitlist else 'false' }},
     currentRole: '{{ config.role }}',
     currentUser: '{{ config.user }}',
+    currentProcess: {{ ds.id }},
   };
 
   // Export to global scope (to access from generated html code handlers).

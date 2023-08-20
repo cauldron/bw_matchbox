@@ -13,6 +13,8 @@ export const ThreadCommentsData = {
 
   // Shared params...
 
+  /** @type {number} */
+  currentProcess: undefined,
   /** @type {string} */
   currentUser: undefined,
   /** @type {string} */

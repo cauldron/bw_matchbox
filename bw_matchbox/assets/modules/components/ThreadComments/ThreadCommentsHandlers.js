@@ -1,6 +1,5 @@
 // @ts-check
 
-import { commonModal } from '../../common/CommonModal.js';
 import { commonNotify } from '../../common/CommonNotify.js';
 
 import * as ThreadCommentsConstants from './ThreadCommentsConstants.js';
@@ -9,6 +8,7 @@ import { ThreadCommentsRender } from './ThreadCommentsRender.js';
 import { ThreadCommentsHelpers } from './ThreadCommentsHelpers.js';
 import { ThreadCommentsNodes } from './ThreadCommentsNodes.js';
 import { ThreadCommentsStates } from './ThreadCommentsStates.js';
+import { CommentModalDialog } from './CommentModalDialog.js';
 
 /** @typedef TApiHandlerParams
  * @property {HTMLElement} node
@@ -17,79 +17,8 @@ import { ThreadCommentsStates } from './ThreadCommentsStates.js';
  * @property {TThreadId} threadId
  */
 
-const commentModal = {
-  getCommentModalContent() {
-    const content = `
-          <div class="comment-modal-form">
-            <label for="comment-modal-text">Comment</label>
-            <textarea class="u-full-width" id="comment-modal-text" name="comment-modal-text"></textarea>
-          </div>
-          <div class="comment-modal-actions">
-            <button class="button-primary" id="comment-modal-ok">Ok</button>
-            <button id="comment-modal-cancel">Cancel</button>
-          </div>
-        `;
-    return content;
-  },
-
-  /** promiseCommentModal -- Show dialog with editable comment text and wait for action
-   * @return {Promise}
-   */
-  promiseCommentModal() {
-    return new Promise((resolve, _reject) => {
-      const title = 'Enter comment text';
-      const content = this.getCommentModalContent();
-      let isOpened = true;
-      commonModal.ensureInit().then(() => {
-        commonModal
-          .setModalContentId('comment-dialog-modal')
-          .setTitle(title)
-          .setModalWindowOptions({
-            autoHeight: true,
-            width: 'md',
-          })
-          .setModalContentOptions({
-            scrollable: true,
-            padded: true,
-          })
-          .setContent(content)
-          .onHide(() => {
-            // It will be called on modal close...
-            if (isOpened) {
-              isOpened = false;
-              // Don't proceed the operation!
-              resolve(false);
-            }
-          })
-          .showModal();
-        // Store comment value...
-        const modalNode = commonModal.getModalNode();
-        /** @type {HTMLButtonElement} */
-        const okButtonEl = modalNode.querySelector('button#comment-modal-ok');
-        /** @type {HTMLInputElement} */
-        const commentTextEl = modalNode.querySelector('textarea#comment-modal-text');
-        commentTextEl.focus();
-        // TODO: Add handlers for modal actions
-        okButtonEl.addEventListener('click', () => {
-          if (isOpened) {
-            isOpened = false;
-            commonModal.hideModal({ dontNotify: true });
-            // Success: proceed with comment text
-            const comment = commentTextEl.value;
-            const userAction = { comment, status: 'comment from promiseCommentModal' };
-            resolve(userAction);
-          }
-        });
-        document
-          .getElementById('comment-modal-cancel')
-          .addEventListener('click', commonModal.getBoundHideModal());
-      });
-    });
-  },
-};
-
 const apiHandlers = {
-  /** Actual comment api request
+  /** Actual request for adding new comment
    * @param {TApiHandlerParams} params
    * @param {string} comment - Comment text to append
    * @return {Promise}
@@ -222,6 +151,150 @@ const apiHandlers = {
     );
   },
 
+  /** Actual request for adding new comment
+   * @param {TApiHandlerParams} params
+   * @param {string} name - New thread name
+   * @param {string} comment - Comment text to append
+   * @return {Promise}
+   */
+  addNewThreadRequest(params, name, comment) {
+    // TODO: Move to Loader/Api?
+    // TODO: Check roles for editors, reviewers?
+    const { addNewThreadApiUrl: urlBase } = ThreadCommentsConstants;
+    const { threadId, threadNode } = params;
+    const { threadsHash, currentUser, currentProcess } = ThreadCommentsData;
+    const thread = threadsHash[threadId];
+    const requestParams = {
+      /* // @matchbox_app.route("/comments/create-thread", methods=["POST"])
+       * 'thread': {
+       *     'name': string,
+       *     'process_id': integer,
+       * },
+       * 'comment': {
+       *     'content': string,
+       *     'user': string,
+       * }
+       */
+      thread: {
+        name,
+        process_id: currentProcess,
+      },
+      comment: {
+        content: comment,
+        user: currentUser,
+      },
+    };
+    const fetchParams = {
+      headers: {
+        Accept: 'application/json',
+        'Content-Type': 'application/json',
+      },
+      method: 'POST',
+      body: JSON.stringify(requestParams),
+    };
+    const url = urlBase;
+    console.log('[ThreadCommentsHandlers:apiHandlers:addNewThreadRequest]: start', {
+      threadId,
+      thread,
+      params,
+      threadsHash,
+      fetchParams,
+      requestParams,
+      urlBase,
+      url,
+    });
+    debugger;
+    ThreadCommentsStates.setLoading(true);
+    return (
+      fetch(url, fetchParams)
+        .then((res) => {
+          const { ok, status, statusText } = res;
+          if (!ok) {
+            // Something went wrong?
+            const reason =
+              [statusText, status && 'status: ' + status].filter(Boolean).join(', ') ||
+              'Unknown error';
+            const error = new Error('Data loading error: ' + reason);
+            // eslint-disable-next-line no-console
+            console.error('[ThreadCommentsHandlers:apiHandlers:addNewThreadRequest]: error', {
+              reason,
+              res,
+              url,
+              params,
+              urlBase,
+            });
+            // eslint-disable-next-line no-debugger
+            debugger;
+            throw error;
+          }
+          // All is ok...
+          return res.json();
+        })
+        /**
+         * @param {TComment} comment
+         */
+        .then((comment) => {
+          const { id: commentId } = comment;
+          const { comments, threads, commentsHash, commentsByThreads } = ThreadCommentsData;
+          // Update thread modified date (manually!)
+          const currDate = new Date();
+          const currDateStr = currDate.toUTCString();
+          // Update data...
+          thread.modified = currDateStr;
+          // Add comment to list (`comments`) and update hashes (`commentsByThreads`) ...
+          comments.push(comment);
+          commentsByThreads[threadId].push(commentId);
+          commentsHash[commentId] = comment;
+          // Sort comments...
+          comments.sort(ThreadCommentsHelpers.sortCommentsCompare);
+          ThreadCommentsHelpers.sortThreads(threads);
+          // Update content...
+          const threadTitleTextNode = threadNode.querySelector('.title-text');
+          const threadTitleTextContent =
+            ThreadCommentsRender.helpers.createThreadTitleTextContent(thread);
+          /* console.log('[ThreadCommentsHandlers:apiHandlers:addNewThreadRequest]: done', {
+           *   commentId,
+           *   comment,
+           *   commentsHash,
+           *   commentsByThreads,
+           *   thread,
+           *   threadId,
+           *   currDate,
+           *   currDateStr,
+           *   threadTitleTextNode,
+           *   threadTitleTextContent,
+           * });
+           */
+          // Update data & elements' states...
+          threadTitleTextNode.innerHTML = threadTitleTextContent;
+          // ThreadCommentsRender.renderData();
+          ThreadCommentsRender.updateThreadComments(threadId);
+          ThreadCommentsRender.updateVisibleThreads();
+          ThreadCommentsHelpers.sortThreads(threads);
+          ThreadCommentsRender.reorderRenderedThreads();
+          // Show noitification...
+          commonNotify.showSuccess('Comment successfully added');
+        })
+        .catch((error) => {
+          // eslint-disable-next-line no-console
+          console.error('[ThreadCommentsHandlers:apiHandlers:addNewThreadRequest]: catched', {
+            error,
+            url,
+            params,
+            urlBase,
+          });
+          // eslint-disable-next-line no-debugger
+          debugger;
+          // Store & display error...
+          ThreadCommentsStates.setError(error);
+          commonNotify.showError(error);
+        })
+        .finally(() => {
+          ThreadCommentsStates.setLoading(false);
+        })
+    );
+  },
+
   /** Start adding comment (show comment text dialog
    * @param {TApiHandlerParams} params
    * @return {Promise}
@@ -233,14 +306,16 @@ const apiHandlers = {
       commonNotify.showError(`This role (${role}) hasn't allowed to add comments`);
       return;
     }
+    const commentModalDialog = new CommentModalDialog();
     // Show comment text form modal first and wait for user action...
-    return commentModal.promiseCommentModal().then((userAction) => {
+    return commentModalDialog.promiseCommentModal().then((userAction) => {
       if (!userAction) {
         // Comment edition canceled
         return false;
       }
       // Make api request...
       const { comment } = userAction;
+      // TODO
       return apiHandlers.threadAddCommentRequest(params, comment);
     });
   },
@@ -369,6 +444,32 @@ const apiHandlers = {
         ThreadCommentsStates.setLoading(false);
       });
   },
+
+  /** threadResolve -- Set resolved status for thread (called from `handleTitleActionClick` by literal id: `apiHandlers[id]`)
+   * @param {TApiHandlerParams} params
+   * @return {Promise}
+   */
+  addNewThread(params) {
+    const { role } = ThreadCommentsData;
+    // Check roles...
+    if (role !== 'editors' && role !== 'reviewers') {
+      commonNotify.showError(`This role (${role}) hasn't allowed to add comments`);
+      return;
+    }
+    const commentModalDialog = new CommentModalDialog();
+    // Show comment text form modal first and wait for user action...
+    return commentModalDialog
+      .promiseCommentModal({ title: 'Add new thread', useName: true })
+      .then((userAction) => {
+        if (!userAction) {
+          // Comment edition canceled
+          return false;
+        }
+        // Make api request...
+        const { comment, name } = userAction;
+        return apiHandlers.addNewThreadRequest(params, name, comment);
+      });
+  },
 };
 
 export const ThreadCommentsHandlers = /** @lends ThreadCommentsHandlers */ {
@@ -385,8 +486,10 @@ export const ThreadCommentsHandlers = /** @lends ThreadCommentsHandlers */ {
     // const isThreadAction = actionId.startsWith('thread');
     /** @type {HTMLDivElement} */
     const threadNode = node.closest('.thread');
-    /** @type {TThreadId} */
-    const threadId = Number(threadNode.getAttribute('data-thread-id'));
+    /** @type {string | undefined} */
+    const threadIdValue = threadNode && threadNode.getAttribute('data-thread-id');
+    /** @type {TThreadId | undefined} */
+    const threadId = threadIdValue != undefined ? Number(threadIdValue) : undefined;
     /** @type {TApiHandlerParams} */
     const params = {
       node,
@@ -398,18 +501,21 @@ export const ThreadCommentsHandlers = /** @lends ThreadCommentsHandlers */ {
     try {
       if (!func) {
         const error = new Error(`Cannot find api handler for action id '${actionId}'`);
+        // eslint-disable-next-line no-console
+        console.error('[ThreadCommentsHandlers:handleTitleActionClick]', error);
+        // eslint-disable-next-line no-debugger
+        debugger;
         throw error;
       }
-      /* console.log('[ThreadCommentsHandlers:handleTitleActionClick]', actionId, {
-       *   actionId,
-       *   func,
-       *   node,
-       *   event,
-       *   // isThreadAction,
-       *   threadNode,
-       *   threadId,
-       * });
-       */
+      console.log('[ThreadCommentsHandlers:handleTitleActionClick]', actionId, {
+        actionId,
+        func,
+        node,
+        event,
+        // isThreadAction,
+        threadNode,
+        threadId,
+      });
       func(params);
     } catch (error) {
       // eslint-disable-next-line no-console

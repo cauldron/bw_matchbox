@@ -53,17 +53,22 @@ export class ProcessDetailPageInit {
       if (this.threadCommentsInitPromise) {
         return this.threadCommentsInitPromise;
       }
-      const { currentUser, currentRole } = state;
+      const { currentUser, currentRole, currentProcess } = state;
       const threadCommentsNode = this.nodes.getThreadCommentsNode();
       // Init comments module parameters
-      this.threadComments.setParams(
+      threadComments.setParams(
         /** @type {TThreadCommentsParams} */ {
           rootNode: threadCommentsNode,
+          currentProcess,
           currentUser,
           role: currentRole,
           // noTableau: true,
           // noLoader: true,
           // noError: true,
+          noActions: false,
+          disableAddNewThread: false,
+          disableAddThreadComment: true,
+          disableThreadResolve: true,
         },
       );
       // Init sub-components...

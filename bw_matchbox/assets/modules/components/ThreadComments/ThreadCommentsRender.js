@@ -2,8 +2,8 @@
 
 import * as CommonConstants from '../../common/CommonConstants.js';
 import * as CommonHelpers from '../../common/CommonHelpers.js';
+import { commonNotify } from '../../common/CommonNotify.js';
 
-// import * as ThreadCommentsConstants from './ThreadCommentsConstants.js';
 import { ThreadCommentsData } from './ThreadCommentsData.js';
 import { ThreadCommentsNodes } from './ThreadCommentsNodes.js';
 import { ThreadCommentsHelpers } from './ThreadCommentsHelpers.js';
@@ -251,6 +251,7 @@ export const ThreadCommentsRender = {
       });
       // eslint-disable-next-line no-debugger
       debugger;
+      commonNotify.showError(errorText);
     }
     // Update (or clear) error block content...
     errorNode.innerHTML = errorText;

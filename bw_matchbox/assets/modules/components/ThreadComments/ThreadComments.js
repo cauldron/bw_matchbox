@@ -114,17 +114,27 @@ export class ThreadComments {
     const {
       // Parameters..
       rootNode,
+      currentProcess,
       currentUser,
       role,
       noTableau,
       noLoader,
       noError,
+      noActions,
+      disableAddNewThread,
+      disableAddThreadComment,
+      disableThreadResolve,
     } = params;
     ThreadCommentsNodes.setRootNode(rootNode);
     ThreadCommentsStates.setRole(role);
+    ThreadCommentsData.currentProcess = currentProcess; // Optional
     ThreadCommentsData.currentUser = currentUser;
     rootNode.classList.toggle('noTableau', !!noTableau);
     rootNode.classList.toggle('noLoader', !!noLoader);
     rootNode.classList.toggle('noError', !!noError);
+    rootNode.classList.toggle('noActions', !!noActions);
+    rootNode.classList.toggle('disableAddNewThread', !!disableAddNewThread);
+    rootNode.classList.toggle('disableAddThreadComment', !!disableAddThreadComment);
+    rootNode.classList.toggle('disableThreadResolve', !!disableThreadResolve);
   }
 }

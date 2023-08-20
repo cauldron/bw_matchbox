@@ -1,4 +1,4 @@
-/* stylelint-disable selector-id-pattern */
+/* stylelint-disable selector-id-pattern, selector-class-pattern */
 
 :root {
   --comments-expand-button-size: 24px;
@@ -159,21 +159,19 @@
   margin-right: -2px;
 }
 /* Disable some actions */
-.thread-comments:not(.role-editors, .role-reviewers)
-  .threads-list
-  .thread
-  .title-actions
-  a#threadAddComment,
-.thread-comments:not(.role-editors) .threads-list .thread .title-actions a#threadResolve {
+.thread-comments.disableThreadResolve .title-actions a#threadResolve,
+.thread-comments.disableAddThreadComment .title-actions a#threadAddComment,
+.thread-comments:not(.role-editors, .role-reviewers) .title-actions a#threadAddComment,
+.thread-comments:not(.role-editors) .title-actions a#threadResolve {
   display: none;
 }
-.thread-comments .threads-list .thread .title-actions {
+.thread-comments .title-actions {
   align-self: flex-start;
   display: flex;
   justify-content: flex-end;
   gap: 2px;
 }
-.thread-comments .threads-list .thread .title-actions a {
+.thread-comments .title-actions a {
   font-size: 0.9em;
   display: flex;
   justify-content: center;
@@ -183,25 +181,23 @@
   border-radius: 4px;
   opacity: 0.5;
 }
-.thread-comments .threads-list .thread .title-actions a.disabled {
+.thread-comments .title-actions a.disabled {
   color: #ddd;
-  opacity: 0.5;
   cursor: default;
 }
-.thread-comments .threads-list .thread .title-actions a:not(.disabled) {
+.thread-comments .title-actions a:not(.disabled) {
   color: #bbb;
   transition: all var(--common-animation-time);
-  opacity: 0.5;
   cursor: pointer;
 }
-.thread-comments .threads-list .thread:hover .title-actions a:not(.disabled) {
+.thread-comments .thread:hover .title-actions a:not(.disabled) {
   color: var(--layout-theme-primary-color);
 }
-.thread-comments .threads-list .thread .title-actions a:not(.disabled):active,
-.thread-comments .threads-list .thread .title-actions a:not(.disabled):hover {
+.thread-comments .title-actions a:not(.disabled):active,
+.thread-comments .title-actions a:not(.disabled):hover {
   opacity: 1;
 }
-.thread-comments .threads-list .thread .title-actions a:not(.disabled):active {
+.thread-comments .title-actions a:not(.disabled):active {
   background-color: var(--layout-theme-primary-color);
   box-shadow: 0 0 4px 2px var(--layout-theme-primary-color);
   color: #fff;

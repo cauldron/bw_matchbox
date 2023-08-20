@@ -77,6 +77,8 @@ export class ThreadCommentsInit {
       ThreadCommentsStates.init(initParams);
       ThreadCommentsHandlers.init(initParams);
 
+      this.initDomNodeActions();
+
       // Finish initialization stage...
       this.initChunks.finishChunk('component');
     }
@@ -108,12 +110,25 @@ export class ThreadCommentsInit {
   getDomNodeContent() {
     return `
       <div id="threads-list-tableau" class="threads-list-tableau">
+        <div id="threads-list-actions" class="threads-list-actions">
+          <a id="addNewThread" title="Add new thread"><i class="fa fa-plus"></i></a>
+        </div>
         <div id="threads-list-error" class="error"><!-- Error text comes here --></div>
         <div id="loader-splash" class="loader-splash full-cover bg-white"><div class="loader-spinner"></div></div>
       </div>
       <div id="threads-list-empty" class="threads-list-empty">No avaialable comment threads</div>
       <div id="threads-list" class="threads-list"><!-- List placeholder --></div>
     `;
+  }
+
+  initDomNodeActions() {
+    const rootNode = ThreadCommentsNodes.getRootNode();
+    const { handlers } = this;
+    const { handleTitleActionClick } = handlers;
+    const actionElems = rootNode.querySelectorAll('.threads-list-actions a');
+    actionElems.forEach((elem) => {
+      elem.addEventListener('click', handleTitleActionClick);
+    });
   }
 
   initDomNode() {

@@ -7,4 +7,5 @@ interface TSharedParams {
   isWaitlist: boolean;
   currentRole: string;
   currentUser: string;
+  currentProcess: number;
 }

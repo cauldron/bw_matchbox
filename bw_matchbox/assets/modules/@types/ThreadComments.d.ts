@@ -1,10 +1,15 @@
 interface TThreadCommentsParams {
   rootNode: Element;
+  currentProcess?: number;
   currentUser: string;
   role: string;
   noTableau?: boolean; // Do not show tableau block
   noLoader?: boolean; // Do not show inner loader
   noError?: boolean; // Do not show inner error block
+  noActions?: boolean;
+  disableAddNewThread?: boolean;
+  disableAddThreadComment?: boolean;
+  disableThreadResolve?: boolean;
 }
 
 interface TThreadCommentsSetFilterOpts {
