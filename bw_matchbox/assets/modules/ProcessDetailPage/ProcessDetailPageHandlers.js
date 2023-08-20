@@ -1,45 +1,41 @@
 // @ts-check
 
 import * as CommonHelpers from '../common/CommonHelpers.js';
-// import { commonModal } from '../common/CommonModal.js';
 
-import * as ProcessDetailPageHelpers from './ProcessDetailPageHelpers.js';
 import { WaitlistCommentDialog } from './WaitlistCommentDialog.js';
-// import { ProcessDetailPageState } from './ProcessDetailPageState.js';
 
 /** @typedef TCreateParams
  * @property {TProcessDetailPageState} state
+ * @property {TProcessDetailPageNodes} nodes
  * @property {TSharedHandlers} callbacks
  * @property {TSharedParams} sharedParams
  */
 
+/**
+ * @class ProcessDetailPageHandlers
+ */
 export class ProcessDetailPageHandlers {
-  /** External data...
-   * @type {TSharedParams}
-   */
-  sharedParams = undefined; // Initializing in `ProcessDetailPage.start` from `bw_matchbox/assets/templates/process_detail.html`
-  /*
-   * [>* @type {TSharedHandlers} <]
-   * callbacks = undefined;
-   * [>* @type {TThreadComments} <]
-   * threadComments = undefined;
-   */
-
+  /** @type {TSharedParams} */
+  sharedParams;
   /** @type {TProcessDetailPageState} */
-  state = undefined;
+  state;
+  /** @type {TProcessDetailPageNodes} */
+  nodes;
 
   /** @param {TCreateParams} params */
   constructor(params) {
     const {
       // prettier-ignore
       state,
+      nodes,
       sharedParams,
       callbacks,
     } = params;
     this.state = state;
+    this.nodes = nodes;
     this.sharedParams = sharedParams;
     this.callbacks = callbacks;
-    ProcessDetailPageHelpers.exportCallbacksFromInstance(callbacks, this);
+    CommonHelpers.exportCallbacksFromInstance(callbacks, this);
   }
 
   // Handlers...
@@ -69,7 +65,7 @@ export class ProcessDetailPageHandlers {
     // Run callbacks one by one...
     try {
       const resList = await CommonHelpers.runAsyncCallbacksSequentially(callbacks);
-      const errorsList = ProcessDetailPageHelpers.processMultipleRequestErrors(resList);
+      const errorsList = CommonHelpers.processMultipleRequestErrors(resList);
       if (errorsList.length) {
         // Some errors?
         // eslint-disable-next-line no-console
@@ -114,7 +110,7 @@ export class ProcessDetailPageHandlers {
     // Run callbacks one by one...
     try {
       const resList = await CommonHelpers.runAsyncCallbacksSequentially(callbacks);
-      const errorsList = ProcessDetailPageHelpers.processMultipleRequestErrors(resList);
+      const errorsList = CommonHelpers.processMultipleRequestErrors(resList);
       if (errorsList.length) {
         // Some errors?
         // eslint-disable-next-line no-console
@@ -167,5 +163,20 @@ export class ProcessDetailPageHandlers {
       .finally(() => {
         this.state.setLoading(false);
       });
+  }
+
+  toggleCommentsPanel() {
+    const { nodes, callbacks } = this;
+    const layoutNode = nodes.getLayoutNode();
+    const panel = layoutNode.querySelector('#thread-comments-panel');
+    const button = layoutNode.querySelector('#toggle-side-panel-button');
+    const hasPanel = layoutNode.classList.contains('has-panel');
+    const showPanel = !hasPanel;
+    layoutNode.classList.toggle('has-panel', showPanel);
+    button.classList.toggle('turned', showPanel);
+    panel.classList.toggle('hidden', !showPanel);
+    if (showPanel) {
+      callbacks.ensureThreadComments();
+    }
   }
 }

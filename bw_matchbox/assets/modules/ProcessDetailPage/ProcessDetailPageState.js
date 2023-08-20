@@ -4,34 +4,33 @@ import * as CommonHelpers from '../common/CommonHelpers.js';
 
 /** @typedef TCreateParams
  * @property {boolean} isWaitlist
+ * @property {string} currentUser
+ * @property {string} currentRole
  */
 
 /**
  * @class ProcessDetailPageState
- * @implements {ProcessDetailPageState}
+ * @implements {TProcessDetailPageState}
  */
 export class ProcessDetailPageState {
-  /*
-   * [>* External data...
-   *  * @type {TSharedParams}
-   *  <]
-   * sharedParams = undefined; // Initializing in `ProcessDetailPage.start` from `bw_matchbox/assets/templates/process_detail.html`
-   * [>* @type {TSharedHandlers} <]
-   * callbacks = undefined;
-   * [>* @type {TThreadComments} <]
-   * threadComments = undefined;
-   */
-
   /** @type {boolean} */
-  isWaitlist = undefined;
+  isWaitlist;
+  /** @type {string} */
+  currentUser;
+  /** @type {string} */
+  currentRole;
 
   /** @param {TCreateParams} params */
   constructor(params) {
     const {
       // prettier-ignore
       isWaitlist,
+      currentUser,
+      currentRole,
     } = params;
     this.isWaitlist = isWaitlist;
+    this.currentUser = currentUser;
+    this.currentRole = currentRole;
   }
 
   /**

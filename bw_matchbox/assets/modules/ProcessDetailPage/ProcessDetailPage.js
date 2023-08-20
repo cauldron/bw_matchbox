@@ -1,63 +1,76 @@
 // @ts-check
 
-import * as CommonHelpers from '../common/CommonHelpers.js';
-import { commonModal } from '../common/CommonModal.js';
+// import * as CommonHelpers from '../common/CommonHelpers.js';
+// import { commonModal } from '../common/CommonModal.js';
 // import { commonNotify } from '../common/CommonNotify.js';
 
 import { ThreadComments } from '../components/ThreadComments/ThreadComments.js';
 
-import * as ProcessDetailPageHelpers from './ProcessDetailPageHelpers.js';
+// import * as ProcessDetailPageHelpers from './ProcessDetailPageHelpers.js';
 import { ProcessDetailPageState } from './ProcessDetailPageState.js';
+import { ProcessDetailPageInit } from './ProcessDetailPageInit.js';
 import { ProcessDetailPageHandlers } from './ProcessDetailPageHandlers.js';
+import { ProcessDetailPageNodes } from './ProcessDetailPageNodes.js';
 
-export const ProcessDetailPage = {
+export class ProcessDetailPage {
   /** External data...
    * @type {TSharedParams}
    */
-  sharedParams: undefined, // Initializing in `ProcessDetailPage.start` from `bw_matchbox/assets/templates/process_detail.html`
+  sharedParams = undefined;
 
   /** Handlers exchange object
    * @type {TSharedHandlers}
    */
-  callbacks: {},
+  callbacks = {};
 
   /** @type {TThreadComments} */
-  threadComments: undefined,
+  threadComments = undefined;
 
   /** @type {ProcessDetailPageState} */
-  state: undefined,
+  state = undefined;
+
+  /** @type {ProcessDetailPageNodes} */
+  nodes = undefined;
+
+  /** @type {ProcessDetailPageInit} */
+  init = undefined;
 
   /**
    * @param {TSharedParams} sharedParams
    */
-  start(sharedParams) {
+  constructor(sharedParams) {
+    /* // (Optional) Pre-initialize common submodules...
+     * commonModal.preInit();
+     * commonNotify.preInit();
+     */
+
     // Save public data...
     this.sharedParams = sharedParams;
+
+    // Create ThreadComments component...
     const threadComments = new ThreadComments('ProcessDetailPage');
     this.threadComments = threadComments;
 
     const { callbacks } = this;
 
-    /*
-     * [>* @type {TInitParams} <]
-     * const initParams = {
-     *   callbacks,
-     *   threadComments,
-     *   sharedParams,
-     * };
-     */
+    const { isWaitlist, currentUser, currentRole } = sharedParams;
 
-    const { isWaitlist } = sharedParams;
+    const nodes = (this.nodes = new ProcessDetailPageNodes());
+    const state = (this.state = new ProcessDetailPageState({
+      isWaitlist,
+      currentUser,
+      currentRole,
+    }));
+    this.init = new ProcessDetailPageInit({
+      callbacks,
+      threadComments,
+      state,
+      nodes,
+    });
+    this.handlers = new ProcessDetailPageHandlers({ sharedParams, callbacks, state, nodes });
 
-    this.state = new ProcessDetailPageState({ isWaitlist });
-    this.handlers = new ProcessDetailPageHandlers({ sharedParams, callbacks, state: this.state });
-
-    /* // (Optional) Pre-initialize submodules...
-     * commonModal.preInit();
-     * commonNotify.preInit();
-     */
-    /* // DEBUG: Test notify
-     * commonNotify.showInfo('test');
-     */
-  },
-};
+    // Set initialized class...
+    const layoutNode = nodes.getLayoutNode();
+    layoutNode.classList.toggle('inited', true);
+  }
+}

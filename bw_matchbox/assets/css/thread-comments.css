@@ -6,7 +6,7 @@
 
 .thread-comments .threads-list-tableau {
   position: relative;
-  min-height: 80px; /* Ensure space for loading splash */
+  min-height: 40px; /* Ensure space for loading splash */
 }
 .thread-comments.noTableau .threads-list-tableau {
   display: none;

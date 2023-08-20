@@ -11,7 +11,7 @@ export const ThreadCommentsNodes = {
    */
   setRootNode(rootNode) {
     if (!rootNode) {
-      const error = new Error('Trying to set undefined root node');
+      const error = new Error('Passed undefined root node');
       // eslint-disable-next-line no-console
       console.error('[ThreadCommentsNodes:setRootNode]: error', error);
       // eslint-disable-next-line no-debugger

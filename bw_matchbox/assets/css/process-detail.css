@@ -1,14 +1,21 @@
 /* Basic styles */
-.process-detail {
-  /* Animation... */
+.panels-layout.process-detail-layout > *,
+.process-detail > * {
   transition: all var(--common-animation-time);
+}
+
+.process-detail {
   position: relative;
+}
+
+/* Inited */
+.panels-layout.process-detail-layout:not(.inited) .panels-layout-actions {
+  opacity: 0;
 }
 
 /* Info section */
 .process-detail .info-tableau {
   position: relative;
-  /* margin: 10px 0; */
   transition: all var(--common-animation-time);
   min-height: 0;
 }

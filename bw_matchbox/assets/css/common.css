@@ -20,6 +20,10 @@
   --common-table-cell-location-width: 12em;
   --common-table-cell-unit-width: 5em;
   --common-table-cell-matched-width: 8em;
+  /** Side panels */
+  --panels-layout-side-panel-width: 500px;
+  --panels-layout-button-size: 32px;
+  --panels-layout-actions-offset: 20px;
 }
 
 /* Basic layout */
@@ -124,4 +128,98 @@
   display: inline;
   opacity: 0.5;
   font-weight: normal;
+}
+
+/* Panels layout */
+/* TODO: Make width adaptive depending on the screen size? */
+.panels-layout-side.hidden {
+  visibility: hidden;
+}
+
+/* Panels layout actions */
+.panels-layout .panels-layout-actions {
+  position: fixed;
+  right: var(--panels-layout-actions-offset);
+  top: var(--panels-layout-actions-offset);
+  display: flex;
+  gap: 4px;
+}
+.panels-layout .panels-layout-actions-button {
+  width: var(--panels-layout-button-size);
+  height: var(--panels-layout-button-size);
+  border-radius: 50%;
+  background-color: var(--layout-theme-primary-color);
+  color: #fff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: all var(--common-animation-time);
+  opacity: 0.5;
+}
+.panels-layout .panels-layout-actions-button:hover {
+  opacity: 1;
+}
+.panels-layout .panels-layout-actions-button.turnaround {
+  transform: rotate(-90deg);
+}
+.panels-layout .panels-layout-actions-button.turnaround.turned {
+  transform: rotate(90deg);
+}
+
+/* TODO: To use vars for media queries? Eg, for `panels-layout-min-threshold`? */
+@media (width >= 700px) {
+  .panels-layout {
+    position: fixed;
+    overflow: hidden;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    display: flex;
+    align-items: stretch;
+    flex-direction: row-reverse;
+  }
+  .panels-layout-side.hidden,
+  .panels-layout-side {
+    visibility: visible;
+  }
+  .panels-layout-main,
+  .panels-layout-side {
+    overflow: auto;
+    box-sizing: border-box;
+    position: relative;
+  }
+  .panels-layout-main {
+    overflow: auto;
+    width: auto;
+    padding: 0 20px;
+    flex: 1;
+  }
+  .panels-layout-side {
+    transition: all 1s;
+    width: var(--panels-layout-side-panel-width);
+    flex-shrink: 0;
+    opacity: 1;
+  }
+  .panels-layout-side:not(.hidden).panels-layout-right {
+    border-left: 1px solid #eee;
+  }
+  .panels-layout-side.hidden {
+    opacity: 0;
+    pointer-events: none;
+  }
+  .panels-layout-side.hidden.panels-layout-right {
+    margin-right: calc(var(--panels-layout-side-panel-width) * -1);
+  }
+  .panels-layout-content {
+    margin: 20px;
+  }
+
+  .panels-layout .panels-layout-actions-button.turnaround {
+    transform: rotate(0deg);
+  }
+  .panels-layout .panels-layout-actions-button.turnaround.turned {
+    transform: rotate(180deg);
+  }
 }

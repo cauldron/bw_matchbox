@@ -5,4 +5,6 @@ interface TSharedParams {
   markAllMatchedUrl: string;
   multimatch: string;
   isWaitlist: boolean;
+  currentRole: string;
+  currentUser: string;
 }
