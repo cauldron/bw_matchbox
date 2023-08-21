@@ -327,6 +327,27 @@ export const ThreadCommentsHandlers = /** @lends ThreadCommentsHandlers */ {
     return apiHandlers.addNewThread();
   },
 
+  /** @param {TThreadCommentsViewParams} viewParams */
+  setViewParams(viewParams) {
+    const { defaultViewParams } = ThreadCommentsData;
+    const objs = [ThreadCommentsData, defaultViewParams];
+    const keys = Object.keys(viewParams);
+    /* console.log('[ThreadComments:setViewParams]', {
+     *   keys,
+     *   viewParams,
+     *   objs,
+     * });
+     */
+    // Set all the params...
+    keys.forEach((key) => {
+      const val = viewParams[key];
+      const setVal = Array.isArray(val) ? [...val] : typeof val === 'object' ? { ...val } : val;
+      objs.forEach((obj) => {
+        obj[key] = setVal;
+      });
+    });
+  },
+
   init({ handlers }) {
     // Export all methods as external handlers...
     CommonHelpers.exportCallbacksFromObject(handlers, this);

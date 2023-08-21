@@ -7,6 +7,7 @@ import { ThreadCommentsStates } from './ThreadCommentsStates.js';
 import { ThreadCommentsRender } from './ThreadCommentsRender.js';
 import { ThreadCommentsHandlers } from './ThreadCommentsHandlers.js';
 
+/** @implements {TThreadComments} */
 export class ThreadComments {
   /** @type {ThreadCommentsInit} */
   threadCommentsInit = undefined;
@@ -22,9 +23,9 @@ export class ThreadComments {
   /** @type {TEvents} */
   events = undefined;
 
-  // TODO: handlers, state, data, events
+  // TODO: state, data?
 
-  /** External API...
+  /** External API (alternate way, basic handlers are in `handlers` object (above)...
    * @type {TThreadCommentsApi}
    */
   api = {
@@ -129,6 +130,7 @@ export class ThreadComments {
     ThreadCommentsStates.setRole(role);
     ThreadCommentsData.currentProcess = currentProcess; // Optional
     ThreadCommentsData.currentUser = currentUser;
+    // TODO: To duplicate those properties in the state?
     rootNode.classList.toggle('noTableau', !!noTableau);
     rootNode.classList.toggle('noLoader', !!noLoader);
     rootNode.classList.toggle('noError', !!noError);

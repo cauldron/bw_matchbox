@@ -1,5 +1,6 @@
 // Public and shared  interfaces for `ThreadComments`
 
+/** Possible parameters for externally configuring of the component */
 interface TThreadCommentsParams {
   rootNode: Element;
   currentProcess?: number;
@@ -8,10 +9,10 @@ interface TThreadCommentsParams {
   noTableau?: boolean; // Do not show tableau block
   noLoader?: boolean; // Do not show inner loader
   noError?: boolean; // Do not show inner error block
-  noActions?: boolean;
-  disableAddNewThread?: boolean;
-  disableAddThreadComment?: boolean;
-  disableThreadResolve?: boolean;
+  noActions?: boolean; // Disable actions panel
+  disableAddNewThread?: boolean; // Disable ability to add new thread
+  disableAddThreadComment?: boolean; // Disable ability to add new comment
+  disableThreadResolve?: boolean; // Disable ability to resolve/resolve(open) the thread
 }
 
 interface TThreadCommentsSetFilterOpts {
@@ -64,6 +65,7 @@ interface TThreadComments {
   api: TThreadCommentsApi;
   events: TEvents;
   setParams: (params: TParams) => void;
+  setViewParams: (TThreadCommentsViewParams: viewParams) => void;
   preInit: () => void;
   ensureInit: () => Promise;
 }
