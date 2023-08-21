@@ -1,12 +1,5 @@
 /* stylelint-disable selector-id-pattern */
 
-.comments-root .filters {
-}
-
-.comments-root .filters .debug-info {
-  opacity: 0.5;
-}
-
 .comments-root .filters label,
 .comments-root .filters select,
 .comments-root .filters button {

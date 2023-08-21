@@ -1,0 +1,112 @@
+/* stylelint-disable selector-id-pattern, selector-class-pattern */
+
+:root {
+  --comments-actions-button-size: 24px;
+}
+
+.thread-comments {
+  position: relative;
+}
+
+.thread-comments .threads-list-tableau {
+  position: relative;
+  min-height: 40px; /* Ensure space for loading splash */
+}
+.thread-comments.noTableau .threads-list-tableau {
+  display: none;
+}
+
+/* Basic rules... */
+.thread-comments > * {
+  transition: all var(--common-animation-time);
+}
+
+/* Empty state: hide some elements... */
+.thread-comments.empty .threads-list,
+.thread-comments.loading .threads-list-empty,
+.thread-comments.has-visible-threads .threads-list-empty {
+  display: none;
+}
+.thread-comments .threads-list-empty {
+  padding: 10px;
+  margin: 10px auto;
+  text-align: center;
+  opacity: 0.5;
+}
+
+/** Loading elements */
+.thread-comments.loading .threads-list,
+.thread-comments.loading .threads-list-empty {
+  opacity: 0.5;
+  pointer-events: none;
+}
+
+/* Actions */
+.thread-comments.noActions .threads-list-actions {
+  display: none;
+}
+.thread-comments .threads-list-actions {
+  border-radius: 4px;
+  padding: 4px 8px;
+  background-color: rgba(0 0 0 / 5%);
+}
+.thread-comments .threads-list-actions a {
+  font-size: 0.9em;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: var(--comments-actions-button-size);
+  height: var(--comments-actions-button-size);
+  border-radius: 4px;
+  opacity: 0.5;
+}
+/* Some particular icons' fixes */
+.thread-comments .threads-list-actions a#addNewThread i {
+  margin-top: 3px;
+}
+.thread-comments .threads-list-actions a.disabled {
+  color: #ddd;
+  cursor: default;
+}
+.thread-comments .threads-list-actions a:not(.disabled) {
+  transition: all var(--common-animation-time);
+  cursor: pointer;
+}
+.thread-comments .thread:hover .title-actions a:not(.disabled) {
+  color: var(--layout-theme-primary-color);
+}
+.thread-comments .threads-list-actions a:not(.disabled):active,
+.thread-comments .threads-list-actions a:not(.disabled):hover {
+  opacity: 1;
+}
+.thread-comments .threads-list-actions a:not(.disabled):active {
+  background-color: var(--layout-theme-primary-color);
+  box-shadow: 0 0 4px 2px var(--layout-theme-primary-color);
+  color: #fff;
+}
+
+/* Loader splash */
+.thread-comments.noError .loader-splash {
+  display: none;
+}
+.thread-comments .loader-splash {
+  padding: 20px;
+}
+.thread-comments:not(.loading) .loader-splash {
+  /* Inherited from `.loader-splash.hidden`, see `bw_matchbox/assets/css/common.css` */
+  opacity: 0;
+  pointer-events: none;
+}
+
+/* Error */
+.thread-comments .error {
+  border-radius: 4px;
+  background-color: var(--common-error-color);
+  color: #fff;
+  margin: 20px auto;
+  padding: 10px 20px;
+}
+.thread-comments.noError .error,
+.thread-comments:not(.has-error) .error {
+  display: none;
+}

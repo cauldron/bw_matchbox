@@ -16,9 +16,9 @@ modules.define(
     // Define module...
 
     /** @descr Render table content.
+     * @typedef ProcessesListDataRender
+     * @property {function} clearTableData
      */
-
-    // global module variable
     const ProcessesListDataRender = {
       clearTableData() {
         const tBodyNode = ProcessesListNodes.getTBodyNode();
@@ -27,10 +27,7 @@ modules.define(
 
       renderMatchCellContent(rowData) {
         const { sharedParams } = ProcessesListData;
-        const {
-          currentRole, // TODO: To generate other content for 'editors' role?
-          databases,
-        } = sharedParams;
+        const { currentRole, databases } = sharedParams;
         const { proxy } = databases;
         const isEditor = currentRole === 'editors';
         const hasProxy = !!proxy;
@@ -80,16 +77,6 @@ modules.define(
           // matched, // false
         } = rowData;
         const matchContent = this.renderMatchCellContent(rowData);
-        /* // ORIGINAL UNUSED CODE: This code is temporarily remained until the task is completed. See code in `renderMatchCellContent`.
-         * const matchUrl = '/match/' + id;
-         * const matchButton = matched
-         *   ? `<a class="button" href="${matchUrl || ''}"><i class="fa-solid fa-check"></i> ${
-         *       match_type || 'EDIT'
-         *     }</a>`
-         *   : `<a class="button button-primary" href="${
-         *       matchUrl || ''
-         *     }"><i class="fa-solid fa-circle-xmark"></i> ADD</a>`;
-         */
         const content = `
           <tr>
             <td><div><a href="/process/${id || ''}">${name || ''}</a></div></td>

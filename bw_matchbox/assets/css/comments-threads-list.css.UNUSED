@@ -1,0 +1,207 @@
+/* stylelint-disable selector-id-pattern */
+
+:root {
+  --comments-expand-button-size: 24px;
+  --comments-title-action-button-size: 24px;
+  --comments-expand-button-title-top-margin: 5px;
+  --comments-expand-button-gap: 8px;
+}
+
+.comments-root .threads-list {
+  line-height: 1.3;
+}
+.comments-root .threads-list .thread {
+  margin: 15px 0;
+  transition: all var(--common-animation-time);
+  border-radius: 6px;
+  padding: 2px 10px;
+  padding-top: 5px;
+  padding-left: 8px;
+}
+.comments-root .threads-list .thread.hidden {
+  display: none;
+}
+.comments-root .threads-list .thread.expanded,
+.comments-root .threads-list .thread:hover {
+  background-color: rgb(0 0 0 / 5%);
+}
+.comments-root .threads-list .thread .main-row {
+  display: flex;
+  align-items: flex-start;
+  gap: var(--comments-expand-button-gap);
+  margin: 5px 0;
+}
+.comments-root .threads-list .thread .main-row .expand-button-wrapper {
+  margin-top: 1px;
+  font-size: 0.75em;
+}
+.comments-root .threads-list .thread .main-row .title {
+  flex: 1;
+  margin-top: var(--comments-expand-button-title-top-margin);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 10px;
+}
+.comments-root .threads-list .thread .main-row .expand-button,
+.comments-root .threads-list .thread .main-row .expand-button-wrapper {
+  width: var(--comments-expand-button-size);
+  height: var(--comments-expand-button-size);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+.comments-root .threads-list .thread .main-row .expand-button,
+.comments-root .threads-list .thread .main-row .expand-button-wrapper {
+  transition: all var(--common-animation-time);
+  border-radius: 50%;
+}
+.comments-root .threads-list .thread.empty .main-row .expand-button {
+  color: #ccc;
+  cursor: default;
+  opacity: 0.25;
+  pointer-events: none;
+}
+.comments-root .threads-list .thread:not(.empty) .main-row .expand-button {
+  cursor: pointer;
+  color: #bbb;
+  opacity: 0.75;
+}
+.comments-root .threads-list .thread:not(.empty):hover .main-row .expand-button {
+  color: var(--layout-theme-primary-color);
+}
+.comments-root .threads-list .thread:not(.empty) .main-row {
+  cursor: pointer;
+  transition: all var(--common-animation-time);
+}
+.comments-root .threads-list .thread:not(.empty) .main-row:hover .expand-button {
+  background-color: var(--layout-theme-primary-color);
+  color: #fff;
+  opacity: 1;
+}
+.comments-root .threads-list .thread.expanded .main-row .expand-button {
+  transform: rotate(90deg);
+}
+.comments-root .threads-list .thread .main-row .title .title-text {
+}
+.comments-root .threads-list .thread .main-row .title .title-text .time {
+  opacity: 0.5;
+  display: inline-block;
+  margin-right: 4px;
+}
+.comments-root .threads-list .thread .main-row .title .title-text .name {
+}
+.comments-root .threads-list .thread .main-row .title .title-text .name {
+  font-weight: bold;
+}
+.comments-root .threads-list .thread .main-row .title .title-text .info {
+  opacity: 0.7;
+}
+.comments-root .threads-list .thread .main-row .title .title-text .info label {
+  font-weight: normal;
+  display: inline-block;
+  opacity: 0.5;
+  cursor: inherit;
+}
+
+/* Resolved/open status */
+.comments-root .threads-list .thread:not(.resolved) .is-resolved,
+.comments-root .threads-list .thread.resolved .not-resolved {
+  display: none;
+}
+
+/* Comments list */
+.comments-root .threads-list .thread:not(.expanded) .comments {
+  display: none;
+}
+.comments-root .threads-list .thread .comments {
+  margin: 10px 0;
+  margin-left: calc(var(--comments-expand-button-size) + var(--comments-expand-button-gap));
+}
+
+.comments-root .threads-list .thread .comment {
+  margin: 10px 0;
+  border-radius: 8px;
+  border: 1px solid #eee;
+  padding: 8px 18px;
+  padding-bottom: 12px;
+  padding-right: 14px;
+  transition: all var(--common-animation-time);
+  background-color: rgb(255 255 255 / 50%);
+}
+.comments-root .threads-list .thread .comment > * {
+  margin: 5px 0;
+}
+.comments-root .threads-list .thread .comment .title {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 10px;
+}
+.comments-root .threads-list .thread .comment .title-text {
+  margin: 5px 0;
+}
+.comments-root .threads-list .thread .comment .title-text .name {
+  font-weight: bold;
+}
+.comments-root .threads-list .thread .comment .title-text .status {
+  opacity: 0.5;
+}
+.comments-root .threads-list .thread .comment .content {
+  line-height: 1.5;
+}
+
+/* Title actions */
+.comments-root .threads-list .thread .main-row .title-actions {
+  /* Adjust thread title actions block position */
+  margin-top: -2px;
+  margin-right: -2px;
+}
+/* Disable some actions */
+.comments-root:not(.role-editors, .role-reviewers)
+  .threads-list
+  .thread
+  .title-actions
+  a#threadAddComment,
+.comments-root:not(.role-editors) .threads-list .thread .title-actions a#threadResolve {
+  display: none;
+}
+.comments-root .threads-list .thread .title-actions {
+  align-self: flex-start;
+  display: flex;
+  justify-content: flex-end;
+  gap: 2px;
+}
+.comments-root .threads-list .thread .title-actions a {
+  font-size: 0.9em;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: var(--comments-title-action-button-size);
+  height: var(--comments-title-action-button-size);
+  border-radius: 4px;
+  opacity: 0.5;
+}
+.comments-root .threads-list .thread .title-actions a.disabled {
+  color: #ddd;
+  opacity: 0.5;
+  cursor: default;
+}
+.comments-root .threads-list .thread .title-actions a:not(.disabled) {
+  color: #bbb;
+  transition: all var(--common-animation-time);
+  opacity: 0.5;
+  cursor: pointer;
+}
+.comments-root .threads-list .thread:hover .title-actions a:not(.disabled) {
+  color: var(--layout-theme-primary-color);
+}
+.comments-root .threads-list .thread .title-actions a:not(.disabled):active,
+.comments-root .threads-list .thread .title-actions a:not(.disabled):hover {
+  opacity: 1;
+}
+.comments-root .threads-list .thread .title-actions a:not(.disabled):active {
+  background-color: var(--layout-theme-primary-color);
+  box-shadow: 0 0 4px 2px var(--layout-theme-primary-color);
+  color: #fff;
+}

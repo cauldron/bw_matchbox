@@ -1,161 +1,229 @@
 {% include 'header.html' %}
 
-{# Common dependencies... #}
+<div id="process-detail-layout" class="panels-layout process-detail-layout">
 
-{# Modal windows are used #}
-{% include 'common-modal.html' %}
-
-{# Module-specific dependencies... #}
-
-<link rel="stylesheet" href="{{ url_for('static', filename='css/process-detail.css') }}">
-
-{# Core js module #}
-<script src="{{ url_for('static', filename='js/ProcessDetail/ProcessDetail.js') }}"></script>
-
-<div id="process-detail" class="process-detail container{{ ' waitlist' if ds.get('waitlist') }}">
-  {% include 'navigation.html' %}
-  <div class="row">
-    <div class="column">
-      <div class="common-page-header">
-        <h3 class="title">
-          {{ ds.name }}
-          <div class="tools">
-            <div class="tools-wrapper">
-              {% if ds.database == source and config.role == 'editors'  %}
-                <a id="mark-waitlist" class="tools-button {{ ' theme-primary' if not ds.get('waitlist') }}" onClick="ProcessDetail.markWaitlist(this)">{{ 'Waitlisted' if ds.waitlist else 'Waitlist' }}</a>
-                {% if not ds.matched %}
-                  <a id="manual-match" class="tools-button theme-primary" onClick="ProcessDetail.markMatched(this)">No match needed</a>
-                  {% if same_name_count %}
-                    <a id="manual-multi-match" class="tools-button theme-primary" onClick="ProcessDetail.markAllMatched(this)">Mark all matched</a>
-                  {% endif %}
-                  <a id="match-button" class="tools-button theme-primary" href="{{ url_for('match', source=ds.id)}}">Match</a>
-                {% else %}
-                  <a id="match-button" class="tools-button disabled">{% if ds.match_type == "1" %}No match needed{% else %}Matched{% endif %}</a>
-                {% endif %}
-              {% endif %}
-              {% if ds.matched and not is_proxy and config.role == 'editors' %}
-                <a class="tools-button theme-danger" href="{{ url_for('remove_match', id=ds.id)}}">{% if ds.proxy_id %}Remove match needed{% else %}Remove match and delete proxy{% endif %}</a>
-              {% endif %}
-              {% if is_proxy and config.role == 'editors' %}
-                <a class="tools-button theme-danger" href="{{ url_for('remove_match', id=ds.id)}}">Delete proxy and remove match</a>
-              {% endif %}
-            </div>
-          </div>
-        </h3>
+  <div id="thread-comments-panel" class="panels-layout-side panels-layout-container panels-layout-right thread-comments-panel hidden">
+    <div id="thread-comments-panel-toolbar" class="thread-comments-panel-toolbar-wrapper">
+      <div class="thread-comments-toolbar">
+        <a
+          id="expandAllThreads"
+          title="Expand/hide threads"
+          class="toolbar-icon"
+          onClick="processDetailPage.callbacks.expandAllThreads(this)"
+        >
+          <i class="fa fa-expand"></i>
+        </a>
+        <a
+          id="addNewThread"
+          title="Add new thread"
+          class="toolbar-icon"
+          onClick="processDetailPage.callbacks.addNewThread(this)"
+        >
+          <i class="fa fa-plus"></i>
+        </a>
+        <div class="group">
+          <label for="threadsSortMode">Sort by:</label>
+          <select
+            id="threadsSortMode"
+            onChange="processDetailPage.callbacks.setSortMode(this)"
+          >
+            <option value="resolved|modifiedDate" selected>Resolved / Modified date</option>
+            <option value="resolved|name">Resolved / Name</option>
+          </select>
+        </div>
       </div>
-      <ul class="details-list">
-          <li><label>Database:</label> {{ ds.database }}</li>
-          <li><label>Location:</label> {{ ds.location }}</li>
-          <li><label>Unit:</label> {{ ds.unit }}</li>
-          <li><label>ID:</label> {{ ds.id }}</li>
-          <li><label>Production amount:</label> {{ ds['production amount'] }}</li>
-          <li><label>Reference product:</label> {{ ds['reference product'] }}</li>
-          <li><label>Authors:</label> {{ authors }}</li>
-          <li><label>Comment:</label> {{ds.comment }}</li>
-          {% if same_name_count %}
-              <li><label>Datasets with same name:</label> {{ same_name_count }}: {% for obj in same_name %}<a href="{{ url_for('process_detail', id=obj.id) }}" {% if obj.data.matched %}class="exact"{% endif %}>{% if obj.data.matched %}<i class="fa-solid fa-check"></i> {% endif %}{{obj.location}}</a> {% endfor %}</li>
-          {% endif %}
-          {% if proxy_node %}
-              <li><label>Proxy:</label> <a href="{{ url_for('process_detail', id=proxy_node.id) }}">{{ proxy_node }}</a></li>
-          {% endif %}
-          {% if reference_node %}
-              <li><label>Proxy for:</label> <a href="{{ url_for('process_detail', id=reference_node.id) }}">{{ reference_node }}</a></li>
-          {% endif %}
-          {% if match_type %}
-              <li><label>Match type:</label> {{ match_type }}</li>
-          {% endif %}
-      </ul>
-      <div class="info-tableau">
-        <div class="error" id="error">Sample error text</div>
-        <div id="loader-splash" class="loader-splash bg-white full-cover"><div class="loader-spinner"></div></div>
+    </div>
+    <div class="panels-layout-content panels-layout-scrollable">
+      <div class="panels-layout-container container padded">
+        <div id="thread-comments" class="thread-comments">
+          <!-- Thread comments placehodler -->
+          <div id="temp-loader-splash" class="loader-splash"><div class="loader-spinner"></div></div>
+        </div>
       </div>
-      <h3>Technosphere Inputs</h3>
-      <table class="fixed-table" width="100%">
-        <tr>
-          <th class="cell-amount"><div>Amount</div></th>
-          <th class="cell-name"><div>Name</div></th>
-          <th class="cell-location"><div>Location</div></th>
-          <th class="cell-unit"><div>Unit</div></th>
-          <th class="cell-matched"><div>Matched</div></th>
-        </tr>
-        {% for row in technosphere %}
-        <tr>
-          <td><div>{{row.amount}}</div></td>
-          <td><div><a href="{{ url_for('process_detail', id=row.input.id) }}">{{row.input.name}}</a></div></td>
-          <td><div>{{row.input.location}}</div></td>
-          <td><div>{{row.input.unit}}</div></td>
-          <td><div>{% if row.input.matched %}<i class="fa-solid fa-check"></i>{% else %}<i class="fa-solid fa-circle-xmark"></i>{% endif %}</div></td>
-        </tr>
-        {% endfor %}
-      </table>
-      <h2>Biosphere Inputs</h2>
-      {% if biosphere|length > 50 or not biosphere|length %}
-      <p>{{ biosphere|length }} biosphere exchanges</p>
-      {% else %}
-      <table class="fixed-table" width="100%">
-        <tr>
-          <th class="cell-amount"><div>Amount</div></th>
-          <th class="cell-name"><div>Name</div></th>
-          <th class="cell-categories"><div>Categories</div></th>
-          <th class="cell-unit"><div>Unit</div></th>
-        </tr>
-        {% for exc in biosphere %}
-          <tr>
-            <td><div>{{ exc.amount }}</div></td>
-            <td><div>{{ exc.input.name }}</div></td>
-            <td><div>{{ exc.input.categories|join("|") }}</div></td>
-            <td><div>{{ exc.input.unit }}</div></td>
-          </tr>
-        {% endfor %}
-      {% endif %}
-      </table>
-      <h2>Consuming processes ({{ total_consumers }})</h2>
-      {% if not total_consumers %}
-      <p>No consuming processes</p>
-      {% elif total_consumers > 50 %}
-      <p>Showing 50 of {{ total_consumers }}</p>
-      {% endif %}
-      {% if total_consumers %}
-      <table class="fixed-table" width="100%">
-        <tr>
-          <th class="cell-amount"><div>Amount</div></th>
-          <th class="cell-name"><div>Name</div></th>
-          <th class="cell-location"><div>Location</div></th>
-          <th class="cell-unit"><div>Unit</div></th>
-        </tr>
-        {% for exc in consumers %}
-          <tr>
-            <td><div>{{ exc.amount }}</div></td>
-            <td><div><a href="{{ url_for('process_detail', id=exc.output.id) }}">{{ exc.output.name }}</a></div></td>
-            <td><div>{{ exc.output.location }}</div></td>
-            <td><div>{{ exc.output.unit }}</div></td>
-          </tr>
-        {% endfor %}
-      {% endif %}
-      </table>
     </div>
   </div>
+
+  <div id="process-detail" class="panels-layout-main panels-layout-container process-detail{{ ' waitlist' if ds.get('waitlist') }}">
+    <div class="panels-layout-actions">
+      <a
+        id="toggle-side-panel-button"
+        class="panels-layout-actions-button layout-actions-button turnaround"
+        title="Show/hide comments panel"
+        onClick="processDetailPage.callbacks.toggleCommentsPanel(this)"
+      >
+        <i class="fa fa-chevron-left"></i>
+      </a>
+    </div>
+
+    <div class="panels-layout-content panels-layout-full panels-layout-scrollable">
+      <div class="container">
+
+        {% include 'navigation.html' %}
+
+        <div class="row">
+          <div class="column">
+
+            <div class="common-page-header">
+              <h3 class="title">
+                {{ ds.name }}
+                <div class="tools">
+                  <div class="tools-wrapper">
+                    {% if ds.database == source and config.role == 'editors'  %}
+                      <a id="mark-waitlist" class="tools-button {{ ' theme-primary' if not ds.get('waitlist') }}" onClick="processDetailPage.callbacks.markWaitlist(this)">{{ 'Waitlisted' if ds.waitlist else 'Waitlist' }}</a>
+                      {% if not ds.matched %}
+                        <a id="manual-match" class="tools-button theme-primary" onClick="processDetailPage.callbacks.markMatched(this)">No match needed</a>
+                        {% if same_name_count %}
+                          <a id="manual-multi-match" class="tools-button theme-primary" onClick="processDetailPage.callbacks.markAllMatched(this)">Mark all matched</a>
+                        {% endif %}
+                        <a id="match-button" class="tools-button theme-primary" href="{{ url_for('match', source=ds.id)}}">Match</a>
+                      {% else %}
+                        <a id="match-button" class="tools-button disabled">{% if ds.match_type == "1" %}No match needed{% else %}Matched{% endif %}</a>
+                      {% endif %}
+                    {% endif %}
+                    {% if ds.matched and not is_proxy and config.role == 'editors' %}
+                      <a class="tools-button theme-danger" href="{{ url_for('remove_match', id=ds.id)}}">{% if ds.proxy_id %}Remove match needed{% else %}Remove match and delete proxy{% endif %}</a>
+                    {% endif %}
+                    {% if is_proxy and config.role == 'editors' %}
+                      <a class="tools-button theme-danger" href="{{ url_for('remove_match', id=ds.id)}}">Delete proxy and remove match</a>
+                    {% endif %}
+                  </div>
+                </div>
+              </h3>
+            </div>
+
+            <ul class="details-list">
+                <li><label>Database:</label> {{ ds.database }}</li>
+                <li><label>Location:</label> {{ ds.location }}</li>
+                <li><label>Unit:</label> {{ ds.unit }}</li>
+                <li><label>ID:</label> {{ ds.id }}</li>
+                <li><label>Production amount:</label> {{ ds['production amount'] }}</li>
+                <li><label>Reference product:</label> {{ ds['reference product'] }}</li>
+                <li><label>Authors:</label> {{ authors }}</li>
+                <li><label>Comment:</label> {{ds.comment }}</li>
+                {% if same_name_count %}
+                    <li><label>Datasets with same name:</label> {{ same_name_count }}: {% for obj in same_name %}<a href="{{ url_for('process_detail', id=obj.id) }}" {% if obj.data.matched %}class="exact"{% endif %}>{% if obj.data.matched %}<i class="fa-solid fa-check"></i> {% endif %}{{obj.location}}</a> {% endfor %}</li>
+                {% endif %}
+                {% if proxy_node %}
+                    <li><label>Proxy:</label> <a href="{{ url_for('process_detail', id=proxy_node.id) }}">{{ proxy_node }}</a></li>
+                {% endif %}
+                {% if reference_node %}
+                    <li><label>Proxy for:</label> <a href="{{ url_for('process_detail', id=reference_node.id) }}">{{ reference_node }}</a></li>
+                {% endif %}
+                {% if match_type %}
+                    <li><label>Match type:</label> {{ match_type }}</li>
+                {% endif %}
+            </ul>
+
+            <div class="info-tableau">
+              <div class="error" id="error">Sample error text</div>
+              <div id="loader-splash" class="loader-splash bg-white full-cover"><div class="loader-spinner"></div></div>
+            </div>
+
+            <h3>Technosphere Inputs</h3>
+
+            <table class="fixed-table" width="100%">
+              <tr>
+                <th class="cell-amount"><div>Amount</div></th>
+                <th class="cell-name"><div>Name</div></th>
+                <th class="cell-location"><div>Location</div></th>
+                <th class="cell-unit"><div>Unit</div></th>
+                <th class="cell-matched"><div>Matched</div></th>
+              </tr>
+              {% for row in technosphere %}
+              <tr>
+                <td><div>{{row.amount}}</div></td>
+                <td><div><a href="{{ url_for('process_detail', id=row.input.id) }}">{{row.input.name}}</a></div></td>
+                <td><div>{{row.input.location}}</div></td>
+                <td><div>{{row.input.unit}}</div></td>
+                <td><div>{% if row.input.matched %}<i class="fa-solid fa-check"></i>{% else %}<i class="fa-solid fa-circle-xmark"></i>{% endif %}</div></td>
+              </tr>
+              {% endfor %}
+            </table>
+
+            <h2>Biosphere Inputs</h2>
+
+            {% if biosphere|length > 50 or not biosphere|length %}
+              <p>{{ biosphere|length }} biosphere exchanges</p>
+            {% else %}
+              <table class="fixed-table" width="100%">
+                <tr>
+                  <th class="cell-amount"><div>Amount</div></th>
+                  <th class="cell-name"><div>Name</div></th>
+                  <th class="cell-categories"><div>Categories</div></th>
+                  <th class="cell-unit"><div>Unit</div></th>
+                </tr>
+                {% for exc in biosphere %}
+                  <tr>
+                    <td><div>{{ exc.amount }}</div></td>
+                    <td><div>{{ exc.input.name }}</div></td>
+                    <td><div>{{ exc.input.categories|join("|") }}</div></td>
+                    <td><div>{{ exc.input.unit }}</div></td>
+                  </tr>
+                {% endfor %}
+              </table>
+            {% endif %}
+
+            <h2>Consuming processes ({{ total_consumers }})</h2>
+
+            {% if not total_consumers %}
+              <p>No consuming processes</p>
+            {% elif total_consumers > 50 %}
+              <p>Showing 50 of {{ total_consumers }}</p>
+            {% endif %}
+            {% if total_consumers %}
+              <table class="fixed-table" width="100%">
+                <tr>
+                  <th class="cell-amount"><div>Amount</div></th>
+                  <th class="cell-name"><div>Name</div></th>
+                  <th class="cell-location"><div>Location</div></th>
+                  <th class="cell-unit"><div>Unit</div></th>
+                </tr>
+                {% for exc in consumers %}
+                  <tr>
+                    <td><div>{{ exc.amount }}</div></td>
+                    <td><div><a href="{{ url_for('process_detail', id=exc.output.id) }}">{{ exc.output.name }}</a></div></td>
+                    <td><div>{{ exc.output.location }}</div></td>
+                    <td><div>{{ exc.output.unit }}</div></td>
+                  </tr>
+                {% endfor %}
+              </table>
+            {% endif %}
+
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
 </div>
 
-<script type="text/javascript">
-modules.require('ProcessDetail', function requireProcessDetail(ProcessDetail) {
-  // Global variables for compare tables feature (via global variable `sharedData`)...
-  const sharedData = {
+{# NOTE: All reusable modules and all related stuff like css are dynamically connecting as ES6 modules, inside the code #}
+
+{# TODO: It's possible to dynamically load all required styles using `CommonHelpers.addCssStyle` method. #}
+<link rel="stylesheet" href="{{ url_for('static', filename='css/process-detail.css') }}">
+
+<!-- Start page scripts -->
+<script type="module">
+
+  // Core module
+  import { ProcessDetailPage } from '/assets/modules/ProcessDetailPage/ProcessDetailPage.js';
+
+  // Global variables for compare tables feature (via global variable `sharedParams`)...
+  const sharedParams = {
     addAttributeUrl: "{{ url_for('add_attribute', id=ds.id)|safe }}",
-    // markWaitlistUrl: "{{ url_for('add_attribute', id=ds.id, attr='waitlist', value='1')|safe }}",
     markMatchTypeUrl: "{{ url_for('add_attribute', id=ds.id, attr='match_type', value='1')|safe }}",
     markMatchedUrl: "{{ url_for('add_attribute', id=ds.id, attr='matched', value='1')|safe }}",
     markAllMatchedUrl: "{{ url_for('multi_match', id=ds.id)|safe }}",
     multimatch: "{{ multimatch or '' }}", // TODO: What type of variable is here? Is it string or boolean?
     // Waitlist record status...
     isWaitlist: {{ 'true' if ds.waitlist else 'false' }},
+    currentRole: '{{ config.role }}',
+    currentUser: '{{ config.user }}',
+    currentProcess: {{ ds.id }},
   };
 
   // Export to global scope (to access from generated html code handlers).
-  window.ProcessDetail = ProcessDetail;
+  window.processDetailPage = new ProcessDetailPage(sharedParams);
 
-  // Start core module...
-  ProcessDetail.start(sharedData);
-});
 </script>
 {% include 'footer.html' %}

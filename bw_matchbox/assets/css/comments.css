@@ -5,50 +5,20 @@
   margin-bottom: 20px;
 }
 
-/* ByMyThreads filter */
-.comments-root .notByMyThreads {
-  transition: all var(--common-animation-time);
-}
-.comments-root.filterByMyThreads .notByMyThreads {
-  opacity: 0.5;
-  pointer-events: none;
-  cursor: default;
-}
-.comments-root:not(.filterByMyThreads) #filterByMyThreadsIcon {
-  display: none;
-}
-
-/* Empty state: hode some elements... */
-.comments-root.empty .threads-list {
-  display: none;
-}
-.comments-root.loading .threads-list-empty,
-.comments-root.has-visible-threads .threads-list-empty {
-  display: none;
-}
-.comments-root .threads-list-empty {
-  padding: 10px;
-  margin: 10px auto;
+/* Not initialized message */
+.comments-root .comments-not-inited {
+  margin: 10px 0;
   text-align: center;
   opacity: 0.5;
 }
-
-/* Loading state: disable some elements... */
-.comments-root > * {
-  transition: all var(--common-animation-time);
-}
-.comments-root.loading .filters,
-.comments-root.loading .bottom-actions-links {
-  opacity: 0.5;
-  pointer-events: none;
-}
-.comments-root.loading .bottom-actions-links {
-  opacity: 0;
+.comments-root.inited .comments-not-inited {
+  display: none;
 }
 
-/* Data table */
-.comments-root .threads-list {
-  margin: 20px 0;
+/* Information ppanel */
+.comments-root .comments-tableau {
+  position: relative;
+  min-height: 80px; /* Ensure space for loading splash */
 }
 
 /* Loader splash */
@@ -69,43 +39,36 @@
   margin: 20px auto;
   padding: 10px 20px;
 }
-.comments-root:not(.error) .error {
+.comments-root:not(.has-error) .error {
   display: none;
 }
 
-/* Bottom actions (TODO: Just copied from `processes-list.css`) */
-.comments-root .bottom-actions {
-  position: relative;
-  margin: 10px 0;
-  min-height: 40px;
-  text-align: center;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  align-content: center;
-}
-/* Action links... */
-.comments-root .bottom-actions-links {
+/* ByMyThreads filter */
+.comments-root .notByMyThreads {
   transition: all var(--common-animation-time);
 }
-.comments-root .bottom-actions-links > * {
+.comments-root.filterByMyThreads .notByMyThreads {
+  opacity: 0.5;
+  pointer-events: none;
+  cursor: default;
+}
+.comments-root:not(.filterByMyThreads) #filterByMyThreadsIcon {
   display: none;
-  margin: 0 10px;
 }
-.comments-root .bottom-actions-links > a {
-  color: var(--layout-theme-primary-color-dark1);
-  cursor: pointer;
+
+/* Loading state: disable some elements... */
+.comments-root > * {
+  transition: all var(--common-animation-time);
 }
-.comments-root .bottom-actions-links a:hover {
-  text-decoration: underline;
+.comments-root:not(.inited) .filters {
+  display: none;
 }
-/* Show 'Reload' (after error) button if error... */
-.comments-root.error .bottom-actions-links a#action-clear-and-reload,
-/* Show 'Load more' button for all 'order by' values except for 'random'... */
-.comments-root.has-more-data.has-search:not(.error) .bottom-actions-links a#action-load-more,
-.comments-root.has-more-data:not(.order-random, .error) .bottom-actions-links a#action-load-more,
-.comments-root:not(.has-more-data, .empty, .error) .bottom-actions-links span#show-total-records-number,
-/* Show 'Refresh' button for 'random' 'order by' value... */
-.comments-root.order-random:not(.error, .has-search) .bottom-actions-links a#action-reload-random {
-  display: inline-block;
+.comments-root.loading .filters {
+  opacity: 0.5;
+  pointer-events: none;
+}
+
+/* Data table */
+.comments-root .threads-list {
+  margin: 20px 0;
 }
