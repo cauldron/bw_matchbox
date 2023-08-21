@@ -139,29 +139,32 @@ class CommonModal {
     return this;
   }
 
-  /** setModalWindowOption -- Set one (boolean) modal content option.
+  /** setModalWindowOption -- Set one (boolean or literal) modal content option.
    * @param {string} optionName
-   * @param {boolean} [optionValue]
+   * @param {boolean|string} [optionValue]
    */
   setModalWindowOption(optionName, optionValue) {
     this.checkDomNodeInit(); // NOTE: Don nodes should be created!
-    const literalOptions = {
-      // TODO: Move to constants?
-      width: ['sm', 'md', 'lg'],
-    };
     const contentEl = this.getModalNodeElementByClass('common-modal-window');
-    const literals = literalOptions[optionName];
-    if (literals) {
-      // Literal option...
-      literals.forEach((/** @type {string } */ val) => {
-        // Remove all the other and set current option...
-        const isOn = optionValue && val === optionName;
-        const name = optionName + '-' + val;
-        contentEl.classList.toggle(name, isOn);
-      });
-    } else {
+    if (typeof optionValue === 'boolean') {
       // Boolean option...
       contentEl.classList.toggle(optionName, !!optionValue);
+    } else {
+      // String (literal) option...
+      const literalOptions = {
+        // TODO: Move to constants?
+        width: ['sm', 'md', 'lg'],
+      };
+      const literals = literalOptions[optionName];
+      if (literals) {
+        // Literal option...
+        literals.forEach((/** @type {string } */ val) => {
+          // Remove all the other and set current option...
+          const isOn = val === optionValue;
+          const name = optionName + '-' + val;
+          contentEl.classList.toggle(name, isOn);
+        });
+      }
     }
     return this;
   }
