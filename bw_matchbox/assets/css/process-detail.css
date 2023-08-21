@@ -36,15 +36,23 @@
   background-color: #f8f8f8;
   border-bottom: 1px solid #eee;
 }
+.panels-layout .thread-comments-toolbar > .group,
 .panels-layout .thread-comments-toolbar {
   display: flex;
-  gap: 4px;
+  gap: 5px;
   align-items: center;
 }
+.panels-layout .thread-comments-toolbar > .group > *,
 .panels-layout .thread-comments-toolbar > * {
   margin: 0;
   display: block;
   transition: all var(--common-animation-time);
+}
+.panels-layout .thread-comments-toolbar > .group {
+  padding: 0 5px;
+}
+.panels-layout .thread-comments-toolbar label {
+  opacity: .5;
 }
 .panels-layout .thread-comments-toolbar > a.toolbar-icon {
   background-color: #bbb;

@@ -72,7 +72,7 @@ interface TThreadComments {
   api: TThreadCommentsApi;
   events: TEvents;
   setParams: (params: TParams) => void;
-  setViewParams: (TThreadCommentsViewParams: viewParams) => void;
+  // setViewParams: (TThreadCommentsViewParams: viewParams) => void; // It's in the handlers now
   preInit: () => void;
   ensureInit: () => Promise;
 }

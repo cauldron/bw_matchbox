@@ -327,6 +327,21 @@ export const ThreadCommentsHandlers = /** @lends ThreadCommentsHandlers */ {
     return apiHandlers.addNewThread();
   },
 
+  /**
+   * @param {TThreadCommentsSortThreadsBy} value
+   */
+  setSortMode(value) {
+    console.log('[ThreadCommentsHandlers:setSortMode]', {
+      value,
+    });
+    debugger;
+    ThreadCommentsStates.setSortThreadsBy(value);
+    /* // @see:
+     * ThreadCommentsStates.setSortThreadsBy
+     * ThreadCommentsStates.setSortThreadsReversed
+     */
+  },
+
   /** @param {TThreadCommentsViewParams} viewParams */
   updateViewParams(viewParams) {
     const { defaultViewParams } = ThreadCommentsData;

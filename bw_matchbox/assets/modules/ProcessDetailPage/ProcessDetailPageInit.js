@@ -75,11 +75,16 @@ export class ProcessDetailPageInit {
       this.threadCommentsInitPromise = threadComments
         .ensureInit()
         .then(() => {
-          /* // Configure default view options (filter by current process)...
-           * threadComments.handlers.updateViewParams({
-           *   filterByProcesses: [currentProcess],
-           * });
-           */
+          /** @type {TThreadCommentsSortThreadsBy} */
+          const sortThreadsBy = 'name';
+          /** @type {boolean} */
+          const sortThreadsReversed = false;
+          // Configure default view options (filter by current process)...
+          threadComments.handlers.updateViewParams({
+            sortThreadsBy,
+            sortThreadsReversed,
+            // filterByProcesses: [currentProcess],
+          });
           // Configure default load options (filter by current process)...
           threadComments.handlers.updateLoadParams({
             process: currentProcess,

@@ -187,6 +187,17 @@ export class ProcessDetailPageHandlers {
     }
   }
 
+  /** @param {HTMLSelectElement} node */
+  setSortMode(node) {
+    const { value } = node
+    const { threadComments } = this;
+    console.log('[ProcessDetailPageHandlers:setSortMode]', {
+      value,
+    });
+    debugger;
+    threadComments.handlers.setSortMode(value);
+  }
+
   addNewThread() {
     const { threadComments } = this;
     threadComments.handlers.addNewThread();

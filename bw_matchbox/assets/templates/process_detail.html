@@ -13,10 +13,16 @@
         >
           <i class="fa fa-plus"></i>
         </a>
-        <select id="threadsSortMode">
-          <option selected>Sort 1</option>
-          <option>Sort 2</option>
-        </select>
+        <div class="group">
+          <label for="threadsSortMode">Sort by:</label>
+          <select
+            id="threadsSortMode"
+            onChange="processDetailPage.callbacks.setSortMode(this)"
+          >
+            <option value="name" selected>Name</option>
+            <option value="modifiedDate">Modified date</option>
+          </select>
+        </div>
       </div>
     </div>
     <div class="panels-layout-content panels-layout-scrollable">
