@@ -189,12 +189,12 @@ export class ProcessDetailPageHandlers {
 
   /** @param {HTMLSelectElement} node */
   setSortMode(node) {
-    const { value } = node
+    const { value } = node;
     const { threadComments } = this;
-    console.log('[ProcessDetailPageHandlers:setSortMode]', {
-      value,
-    });
-    debugger;
+    /* console.log('[ProcessDetailPageHandlers:setSortMode]', {
+     *   value,
+     * });
+     */
     threadComments.handlers.setSortMode(value);
   }
 

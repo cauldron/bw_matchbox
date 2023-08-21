@@ -116,6 +116,18 @@ export const ThreadCommentsStates = {
    * @param {boolean} [opts.omitUpdate] - Don't automatically state (eg: will be updated manually later).
    */
   setSortThreadsBy(value, opts = {}) {
+    // Normalize value to `TThreadCommentsSortModes` list...
+    if (typeof value === 'string') {
+      if (value.includes('|')) {
+        value = /** @type {TThreadCommentsSortModes } */ (value.split('|'));
+      } else {
+        value = [value];
+      }
+    }
+    console.log('[ThreadCommentsHandlers:setSortMode]', {
+      value,
+      origValue: arguments[0],
+    });
     const { threads } = ThreadCommentsData;
     ThreadCommentsData.sortThreadsBy = value;
     // Re-sort threads...

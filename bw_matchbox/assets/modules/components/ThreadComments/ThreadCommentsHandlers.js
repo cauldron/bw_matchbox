@@ -4,11 +4,13 @@ import * as CommonHelpers from '../../common/CommonHelpers.js';
 import { commonNotify } from '../../common/CommonNotify.js';
 
 import { ThreadCommentsData } from './ThreadCommentsData.js';
-import { ThreadCommentsRender } from './ThreadCommentsRender.js';
-import { ThreadCommentsNodes } from './ThreadCommentsNodes.js';
+import { ThreadCommentsHelpers } from './ThreadCommentsHelpers.js';
 import { ThreadCommentsLoader } from './ThreadCommentsLoader.js';
-import { ThreadCommentsStates } from './ThreadCommentsStates.js';
+import { ThreadCommentsNodes } from './ThreadCommentsNodes.js';
 import { ThreadCommentsPrepare } from './ThreadCommentsPrepare.js';
+import { ThreadCommentsRender } from './ThreadCommentsRender.js';
+import { ThreadCommentsStates } from './ThreadCommentsStates.js';
+
 import { CommentModalDialog } from './CommentModalDialog.js';
 
 /** @typedef TApiHandlerParams
@@ -100,27 +102,24 @@ const apiHandlers = {
       .then(() => {
         // Update data...
         thread.resolved = resolved;
-        // thread.modified = currDateStr;
         // Update content...
         const threadTitleTextNode = threadNode.querySelector('.title-text');
         const threadTitleTextContent =
           ThreadCommentsRender.helpers.createThreadTitleTextContent(thread);
-        /* console.log('[ThreadCommentsHandlers:apiHandlers:threadResolve]: done', {
-         *   resolved,
-         *   thread,
-         *   // currDate,
-         *   // currDateStr,
-         *   threadTitleTextNode,
-         *   threadTitleTextContent,
-         *   json,
-         * });
-         */
+        console.log('[ThreadCommentsHandlers:apiHandlers:threadResolve]: done', {
+          resolved,
+          thread,
+          threadTitleTextNode,
+          threadTitleTextContent,
+        });
         // Update data & elements' states...
         threadTitleTextNode.innerHTML = threadTitleTextContent;
         // Update thread node class...
         threadNode.classList.toggle('resolved', resolved);
-        // Update/re-render data...
-        // ThreadCommentsRender.renderData();
+        // Re-sort and re-show threads...
+        const { threads } = ThreadCommentsData;
+        ThreadCommentsHelpers.sortThreads(threads);
+        ThreadCommentsRender.reorderRenderedThreads();
         ThreadCommentsRender.updateVisibleThreads();
         // Show noitification...
         commonNotify.showSuccess('Thread data successfully updated');
@@ -331,10 +330,6 @@ export const ThreadCommentsHandlers = /** @lends ThreadCommentsHandlers */ {
    * @param {TThreadCommentsSortThreadsBy} value
    */
   setSortMode(value) {
-    console.log('[ThreadCommentsHandlers:setSortMode]', {
-      value,
-    });
-    debugger;
     ThreadCommentsStates.setSortThreadsBy(value);
     /* // @see:
      * ThreadCommentsStates.setSortThreadsBy

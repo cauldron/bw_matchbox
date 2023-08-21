@@ -20,7 +20,9 @@ interface TThreadCommentsSetFilterOpts {
 }
 
 type TThreadCommentsFilterByState = 'none' | 'resolved' | 'open';
-type TThreadCommentsSortThreadsBy = 'name' | 'modifiedDate';
+type TThreadCommentsSortMode = 'resolved' | 'name' | 'modifiedDate';
+type TThreadCommentsSortModes = TThreadCommentsSortMode[];
+type TThreadCommentsSortThreadsBy = TThreadCommentsSortMode | TThreadCommentsSortModes;
 
 interface TThreadCommentsViewParams {
   sortThreadsBy: TThreadCommentsSortThreadsBy;

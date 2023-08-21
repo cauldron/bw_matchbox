@@ -75,8 +75,8 @@ export class ProcessDetailPageInit {
       this.threadCommentsInitPromise = threadComments
         .ensureInit()
         .then(() => {
-          /** @type {TThreadCommentsSortThreadsBy} */
-          const sortThreadsBy = 'name';
+          /** @type {TThreadCommentsSortModes} */
+          const sortThreadsBy = ['resolved', 'modifiedDate'];
           /** @type {boolean} */
           const sortThreadsReversed = false;
           // Configure default view options (filter by current process)...

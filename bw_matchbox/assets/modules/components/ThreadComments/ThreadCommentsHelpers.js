@@ -131,23 +131,81 @@ export const ThreadCommentsHelpers = {
     return aVal === bVal ? 0 : aVal < bVal ? -1 : 1;
   },
 
+  /** Compare two threads objects
+   * @param {TThreadCommentsSortModes} modes
+   * @param {TThread} a
+   * @param {TThread} b
+   * @return {-1 | 0 | 1}
+   */
+  sortThreadsCompare(modes, a, b) {
+    const [mode, ...nextModes] = modes;
+    if (!mode) {
+      const error = new Error('Passed empty sort mode');
+      // eslint-disable-next-line no-console
+      console.error('[ThreadCommentsHelpers:sortThreadsCompare]', error);
+      // eslint-disable-next-line no-debugger
+      debugger;
+      throw error;
+    }
+    /** The key of `TThread` object.
+     * @type {string}
+     */
+    let key = mode;
+    /** Date modifier.
+     * @type {boolean}
+     */
+    let asDate = false;
+    // TODO: Add 'descent' postfix?
+    const matchDate = 'Date';
+    if (mode.endsWith(matchDate)) {
+      asDate = true;
+      // Use `(.*)Date` part of the string
+      key = mode.substring(0, mode.length - matchDate.length);
+    }
+    /* console.log('[ThreadCommentsHelpers:sortThreadsCompare]', {
+     *   key,
+     *   asDate,
+     *   mode,
+     *   nextModes,
+     *   modes,
+     *   a,
+     *   b,
+     * });
+     */
+    let aVal = a[key];
+    let bVal = b[key];
+    if (asDate) {
+      // Use date's compare...
+      aVal = new Date(aVal).getTime();
+      bVal = new Date(bVal).getTime();
+    }
+    if (aVal === bVal) {
+      // Try next compare step or return zero...
+      if (nextModes.length) {
+        // Next iteration...
+        return this.sortThreadsCompare(nextModes, a, b);
+      }
+      // No next compares. return zero (items are equal)...
+      return 0;
+    }
+    const result = aVal < bVal ? -1 : 1;
+    return asDate ? /** @type {1|-1} */ (result * -1) : result;
+  },
+
   /** Sort threads data (inplace)
    * @param {TThread[]} threads
    */
   sortThreads(threads) {
     const { sortThreadsBy, sortThreadsReversed } = ThreadCommentsData;
-    /** @type {TSortOpts} */
-    const opts = {
-      key: sortThreadsBy,
-      asDate: false,
-    };
-    const matchDate = 'Date';
-    if (sortThreadsBy.endsWith(matchDate)) {
-      opts.asDate = true;
-      // Use `(.*)Date` part of the string
-      opts.key = sortThreadsBy.substring(0, sortThreadsBy.length - matchDate.length);
-    }
-    threads.sort(this.sortThreadsCompareWithOptions.bind(this, opts));
+    const sortModes = Array.isArray(sortThreadsBy) ? sortThreadsBy : [sortThreadsBy];
+    /* console.log('[ThreadCommentsHelpers:sortThreads]', {
+     *   sortThreadsBy,
+     *   sortThreadsReversed,
+     *   ThreadCommentsData,
+     *   sortModes,
+     * });
+     */
+    threads.sort(this.sortThreadsCompare.bind(this, sortModes));
     if (sortThreadsReversed) {
       threads.reverse();
     }

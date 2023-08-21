@@ -220,7 +220,6 @@ export const ThreadCommentsPrepare = /** @lends ThreadCommentsPrepare */ {
       threadTitleTextNode,
       threadTitleTextContent,
     });
-    debugger;
     // Update data & elements' states...
     threadTitleTextNode.innerHTML = threadTitleTextContent;
     // ThreadCommentsRender.renderData();
