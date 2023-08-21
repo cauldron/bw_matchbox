@@ -202,4 +202,9 @@ export class ProcessDetailPageHandlers {
     const { threadComments } = this;
     threadComments.handlers.addNewThread();
   }
+
+  expandAllThreads() {
+    const { threadComments } = this;
+    threadComments.handlers.expandAllThreads();
+  }
 }

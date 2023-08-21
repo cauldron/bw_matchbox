@@ -6,6 +6,14 @@
     <div id="thread-comments-panel-toolbar" class="thread-comments-panel-toolbar-wrapper">
       <div class="thread-comments-toolbar">
         <a
+          id="expandAllThreads"
+          title="Expand/hide threads"
+          class="toolbar-icon"
+          onClick="processDetailPage.callbacks.expandAllThreads(this)"
+        >
+          <i class="fa fa-expand"></i>
+        </a>
+        <a
           id="addNewThread"
           title="Add new thread"
           class="toolbar-icon"
