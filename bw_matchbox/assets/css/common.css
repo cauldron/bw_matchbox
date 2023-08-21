@@ -183,6 +183,9 @@
   .panels-layout-container.padded {
     padding: 20px;
   }
+  .panels-layout-full {
+    flex: 1;
+  }
   .panels-layout-content.padded {
     margin: 20px;
   }

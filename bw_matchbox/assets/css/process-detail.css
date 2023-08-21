@@ -19,8 +19,8 @@
 }
 /* Thread comments panel */
 .panels-layout .thread-comments-panel:not(.ready) .thread-comments-panel-toolbar-wrapper {
-  /* XXX: Deisabed temporarily */
-  /* display: none; */
+  /* XXX: Can be disabed temporarily */
+  display: none;
 }
 .panels-layout .thread-comments-panel {
   display: flex;
@@ -35,7 +35,6 @@
   padding: 10px 20px;
   background-color: #f8f8f8;
   border-bottom: 1px solid #eee;
-  /* box-shadow */
 }
 .panels-layout .thread-comments-toolbar {
   display: flex;
@@ -48,7 +47,8 @@
   transition: all var(--common-animation-time);
 }
 .panels-layout .thread-comments-toolbar > a.toolbar-icon {
-  background-color: var(--layout-theme-primary-color);
+  background-color: #bbb;
+  /* background-color: var(--layout-theme-primary-color); */
   color: #fff;
   border-radius: 4px;
   width: var(--thread-comments-toolbar-items-size);
@@ -61,6 +61,9 @@
 .panels-layout .thread-comments-toolbar > a.toolbar-icon:not(.disabled) {
   cursor: pointer;
   opacity: 0.5;
+}
+.panels-layout .thread-comments-toolbar:hover > a.toolbar-icon:not(.disabled) {
+  background-color: var(--layout-theme-primary-color);
 }
 .panels-layout .thread-comments-toolbar > a.toolbar-icon:not(.disabled):active,
 .panels-layout .thread-comments-toolbar > a.toolbar-icon:not(.disabled):hover {
