@@ -31,6 +31,13 @@ interface TThreadCommentsViewParams {
   filterByMyThreads: boolean;
 }
 
+interface TThreadCommentsLoadParams {
+  user?: string; // str. Username to filter by
+  process?: number; // int. Proxy process ID
+  resolved?: string; // str, either "0" or "1". Whether comment thread is resolved or not
+  thread?: number; // int. Comment thread id
+}
+
 interface TThreadCommentsApi {
   getComments: () => TComment[];
   getThreads: () => TThread[];

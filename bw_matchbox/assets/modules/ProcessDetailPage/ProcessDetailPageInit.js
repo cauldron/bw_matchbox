@@ -75,9 +75,14 @@ export class ProcessDetailPageInit {
       this.threadCommentsInitPromise = threadComments
         .ensureInit()
         .then(() => {
-          // Configure default view options (filter by current process)...
-          threadComments.handlers.setViewParams({
-            filterByProcesses: [currentProcess],
+          /* // Configure default view options (filter by current process)...
+           * threadComments.handlers.updateViewParams({
+           *   filterByProcesses: [currentProcess],
+           * });
+           */
+          // Configure default load options (filter by current process)...
+          threadComments.handlers.updateLoadParams({
+            process: currentProcess,
           });
           // Invoke `loadComments`...
           return threadComments.handlers.loadComments();

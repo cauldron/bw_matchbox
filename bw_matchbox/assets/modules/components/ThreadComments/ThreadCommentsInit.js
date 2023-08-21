@@ -110,6 +110,7 @@ export class ThreadCommentsInit {
   }
 
   getDomNodeContent() {
+    // TODO 2023.08.21, 23:41: Display some statistic info (to fill the empty space, preserved for loader spinner)?
     return `
       <div id="threads-list-tableau" class="threads-list-tableau">
         <div id="threads-list-actions" class="threads-list-actions">

@@ -48,7 +48,12 @@ export const ThreadCommentsData = {
   /** @type {Record<TProcessId, TProcess>} */
   processesHash: {},
 
-  // View options...
+  // Load options...
+
+  /** @type {TThreadCommentsLoadParams} */
+  loadParams: {},
+
+  // View options (viewParams)...
 
   /** @type {TThreadCommentsSortThreadsBy} */
   sortThreadsBy: defaultViewParams.sortThreadsBy,

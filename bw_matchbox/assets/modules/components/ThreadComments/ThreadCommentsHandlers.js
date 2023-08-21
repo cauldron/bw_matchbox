@@ -328,11 +328,11 @@ export const ThreadCommentsHandlers = /** @lends ThreadCommentsHandlers */ {
   },
 
   /** @param {TThreadCommentsViewParams} viewParams */
-  setViewParams(viewParams) {
+  updateViewParams(viewParams) {
     const { defaultViewParams } = ThreadCommentsData;
     const objs = [ThreadCommentsData, defaultViewParams];
     const keys = Object.keys(viewParams);
-    /* console.log('[ThreadComments:setViewParams]', {
+    /* console.log('[ThreadComments:updateViewParams]', {
      *   keys,
      *   viewParams,
      *   objs,
@@ -345,6 +345,24 @@ export const ThreadCommentsHandlers = /** @lends ThreadCommentsHandlers */ {
       objs.forEach((obj) => {
         obj[key] = setVal;
       });
+    });
+  },
+
+  /** @param {TThreadCommentsLoadParams} loadParams */
+  updateLoadParams(loadParams) {
+    const obj = ThreadCommentsData.loadParams;
+    const keys = Object.keys(loadParams);
+    /* console.log('[ThreadComments:updateLoadParams]', {
+     *   keys,
+     *   loadParams,
+     *   obj,
+     * });
+     */
+    // Set all the params...
+    keys.forEach((key) => {
+      const val = loadParams[key];
+      const setVal = Array.isArray(val) ? [...val] : typeof val === 'object' ? { ...val } : val;
+      obj[key] = setVal;
     });
   },
 
