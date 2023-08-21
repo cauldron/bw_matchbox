@@ -1,3 +1,5 @@
+// Public and shared  interfaces for `ThreadComments`
+
 interface TThreadCommentsParams {
   rootNode: Element;
   currentProcess?: number;

@@ -5,10 +5,11 @@ import { InitChunks } from '../../common/InitChunks.js';
 import { commonNotify } from '../../common/CommonNotify.js';
 
 import { ThreadCommentsNodes } from './ThreadCommentsNodes.js';
-import { ThreadCommentsLoader } from './ThreadCommentsLoader.js';
+// import { ThreadCommentsLoader } from './ThreadCommentsLoader.js';
 import { ThreadCommentsRender } from './ThreadCommentsRender.js';
 import { ThreadCommentsStates } from './ThreadCommentsStates.js';
 import { ThreadCommentsHandlers } from './ThreadCommentsHandlers.js';
+import { ThreadCommentsPrepare } from './ThreadCommentsPrepare.js';
 
 const cssStyleUrls = [
   // Styles urls...
@@ -72,10 +73,11 @@ export class ThreadCommentsInit {
       };
 
       // Init all initiable components...
-      ThreadCommentsLoader.init(initParams);
+      // ThreadCommentsLoader.init(initParams);
       ThreadCommentsRender.init(initParams);
       ThreadCommentsStates.init(initParams);
       ThreadCommentsHandlers.init(initParams);
+      ThreadCommentsPrepare.init(initParams);
 
       this.initDomNodeActions();
 

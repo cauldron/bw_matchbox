@@ -2,6 +2,12 @@
 
 import { commonModal } from '../../common/CommonModal.js';
 
+/** @typedef TCommentModalDialogUserAction
+ * @property {string} comment
+ * @property {string} [name]
+ * @property {string} [status]
+ */
+
 export class CommentModalDialog {
   /** promiseCommentModal -- Show dialog and wait for action
    * @param {object} [params]
@@ -44,7 +50,7 @@ export class CommentModalDialog {
    * @param {object} [params]
    * @param {string} [params.title]
    * @param {boolean} [params.useName]
-   * @return {Promise}
+   * @return {Promise<TCommentModalDialogUserAction | undefined>}
    */
   promiseCommentModal(params = {}) {
     const {
@@ -76,7 +82,7 @@ export class CommentModalDialog {
               if (isOpened) {
                 isOpened = false;
                 // Resolve empty value: Don't proceed the operation!
-                resolve(false);
+                resolve(undefined);
               }
             })
             .showModal();
@@ -104,6 +110,7 @@ export class CommentModalDialog {
                 modalNode.querySelector('input#comment-modal-name')
               );
               const name = commentNameEl && commentNameEl.value;
+              /** @type {TCommentModalDialogUserAction} */
               const userAction = { comment, status: 'comment from promiseCommentModal' };
               if (name) {
                 userAction.name = name;

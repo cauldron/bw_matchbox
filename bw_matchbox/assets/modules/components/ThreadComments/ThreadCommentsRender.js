@@ -311,7 +311,7 @@ export const ThreadCommentsRender = {
     // TODO: Update status?
   },
 
-  /** renderData -- Display new data rows at the end of the table.
+  /** renderData -- Render all threads (or append data)
    * @param {object} opts
    * @param {boolean} [opts.append] - Append data to the end of the table (default behavior: replace)
    */
@@ -339,6 +339,27 @@ export const ThreadCommentsRender = {
       });
       threadsListNode.append.apply(threadsListNode, contentNodes);
     }
+  },
+
+  /** renderNewThread -- Display new data rows at the end of the table
+   * @param {TThread[]} threads
+   */
+  renderNewThreads(threads) {
+    const rootNode = ThreadCommentsNodes.getRootNode();
+    const threadsListNode = ThreadCommentsNodes.getThreadsListNode();
+    const content = threads.map(helpers.renderThread).join('\n');
+    console.log('[ThreadCommentsRender:renderNewThread]', {
+      rootNode,
+      threadsListNode,
+      content,
+      threads,
+    });
+    // Append new data (will be used for incremental update)...
+    const contentNodes = CommonHelpers.htmlToElements(content);
+    Array.from(contentNodes).forEach((node) => {
+      this.addActionHandlersToNodeChildren(node);
+    });
+    threadsListNode.append.apply(threadsListNode, contentNodes);
   },
 
   reorderRenderedThreads() {
