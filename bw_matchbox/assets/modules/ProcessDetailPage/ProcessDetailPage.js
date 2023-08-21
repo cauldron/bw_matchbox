@@ -68,7 +68,13 @@ export class ProcessDetailPage {
       state,
       nodes,
     });
-    this.handlers = new ProcessDetailPageHandlers({ sharedParams, callbacks, state, nodes });
+    this.handlers = new ProcessDetailPageHandlers({
+      sharedParams,
+      callbacks,
+      state,
+      nodes,
+      threadComments,
+    });
 
     // Set initialized class...
     const layoutNode = nodes.getLayoutNode();

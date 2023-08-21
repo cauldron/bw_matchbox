@@ -65,21 +65,23 @@ export class ProcessDetailPageInit {
           // noTableau: true,
           // noLoader: true,
           // noError: true,
-          noActions: false,
-          disableAddNewThread: false,
-          disableAddThreadComment: true,
-          disableThreadResolve: true,
+          noActions: true, // Disable inegrated actions panel
+          // disableAddNewThread: false,
+          // disableAddThreadComment: true,
+          // disableThreadResolve: true,
         },
       );
       // Init sub-components...
       this.threadCommentsInitPromise = threadComments
         .ensureInit()
         .then(() => {
-          /* // TODO: Update default values from ThreadComments...
-           * this.state.updateViewParamsFromThreadComments();
-           */
           // Invoke `loadComments`
           return threadComments.handlers.loadComments();
+        })
+        .then(() => {
+          // const layoutNode = this.nodes.getLayoutNode();
+          const threadCommentsPanelNode = this.nodes.getThreadCommentsPanelNode();
+          threadCommentsPanelNode.classList.toggle('ready', true);
         })
         .catch((/** @type {Error} */ error) => {
           // eslint-disable-next-line no-console

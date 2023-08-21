@@ -13,7 +13,6 @@
   --common-error-color: #b00;
   --common-warn-color: #960;
   --common-success-color: #181;
-  --common-tools-icon-size: 28px;
   /* Default table cell widths */
   --common-table-cell-amount-width: 14em;
   --common-table-cell-name-width: auto;
@@ -22,8 +21,9 @@
   --common-table-cell-matched-width: 8em;
   /** Side panels */
   --panels-layout-side-panel-width: 500px;
-  --panels-layout-button-size: 32px;
+  --panels-layout-button-size: 38px;
   --panels-layout-actions-offset: 20px;
+  --panels-layout-actions-offset-y: 10px;
   --minor-border-color: #eee;
 }
 
@@ -139,11 +139,15 @@
 
 /* Panels layout actions */
 .panels-layout .panels-layout-actions {
-  position: fixed;
+  position: absolute;
   right: var(--panels-layout-actions-offset);
-  top: var(--panels-layout-actions-offset);
+  top: var(--panels-layout-actions-offset-y);
   display: flex;
   gap: 4px;
+  z-index: 10;
+}
+.panels-layout .panels-layout-actions.fixed {
+  position: fixed;
 }
 .panels-layout .panels-layout-actions-button {
   width: var(--panels-layout-button-size);
@@ -167,7 +171,7 @@
 .panels-layout .panels-layout-actions-button.turnaround.turned {
   transform: rotate(90deg);
 }
-.panels-layout-content {
+.panels-layout-content.padded {
   margin: 20px auto;
 }
 .panels-layout-side:not(.hidden) {
@@ -175,9 +179,14 @@
 }
 
 /* TODO: To use vars for media queries? Eg, for `panels-layout-min-threshold`? */
-@media (width >= 900px) {
-  .panels-layout-content {
+@media (width >= 700px) {
+  .panels-layout-container.padded {
+    padding: 20px;
+  }
+  .panels-layout-content.padded {
     margin: 20px;
+  }
+  .panels-layout-content {
     width: auto;
   }
   .panels-layout-side {
@@ -194,20 +203,28 @@
     align-items: stretch;
     flex-direction: row-reverse;
   }
+  .panels-layout-container {
+    width: 100%;
+    display: flex;
+    align-items: stretch;
+    justify-content: stretch;
+    /* flex-direction: row-reverse; */
+  }
   .panels-layout-side.hidden,
   .panels-layout-side {
     display: block;
   }
   .panels-layout-main,
   .panels-layout-side {
-    overflow: auto;
     box-sizing: border-box;
     position: relative;
   }
-  .panels-layout-main {
+  .panels-layout .panels-layout-scrollable {
     overflow: auto;
+  }
+  .panels-layout-main {
     width: auto;
-    padding: 0 20px;
+    /* padding: 0 20px; */
     flex: 1;
   }
   .panels-layout-side {

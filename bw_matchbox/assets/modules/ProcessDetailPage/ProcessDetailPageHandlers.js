@@ -9,6 +9,7 @@ import { WaitlistCommentDialog } from './WaitlistCommentDialog.js';
  * @property {TProcessDetailPageNodes} nodes
  * @property {TSharedHandlers} callbacks
  * @property {TSharedParams} sharedParams
+ * @property {TThreadComments} threadComments
  */
 
 /**
@@ -21,6 +22,10 @@ export class ProcessDetailPageHandlers {
   state;
   /** @type {TProcessDetailPageNodes} */
   nodes;
+  /** @type {TSharedHandlers} */
+  callbacks;
+  /** @type {TThreadComments} */
+  threadComments;
 
   /** @param {TCreateParams} params */
   constructor(params) {
@@ -30,11 +35,13 @@ export class ProcessDetailPageHandlers {
       nodes,
       sharedParams,
       callbacks,
+      threadComments,
     } = params;
     this.state = state;
     this.nodes = nodes;
     this.sharedParams = sharedParams;
     this.callbacks = callbacks;
+    this.threadComments = threadComments;
     CommonHelpers.exportCallbacksFromInstance(callbacks, this);
   }
 
@@ -178,5 +185,10 @@ export class ProcessDetailPageHandlers {
     if (showPanel) {
       callbacks.ensureThreadComments();
     }
+  }
+
+  addNewThread() {
+    const { threadComments } = this;
+    threadComments.handlers.addNewThread();
   }
 }

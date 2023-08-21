@@ -222,7 +222,6 @@ export const ThreadCommentsLoader = /** @lends ThreadCommentsLoader */ {
       urlBase,
       url,
     });
-    debugger;
     ThreadCommentsStates.setLoading(true);
     return fetch(url, fetchParams)
       .then((res) => {
@@ -252,7 +251,6 @@ export const ThreadCommentsLoader = /** @lends ThreadCommentsLoader */ {
         console.log('[ThreadCommentsLoader:threadResolveRequest]: success', {
           data,
         });
-        debugger;
         return data;
       })
       .catch((error) => {
@@ -312,7 +310,6 @@ export const ThreadCommentsLoader = /** @lends ThreadCommentsLoader */ {
       urlBase,
       url,
     });
-    debugger;
     ThreadCommentsStates.setLoading(true);
     return fetch(url, fetchParams)
       .then((res) => {
@@ -341,7 +338,6 @@ export const ThreadCommentsLoader = /** @lends ThreadCommentsLoader */ {
         console.log('[ThreadCommentsLoader:threadAddCommentRequest]: done', {
           comment,
         });
-        debugger;
         return comment;
       })
       .catch((error) => {

@@ -1,5 +1,6 @@
 // @ts-check
 
+import * as CommonHelpers from '../../common/CommonHelpers.js';
 import { commonNotify } from '../../common/CommonNotify.js';
 
 import { ThreadCommentsData } from './ThreadCommentsData.js';
@@ -95,7 +96,6 @@ const apiHandlers = {
       params,
       threadsHash,
     });
-    debugger;
     ThreadCommentsLoader.threadResolveRequest({ threadId, resolved })
       .then(() => {
         // Update data...
@@ -141,10 +141,9 @@ const apiHandlers = {
   },
 
   /** threadResolve -- Set resolved status for thread (called from `handleTitleActionClick` by literal id: `apiHandlers[id]`)
-   * @param {TApiHandlerParams} _params
    * @return {Promise}
    */
-  addNewThread(_params) {
+  addNewThread() {
     const { role } = ThreadCommentsData;
     // Check roles...
     if (role !== 'editors' && role !== 'reviewers') {
@@ -172,6 +171,7 @@ const apiHandlers = {
           json,
         });
         ThreadCommentsPrepare.addNewThreadData(json);
+        commonNotify.showSuccess('New thread successfully added');
       })
       .catch((error) => {
         // Undefined eror is possible if user hasn't provided data or canceled mdal dialog
@@ -238,6 +238,7 @@ export const ThreadCommentsHandlers = /** @lends ThreadCommentsHandlers */ {
       console.error('[ThreadCommentsHandlers:handleTitleActionClick] error', error);
       // eslint-disable-next-line no-debugger
       debugger;
+      commonNotify.showError(error);
     }
   },
 
@@ -322,23 +323,12 @@ export const ThreadCommentsHandlers = /** @lends ThreadCommentsHandlers */ {
       });
   },
 
+  addNewThread() {
+    return apiHandlers.addNewThread();
+  },
+
   init({ handlers }) {
     // Export all methods as external handlers...
-    const keys = Object.keys(this);
-    keys.forEach((key) => {
-      const fn = this[key];
-      if (typeof fn === 'function' && key !== 'init') {
-        // Check if handler is unique?
-        if (handlers[key]) {
-          const error = new Error('Doubled handler: ' + key);
-          // eslint-disable-next-line no-console
-          console.error('[ThreadCommentsHandlers:init] init handlers error', error);
-          // eslint-disable-next-line no-debugger
-          debugger;
-          throw error;
-        }
-        handlers[key] = fn.bind(this);
-      }
-    });
+    CommonHelpers.exportCallbacksFromObject(handlers, this);
   },
 };

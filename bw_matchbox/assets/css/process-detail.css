@@ -1,3 +1,7 @@
+:root {
+  --thread-comments-toolbar-items-size: 38px;
+}
+
 /* Basic styles */
 .panels-layout.process-detail-layout > *,
 .process-detail > * {
@@ -11,6 +15,64 @@
 /* Inited */
 .panels-layout.process-detail-layout:not(.inited) .panels-layout-actions {
   opacity: 0;
+  pointer-events: none;
+}
+/* Thread comments panel */
+.panels-layout .thread-comments-panel:not(.ready) .thread-comments-panel-toolbar-wrapper {
+  /* XXX: Deisabed temporarily */
+  /* display: none; */
+}
+.panels-layout .thread-comments-panel {
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+.panels-layout .thread-comments-panel .panels-layout-content {
+  flex: 1;
+  overflow: auto;
+}
+.panels-layout .thread-comments-panel-toolbar-wrapper {
+  padding: 10px 20px;
+  background-color: #f8f8f8;
+  border-bottom: 1px solid #eee;
+  /* box-shadow */
+}
+.panels-layout .thread-comments-toolbar {
+  display: flex;
+  gap: 4px;
+  align-items: center;
+}
+.panels-layout .thread-comments-toolbar > * {
+  margin: 0;
+  display: block;
+  transition: all var(--common-animation-time);
+}
+.panels-layout .thread-comments-toolbar > a.toolbar-icon {
+  background-color: var(--layout-theme-primary-color);
+  color: #fff;
+  border-radius: 4px;
+  width: var(--thread-comments-toolbar-items-size);
+  height: var(--thread-comments-toolbar-items-size);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  opacity: 0.25;
+}
+.panels-layout .thread-comments-toolbar > a.toolbar-icon:not(.disabled) {
+  cursor: pointer;
+  opacity: 0.5;
+}
+.panels-layout .thread-comments-toolbar > a.toolbar-icon:not(.disabled):active,
+.panels-layout .thread-comments-toolbar > a.toolbar-icon:not(.disabled):hover {
+  opacity: 1;
+}
+.panels-layout .thread-comments-toolbar > a.toolbar-icon:not(.disabled):active {
+  color: var(--layout-theme-primary-color);
+  box-shadow: 0 0 4px var(--layout-theme-primary-color);
+  background-color: #fff;
+}
+.panels-layout .thread-comments-panel .thread-comments {
+  width: 100%;
 }
 
 /* Info section */

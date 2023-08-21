@@ -8,6 +8,11 @@ export class ProcessDetailPageNodes {
     return document.getElementById('process-detail-layout');
   }
 
+  getThreadCommentsPanelNode() {
+    const layoutNode = this.getLayoutNode();
+    return layoutNode.querySelector('#thread-comments-panel');
+  }
+
   getRootNode() {
     return document.getElementById('process-detail');
   }
