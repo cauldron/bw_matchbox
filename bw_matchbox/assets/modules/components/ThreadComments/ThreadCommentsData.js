@@ -11,6 +11,13 @@ export const ThreadCommentsData = {
    */
   defaultViewParams: { ...defaultViewParams },
 
+  // Configuration (according to `TThreadCommentsParams` type, see initialization in `ThreadComments:setParams`)...
+
+  /** @type {TThreadCommentsParams["disableResolveByNonReporters"]} */
+  disableResolveByNonReporters: undefined,
+  /** @type {TThreadCommentsParams["hideDisabledTitleActions"]} */
+  hideDisabledTitleActions: undefined,
+
   // Shared params...
 
   /** @type {number} */

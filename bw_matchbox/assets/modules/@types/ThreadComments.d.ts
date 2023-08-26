@@ -13,6 +13,8 @@ interface TThreadCommentsParams {
   disableAddNewThread?: boolean; // Disable ability to add new thread
   disableAddThreadComment?: boolean; // Disable ability to add new comment
   disableThreadResolve?: boolean; // Disable ability to resolve/resolve(open) the thread
+  disableResolveByNonReporters?: boolean; // Resolve/open function allowed only for thread reporter
+  hideDisabledTitleActions?: boolean; // Don't display disabled thread title actions
 }
 
 interface TThreadCommentsSetFilterOpts {

@@ -125,11 +125,15 @@ export class ThreadComments {
       disableAddNewThread,
       disableAddThreadComment,
       disableThreadResolve,
+      disableResolveByNonReporters,
+      hideDisabledTitleActions,
     } = params;
     ThreadCommentsNodes.setRootNode(rootNode);
     ThreadCommentsStates.setRole(role);
     ThreadCommentsData.currentProcess = currentProcess; // Optional
     ThreadCommentsData.currentUser = currentUser;
+    ThreadCommentsData.disableResolveByNonReporters = disableResolveByNonReporters;
+    ThreadCommentsData.hideDisabledTitleActions = hideDisabledTitleActions;
     // TODO: To duplicate those properties in the state?
     rootNode.classList.toggle('noTableau', !!noTableau);
     rootNode.classList.toggle('noLoader', !!noLoader);
