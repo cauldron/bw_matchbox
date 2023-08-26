@@ -106,12 +106,13 @@ const helpers = {
           !isResolveEnabled && 'disabled'
         }"><i class="is-resolved fa-solid fa-lock" title="Resolved (click to open)"></i><i class="not-resolved fa-solid fa-lock-open" title="Open (click to resolve)"></i></a>`,
     ].filter(Boolean);
-    console.log('[ThreadCommentsRender:helpers:renderThreadTitleActions]', {
-      actions,
-      reporter,
-      currentUser,
-      thread,
-    });
+    /* console.log('[ThreadCommentsRender:helpers:renderThreadTitleActions]', {
+     *   actions,
+     *   reporter,
+     *   currentUser,
+     *   thread,
+     * });
+     */
     return actions.join('\n');
   },
 
@@ -129,11 +130,6 @@ const helpers = {
       // reporter, // string, eg: '阿部 篤司'
       // process, // TProcess;
     } = thread;
-    // const { currentUser, disableResolveByNonReporters, hideDisabledTitleActions } =
-    //   ThreadCommentsData;
-    // const isCurrentReporter = currentUser === reporter;
-    // const isResolveEnabled = !disableResolveByNonReporters || isCurrentReporter;
-    // const isResolveVisible = !hideDisabledTitleActions || isResolveEnabled;
     const isVisible = ThreadCommentsHelpers.isThreadVisible(threadId);
     const commentsList = helpers.getVisibleCommentsForThread(threadId);
     const commentPositions = commentsList.map((comment) => comment.position);
@@ -177,16 +173,17 @@ const helpers = {
             <div class="comments" data-for-thread-id="${threadId}" id="comments-for-thread-${threadId}">${commentsContent}</div>
           </div>
         `;
-    console.log('[ThreadCommentsRender:helpers:renderThread]', {
-      content,
-      commentPositions,
-      threadId,
-      // name,
-      // reporter,
-      // currentUser,
-      commentsList,
-      thread,
-    });
+    /* console.log('[ThreadCommentsRender:helpers:renderThread]', {
+     *   content,
+     *   commentPositions,
+     *   threadId,
+     *   // name,
+     *   // reporter,
+     *   // currentUser,
+     *   commentsList,
+     *   thread,
+     * });
+     */
     return content;
   },
 
