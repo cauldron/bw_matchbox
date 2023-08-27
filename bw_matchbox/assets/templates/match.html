@@ -1,12 +1,5 @@
 {% include 'header.html' %}
 
-{# Module-specific dependencies... #}
-
-<link rel="stylesheet" href="{{ url_for('static', filename='css/match.css') }}">
-
-{# Core js module #}
-<script src="{{ url_for('static', filename='js/Match/Match.js') }}"></script>
-
 <div id="match-root" class="container match-root">
   {% include 'navigation.html' %}
   <div class="row">
@@ -38,10 +31,19 @@
   </div>
 </div>
 
-<script type="text/javascript">
-modules.require('Match', function requireMatch(Match) {
-  // Global variables for compare tables feature (via global variable `sharedData`)...
-  const sharedData = {
+{# NOTE: All reusable modules and all related stuff like css are dynamically connecting as ES6 modules, inside the code #}
+
+{# TODO: It's possible to dynamically load all required styles using `CommonHelpers.addCssStyle` method. #}
+<link rel="stylesheet" href="{{ url_for('static', filename='css/match.css') }}">
+
+<!-- Start page scripts -->
+<script type="module">
+
+  // Core module
+  import { Match } from '/assets/modules/Match/Match.js';
+
+  // Global variables (via global variable `sharedParams`)...
+  const sharedParams = {
     searchUrlPrefix: '{{ url_for('search') }}',
     source: '{{ ds.id }}',
     database: '{{ config.target }}',
@@ -55,12 +57,13 @@ modules.require('Match', function requireMatch(Match) {
     },
   };
 
+  {# console.log('[match:start]', sharedParams); #}
+
   // Export to global scope (to access from generated html code handlers).
   window.Match = Match;
 
   // Start core module...
-  Match.start(sharedData);
-});
+  Match.start(sharedParams);
 
 </script>
 {% include 'footer.html' %}
