@@ -1,23 +1,5 @@
 {% include 'header.html' %}
 
-{# Common dependencies... #}
-
-{% include 'common-modal.html' %}
-{% include 'common-notify.html' %}
-
-{# Module-specific dependencies... #}
-
-<link rel="stylesheet" href="{{ url_for('static', filename='css/compare.css') }}">
-
-<script src="{{ url_for('static', filename='js/Compare/CompareRowsHelpers.js') }}"></script>
-<script src="{{ url_for('static', filename='js/Compare/CompareProxyDialogModal.js') }}"></script>
-<script src="{{ url_for('static', filename='js/Compare/CompareRowClick.js') }}"></script>
-<script src="{{ url_for('static', filename='js/Compare/CompareCore.js') }}"></script>
-
-{# Core js module:
-  - `CompareCore` (from `bw_matchbox/assets/js/Compare/CompareCore.js`)
-#}
-
 <div id="compare-root" class="container compare">
   {% include 'navigation.html' %}
   <div class="row">
@@ -78,45 +60,56 @@
   </div>
 </div>
 
-<script>
-  modules.require('CompareCore', (CompareCore) => {
-    // Global variables for compare tables feature (via global variable `sharedData`)...
-    const sharedData = {
-      // Data for clipboard copy feature...
-      source_node_name: '{{ source_node.name }}',
-      source_node_url: '{{ base_url}}{{ url_for('process_detail', id=source_node.id) }}',
-      target_node_name: '{{ target_node.name }}',
-      target_node_url: '{{ base_url}}{{ url_for('process_detail', id=target_node.id) }}',
-      // Generic data...
-      source_data: {{ source_data_json|safe }}, // TDataRecord[]
-      target_data: {{ target_data_json|safe }}, // TDataRecord[]
-      target_node: {{ target_json|safe}},
-      source_id: {{ source_node.id }},
-      target_id: {{ target_node.id }},
-      target_name: '{{ target_node.name|safe }}',
-      source_node_unit: '{{source_node.unit}}',
-      source_node_location: '{{source_node.location}}',
-      match_types: {{ match_types|safe }},
-      match_type_default: '3',
-      comment: '', // Shared comments accumulator
-      /* // Issue #52: match_types sample:
-       * {
-       *   '1': 'No direct match available',
-       *   '2': 'Direct match with near-identical data',
-       *   '3': 'Match with updated data',
-       *   '4': 'Match with updated data and adding source transport',
-       *   '5': 'Match with market and replace or remove transport',
-       *   '6': 'Match with market and replace or remove transport and loss factor',
-       *   '7': 'Equivalent datasets after modification',
-       * }
-       */
-    };
+{# NOTE: All reusable modules and all related stuff like css are dynamically connecting as ES6 modules, inside the code #}
 
-    // Export to global scope (to access from generated html code handlers).
-    window.CompareCore = CompareCore;
+{# TODO: It's possible to dynamically load all required styles using `CommonHelpers.addCssStyle` method. #}
+<link rel="stylesheet" href="{{ url_for('static', filename='css/compare.css') }}">
 
-    // Start core module...
-    CompareCore.start(sharedData);
-  });
+<!-- Start page scripts -->
+<script type="module">
+
+  // Core module
+  import { CompareCore } from '/assets/modules/Compare/CompareCore.js';
+
+  // Global variables for compare tables feature (via global variable `sharedParams`)...
+  const sharedParams = {
+    // Data for clipboard copy feature...
+    source_node_name: '{{ source_node.name }}',
+    source_node_url: '{{ base_url}}{{ url_for('process_detail', id=source_node.id) }}',
+    target_node_name: '{{ target_node.name }}',
+    target_node_url: '{{ base_url}}{{ url_for('process_detail', id=target_node.id) }}',
+    // Generic data...
+    source_data: {{ source_data_json|safe }}, // TDataRecord[]
+    target_data: {{ target_data_json|safe }}, // TDataRecord[]
+    target_node: {{ target_json|safe}},
+    source_id: {{ source_node.id }},
+    target_id: {{ target_node.id }},
+    target_name: '{{ target_node.name|safe }}',
+    source_node_unit: '{{source_node.unit}}',
+    source_node_location: '{{source_node.location}}',
+    match_types: {{ match_types|safe }},
+    match_type_default: '3',
+    comment: '', // Shared comments accumulator
+    /* // Issue #52: match_types sample:
+     * {
+     *   '1': 'No direct match available',
+     *   '2': 'Direct match with near-identical data',
+     *   '3': 'Match with updated data',
+     *   '4': 'Match with updated data and adding source transport',
+     *   '5': 'Match with market and replace or remove transport',
+     *   '6': 'Match with market and replace or remove transport and loss factor',
+     *   '7': 'Equivalent datasets after modification',
+     * }
+     */
+  };
+
+  console.log('[compare:start]', sharedParams);
+
+  // Export to global scope (to access from generated html code handlers).
+  window.CompareCore = CompareCore;
+
+  // Start core module...
+  CompareCore.start(sharedParams);
+
 </script>
 {% include 'footer.html' %}
