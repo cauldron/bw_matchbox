@@ -81,7 +81,7 @@
                       {% endif %}
                     {% endif %}
                     {% if ds.matched and not is_proxy and config.role == 'editors' %}
-                      <a class="tools-button theme-danger" href="{{ url_for('remove_match', id=ds.id)}}">{% if ds.proxy_id %}Remove match needed{% else %}Remove match and delete proxy{% endif %}</a>
+                      <a class="tools-button theme-danger" href="{{ url_for('remove_match', id=ds.id)}}">{% if ds.proxy_id %}Remove match and delete proxy{% else %}Remove match{% endif %}</a>
                     {% endif %}
                     {% if is_proxy and config.role == 'editors' %}
                       <a class="tools-button theme-danger" href="{{ url_for('remove_match', id=ds.id)}}">Delete proxy and remove match</a>
