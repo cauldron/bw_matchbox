@@ -212,6 +212,10 @@ export const ThreadCommentsHandlers = /** @lends ThreadCommentsHandlers */ {
       actionId,
       threadId,
     };
+    const isDisabled = node.classList.contains('disabled');
+    if (isDisabled) {
+      return;
+    }
     const func = apiHandlers[actionId];
     try {
       if (!func) {

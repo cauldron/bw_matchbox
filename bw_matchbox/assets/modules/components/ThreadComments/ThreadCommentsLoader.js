@@ -5,9 +5,10 @@ import { commonNotify } from '../../common/CommonNotify.js';
 
 import * as ThreadCommentsConstants from './ThreadCommentsConstants.js';
 import { ThreadCommentsData } from './ThreadCommentsData.js';
+import { ThreadCommentsStates } from './ThreadCommentsStates.js';
+// import { isDev } from '../../common/CommonConstants.js';
 // import { ThreadCommentsRender } from './ThreadCommentsRender.js';
 // import { ThreadCommentsPrepare } from './ThreadCommentsPrepare.js';
-import { ThreadCommentsStates } from './ThreadCommentsStates.js';
 
 export const ThreadCommentsLoader = /** @lends ThreadCommentsLoader */ {
   /* [>* @type {TEvents} <]
@@ -55,6 +56,11 @@ export const ThreadCommentsLoader = /** @lends ThreadCommentsLoader */ {
         console.log('[ThreadCommentsLoader:loadCommentsRequest]: success', {
           json,
         });
+        /* // DEBUG: Emulate 'other' reporter for the first record (Issue #119: comments-permissions)
+         * if (isDev) {
+         *   json.threads[0].reporter = 'XXX';
+         * }
+         */
         return json;
       })
       .catch((error) => {

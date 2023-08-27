@@ -69,6 +69,8 @@ export class ProcessDetailPageInit {
           // disableAddNewThread: false,
           // disableAddThreadComment: true,
           // disableThreadResolve: true,
+          disableResolveByNonReporters: true,
+          hideDisabledTitleActions: true,
         },
       );
       // Init sub-components...

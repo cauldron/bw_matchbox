@@ -84,6 +84,42 @@ const helpers = {
    * @param {TThread} thread
    * @return {string} - HTML content
    */
+  renderThreadTitleActions(thread) {
+    const {
+      // id: threadId,
+      // resolved, // boolean, eg: false
+      // created, // TGmtDateStr, eg: 'Sat, 12 Aug 2023 12:36:08 GMT'
+      // modified, // TGmtDateStr, eg: 'Sat, 12 Aug 2023 12:36:08 GMT'
+      // name, // string, eg: 'Возмутиться кпсс гул'
+      reporter, // string, eg: '阿部 篤司'
+      // process, // TProcess;
+    } = thread;
+    const { currentUser, disableResolveByNonReporters, hideDisabledTitleActions } =
+      ThreadCommentsData;
+    const isCurrentReporter = currentUser === reporter;
+    const isResolveEnabled = !disableResolveByNonReporters || isCurrentReporter;
+    const isResolveVisible = !hideDisabledTitleActions || isResolveEnabled;
+    const actions = [
+      `<a id="threadAddComment" title="Add comment"><i class="fa-solid fa-comment"></i></a>`,
+      isResolveVisible &&
+        `<a id="threadResolve" class="${
+          !isResolveEnabled && 'disabled'
+        }"><i class="is-resolved fa-solid fa-lock" title="Resolved (click to open)"></i><i class="not-resolved fa-solid fa-lock-open" title="Open (click to resolve)"></i></a>`,
+    ].filter(Boolean);
+    /* console.log('[ThreadCommentsRender:helpers:renderThreadTitleActions]', {
+     *   actions,
+     *   reporter,
+     *   currentUser,
+     *   thread,
+     * });
+     */
+    return actions.join('\n');
+  },
+
+  /** renderThread
+   * @param {TThread} thread
+   * @return {string} - HTML content
+   */
   renderThread(thread) {
     const {
       id: threadId,
@@ -115,6 +151,7 @@ const helpers = {
       ? helpers.renderThreadCommentsContent(threadId)
       : // DEBUG: Here should be empty data for the unexpanded thread comments...
         commentPositions.join(', ');
+    const threadTitleActions = helpers.renderThreadTitleActions(thread);
     const threadTitleTextContent = helpers.createThreadTitleTextContent(thread);
     const content = `
           <div data-thread-id="${threadId}" id="thread-${threadId}" class="${className}">
@@ -129,8 +166,7 @@ const helpers = {
                   ${threadTitleTextContent}
                 </div>
                 <div class="title-actions">
-                  <a id="threadAddComment" title="Add comment"><i class="fa-solid fa-comment"></i></a>
-                  <a id="threadResolve"><i class="is-resolved fa-solid fa-lock" title="Resolved (click to open)"></i><i class="not-resolved fa-solid fa-lock-open" title="Open (click to resolve)"></i></a>
+                  ${threadTitleActions}
                 </div>
               </div>
             </div>
@@ -141,8 +177,9 @@ const helpers = {
      *   content,
      *   commentPositions,
      *   threadId,
-     *   name,
-     *   reporter,
+     *   // name,
+     *   // reporter,
+     *   // currentUser,
      *   commentsList,
      *   thread,
      * });
