@@ -34,25 +34,6 @@ export const CommentsPageDataRender = {
     errorNode.innerHTML = errorText;
   },
 
-  /* ??? ensureThreadCommentsReady(threadId) {
-   *   const commentsNodeId = `comments-for-thread-${threadId}`;
-   *   const commentsNode = document.getElementById(commentsNodeId);
-   *   // Do nothing if the node is ready...
-   *   if (!commentsNode.classList.contains('ready')) {
-   *     this.updateThreadComments(threadId);
-   *   }
-   * },
-   */
-
-  /* ??? updateVisibleThreadsStatus() {
-   *   const rootNode = CommentsPageNodes.getRootNode();
-   *   const threadsListNode = CommentsPageNodes.getThreadCommentsNode();
-   *   const visibleThreadNodes = threadsListNode.querySelectorAll('.thread:not(.hidden)');
-   *   const hasVisibleThreads = !!visibleThreadNodes.length;
-   *   rootNode.classList.toggle('has-visible-threads', hasVisibleThreads);
-   * },
-   */
-
   renderFilterByUserOptions() {
     const rootNode = CommentsPageNodes.getRootNode();
     const { filterByUsers, sharedParams } = CommentsPageData;
@@ -93,12 +74,13 @@ export const CommentsPageDataRender = {
       return `<option value="${id}"${isSelected ? ' selected' : ''}>${processName}</option>`;
     });
     const hasProcesses = !!options.length;
-    console.log('[CommentsPageDataRender:renderFilterByProcessOptions]', {
-      options,
-      hasProcesses,
-      processIds,
-      filterByProcessesNode,
-    });
+    /* console.log('[CommentsPageDataRender:renderFilterByProcessOptions]', {
+     *   options,
+     *   hasProcesses,
+     *   processIds,
+     *   filterByProcessesNode,
+     * });
+     */
     filterByProcessesNode.innerHTML = options.join('\n');
     rootNode.classList.toggle('has-processes', hasProcesses);
   },
@@ -108,6 +90,7 @@ export const CommentsPageDataRender = {
     this.renderFilterByProcessOptions();
   },
 
+  /** @param {TCommentsPageInitParams} initParams */
   start(initParams) {
     const { handlers, threadComments } = initParams;
     // Save paraemeters...

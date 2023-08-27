@@ -83,7 +83,9 @@
   // Core module
   import { CommentsPage } from '/assets/modules/CommentsPage/CommentsPage.js';
 
-  // Global variables for compare tables feature (via global variable `sharedParams`)...
+  /** Global variables for compare tables feature (via global variable `sharedParams`)...
+   * @type {TSharedParams} - See `bw_matchbox/assets/modules/CommentsPage/@types/TSharedParams.d.ts`
+   */
   const sharedParams = {
     base_url: '{{ base_url }}',
     currentRole: '{{ config.role }}',

@@ -13,18 +13,6 @@ import { CommentsPageThreadsHelpers } from './CommentsPageThreadsHelpers.js';
 
 import { ThreadComments } from '../components/ThreadComments/ThreadComments.js';
 
-/** @typedef TSharedParams
- * @property {string} base_url
- * @property {string} currentRole
- * @property {string} currentUser
- */
-
-/** @typedef TInitParams
- * @property {ThreadComments} threadComments
- * @property {TSharedHandlers} handlers
- * @property {TSharedParams} sharedParams
- */
-
 /** Used modules list (will be needed for initialization, in `startAllModules`)
  */
 const usedModulesList = [
@@ -55,7 +43,7 @@ export const CommentsPage = {
    */
   startAllModules(sharedParams) {
     const { handlers, threadComments } = this;
-    /** @type {TInitParams} */
+    /** @type {TCommentsPageInitParams} */
     const initParams = {
       handlers,
       threadComments,

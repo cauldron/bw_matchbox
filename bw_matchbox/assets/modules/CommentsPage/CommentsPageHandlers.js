@@ -17,9 +17,6 @@ export const CommentsPageHandlers = /** @lends CommentsPageHandlers */ {
    */
   handleFilterByUserChange(node) {
     const values = CommentsPageHelpers.getMultipleSelectValues(node);
-    console.log('[CommentsPageHandlers:handleFilterByUserChange]', {
-      values,
-    });
     CommentsPageStates.setFilterByUsers(values);
   },
 
@@ -144,6 +141,7 @@ export const CommentsPageHandlers = /** @lends CommentsPageHandlers */ {
     this.threadComments.api.expandAllThreads();
   },
 
+  /** @param {TCommentsPageInitParams} initParams */
   start(initParams) {
     const { handlers, threadComments } = initParams;
     // Save paraemeters...

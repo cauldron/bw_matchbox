@@ -141,8 +141,9 @@ export const CommentsPageStates = {
     CommentsPageDataRender.clearRenderedData();
   },
 
-  start(params) {
-    const { handlers, threadComments } = params;
+  /** @param {TCommentsPageInitParams} initParams */
+  start(initParams) {
+    const { handlers, threadComments } = initParams;
     this.threadComments = threadComments;
     // Add all methods as bound handlers...
     Object.keys(this).forEach((key) => {
