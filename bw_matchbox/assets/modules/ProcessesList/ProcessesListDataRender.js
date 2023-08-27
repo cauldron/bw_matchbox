@@ -19,7 +19,7 @@ export const ProcessesListDataRender = {
    * @param {TProcess} rowData
    */
   renderMatchCellContent(rowData) {
-    const { sharedParams } = ProcessesListData;
+    const { sharedParams, userDb } = ProcessesListData;
     const { currentRole, databases } = sharedParams;
     const { proxy } = databases;
     const isEditor = currentRole === 'editors';
@@ -28,9 +28,13 @@ export const ProcessesListDataRender = {
       id, // 726 (required!)
       match_type, // 'No direct match available'
       matched, // false
+      product,
     } = rowData;
     const hasMatchType = !!match_type;
-    if (isEditor) {
+    const isSource = userDb === 'source';
+    if (!isSource) {
+      return product || '';
+    } else if (isEditor) {
       const matchUrl = '/match/' + id;
       const matchText = matched ? match_type || 'Edit' : 'Add';
       const matchIcon = matched ? 'fa-check' : 'fa-circle-xmark';

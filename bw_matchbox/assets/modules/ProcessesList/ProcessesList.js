@@ -26,10 +26,11 @@ const usedModulesList = [
 export const ProcessesList = {
   __id: 'ProcessesList',
 
-  // handlers: {},
+  /* TODO: Handlers exchange object
+   * handlers: {},
+   */
 
   /**
-   * TODO: Handlers exchange object
    * Update value of 'order by' parameter from user
    * @param {{ value: any; }} target
    */
@@ -78,7 +79,7 @@ export const ProcessesList = {
   /** reloadLastData -- Reload last data chank (TODO, in progress)
    */
   reloadLastData() {
-    ProcessesListDataLoad.loadData(); // TODO
+    ProcessesListDataLoad.loadData();
   },
 
   loadMoreData() {

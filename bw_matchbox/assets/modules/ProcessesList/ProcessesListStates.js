@@ -185,11 +185,11 @@ export const ProcessesListStates = {
   setUserDb(userDb, opts = {}) {
     const { defaultUserDb } = ProcessesListConstants;
     const rootNode = ProcessesListNodes.getRootNode();
-    const prevClass = ['filter', ProcessesListData.userDb || defaultUserDb]
+    const prevClass = ['userDb', ProcessesListData.userDb || defaultUserDb]
       .filter(Boolean)
       .join('-');
     const value = userDb || defaultUserDb;
-    const nextClass = ['filter', value].filter(Boolean).join('-');
+    const nextClass = ['userDb', value].filter(Boolean).join('-');
     if (prevClass !== nextClass) {
       rootNode.classList.toggle(prevClass, false);
     }
