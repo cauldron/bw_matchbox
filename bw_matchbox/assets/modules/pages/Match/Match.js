@@ -1,6 +1,6 @@
 // @ts-check
 
-import * as CommonHelpers from '../common/CommonHelpers.js';
+import * as CommonHelpers from '../../common/CommonHelpers.js';
 
 export const Match = {
   /** External data...

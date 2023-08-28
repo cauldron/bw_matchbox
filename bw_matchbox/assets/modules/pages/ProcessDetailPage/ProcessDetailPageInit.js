@@ -1,7 +1,7 @@
 // @ts-check
 
-import { commonNotify } from '../common/CommonNotify.js';
-import * as CommonHelpers from '../common/CommonHelpers.js';
+import { commonNotify } from '../../common/CommonNotify.js';
+import * as CommonHelpers from '../../common/CommonHelpers.js';
 
 /** @typedef TCreateParams
  * @property {TThreadComments} threadComments

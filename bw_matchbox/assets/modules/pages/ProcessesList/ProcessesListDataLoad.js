@@ -1,6 +1,6 @@
 // @ts-check
 
-import * as CommonHelpers from '../common/CommonHelpers.js';
+import * as CommonHelpers from '../../common/CommonHelpers.js';
 
 import { ProcessesListConstants } from './ProcessesListConstants.js';
 import { ProcessesListData } from './ProcessesListData.js';

@@ -1,6 +1,6 @@
 // @ts-check
 
-import { commonNotify } from '../common/CommonNotify.js';
+import { commonNotify } from '../../common/CommonNotify.js';
 
 import { CommentsPageConstants } from './CommentsPageConstants.js';
 import { CommentsPageData } from './CommentsPageData.js';
@@ -11,7 +11,7 @@ import { CommentsPageNodes } from './CommentsPageNodes.js';
 import { CommentsPageStates } from './CommentsPageStates.js';
 import { CommentsPageThreadsHelpers } from './CommentsPageThreadsHelpers.js';
 
-import { ThreadComments } from '../components/ThreadComments/ThreadComments.js';
+import { ThreadComments } from '../../components/ThreadComments/ThreadComments.js';
 
 /** Used modules list (will be needed for initialization, in `startAllModules`)
  */

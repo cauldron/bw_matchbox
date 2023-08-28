@@ -1,4 +1,4 @@
-import * as CommonHelpers from '../common/CommonHelpers.js';
+import * as CommonHelpers from '../../common/CommonHelpers.js';
 
 import { CommentsPageData } from './CommentsPageData.js';
 import { CommentsPageNodes } from './CommentsPageNodes.js';
