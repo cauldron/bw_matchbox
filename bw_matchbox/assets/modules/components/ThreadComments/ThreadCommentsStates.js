@@ -1,7 +1,11 @@
 // @ts-check
 
-import { ThreadCommentsData } from './ThreadCommentsData.js';
+// Import types only...
+/* eslint-disable no-unused-vars */
 import { ThreadCommentsRender } from './ThreadCommentsRender.js';
+/* eslint-enable no-unused-vars */
+
+import { ThreadCommentsData } from './ThreadCommentsData.js';
 import { ThreadCommentsHelpers } from './ThreadCommentsHelpers.js';
 import { ThreadCommentsNodes } from './ThreadCommentsNodes.js';
 
@@ -11,6 +15,17 @@ export const ThreadCommentsStates = {
 
   /** @type {TEvents} */
   events: undefined,
+
+  /** @type {ThreadCommentsRender} */
+  threadCommentsRender: undefined,
+  // [>* @type {ThreadCommentsNodes} <]
+  // threadCommentsNodes: undefined,
+  // [>* @type {ThreadCommentsStates} <]
+  // threadCommentsStates: undefined,
+  // [>* @type {ThreadCommentsHandlers} <]
+  // threadCommentsHandlers: undefined,
+  // [>* @type {ThreadCommentsPrepare} <]
+  // threadCommentsPrepare: undefined,
 
   /**
    * @param {boolean} isLoading
@@ -60,7 +75,7 @@ export const ThreadCommentsStates = {
      */
     ThreadCommentsData.filterByUsers = values;
     if (!opts.omitUpdate) {
-      ThreadCommentsRender.updateVisibleThreads();
+      this.threadCommentsRender.updateVisibleThreads();
     }
   },
 
@@ -72,7 +87,7 @@ export const ThreadCommentsStates = {
   setFilterByProcesses(values, opts = {}) {
     ThreadCommentsData.filterByProcesses = values;
     if (!opts.omitUpdate) {
-      ThreadCommentsRender.updateVisibleThreads();
+      this.threadCommentsRender.updateVisibleThreads();
     }
   },
 
@@ -84,7 +99,7 @@ export const ThreadCommentsStates = {
   setFilterByState(value, opts = {}) {
     ThreadCommentsData.filterByState = value;
     if (!opts.omitUpdate) {
-      ThreadCommentsRender.updateVisibleThreads();
+      this.threadCommentsRender.updateVisibleThreads();
     }
   },
 
@@ -103,7 +118,7 @@ export const ThreadCommentsStates = {
      */
     if (!opts.omitUpdate) {
       // Re-render all threads...
-      ThreadCommentsRender.renderData();
+      this.threadCommentsRender.renderData();
     }
   },
 
@@ -130,7 +145,7 @@ export const ThreadCommentsStates = {
      */
     if (!opts.omitUpdate) {
       // Re-render all threads...
-      ThreadCommentsRender.renderData();
+      this.threadCommentsRender.renderData();
     }
   },
 
@@ -142,8 +157,8 @@ export const ThreadCommentsStates = {
   setFilterByMyThreads(value, opts = {}) {
     ThreadCommentsData.filterByMyThreads = value;
     if (!opts.omitUpdate) {
-      ThreadCommentsRender.updateVisibleThreads();
-      // ThreadCommentsRender.rerenderAllVisibleComments(); // Could be used if will filter particular comments
+      this.threadCommentsRender.updateVisibleThreads();
+      // this.threadCommentsRender.rerenderAllVisibleComments(); // Could be used if will filter particular comments
     }
   },
 
@@ -190,20 +205,21 @@ export const ThreadCommentsStates = {
   setError(error) {
     ThreadCommentsData.isError = !!error;
     ThreadCommentsData.error = error;
-    ThreadCommentsRender.renderError(error);
+    this.threadCommentsRender.renderError(error);
     this.events.emit('error', error);
   },
 
   clearData() {
     this.setHasData(false);
-    ThreadCommentsRender.clearRenderedData();
+    this.threadCommentsRender.clearRenderedData();
   },
 
   /** @param {TThreadCommentsInitParams} initParams */
   init(initParams) {
-    const { events, handlers } = initParams;
+    const { events, handlers, threadCommentsRender } = initParams;
     this.events = events;
     this.handlers = handlers;
+    this.threadCommentsRender = threadCommentsRender;
     // TODO: Update all the dynamic parameters...
   },
 };

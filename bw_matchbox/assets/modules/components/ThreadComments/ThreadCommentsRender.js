@@ -9,9 +9,9 @@ import { ThreadCommentsNodes } from './ThreadCommentsNodes.js';
 import { ThreadCommentsHelpers } from './ThreadCommentsHelpers.js';
 
 /** Local (not public) helpers... */
-const helpers = {
+class RenderHelpers {
   /** @type {Intl.DateTimeFormat} */
-  dateTimeFormatter: undefined,
+  dateTimeFormatter;
 
   /** getCommentsForThread
    * @param {TThreadId} threadId
@@ -22,7 +22,7 @@ const helpers = {
     const commentsByThreadsIds = commentsByThreads[threadId];
     const commentsList = commentsByThreadsIds.map((id) => commentsHash[id]);
     return commentsList;
-  },
+  }
 
   /**
    * @param {TThreadId} threadId
@@ -33,17 +33,17 @@ const helpers = {
     const visibleCommentIds = commentsByThreadsIds.filter(ThreadCommentsHelpers.isCommentVisible);
     const commentsList = visibleCommentIds.map((id) => commentsHash[id]);
     return commentsList;
-  },
+  }
 
   getDateTimeFormatter() {
-    if (!helpers.dateTimeFormatter) {
-      helpers.dateTimeFormatter = new Intl.DateTimeFormat(
+    if (!this.dateTimeFormatter) {
+      this.dateTimeFormatter = new Intl.DateTimeFormat(
         CommonConstants.dateTimeFormatLocale,
         CommonConstants.dateTimeFormatOptions,
       );
     }
-    return helpers.dateTimeFormatter;
-  },
+    return this.dateTimeFormatter;
+  }
 
   /**
    * @param {TThread} thread
@@ -58,10 +58,10 @@ const helpers = {
       resolved, // boolean, eg: false
       process, // TProcess;
     } = thread;
-    const commentsList = helpers.getVisibleCommentsForThread(threadId);
+    const commentsList = this.getVisibleCommentsForThread(threadId);
     const commentsCount = commentsList.length;
     const modifiedDate = new Date(modified);
-    const dateTimeFormatter = helpers.getDateTimeFormatter();
+    const dateTimeFormatter = this.getDateTimeFormatter();
     const modifiedStr = dateTimeFormatter.format(modifiedDate);
     const processName = ThreadCommentsHelpers.createProcessName(process);
     const infoText = [
@@ -78,7 +78,7 @@ const helpers = {
             <span class="info">(${infoText})</span>
         `;
     return content;
-  },
+  }
 
   /** renderThread
    * @param {TThread} thread
@@ -106,7 +106,7 @@ const helpers = {
           !isResolveEnabled && 'disabled'
         }"><i class="is-resolved fa-solid fa-lock" title="Resolved (click to open)"></i><i class="not-resolved fa-solid fa-lock-open" title="Open (click to resolve)"></i></a>`,
     ].filter(Boolean);
-    /* console.log('[ThreadCommentsRender:helpers:renderThreadTitleActions]', {
+    /* console.log('[ThreadCommentsRender:renderHelpers:renderThreadTitleActions]', {
      *   actions,
      *   reporter,
      *   currentUser,
@@ -114,7 +114,7 @@ const helpers = {
      * });
      */
     return actions.join('\n');
-  },
+  }
 
   /** renderThread
    * @param {TThread} thread
@@ -131,7 +131,7 @@ const helpers = {
       // process, // TProcess;
     } = thread;
     const isVisible = ThreadCommentsHelpers.isThreadVisible(threadId);
-    const commentsList = helpers.getVisibleCommentsForThread(threadId);
+    const commentsList = this.getVisibleCommentsForThread(threadId);
     const commentPositions = commentsList.map((comment) => comment.position);
     const commentsCount = commentsList.length;
     const isEmpty = !commentsCount;
@@ -148,11 +148,11 @@ const helpers = {
       .join(' ');
     // Render actual comments if thread is expanded by default...
     const commentsContent = isExpanded
-      ? helpers.renderThreadCommentsContent(threadId)
+      ? this.renderThreadCommentsContent(threadId)
       : // DEBUG: Here should be empty data for the unexpanded thread comments...
         commentPositions.join(', ');
-    const threadTitleActions = helpers.renderThreadTitleActions(thread);
-    const threadTitleTextContent = helpers.createThreadTitleTextContent(thread);
+    const threadTitleActions = this.renderThreadTitleActions(thread);
+    const threadTitleTextContent = this.createThreadTitleTextContent(thread);
     const content = `
           <div data-thread-id="${threadId}" id="thread-${threadId}" class="${className}">
             <div class="main-row">
@@ -173,7 +173,7 @@ const helpers = {
             <div class="comments" data-for-thread-id="${threadId}" id="comments-for-thread-${threadId}">${commentsContent}</div>
           </div>
         `;
-    /* console.log('[ThreadCommentsRender:helpers:renderThread]', {
+    /* console.log('[ThreadCommentsRender:renderHelpers:renderThread]', {
      *   content,
      *   commentPositions,
      *   threadId,
@@ -185,7 +185,7 @@ const helpers = {
      * });
      */
     return content;
-  },
+  }
 
   /**
    * @param {TComment} comment
@@ -232,7 +232,7 @@ const helpers = {
             </div>
           </div>
         `;
-    /* console.log('[ThreadCommentsRender:helpers:renderComment]', {
+    /* console.log('[ThreadCommentsRender:renderHelpers:renderComment]', {
      *   html,
      *   //\\
      *   id, // number; // 2
@@ -245,7 +245,7 @@ const helpers = {
      * });
      */
     return html;
-  },
+  }
 
   /**
    * @param {TThreadId} threadId
@@ -253,20 +253,21 @@ const helpers = {
   renderThreadCommentsContent(threadId) {
     // const { filterByState } = ThreadCommentsData;
     // TODO: Use some filters?
-    const comments = helpers.getVisibleCommentsForThread(threadId);
-    const commentsHtml = comments.map(helpers.renderComment).join('\n');
-    /* console.log('[ThreadCommentsRender:helpers:renderThreadCommentsContent]', {
+    const comments = this.getVisibleCommentsForThread(threadId);
+    const commentsHtml = comments.map(this.renderComment.bind(this)).join('\n');
+    /* console.log('[ThreadCommentsRender:renderHelpers:renderThreadCommentsContent]', {
      *   commentsHtml,
      *   comments,
      *   threadId,
      * });
      */
     return commentsHtml;
-  },
-};
+  }
+}
 
-export const ThreadCommentsRender = {
-  helpers, // Expose helpers (TODO: Refactor to make it hidden?)
+export class ThreadCommentsRender {
+  /** @type {RenderHelpers} */
+  helpers = new RenderHelpers(); // Expose helpers (TODO: Refactor to make it hidden?)
 
   /**
    * @param {Error} error
@@ -292,7 +293,7 @@ export const ThreadCommentsRender = {
     }
     // Update (or clear) error block content...
     errorNode.innerHTML = errorText;
-  },
+  }
 
   /**
    * @param {TThreadId} threadId
@@ -301,7 +302,7 @@ export const ThreadCommentsRender = {
     const commentsNodeId = `comments-for-thread-${threadId}`;
     const commentsNode = document.getElementById(commentsNodeId);
     // Else render the comments list...
-    const commentsContent = helpers.renderThreadCommentsContent(threadId);
+    const commentsContent = this.helpers.renderThreadCommentsContent(threadId);
     /* console.log('[ThreadCommentsRender:updateThreadComments]', {
      *   commentsContent,
      *   threadId,
@@ -312,7 +313,7 @@ export const ThreadCommentsRender = {
     commentsNode.innerHTML = commentsContent;
     this.addActionHandlersToNodeChildren(commentsNode);
     commentsNode.classList.toggle('ready', true);
-  },
+  }
 
   /**
    * @param {TThreadId} threadId
@@ -324,7 +325,7 @@ export const ThreadCommentsRender = {
     if (!commentsNode.classList.contains('ready')) {
       this.updateThreadComments(threadId);
     }
-  },
+  }
 
   // TODO: This code should be exists only in owner presentation component (`CommentsPage`, etc).
   updateVisibleThreadsStatus() {
@@ -336,7 +337,7 @@ export const ThreadCommentsRender = {
     // TODO: Update global status...
     rootNode.classList.toggle('has-visible-threads', hasVisibleThreads);
     this.events.emit('hasVisibleThreads', hasVisibleThreads);
-  },
+  }
 
   // TODO: Is it used?
   clearRenderedData() {
@@ -346,7 +347,7 @@ export const ThreadCommentsRender = {
      * threadsListNode.replaceChildren();
      */
     // TODO: Update status?
-  },
+  }
 
   /** renderData -- Render all threads (or append data)
    * @param {object} opts
@@ -355,7 +356,7 @@ export const ThreadCommentsRender = {
   renderData(opts = {}) {
     const { threads } = ThreadCommentsData;
     const threadsListNode = ThreadCommentsNodes.getThreadsListNode();
-    const content = threads.map(helpers.renderThread).join('\n');
+    const content = threads.map(this.helpers.renderThread.bind(this.helpers)).join('\n');
     /* // DEBUG
      * const rootNode = ThreadCommentsNodes.getRootNode();
      * console.log('[ThreadCommentsRender:renderData]', {
@@ -378,14 +379,14 @@ export const ThreadCommentsRender = {
       });
       threadsListNode.append.apply(threadsListNode, contentNodes);
     }
-  },
+  }
 
   /** renderNewThread -- Display new data rows at the end of the table
    * @param {TThread[]} threads
    */
   renderNewThreads(threads) {
     const threadsListNode = ThreadCommentsNodes.getThreadsListNode();
-    const content = threads.map(helpers.renderThread).join('\n');
+    const content = threads.map(this.helpers.renderThread.bind(this.helpers)).join('\n');
     /* // DEBUG
      * const rootNode = ThreadCommentsNodes.getRootNode();
      * console.log('[ThreadCommentsRender:renderNewThread]', {
@@ -401,7 +402,7 @@ export const ThreadCommentsRender = {
       this.addActionHandlersToNodeChildren(node);
     });
     threadsListNode.append.apply(threadsListNode, contentNodes);
-  },
+  }
 
   reorderRenderedThreads() {
     const { threads } = ThreadCommentsData;
@@ -432,7 +433,7 @@ export const ThreadCommentsRender = {
       // threadsListNode.innerHTML = '';
       threadsListNode.replaceChildren.apply(threadsListNode, sortedThreadNodesList);
     }
-  },
+  }
 
   /** clearAllHiddenThreadsComments -- Remove all rendered comments from hidden (non-expanded) threads */
   clearAllHiddenThreadsComments() {
@@ -449,7 +450,7 @@ export const ThreadCommentsRender = {
       el.classList.toggle('ready', false);
       el.innerHTML = '';
     });
-  },
+  }
 
   /** Re-render all comments in visible and expanded threads */
   rerenderAllVisibleComments() {
@@ -471,7 +472,7 @@ export const ThreadCommentsRender = {
        */
       this.updateThreadComments(threadId);
     });
-  },
+  }
 
   /**
    * @param {TThreadId} threadId
@@ -490,7 +491,7 @@ export const ThreadCommentsRender = {
     if (isVisible && isExpanded) {
       this.ensureThreadCommentsReady(threadId);
     }
-  },
+  }
 
   updateVisibleThreads() {
     const { threads } = ThreadCommentsData;
@@ -504,7 +505,7 @@ export const ThreadCommentsRender = {
     });
     this.updateVisibleThreadsStatus();
     // TODO: Emit event?
-  },
+  }
 
   /**
    * @param {Element} node
@@ -520,7 +521,7 @@ export const ThreadCommentsRender = {
     tltleActionElems.forEach((elem) => {
       elem.addEventListener('click', handleTitleActionClick);
     });
-  },
+  }
 
   /** @param {TThreadCommentsInitParams} initParams */
   init(initParams) {
@@ -529,5 +530,5 @@ export const ThreadCommentsRender = {
     // Save handlers and events...
     this.handlers = handlers;
     this.events = events;
-  },
-};
+  }
+}

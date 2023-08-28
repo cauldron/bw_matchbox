@@ -6,6 +6,8 @@ import { ThreadCommentsInit } from './ThreadCommentsInit.js';
 import { ThreadCommentsStates } from './ThreadCommentsStates.js';
 import { ThreadCommentsRender } from './ThreadCommentsRender.js';
 import { ThreadCommentsHandlers } from './ThreadCommentsHandlers.js';
+import { ThreadCommentsPrepare } from './ThreadCommentsPrepare.js';
+import { ThreadCommentsApi } from './ThreadCommentsApi.js';
 
 /** @implements {TThreadComments} */
 export class ThreadComments {
@@ -20,6 +22,9 @@ export class ThreadComments {
   /** @type {TSharedHandlers} */
   handlers = {};
 
+  /* @type {ThreadCommentsRender} */
+  threadCommentsRender = new ThreadCommentsRender();
+
   /** @type {TEvents} */
   events = undefined;
 
@@ -28,62 +33,7 @@ export class ThreadComments {
   /** External API (alternate way, basic handlers are in `handlers` object (above)...
    * @type {TThreadCommentsApi}
    */
-  api = {
-    getComments() {
-      return ThreadCommentsData.comments;
-    },
-    getThreads() {
-      return ThreadCommentsData.threads;
-    },
-    getCommentsHash() {
-      return ThreadCommentsData.commentsHash;
-    },
-    getThreadsHash() {
-      return ThreadCommentsData.threadsHash;
-    },
-    getCommentsByThreads() {
-      return ThreadCommentsData.commentsByThreads;
-    },
-    getUsers() {
-      return ThreadCommentsData.users;
-    },
-    getProcessIds() {
-      return ThreadCommentsData.processIds;
-    },
-    getProcessesHash() {
-      return ThreadCommentsData.processesHash;
-    },
-    updateVisibleThreads() {
-      return ThreadCommentsRender.updateVisibleThreads();
-    },
-    setFilterByUsers(values, opts) {
-      return ThreadCommentsStates.setFilterByUsers(values, opts);
-    },
-    setFilterByProcesses(values, opts) {
-      return ThreadCommentsStates.setFilterByProcesses(values, opts);
-    },
-    setFilterByState(value, opts) {
-      return ThreadCommentsStates.setFilterByState(value, opts);
-    },
-    setSortThreadsReversed(value, opts) {
-      return ThreadCommentsStates.setSortThreadsReversed(value, opts);
-    },
-    setSortThreadsBy(value, opts) {
-      return ThreadCommentsStates.setSortThreadsBy(value, opts);
-    },
-    setFilterByMyThreads(value, opts) {
-      return ThreadCommentsStates.setFilterByMyThreads(value, opts);
-    },
-    resetFilters() {
-      return ThreadCommentsHandlers.resetFilters();
-    },
-    expandAllThreads() {
-      return ThreadCommentsHandlers.expandAllThreads();
-    },
-    getDefaultViewParams() {
-      return ThreadCommentsData.defaultViewParams;
-    },
-  };
+  api;
 
   /** @param {string} parentId */
   constructor(parentId) {
@@ -91,8 +41,25 @@ export class ThreadComments {
       const thisId = [parentId, 'ThreadComments'].filter(Boolean).join('_');
       this.thisId = thisId;
     }
+    const threadCommentsApi = new ThreadCommentsApi({
+      threadCommentsData: ThreadCommentsData,
+      threadCommentsHandlers: ThreadCommentsHandlers,
+      threadCommentsRender: this.threadCommentsRender,
+      threadCommentsStates: ThreadCommentsStates,
+      // threadCommentsNodes: ThreadCommentsNodes,
+      // threadCommentsPrepare: ThreadCommentsPrepare,
+    });
+    this.api = threadCommentsApi;
     const { handlers } = this;
-    this.threadCommentsInit = new ThreadCommentsInit({ handlers, parentId: this.thisId });
+    this.threadCommentsInit = new ThreadCommentsInit({
+      handlers,
+      parentId: this.thisId,
+      threadCommentsRender: this.threadCommentsRender,
+      threadCommentsNodes: ThreadCommentsNodes,
+      threadCommentsStates: ThreadCommentsStates,
+      threadCommentsHandlers: ThreadCommentsHandlers,
+      threadCommentsPrepare: ThreadCommentsPrepare,
+    });
     this.events = this.threadCommentsInit.events();
   }
 
@@ -109,7 +76,8 @@ export class ThreadComments {
     return this.threadCommentsInit.preInit();
   }
 
-  /** @param {TThreadCommentsParams} params
+  /** Should be called before initalization
+   * @param {TThreadCommentsParams} params
    */
   setParams(params) {
     const {
