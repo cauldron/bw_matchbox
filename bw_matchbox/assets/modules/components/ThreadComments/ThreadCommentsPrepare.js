@@ -109,13 +109,14 @@ export const ThreadCommentsPrepare = /** @lends ThreadCommentsPrepare */ {
      * total_threads: 4
      */
     const { comments, threads, total_comments: totalComments, total_threads: totalThreads } = json;
-    console.log('[ThreadCommentsPrepare:addNewThreadData]: got data', {
-      json,
-      comments,
-      threads,
-      totalThreads,
-      totalComments,
-    });
+    /* console.log('[ThreadCommentsPrepare:addNewThreadData]: got data', {
+     *   json,
+     *   comments,
+     *   threads,
+     *   totalThreads,
+     *   totalComments,
+     * });
+     */
     // Add new data...
     ThreadCommentsData.comments.push.apply(ThreadCommentsData.comments, comments);
     ThreadCommentsData.threads.push.apply(ThreadCommentsData.threads, threads);
@@ -149,14 +150,15 @@ export const ThreadCommentsPrepare = /** @lends ThreadCommentsPrepare */ {
     const hasComments = Array.isArray(comments) && !!comments.length;
     const hasThreads = Array.isArray(threads) && !!threads.length;
     const hasData = hasComments || hasThreads;
-    console.log('[ThreadCommentsPrepare:updateAllData]: got data', {
-      hasData,
-      json,
-      comments,
-      threads,
-      totalThreads,
-      totalComments,
-    });
+    /* console.log('[ThreadCommentsPrepare:updateAllData]: got data', {
+     *   hasData,
+     *   json,
+     *   comments,
+     *   threads,
+     *   totalThreads,
+     *   totalComments,
+     * });
+     */
     // Store data...
     ThreadCommentsData.comments = comments;
     ThreadCommentsData.threads = threads;
@@ -208,18 +210,19 @@ export const ThreadCommentsPrepare = /** @lends ThreadCommentsPrepare */ {
     const threadTitleTextNode = threadNode.querySelector('.title-text');
     const threadTitleTextContent =
       ThreadCommentsRender.helpers.createThreadTitleTextContent(thread);
-    console.log('[ThreadCommentsPrepare:addCommentToThread]: done', {
-      commentId,
-      comment,
-      commentsHash,
-      commentsByThreads,
-      thread,
-      threadId,
-      currDate,
-      currDateStr,
-      threadTitleTextNode,
-      threadTitleTextContent,
-    });
+    /* console.log('[ThreadCommentsPrepare:addCommentToThread]: done', {
+     *   commentId,
+     *   comment,
+     *   commentsHash,
+     *   commentsByThreads,
+     *   thread,
+     *   threadId,
+     *   currDate,
+     *   currDateStr,
+     *   threadTitleTextNode,
+     *   threadTitleTextContent,
+     * });
+     */
     // Update data & elements' states...
     threadTitleTextNode.innerHTML = threadTitleTextContent;
     // ThreadCommentsRender.renderData();

@@ -27,8 +27,7 @@ const apiHandlers = {
    */
   threadAddComment(params) {
     const { threadId, threadNode } = params;
-    const { role, threadsHash } = ThreadCommentsData;
-    const thread = threadsHash[threadId];
+    const { role } = ThreadCommentsData;
     // Check roles...
     if (role !== 'editors' && role !== 'reviewers') {
       const error = new Error(`This role (${role}) hasn't allowed to add comments`);
@@ -49,11 +48,15 @@ const apiHandlers = {
       const { comment } = userAction;
       return ThreadCommentsLoader.threadAddCommentRequest({ threadId, comment })
         .then((/** @type {TComment} */ comment) => {
-          console.log('[ThreadCommentsHandlers:threadAddCommentRequest]: done', {
-            comment,
-            thread,
-            threadId,
-          });
+          /* // DEBUG
+           * const { threadsHash } = ThreadCommentsData;
+           * const thread = threadsHash[threadId];
+           * console.log('[ThreadCommentsHandlers:threadAddCommentRequest]: done', {
+           *   comment,
+           *   thread,
+           *   threadId,
+           * });
+           */
           ThreadCommentsPrepare.addCommentToThread({ threadId, threadNode, comment });
           // Show noitification...
           commonNotify.showSuccess('Comment successfully added');
@@ -90,14 +93,15 @@ const apiHandlers = {
     const thread = threadsHash[threadId];
     const { resolved: currResolved } = thread;
     const resolved = !currResolved;
-    console.log('[ThreadCommentsHandlers:apiHandlers:threadResolve]: start', {
-      resolved,
-      currResolved,
-      threadId,
-      thread,
-      params,
-      threadsHash,
-    });
+    /* console.log('[ThreadCommentsHandlers:apiHandlers:threadResolve]: start', {
+     *   resolved,
+     *   currResolved,
+     *   threadId,
+     *   thread,
+     *   params,
+     *   threadsHash,
+     * });
+     */
     ThreadCommentsLoader.threadResolveRequest({ threadId, resolved })
       .then(() => {
         // Update data...
@@ -106,12 +110,13 @@ const apiHandlers = {
         const threadTitleTextNode = threadNode.querySelector('.title-text');
         const threadTitleTextContent =
           ThreadCommentsRender.helpers.createThreadTitleTextContent(thread);
-        console.log('[ThreadCommentsHandlers:apiHandlers:threadResolve]: done', {
-          resolved,
-          thread,
-          threadTitleTextNode,
-          threadTitleTextContent,
-        });
+        /* console.log('[ThreadCommentsHandlers:apiHandlers:threadResolve]: done', {
+         *   resolved,
+         *   thread,
+         *   threadTitleTextNode,
+         *   threadTitleTextContent,
+         * });
+         */
         // Update data & elements' states...
         threadTitleTextNode.innerHTML = threadTitleTextContent;
         // Update thread node class...
@@ -166,9 +171,6 @@ const apiHandlers = {
         return ThreadCommentsLoader.addNewThreadRequest(name, comment);
       })
       .then((/** @type {TThreadCommentsResponseData | undefined} */ json) => {
-        console.log('[ThreadCommentsHandlers:addNewThread] success', {
-          json,
-        });
         ThreadCommentsPrepare.addNewThreadData(json);
         commonNotify.showSuccess('New thread successfully added');
       })
@@ -226,15 +228,16 @@ export const ThreadCommentsHandlers = /** @lends ThreadCommentsHandlers */ {
         debugger;
         throw error;
       }
-      console.log('[ThreadCommentsHandlers:handleTitleActionClick]', actionId, {
-        actionId,
-        func,
-        node,
-        event,
-        // isThreadAction,
-        threadNode,
-        threadId,
-      });
+      /* console.log('[ThreadCommentsHandlers:handleTitleActionClick]', actionId, {
+       *   actionId,
+       *   func,
+       *   node,
+       *   event,
+       *   // isThreadAction,
+       *   threadNode,
+       *   threadId,
+       * });
+       */
       func(params);
     } catch (error) {
       // eslint-disable-next-line no-console
@@ -308,9 +311,6 @@ export const ThreadCommentsHandlers = /** @lends ThreadCommentsHandlers */ {
   loadComments() {
     return ThreadCommentsLoader.loadCommentsRequest()
       .then((json) => {
-        console.log('[ThreadCommentsHandlers:loadComments]: got data', {
-          json,
-        });
         ThreadCommentsPrepare.updateAllData(json);
       })
       .catch((error) => {

@@ -354,15 +354,17 @@ export const ThreadCommentsRender = {
    */
   renderData(opts = {}) {
     const { threads } = ThreadCommentsData;
-    const rootNode = ThreadCommentsNodes.getRootNode();
     const threadsListNode = ThreadCommentsNodes.getThreadsListNode();
     const content = threads.map(helpers.renderThread).join('\n');
-    console.log('[ThreadCommentsRender:renderData]', {
-      rootNode,
-      threadsListNode,
-      content,
-      threads,
-    });
+    /* // DEBUG
+     * const rootNode = ThreadCommentsNodes.getRootNode();
+     * console.log('[ThreadCommentsRender:renderData]', {
+     *   rootNode,
+     *   threadsListNode,
+     *   content,
+     *   threads,
+     * });
+     */
     if (!opts.append) {
       // Replace data...
       threadsListNode.innerHTML = content; // Insert content just as raw html
@@ -382,15 +384,17 @@ export const ThreadCommentsRender = {
    * @param {TThread[]} threads
    */
   renderNewThreads(threads) {
-    const rootNode = ThreadCommentsNodes.getRootNode();
     const threadsListNode = ThreadCommentsNodes.getThreadsListNode();
     const content = threads.map(helpers.renderThread).join('\n');
-    console.log('[ThreadCommentsRender:renderNewThread]', {
-      rootNode,
-      threadsListNode,
-      content,
-      threads,
-    });
+    /* // DEBUG
+     * const rootNode = ThreadCommentsNodes.getRootNode();
+     * console.log('[ThreadCommentsRender:renderNewThread]', {
+     *   rootNode,
+     *   threadsListNode,
+     *   content,
+     *   threads,
+     * });
+     */
     // Append new data (will be used for incremental update)...
     const contentNodes = CommonHelpers.htmlToElements(content);
     Array.from(contentNodes).forEach((node) => {
@@ -491,9 +495,10 @@ export const ThreadCommentsRender = {
   updateVisibleThreads() {
     const { threads } = ThreadCommentsData;
     const threadIds = threads.map(({ id }) => id);
-    console.log('[ThreadCommentsRender:updateVisibleThreads]', {
-      threadIds,
-    });
+    /* console.log('[ThreadCommentsRender:updateVisibleThreads]', {
+     *   threadIds,
+     * });
+     */
     threadIds.forEach((threadId) => {
       this.updateThreadVisibleState(threadId);
     });

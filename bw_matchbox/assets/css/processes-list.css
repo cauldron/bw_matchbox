@@ -1,6 +1,7 @@
 /* stylelint-disable
     declaration-block-single-line-max-declarations,
     declaration-colon-space-after,
+    selector-class-pattern,
 */
 
 /* Root node */
@@ -69,6 +70,11 @@
   display: block;
   width: 100%;
   margin-bottom: 0;
+}
+/* Display 'Matched' or 'Reference product' title for 'matched' column respectively by the `userDb` propery. */
+.processes-list.userDb-source .processes-list-table .cell-matched-title-other,
+.processes-list:not(.userDb-source) .processes-list-table .cell-matched-title-source {
+  display: none;
 }
 
 /* Table cell's width */

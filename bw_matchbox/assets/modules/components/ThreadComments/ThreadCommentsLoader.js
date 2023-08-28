@@ -25,10 +25,11 @@ export const ThreadCommentsLoader = /** @lends ThreadCommentsLoader */ {
     // @see @matchbox_app.route("/comments/read", methods=["GET"])
     const urlQuery = CommonHelpers.makeQuery(loadParams, { addQuestionSymbol: true });
     const url = urlBase + urlQuery;
-    console.log('[ThreadCommentsLoader:loadCommentsRequest]: start', {
-      loadParams,
-      url,
-    });
+    /* console.log('[ThreadCommentsLoader:loadCommentsRequest]: start', {
+     *   loadParams,
+     *   url,
+     * });
+     */
     ThreadCommentsStates.setLoading(true);
     return fetch(url)
       .then((res) => {
@@ -53,9 +54,6 @@ export const ThreadCommentsLoader = /** @lends ThreadCommentsLoader */ {
         return res.json();
       })
       .then((/** @type {TThreadCommentsResponseData} */ json) => {
-        console.log('[ThreadCommentsLoader:loadCommentsRequest]: success', {
-          json,
-        });
         /* // DEBUG: Emulate 'other' reporter for the first record (Issue #119: comments-permissions)
          * if (isDev) {
          *   json.threads[0].reporter = 'XXX';
@@ -116,15 +114,16 @@ export const ThreadCommentsLoader = /** @lends ThreadCommentsLoader */ {
       body: JSON.stringify(requestParams),
     };
     const url = urlBase;
-    console.log('[ThreadCommentsLoader:addNewThreadRequest]: start', {
-      // threadId,
-      // thread,
-      // threadsHash,
-      fetchParams,
-      requestParams,
-      urlBase,
-      url,
-    });
+    /* console.log('[ThreadCommentsLoader:addNewThreadRequest]: start', {
+     *   // threadId,
+     *   // thread,
+     *   // threadsHash,
+     *   fetchParams,
+     *   requestParams,
+     *   urlBase,
+     *   url,
+     * });
+     */
     ThreadCommentsStates.setLoading(true);
     return fetch(url, fetchParams)
       .then((res) => {
@@ -156,9 +155,6 @@ export const ThreadCommentsLoader = /** @lends ThreadCommentsLoader */ {
          * total_comments: 13
          * total_threads: 4
          */
-        console.log('[ThreadCommentsLoader:addNewThreadRequest] catched', {
-          json,
-        });
         // TODO: Use unified procudure with 'loadComments` to process all the data
         ThreadCommentsStates.setLoading(false);
         return json;
@@ -214,15 +210,16 @@ export const ThreadCommentsLoader = /** @lends ThreadCommentsLoader */ {
     };
     // const urlQuery = CommonHelpers.makeQuery(requestParams, { addQuestionSymbol: true });
     const url = urlBase; // + urlQuery;
-    console.log('[ThreadCommentsLoader:threadResolveRequest]: start', {
-      resolved,
-      threadId,
-      params,
-      fetchParams,
-      requestParams,
-      urlBase,
-      url,
-    });
+    /* console.log('[ThreadCommentsLoader:threadResolveRequest]: start', {
+     *   resolved,
+     *   threadId,
+     *   params,
+     *   fetchParams,
+     *   requestParams,
+     *   urlBase,
+     *   url,
+     * });
+     */
     ThreadCommentsStates.setLoading(true);
     return fetch(url, fetchParams)
       .then((res) => {
@@ -249,9 +246,6 @@ export const ThreadCommentsLoader = /** @lends ThreadCommentsLoader */ {
         return res.json();
       })
       .then((data) => {
-        console.log('[ThreadCommentsLoader:threadResolveRequest]: success', {
-          data,
-        });
         return data;
       })
       .catch((error) => {
@@ -282,7 +276,7 @@ export const ThreadCommentsLoader = /** @lends ThreadCommentsLoader */ {
     // TODO: Check roles for editors, reviewers?
     const { createCommentApiUrl: urlBase } = ThreadCommentsConstants;
     const { threadId, comment } = params;
-    const { threadsHash, currentUser } = ThreadCommentsData;
+    const { currentUser } = ThreadCommentsData;
     const requestParams = {
       /* // @matchbox_app.route("/comments/create-comment", methods=["POST"])
        * 'thread': integer,
@@ -302,15 +296,18 @@ export const ThreadCommentsLoader = /** @lends ThreadCommentsLoader */ {
       body: JSON.stringify(requestParams),
     };
     const url = urlBase;
-    console.log('[ThreadCommentsLoader:threadAddCommentRequest]: start', {
-      threadId,
-      params,
-      threadsHash,
-      fetchParams,
-      requestParams,
-      urlBase,
-      url,
-    });
+    /* // DEBUG
+     * const { threadsHash } = ThreadCommentsData;
+     * console.log('[ThreadCommentsLoader:threadAddCommentRequest]: start', {
+     *   threadId,
+     *   params,
+     *   threadsHash,
+     *   fetchParams,
+     *   requestParams,
+     *   urlBase,
+     *   url,
+     * });
+     */
     ThreadCommentsStates.setLoading(true);
     return fetch(url, fetchParams)
       .then((res) => {
@@ -336,9 +333,10 @@ export const ThreadCommentsLoader = /** @lends ThreadCommentsLoader */ {
         return res.json();
       })
       .then((/** @type {TComment} */ comment) => {
-        console.log('[ThreadCommentsLoader:threadAddCommentRequest]: done', {
-          comment,
-        });
+        /* console.log('[ThreadCommentsLoader:threadAddCommentRequest]: done', {
+         *   comment,
+         * });
+         */
         return comment;
       })
       .catch((error) => {

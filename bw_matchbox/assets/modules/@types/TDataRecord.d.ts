@@ -1,3 +1,4 @@
+/** Data item for compare page */
 interface TDataRecord {
   amount: number; // 7.135225509515751e-9
   amount_display: string; // "7.1e-09"
@@ -9,4 +10,5 @@ interface TDataRecord {
   url: string; // "/process/633"
   collapsed: boolean; // true
   'collapsed-group': string; // "Collapsed-XXX-YYYYYY" -- unique key to locate corresponding pair.
+  matched?: boolean;
 }
