@@ -1,6 +1,6 @@
 // @ts-check
 
-import { commonModal } from '../common/CommonModal.js';
+import { commonModal } from '../../common/CommonModal.js';
 
 export class WaitlistCommentDialog {
   getMarkWaitlistDialogContent() {

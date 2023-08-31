@@ -43,6 +43,11 @@ interface TThreadCommentsLoadParams {
 }
 
 interface TThreadCommentsApi {
+  // threadCommentsData: ThreadCommentsData;
+  // threadCommentsHandlers: ThreadCommentsHandlers;
+  // threadCommentsStates: ThreadCommentsStates;
+  // threadCommentsRender: ThreadCommentsRender;
+
   getComments: () => TComment[];
   getThreads: () => TThread[];
   getCommentsHash: () => Record<TThreadId, TComment>;
@@ -53,7 +58,7 @@ interface TThreadCommentsApi {
   getProcessesHash: () => Record<TProcessId, TProcess>;
   updateVisibleThreads: () => void;
   setFilterByUsers: (users: TUserName[], opts?: TThreadCommentsSetFilterOpts) => void;
-  setFilterByProcesses: (processes: TProcessName[], opts?: TThreadCommentsSetFilterOpts) => void;
+  setFilterByProcesses: (processes: number[], opts?: TThreadCommentsSetFilterOpts) => void;
   setFilterByState: (
     state: TThreadCommentsFilterByState,
     opts?: TThreadCommentsSetFilterOpts,
@@ -79,4 +84,5 @@ interface TThreadComments {
   // setViewParams: (TThreadCommentsViewParams: viewParams) => void; // It's in the handlers now
   preInit: () => void;
   ensureInit: () => Promise;
+  threadCommentsRender: ThreadCommentsRender;
 }

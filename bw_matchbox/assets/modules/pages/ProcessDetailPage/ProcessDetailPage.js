@@ -1,10 +1,10 @@
 // @ts-check
 
-// import * as CommonHelpers from '../common/CommonHelpers.js';
-// import { commonModal } from '../common/CommonModal.js';
-// import { commonNotify } from '../common/CommonNotify.js';
+// import * as CommonHelpers from '../../common/CommonHelpers.js';
+// import { commonModal } from '../../common/CommonModal.js';
+// import { commonNotify } from '../../common/CommonNotify.js';
 
-import { ThreadComments } from '../components/ThreadComments/ThreadComments.js';
+import { ThreadComments } from '../../components/ThreadComments/ThreadComments.js';
 
 // import * as ProcessDetailPageHelpers from './ProcessDetailPageHelpers.js';
 import { ProcessDetailPageState } from './ProcessDetailPageState.js';

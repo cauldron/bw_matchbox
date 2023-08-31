@@ -6,15 +6,8 @@ import { commonNotify } from '../../common/CommonNotify.js';
 import * as ThreadCommentsConstants from './ThreadCommentsConstants.js';
 import { ThreadCommentsData } from './ThreadCommentsData.js';
 import { ThreadCommentsStates } from './ThreadCommentsStates.js';
-// import { isDev } from '../../common/CommonConstants.js';
-// import { ThreadCommentsRender } from './ThreadCommentsRender.js';
-// import { ThreadCommentsPrepare } from './ThreadCommentsPrepare.js';
 
 export const ThreadCommentsLoader = /** @lends ThreadCommentsLoader */ {
-  /* [>* @type {TEvents} <]
-   * events: undefined,
-   */
-
   /** Load records data
    * @return {Promise<TThreadCommentsResponseData>}
    */

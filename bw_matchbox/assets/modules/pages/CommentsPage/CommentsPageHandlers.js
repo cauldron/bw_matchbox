@@ -1,6 +1,6 @@
 // @ts-check
 
-import * as CommonHelpers from '../common/CommonHelpers.js';
+import * as CommonHelpers from '../../common/CommonHelpers.js';
 
 import { CommentsPageData } from './CommentsPageData.js';
 import { CommentsPageHelpers } from './CommentsPageHelpers.js';

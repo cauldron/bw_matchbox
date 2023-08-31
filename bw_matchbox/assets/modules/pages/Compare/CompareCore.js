@@ -1,8 +1,8 @@
 // @ts-check
 
-import * as CommonHelpers from '../common/CommonHelpers.js';
-import { commonModal } from '../common/CommonModal.js';
-import { commonNotify } from '../common/CommonNotify.js';
+import * as CommonHelpers from '../../common/CommonHelpers.js';
+import { commonModal } from '../../common/CommonModal.js';
+import { commonNotify } from '../../common/CommonNotify.js';
 
 import { CompareProxyDialogModal } from './CompareProxyDialogModal.js';
 import { CompareRowClick } from './CompareRowClick.js';
