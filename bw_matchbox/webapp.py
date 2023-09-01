@@ -243,7 +243,11 @@ def comments_create_thread():
         thread = CommentThread.create(
             name=content["thread"]["name"], process_id=content["thread"]["process_id"]
         )
-        Comment.create(thread=thread, content=content["comment"]["content"], user=content["comment"]["user"])
+        Comment.create(
+            thread=thread,
+            content=content["comment"]["content"],
+            user=content["comment"]["user"],
+        )
         return flask.redirect(flask.url_for("comments_read", thread=thread.id))
     except (IntegrityError, KeyError):
         flask.abort(400)
@@ -730,6 +734,29 @@ def get_match_type(node, proxy, mapping):
         return None
 
 
+def to_json(lst):
+    KEYS = ("name", "unit", "location", "reference product", "categories")
+    MAPPING = {"reference product": "product"}
+
+    return json.dumps(
+        [
+            {
+                "input": {
+                    MAPPING.get(key, key): exc.input.get(key, "Unknown") for key in KEYS
+                },
+                "output": {
+                    MAPPING.get(key, key): exc.output.get(key, "Unknown")
+                    for key in KEYS
+                },
+                "type": exc["type"],
+                "amount": exc["amount"],
+                "id": exc._document.id,
+            }
+            for exc in lst
+        ]
+    )
+
+
 @matchbox_app.route("/allocate/<id>", methods=["GET"])
 @auth.login_required
 def allocate_process(id):
@@ -742,30 +769,26 @@ def allocate_process(id):
     except bd.errors.UnknownObject:
         return flask.redirect(flask.url_for("index"))
 
-    production = sorted(node.production(), key=lambda x: x.input["name"])
+    production = sorted(node.production(), key=lambda x: x.input.get("name", "ZZZ"))
 
-    COLORS = ['blue', 'orange', 'green', 'red', 'violet', 'brown', 'pink', 'grey', 'yellow', 'cyan']
-    if len(production) > len(COLORS):
-        raise ValueError
+    if len(production) < 2:
+        return flask.redirect(flask.url_for("process_detail", id=node.id))
 
-    for color, node in zip(COLORS, production):
-        node['group'] = color
-
-    technosphere = sorted(node.technosphere(), key=lambda x: x.input["name"])
-    biosphere = sorted(node.biosphere(), key=lambda x: x.input["name"])
+    technosphere = sorted(node.technosphere(), key=lambda x: x.input.get("name", "ZZZ"))
+    biosphere = sorted(node.biosphere(), key=lambda x: x.input.get("name", "ZZZ"))
 
     return flask.render_template(
         "allocate.html",
         title="Allocate {} {} {}".format(
-            node["name"][:20], node["location"][:5], node["unit"][:5]
+            node.get("name", "Unknown")[:20],
+            node.get("location", "Unknown")[:5],
+            node.get("unit", "Unknown")[:5],
         ),
         ds=node,
         config=config,
-        authors=get_authors(node.get("authors")),
-        source=config["source"],
-        production=production,
-        technosphere=technosphere,
-        biosphere=biosphere,
+        production=to_json(production),
+        technosphere=to_json(technosphere),
+        biosphere=to_json(biosphere),
     )
 
 
