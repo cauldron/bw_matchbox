@@ -1,0 +1,52 @@
+.allocate-layout {
+  --border-color: #ddd;
+}
+
+.allocate-header,
+.allocate-columns-layout-column {
+  padding: 20px;
+}
+.allocate-header {
+  /* padding-top: 0; */
+  padding-bottom: 0;
+}
+
+.allocate-layout {
+  /* border: 1px solid red; */
+  display: flex;
+  flex-direction: column;
+  position: fixed;
+  left: 0;
+  right: 0;
+  top: 0;
+  bottom: 0;
+  overflow: hidden;
+}
+
+.allocate-layout .allocate-columns-layout {
+  /* border: 1px solid green; */
+  display: flex;
+  flex-direction: row;
+  flex: 1;
+  overflow: hidden;
+  align-items: stretch;
+  align-content: stretch;
+  border-top: 1px solid var(--border-color);
+}
+
+.allocate-layout .allocate-columns-layout-column {
+  overflow: auto;
+}
+
+.allocate-layout .allocate-groups-column {
+  /* border: 1px solid purple; */
+  border-right: 1px solid var(--border-color);
+  /* Make columns resizable */
+  resize: horizontal;
+  width: 30%;
+}
+.allocate-layout .allocate-sources-column {
+  /* border: 1px solid purple; */
+  flex: 1;
+}
+

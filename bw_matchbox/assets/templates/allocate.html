@@ -1,14 +1,124 @@
 {% include 'header.html' %}
 
-<div>
-  <h1>Allocation! Yeah!</h1>
+<div id="allocate-layout" class="__panels-layout allocate-layout">
+  <div id="allocate-header" class="allocate-header">
+    {% include 'navigation.html' %}
+    <div class="common-page-header">
+      <h3 class="title">
+        {{ ds.name }}
+        <div class="tools">
+          <div class="tools-wrapper">
+              <a id="test-button" class="tools-button theme-primary">Test Button</a>
+          </div>
+        </div>
+      </h3>
+    </div>
+  </div>
+  <div id="allocate-columns-layout" class="allocate-columns-layout">
+    <div id="allocate-groups-column" class="allocate-columns-layout-column allocate-groups-column">
+      <p>allocate-groups-column</p>
+      <p>allocate-groups-column</p>
+      <p>allocate-groups-column</p>
+      <p>allocate-groups-column</p>
+      <p>allocate-groups-column</p>
+      <p>allocate-groups-column</p>
+      <p>allocate-groups-column</p>
+      <p>allocate-groups-column</p>
+      <p>allocate-groups-column</p>
+      <p>allocate-groups-column</p>
+      <p>allocate-groups-column</p>
+      <p>allocate-groups-column</p>
+      <p>allocate-groups-column</p>
+      <p>allocate-groups-column</p>
+      <p>allocate-groups-column</p>
+      <p>allocate-groups-column</p>
+      <p>allocate-groups-column</p>
+      <p>allocate-groups-column</p>
+      <p>allocate-groups-column</p>
+      <p>allocate-groups-column</p>
+      <p>allocate-groups-column</p>
+      <p>allocate-groups-column</p>
+      <p>allocate-groups-column</p>
+      <p>allocate-groups-column</p>
+      <p>allocate-groups-column</p>
+      <p>allocate-groups-column</p>
+      <p>allocate-groups-column</p>
+      <p>allocate-groups-column</p>
+      <p>allocate-groups-column</p>
+      <p>allocate-groups-column</p>
+      <p>allocate-groups-column</p>
+    </div>
+    <div id="allocate-sources-column" class="allocate-columns-layout-column allocate-sources-column">
+      <p>allocate-sources-column</p>
+      <p>allocate-sources-column</p>
+      <p>allocate-sources-column</p>
+      <p>allocate-sources-column</p>
+      <p>allocate-sources-column</p>
+      <p>allocate-sources-column</p>
+      <p>allocate-sources-column</p>
+      <p>allocate-sources-column</p>
+      <p>allocate-sources-column</p>
+      <p>allocate-sources-column</p>
+      <p>allocate-sources-column</p>
+      <p>allocate-sources-column</p>
+      <p>allocate-sources-column</p>
+      <p>allocate-sources-column</p>
+      <p>allocate-sources-column</p>
+      <p>allocate-sources-column</p>
+      <p>allocate-sources-column</p>
+      <p>allocate-sources-column</p>
+      <p>allocate-sources-column</p>
+      <p>allocate-sources-column</p>
+      <p>allocate-sources-column</p>
+      <p>allocate-sources-column</p>
+      <p>allocate-sources-column</p>
+      <p>allocate-sources-column</p>
+      <p>allocate-sources-column</p>
+      <p>allocate-sources-column</p>
+      <p>allocate-sources-column</p>
+      <p>allocate-sources-column</p>
+      <p>allocate-sources-column</p>
+      <p>allocate-sources-column</p>
+      <p>allocate-sources-column</p>
+      <p>allocate-sources-column</p>
+      <p>allocate-sources-column</p>
+      <p>allocate-sources-column</p>
+      <p>allocate-sources-column</p>
+      <p>allocate-sources-column</p>
+      <p>allocate-sources-column</p>
+      <p>allocate-sources-column</p>
+      <p>allocate-sources-column</p>
+      <p>allocate-sources-column</p>
+      <p>allocate-sources-column</p>
+    </div>
+  </div>
 </div>
+
+{# TODO: It's possible to dynamically load all required styles using `CommonHelpers.addCssStyle` method. #}
+<link rel="stylesheet" href="{{ url_for('static', filename='css/allocate-page.css') }}">
 
 <!-- Start page scripts -->
 <script type="module">
-  let production = {{ production|safe }};
-  let technosphere = {{ technosphere|safe }};
-  let biosphere = {{ biosphere|safe }};
+
+  // Core module
+  import { AllocatePage } from '/assets/modules/pages/AllocatePage/AllocatePage.js';
+
+  // Global variables for compare tables feature (via global variable `sharedParams`)...
+  const sharedParams = {
+    // Data...
+    production: {{ production|safe }},
+    technosphere: {{ technosphere|safe }},
+    biosphere: {{ biosphere|safe }},
+    // Current configuration parameters...
+    currentRole: '{{ config.role }}',
+    currentUser: '{{ config.user }}',
+  };
+
+  console.log('[allocate]', sharedParams);
+
+  // Export to global scope (to access from generated html code handlers).
+  window.allocatePage = new AllocatePage(sharedParams);
 
 </script>
+
 {% include 'footer.html' %}
