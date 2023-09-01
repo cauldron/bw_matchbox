@@ -121,45 +121,60 @@
 
             <h3>Technosphere Inputs</h3>
 
-            <table class="fixed-table" width="100%">
-              <tr>
-                <th class="cell-amount"><div>Amount</div></th>
-                <th class="cell-name"><div>Name</div></th>
-                <th class="cell-location"><div>Location</div></th>
-                <th class="cell-unit"><div>Unit</div></th>
-                <th class="cell-matched"><div>Matched</div></th>
-              </tr>
-              {% for row in technosphere %}
-              <tr>
-                <td><div>{{row.amount}}</div></td>
-                <td><div><a href="{{ url_for('process_detail', id=row.input.id) }}">{{row.input.name}}</a></div></td>
-                <td><div>{{row.input.location}}</div></td>
-                <td><div>{{row.input.unit}}</div></td>
-                <td><div>{% if row.input.matched %}<i class="fa-solid fa-check"></i>{% else %}<i class="fa-solid fa-circle-xmark"></i>{% endif %}</div></td>
-              </tr>
-              {% endfor %}
-            </table>
+            {% if not technosphere|length %}
+              <p>No technosphere exchanges</p>
+            {% else %}
+              <table class="fixed-table" width="100%">
+                <thead>
+                  <tr>
+                    <th class="cell-amount"><div>Amount</div></th>
+                    <th class="cell-name"><div>Name</div></th>
+                    <th class="cell-location"><div>Location</div></th>
+                    <th class="cell-unit"><div>Unit</div></th>
+                    <th class="cell-matched"><div>Matched</div></th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {% for row in technosphere %}
+                  <tr>
+                    <td><div>{{row.amount}}</div></td>
+                    <td><div><a href="{{ url_for('process_detail', id=row.input.id) }}">{{row.input.name}}</a></div></td>
+                    <td><div>{{row.input.location}}</div></td>
+                    <td><div>{{row.input.unit}}</div></td>
+                    <td><div>{% if row.input.matched %}<i class="fa-solid fa-check"></i>{% else %}<i class="fa-solid fa-circle-xmark"></i>{% endif %}</div></td>
+                  </tr>
+                  {% endfor %}
+                </tbody>
+              </table>
+            {% endif %}
 
             <h2>Biosphere Inputs</h2>
 
-            {% if biosphere|length > 50 or not biosphere|length %}
+            {% if not biosphere|length %}
+              <p>No biosphere exchanges</p>
+            {% elif biosphere|length > 50 %}
+              {# Don't show if more than 50? #}
               <p>{{ biosphere|length }} biosphere exchanges</p>
             {% else %}
               <table class="fixed-table" width="100%">
-                <tr>
-                  <th class="cell-amount"><div>Amount</div></th>
-                  <th class="cell-name"><div>Name</div></th>
-                  <th class="cell-categories"><div>Categories</div></th>
-                  <th class="cell-unit"><div>Unit</div></th>
-                </tr>
-                {% for exc in biosphere %}
+                <thead>
                   <tr>
-                    <td><div>{{ exc.amount }}</div></td>
-                    <td><div>{{ exc.input.name }}</div></td>
-                    <td><div>{{ exc.input.categories|join("|") }}</div></td>
-                    <td><div>{{ exc.input.unit }}</div></td>
+                    <th class="cell-amount"><div>Amount</div></th>
+                    <th class="cell-name"><div>Name</div></th>
+                    <th class="cell-categories"><div>Categories</div></th>
+                    <th class="cell-unit"><div>Unit</div></th>
                   </tr>
-                {% endfor %}
+                </thead>
+                <tbody>
+                  {% for exc in biosphere %}
+                    <tr>
+                      <td><div>{{ exc.amount }}</div></td>
+                      <td><div>{{ exc.input.name }}</div></td>
+                      <td><div>{{ exc.input.categories|join("|") }}</div></td>
+                      <td><div>{{ exc.input.unit }}</div></td>
+                    </tr>
+                  {% endfor %}
+                </tbody>
               </table>
             {% endif %}
 
@@ -171,21 +186,26 @@
               <p>Showing 50 of {{ total_consumers }}</p>
             {% endif %}
             {% if total_consumers %}
+              {# NOTE: Are we showing only first 50 records? Is it provided by server? #}
               <table class="fixed-table" width="100%">
-                <tr>
-                  <th class="cell-amount"><div>Amount</div></th>
-                  <th class="cell-name"><div>Name</div></th>
-                  <th class="cell-location"><div>Location</div></th>
-                  <th class="cell-unit"><div>Unit</div></th>
-                </tr>
-                {% for exc in consumers %}
+                <thead>
                   <tr>
-                    <td><div>{{ exc.amount }}</div></td>
-                    <td><div><a href="{{ url_for('process_detail', id=exc.output.id) }}">{{ exc.output.name }}</a></div></td>
-                    <td><div>{{ exc.output.location }}</div></td>
-                    <td><div>{{ exc.output.unit }}</div></td>
+                    <th class="cell-amount"><div>Amount</div></th>
+                    <th class="cell-name"><div>Name</div></th>
+                    <th class="cell-location"><div>Location</div></th>
+                    <th class="cell-unit"><div>Unit</div></th>
                   </tr>
-                {% endfor %}
+                </thead>
+                <tbody>
+                  {% for exc in consumers %}
+                    <tr>
+                      <td><div>{{ exc.amount }}</div></td>
+                      <td><div><a href="{{ url_for('process_detail', id=exc.output.id) }}">{{ exc.output.name }}</a></div></td>
+                      <td><div>{{ exc.output.location }}</div></td>
+                      <td><div>{{ exc.output.unit }}</div></td>
+                    </tr>
+                  {% endfor %}
+                </tbody>
               </table>
             {% endif %}
 

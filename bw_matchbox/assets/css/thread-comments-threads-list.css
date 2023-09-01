@@ -26,6 +26,13 @@
 .thread-comments .threads-list .thread:hover {
   background-color: rgb(0 0 0 / 5%);
 }
+.thread-comments .threads-list .thread.resolved {
+  background-color: rgb(17 136 17 / 8%);
+}
+.thread-comments .threads-list .thread.resolved.expanded,
+.thread-comments .threads-list .thread.resolved:hover {
+  background-color: rgb(17 136 17 / 15%);
+}
 .thread-comments .threads-list .thread .main-row {
   display: flex;
   align-items: flex-start;
@@ -68,17 +75,31 @@
   color: #bbb;
   opacity: 0.75;
 }
-.thread-comments .threads-list .thread:not(.empty):hover .main-row .expand-button {
-  color: var(--layout-theme-primary-color);
+.thread-comments .threads-list .thread:not(.resolved, .empty) .main-row .expand-button {
+  color: var(--common-error-color);
 }
+.thread-comments .threads-list .thread.resolved:not(.empty) .main-row .expand-button {
+  color: var(--common-success-color);
+}
+/*
+ * .thread-comments .threads-list .thread:not(.resolved, .empty):hover .main-row .expand-button {
+ *   color: var(--layout-theme-primary-color);
+ * }
+ */
 .thread-comments .threads-list .thread:not(.empty) .main-row {
   cursor: pointer;
   transition: all var(--common-animation-time);
 }
 .thread-comments .threads-list .thread:not(.empty) .main-row:hover .expand-button {
   background-color: var(--layout-theme-primary-color);
-  color: #fff;
-  opacity: 1;
+  color: rgba(255 255 255 / 75%);
+  opacity: .75;
+}
+.thread-comments .threads-list .thread:not(.resolved, .empty) .main-row:hover .expand-button {
+  background-color: var(--common-error-color);
+}
+.thread-comments .threads-list .thread.resolved:not(.empty) .main-row:hover .expand-button {
+  background-color: var(--common-success-color);
 }
 .thread-comments .threads-list .thread.expanded .main-row .expand-button {
   transform: rotate(90deg);
