@@ -443,7 +443,7 @@ export const CompareCore = {
             <div class="strong"><strong>Original amount:</strong> ${row.amount}</div>
             <div class="strong"><strong>Current amount:</strong> <span id="number-current-amount">${row.amount}</span></div>
             <hr />
-            <button class="button-primary" id="set-and-close-number-editor">Set and close</button>
+            <button class="button-primary" id="set-and-close-number-editor">Save amount</button>
             <button id="reset-number">Reset number</button>
             <hr />
             <form>
