@@ -730,6 +730,45 @@ def get_match_type(node, proxy, mapping):
         return None
 
 
+@matchbox_app.route("/allocate/<id>", methods=["GET"])
+@auth.login_required
+def allocate_process(id):
+    config = get_config()
+    if isinstance(config, flask.Response):
+        return config
+
+    try:
+        node = bd.get_node(id=id)
+    except bd.errors.UnknownObject:
+        return flask.redirect(flask.url_for("index"))
+
+    production = sorted(node.production(), key=lambda x: x.input["name"])
+
+    COLORS = ['blue', 'orange', 'green', 'red', 'violet', 'brown', 'pink', 'grey', 'yellow', 'cyan']
+    if len(production) > len(COLORS):
+        raise ValueError
+
+    for color, node in zip(COLORS, production):
+        node['group'] = color
+
+    technosphere = sorted(node.technosphere(), key=lambda x: x.input["name"])
+    biosphere = sorted(node.biosphere(), key=lambda x: x.input["name"])
+
+    return flask.render_template(
+        "allocate.html",
+        title="Allocate {} {} {}".format(
+            node["name"][:20], node["location"][:5], node["unit"][:5]
+        ),
+        ds=node,
+        config=config,
+        authors=get_authors(node.get("authors")),
+        source=config["source"],
+        production=production,
+        technosphere=technosphere,
+        biosphere=biosphere,
+    )
+
+
 @matchbox_app.route("/process/<id>", methods=["GET"])
 @auth.login_required
 def process_detail(id):

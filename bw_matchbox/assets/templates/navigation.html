@@ -1,5 +1,5 @@
 <div class="row" style="margin-top: 5%">
-    <div class="three columns"><a href="{{ url_for('index') }}">home</a></div>
+    <div class="three columns"><a href="{{ url_for('index') }}">home</a> | <a href="{{ url_for('comments') }}">comments</a></div>
     <div class="three columns">User: {{ config.user }} | <a href="">Logout</a></div>
     <div class="three columns">Role: {{ config.role }}</div>
     <div class="three columns">Configuration: {{ config.config_label }} | <a href="{{ url_for('select_config') }}">Change</a></div>

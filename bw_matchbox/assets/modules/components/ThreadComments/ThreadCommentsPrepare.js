@@ -1,17 +1,20 @@
 // @ts-check
 
-// import { commonNotify } from '../../common/CommonNotify.js';
+// Import types only...
+/* eslint-disable no-unused-vars */
+import { ThreadCommentsRender } from './ThreadCommentsRender.js';
+/* eslint-enable no-unused-vars */
 
 import { ThreadCommentsData } from './ThreadCommentsData.js';
 import { ThreadCommentsHelpers } from './ThreadCommentsHelpers.js';
-import { ThreadCommentsRender } from './ThreadCommentsRender.js';
 import { ThreadCommentsStates } from './ThreadCommentsStates.js';
-// import { ThreadCommentsNodes } from './ThreadCommentsNodes.js';
-// import { ThreadCommentsLoader } from './ThreadCommentsLoader.js';
 
 export const ThreadCommentsPrepare = /** @lends ThreadCommentsPrepare */ {
   /** @type {TEvents} */
   events: undefined,
+
+  /** @type {ThreadCommentsRender} */
+  threadCommentsRender: undefined,
 
   makeDerivedData() {
     const { comments, threads, useFakeCurrentUser } = ThreadCommentsData;
@@ -109,13 +112,14 @@ export const ThreadCommentsPrepare = /** @lends ThreadCommentsPrepare */ {
      * total_threads: 4
      */
     const { comments, threads, total_comments: totalComments, total_threads: totalThreads } = json;
-    console.log('[ThreadCommentsPrepare:addNewThreadData]: got data', {
-      json,
-      comments,
-      threads,
-      totalThreads,
-      totalComments,
-    });
+    /* console.log('[ThreadCommentsPrepare:addNewThreadData]: got data', {
+     *   json,
+     *   comments,
+     *   threads,
+     *   totalThreads,
+     *   totalComments,
+     * });
+     */
     // Add new data...
     ThreadCommentsData.comments.push.apply(ThreadCommentsData.comments, comments);
     ThreadCommentsData.threads.push.apply(ThreadCommentsData.threads, threads);
@@ -131,9 +135,9 @@ export const ThreadCommentsPrepare = /** @lends ThreadCommentsPrepare */ {
     ThreadCommentsPrepare.acceptAndPrepareData();
     ThreadCommentsPrepare.makeDerivedData();
     // Render data...
-    ThreadCommentsRender.renderNewThreads(threads);
-    ThreadCommentsRender.reorderRenderedThreads();
-    ThreadCommentsRender.updateVisibleThreadsStatus();
+    this.threadCommentsRender.renderNewThreads(threads);
+    this.threadCommentsRender.reorderRenderedThreads();
+    this.threadCommentsRender.updateVisibleThreadsStatus();
     this.events.emit('updatedData');
   },
 
@@ -149,14 +153,15 @@ export const ThreadCommentsPrepare = /** @lends ThreadCommentsPrepare */ {
     const hasComments = Array.isArray(comments) && !!comments.length;
     const hasThreads = Array.isArray(threads) && !!threads.length;
     const hasData = hasComments || hasThreads;
-    console.log('[ThreadCommentsPrepare:updateAllData]: got data', {
-      hasData,
-      json,
-      comments,
-      threads,
-      totalThreads,
-      totalComments,
-    });
+    /* console.log('[ThreadCommentsPrepare:updateAllData]: got data', {
+     *   hasData,
+     *   json,
+     *   comments,
+     *   threads,
+     *   totalThreads,
+     *   totalComments,
+     * });
+     */
     // Store data...
     ThreadCommentsData.comments = comments;
     ThreadCommentsData.threads = threads;
@@ -169,8 +174,8 @@ export const ThreadCommentsPrepare = /** @lends ThreadCommentsPrepare */ {
     ThreadCommentsPrepare.acceptAndPrepareData();
     ThreadCommentsPrepare.makeDerivedData();
     // Render data...
-    ThreadCommentsRender.renderData();
-    ThreadCommentsRender.updateVisibleThreadsStatus();
+    this.threadCommentsRender.renderData();
+    this.threadCommentsRender.updateVisibleThreadsStatus();
     this.events.emit('updatedData');
   },
 
@@ -207,31 +212,34 @@ export const ThreadCommentsPrepare = /** @lends ThreadCommentsPrepare */ {
     // Update content...
     const threadTitleTextNode = threadNode.querySelector('.title-text');
     const threadTitleTextContent =
-      ThreadCommentsRender.helpers.createThreadTitleTextContent(thread);
-    console.log('[ThreadCommentsPrepare:addCommentToThread]: done', {
-      commentId,
-      comment,
-      commentsHash,
-      commentsByThreads,
-      thread,
-      threadId,
-      currDate,
-      currDateStr,
-      threadTitleTextNode,
-      threadTitleTextContent,
-    });
+      this.threadCommentsRender.helpers.createThreadTitleTextContent(thread);
+    /* console.log('[ThreadCommentsPrepare:addCommentToThread]: done', {
+     *   commentId,
+     *   comment,
+     *   commentsHash,
+     *   commentsByThreads,
+     *   thread,
+     *   threadId,
+     *   currDate,
+     *   currDateStr,
+     *   threadTitleTextNode,
+     *   threadTitleTextContent,
+     * });
+     */
     // Update data & elements' states...
     threadTitleTextNode.innerHTML = threadTitleTextContent;
-    // ThreadCommentsRender.renderData();
-    ThreadCommentsRender.updateThreadComments(threadId);
-    ThreadCommentsRender.updateVisibleThreads();
+    // this.threadCommentsRender.renderData();
+    this.threadCommentsRender.updateThreadComments(threadId);
+    this.threadCommentsRender.updateVisibleThreads();
     ThreadCommentsHelpers.sortThreads(threads);
-    ThreadCommentsRender.reorderRenderedThreads();
+    this.threadCommentsRender.reorderRenderedThreads();
   },
 
-  /** @param {TThreadCommentsInitParams} params */
-  init(params) {
-    const { events } = params;
+  /** @param {TThreadCommentsInitParams} initParams */
+  init(initParams) {
+    const { events, threadCommentsRender } = initParams;
+    // Save params...
     this.events = events;
+    this.threadCommentsRender = threadCommentsRender;
   },
 };

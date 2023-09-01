@@ -1,15 +1,17 @@
 // @ts-check
 
-import * as CommonHelpers from '../../common/CommonHelpers.js';
-import { InitChunks } from '../../common/InitChunks.js';
-import { commonNotify } from '../../common/CommonNotify.js';
-
-import { ThreadCommentsNodes } from './ThreadCommentsNodes.js';
-// import { ThreadCommentsLoader } from './ThreadCommentsLoader.js';
+// Import types only...
+/* eslint-disable no-unused-vars */
 import { ThreadCommentsRender } from './ThreadCommentsRender.js';
+import { ThreadCommentsNodes } from './ThreadCommentsNodes.js';
 import { ThreadCommentsStates } from './ThreadCommentsStates.js';
 import { ThreadCommentsHandlers } from './ThreadCommentsHandlers.js';
 import { ThreadCommentsPrepare } from './ThreadCommentsPrepare.js';
+/* eslint-enable no-unused-vars */
+
+import * as CommonHelpers from '../../common/CommonHelpers.js';
+import { InitChunks } from '../../common/InitChunks.js';
+import { commonNotify } from '../../common/CommonNotify.js';
 
 const cssStyleUrls = [
   // Styles urls...
@@ -36,10 +38,45 @@ export class ThreadCommentsInit {
   /** @type {TSharedHandlers} */
   handlers = {};
 
-  constructor({ handlers, parentId }) {
+  /** @type {ThreadCommentsRender} */
+  threadCommentsRender;
+  /** @type {ThreadCommentsNodes} */
+  threadCommentsNodes;
+  /** @type {ThreadCommentsStates} */
+  threadCommentsStates;
+  /** @type {ThreadCommentsHandlers} */
+  threadCommentsHandlers;
+  /** @type {ThreadCommentsPrepare} */
+  threadCommentsPrepare;
+
+  /**
+   * @param {object} params
+   * @param {TSharedHandlers} params.handlers
+   * @param {string} [params.parentId]
+   * @param {ThreadCommentsRender} params.threadCommentsRender
+   * @param {ThreadCommentsNodes} params.threadCommentsNodes
+   * @param {ThreadCommentsStates} params.threadCommentsStates
+   * @param {ThreadCommentsHandlers} params.threadCommentsHandlers
+   * @param {ThreadCommentsPrepare} params.threadCommentsPrepare
+   */
+  constructor({
+    handlers,
+    parentId,
+    threadCommentsRender,
+    threadCommentsNodes,
+    threadCommentsStates,
+    threadCommentsHandlers,
+    threadCommentsPrepare,
+  }) {
     this.handlers = handlers;
     const thisId = [parentId, 'Init'].filter(Boolean).join('_');
     this.initChunks = new InitChunks(initChunksList, thisId);
+    // Set parameters for future initalization (see `initComponent`)
+    this.threadCommentsRender = threadCommentsRender;
+    this.threadCommentsNodes = threadCommentsNodes;
+    this.threadCommentsStates = threadCommentsStates;
+    this.threadCommentsHandlers = threadCommentsHandlers;
+    this.threadCommentsPrepare = threadCommentsPrepare;
   }
 
   /** Ensure the modal has initiazlized
@@ -70,14 +107,18 @@ export class ThreadCommentsInit {
       const initParams = {
         handlers: this.handlers,
         events: this.events(),
+        threadCommentsRender: this.threadCommentsRender,
+        threadCommentsNodes: this.threadCommentsNodes,
+        threadCommentsStates: this.threadCommentsStates,
+        threadCommentsHandlers: this.threadCommentsHandlers,
+        threadCommentsPrepare: this.threadCommentsPrepare,
       };
 
       // Init all initiable components...
-      // ThreadCommentsLoader.init(initParams);
-      ThreadCommentsRender.init(initParams);
-      ThreadCommentsStates.init(initParams);
-      ThreadCommentsHandlers.init(initParams);
-      ThreadCommentsPrepare.init(initParams);
+      this.threadCommentsRender.init(initParams);
+      this.threadCommentsStates.init(initParams);
+      this.threadCommentsHandlers.init(initParams);
+      this.threadCommentsPrepare.init(initParams);
 
       this.initDomNodeActions();
 
@@ -125,7 +166,7 @@ export class ThreadCommentsInit {
   }
 
   initDomNodeActions() {
-    const rootNode = ThreadCommentsNodes.getRootNode();
+    const rootNode = this.threadCommentsNodes.getRootNode();
     const { handlers } = this;
     const { handleTitleActionClick } = handlers;
     const actionElems = rootNode.querySelectorAll('.threads-list-actions a');
@@ -137,7 +178,7 @@ export class ThreadCommentsInit {
   initDomNode() {
     if (!this.initChunks.isChunkStarted('dom')) {
       this.initChunks.startChunk('dom');
-      const rootNode = ThreadCommentsNodes.getRootNode();
+      const rootNode = this.threadCommentsNodes.getRootNode();
       // Set dafault classes...
       rootNode.classList.toggle('loading', true);
       rootNode.classList.toggle('empty', true);

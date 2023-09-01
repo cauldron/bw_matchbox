@@ -3,5 +3,6 @@ include bw_matchbox/data/*.json
 include bw_matchbox/assets/templates/*.html
 include bw_matchbox/assets/images/*.ico
 include bw_matchbox/assets/images/*.svg
-recursive-include bw_matchbox/assets/js *.js
+recursive-include bw_matchbox/assets/modules *.js
+recursive-include bw_matchbox/assets/modules *.ts
 include bw_matchbox/assets/css/*.css

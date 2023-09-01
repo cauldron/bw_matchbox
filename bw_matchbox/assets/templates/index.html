@@ -1,25 +1,5 @@
 {% include 'header.html' %}
 
-{# Module-specific dependencies... #}
-
-<link rel="stylesheet" href="{{ url_for('static', filename='css/processes-list.css') }}">
-
-<script src="{{ url_for('static', filename='js/ProcessesList/ProcessesListConstants.js') }}"></script>
-<script src="{{ url_for('static', filename='js/ProcessesList/ProcessesListData.js') }}"></script>
-<script src="{{ url_for('static', filename='js/ProcessesList/ProcessesListDataLoad.js') }}"></script>
-<script src="{{ url_for('static', filename='js/ProcessesList/ProcessesListDataRender.js') }}"></script>
-<script src="{{ url_for('static', filename='js/ProcessesList/ProcessesListNodes.js') }}"></script>
-<script src="{{ url_for('static', filename='js/ProcessesList/ProcessesListSearch.js') }}"></script>
-<script src="{{ url_for('static', filename='js/ProcessesList/ProcessesListStates.js') }}"></script>
-<script src="{{ url_for('static', filename='js/ProcessesList/ProcessesList.js') }}"></script>
-{# UNUSED ProcessesListPagination -- Using incremental data loading
-<script src="{{ url_for('static', filename='js/ProcessesList/ProcessesListPagination.js') }}"></script>
-#}
-
-{# Core module:
-  - `ProcessesList` (from `bw_matchbox/assets/js/ProcessesList/ProcessesList.js`)
-#}
-
 <div id="processes-list-root" class="container processes-list empty loading role-{{ config.role }} has-{{ 'proxy' if config.proxy else 'no-proxy' }}">
   {% include 'navigation.html' %}
   <div class="page-search">
@@ -105,7 +85,10 @@
         <th class="cell-name"><div>Name</div></th>
         <th class="cell-location"><div>Location</div></th>
         <th class="cell-unit"><div>Unit</div></th>
-        <th class="cell-matched"><div>Matched</div></th>
+        <th class="cell-matched">
+          <div class="cell-matched-title-source">Matched</div>
+          <div class="cell-matched-title-other">Reference product</div>
+        </th>
       </tr>
     </thead>
     <tbody id="processes-list-table-body">
@@ -123,29 +106,38 @@
   </div>
 </div>
 
-<script type="text/javascript">
-  modules.require('ProcessesList', (ProcessesList) => {
-    // Initialize page data...
-    const sharedParams = {
-      searchUrl: '{{ url_for("search") }}',
-      databases: {
-        source: '{{ config.source }}',
-        target: '{{ config.target }}',
-        proxy: '{{ config.proxy }}',
-      },
-      // hasProxy: {{ 'true' if config.proxy else 'false' }}, // Example
-      currentRole: '{{ config.role }}',
-      currentUser: '{{ config.user }}',
-    };
+{# NOTE: All reusable modules and all related stuff like css are dynamically connecting as ES6 modules, inside the code #}
 
-    // DEBUG
-    console.log('[index]', sharedParams);
+{# TODO: It's possible to dynamically load all required styles using `CommonHelpers.addCssStyle` method. #}
+<link rel="stylesheet" href="{{ url_for('static', filename='css/processes-list.css') }}">
 
-    // Export to global scope (to access from generated html code handlers).
-    window.ProcessesList = ProcessesList;
+<!-- Start page scripts -->
+<script type="module">
 
-    // Start core module...
-    ProcessesList.start(sharedParams);
-  });
+  // Core module
+  import { ProcessesList } from '/assets/modules/pages/ProcessesList/ProcessesList.js';
+
+  // Global variables for compare tables feature (via global variable `sharedParams`)...
+  const sharedParams = {
+    searchUrl: '{{ url_for("search") }}',
+    databases: {
+      source: '{{ config.source }}',
+      target: '{{ config.target }}',
+      proxy: '{{ config.proxy }}',
+    },
+    // hasProxy: {{ 'true' if config.proxy else 'false' }}, // Example
+    currentRole: '{{ config.role }}',
+    currentUser: '{{ config.user }}',
+  };
+
+  // DEBUG
+  {# console.log('[index]', sharedParams); #}
+
+  // Export to global scope (to access from generated html code handlers).
+  window.ProcessesList = ProcessesList;
+
+  // Start core module...
+  ProcessesList.start(sharedParams);
+
 </script>
 {% include 'footer.html' %}

@@ -1,10 +1,14 @@
 type TProcessId = number;
 interface TProcess {
-  database: string; // 'new1'
   id: TProcessId; // 5300
+  details_url: string; // '/process/149'
   location: string; // 'United States'
-  name: string; // 'Proxy for Ethalfluralin'
+  match_type: string; // 'Unknown'
+  match_url: string; // '/match/149'
+  matched: boolean; // false
+  name: string; // 'Printed circuit and electronic assembly; at manufacturer'
   product?: string; // null
+  proxy_url?: string; // null
   unit: string; // 'USD'
-  url: string; // '/process/5300'
+  waitlist: boolean; // false
 }

@@ -52,11 +52,4 @@ export const ThreadCommentsNodes = {
     const rootNode = this.getRootNode();
     return rootNode.querySelector('#loader-splash');
   },
-
-  /* // UNUSED: getRootNode
-   * getRootNode() {
-   *   const node = document.getElementById('comments-root');
-   *   return node;
-   * },
-   */
 };

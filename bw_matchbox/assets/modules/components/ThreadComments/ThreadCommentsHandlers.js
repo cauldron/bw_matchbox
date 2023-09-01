@@ -3,12 +3,16 @@
 import * as CommonHelpers from '../../common/CommonHelpers.js';
 import { commonNotify } from '../../common/CommonNotify.js';
 
+// Import types only...
+/* eslint-disable no-unused-vars */
+import { ThreadCommentsRender } from './ThreadCommentsRender.js';
+/* eslint-enable no-unused-vars */
+
 import { ThreadCommentsData } from './ThreadCommentsData.js';
 import { ThreadCommentsHelpers } from './ThreadCommentsHelpers.js';
 import { ThreadCommentsLoader } from './ThreadCommentsLoader.js';
 import { ThreadCommentsNodes } from './ThreadCommentsNodes.js';
 import { ThreadCommentsPrepare } from './ThreadCommentsPrepare.js';
-import { ThreadCommentsRender } from './ThreadCommentsRender.js';
 import { ThreadCommentsStates } from './ThreadCommentsStates.js';
 
 import { CommentModalDialog } from './CommentModalDialog.js';
@@ -20,15 +24,25 @@ import { CommentModalDialog } from './CommentModalDialog.js';
  * @property {TThreadId} threadId
  */
 
-const apiHandlers = {
+class ApiHandlers {
+  /** @type {ThreadCommentsRender} */
+  threadCommentsRender;
+
+  /**
+   * @param {object} params
+   * @param {ThreadCommentsRender} params.threadCommentsRender
+   */
+  constructor({ threadCommentsRender }) {
+    this.threadCommentsRender = threadCommentsRender;
+  }
+
   /** Start adding comment (show comment text dialog
    * @param {TApiHandlerParams} params
    * @return {Promise}
    */
   threadAddComment(params) {
     const { threadId, threadNode } = params;
-    const { role, threadsHash } = ThreadCommentsData;
-    const thread = threadsHash[threadId];
+    const { role } = ThreadCommentsData;
     // Check roles...
     if (role !== 'editors' && role !== 'reviewers') {
       const error = new Error(`This role (${role}) hasn't allowed to add comments`);
@@ -49,11 +63,15 @@ const apiHandlers = {
       const { comment } = userAction;
       return ThreadCommentsLoader.threadAddCommentRequest({ threadId, comment })
         .then((/** @type {TComment} */ comment) => {
-          console.log('[ThreadCommentsHandlers:threadAddCommentRequest]: done', {
-            comment,
-            thread,
-            threadId,
-          });
+          /* // DEBUG
+           * const { threadsHash } = ThreadCommentsData;
+           * const thread = threadsHash[threadId];
+           * console.log('[ThreadCommentsHandlers:threadAddCommentRequest]: done', {
+           *   comment,
+           *   thread,
+           *   threadId,
+           * });
+           */
           ThreadCommentsPrepare.addCommentToThread({ threadId, threadNode, comment });
           // Show noitification...
           commonNotify.showSuccess('Comment successfully added');
@@ -72,7 +90,7 @@ const apiHandlers = {
           commonNotify.showError(error);
         });
     });
-  },
+  }
 
   /** threadResolve -- Set resolved status for thread (called from `handleTitleActionClick` by literal id: `apiHandlers[id]`)
    * @param {TApiHandlerParams} params
@@ -90,14 +108,15 @@ const apiHandlers = {
     const thread = threadsHash[threadId];
     const { resolved: currResolved } = thread;
     const resolved = !currResolved;
-    console.log('[ThreadCommentsHandlers:apiHandlers:threadResolve]: start', {
-      resolved,
-      currResolved,
-      threadId,
-      thread,
-      params,
-      threadsHash,
-    });
+    /* console.log('[ThreadCommentsHandlers:ApiHandlers:threadResolve]: start', {
+     *   resolved,
+     *   currResolved,
+     *   threadId,
+     *   thread,
+     *   params,
+     *   threadsHash,
+     * });
+     */
     ThreadCommentsLoader.threadResolveRequest({ threadId, resolved })
       .then(() => {
         // Update data...
@@ -105,13 +124,14 @@ const apiHandlers = {
         // Update content...
         const threadTitleTextNode = threadNode.querySelector('.title-text');
         const threadTitleTextContent =
-          ThreadCommentsRender.helpers.createThreadTitleTextContent(thread);
-        console.log('[ThreadCommentsHandlers:apiHandlers:threadResolve]: done', {
-          resolved,
-          thread,
-          threadTitleTextNode,
-          threadTitleTextContent,
-        });
+          this.threadCommentsRender.helpers.createThreadTitleTextContent(thread);
+        /* console.log('[ThreadCommentsHandlers:ApiHandlers:threadResolve]: done', {
+         *   resolved,
+         *   thread,
+         *   threadTitleTextNode,
+         *   threadTitleTextContent,
+         * });
+         */
         // Update data & elements' states...
         threadTitleTextNode.innerHTML = threadTitleTextContent;
         // Update thread node class...
@@ -119,15 +139,15 @@ const apiHandlers = {
         // Re-sort and re-show threads...
         const { threads } = ThreadCommentsData;
         ThreadCommentsHelpers.sortThreads(threads);
-        ThreadCommentsRender.reorderRenderedThreads();
-        ThreadCommentsRender.updateVisibleThreads();
+        this.threadCommentsRender.reorderRenderedThreads();
+        this.threadCommentsRender.updateVisibleThreads();
         // Show noitification...
         commonNotify.showSuccess('Thread data successfully updated');
         ThreadCommentsStates.setError(undefined);
       })
       .catch((error) => {
         // eslint-disable-next-line no-console
-        console.error('[ThreadCommentsHandlers:apiHandlers:threadResolve]: error (catched)', {
+        console.error('[ThreadCommentsHandlers:ApiHandlers:threadResolve]: error (catched)', {
           error,
           params,
         });
@@ -137,9 +157,9 @@ const apiHandlers = {
         ThreadCommentsStates.setError(error);
         commonNotify.showError(error);
       });
-  },
+  }
 
-  /** threadResolve -- Set resolved status for thread (called from `handleTitleActionClick` by literal id: `apiHandlers[id]`)
+  /**
    * @return {Promise}
    */
   addNewThread() {
@@ -166,9 +186,6 @@ const apiHandlers = {
         return ThreadCommentsLoader.addNewThreadRequest(name, comment);
       })
       .then((/** @type {TThreadCommentsResponseData | undefined} */ json) => {
-        console.log('[ThreadCommentsHandlers:addNewThread] success', {
-          json,
-        });
         ThreadCommentsPrepare.addNewThreadData(json);
         commonNotify.showSuccess('New thread successfully added');
       })
@@ -184,11 +201,17 @@ const apiHandlers = {
           commonNotify.showError(error);
         }
       });
-  },
-};
+  }
+}
 
 export const ThreadCommentsHandlers = /** @lends ThreadCommentsHandlers */ {
   __id: 'ThreadCommentsHandlers',
+
+  /** @type {ThreadCommentsRender} */
+  threadCommentsRender: undefined,
+
+  /** @type {ApiHandlers} */
+  apiHandlers: undefined,
 
   /**
    * @param {MouseEvent} event
@@ -216,7 +239,7 @@ export const ThreadCommentsHandlers = /** @lends ThreadCommentsHandlers */ {
     if (isDisabled) {
       return;
     }
-    const func = apiHandlers[actionId];
+    const func = this.apiHandlers[actionId];
     try {
       if (!func) {
         const error = new Error(`Cannot find api handler for action id '${actionId}'`);
@@ -226,16 +249,17 @@ export const ThreadCommentsHandlers = /** @lends ThreadCommentsHandlers */ {
         debugger;
         throw error;
       }
-      console.log('[ThreadCommentsHandlers:handleTitleActionClick]', actionId, {
-        actionId,
-        func,
-        node,
-        event,
-        // isThreadAction,
-        threadNode,
-        threadId,
-      });
-      func(params);
+      /* console.log('[ThreadCommentsHandlers:handleTitleActionClick]', actionId, {
+       *   actionId,
+       *   func,
+       *   node,
+       *   event,
+       *   // isThreadAction,
+       *   threadNode,
+       *   threadId,
+       * });
+       */
+      func.call(this.apiHandlers, params);
     } catch (error) {
       // eslint-disable-next-line no-console
       console.error('[ThreadCommentsHandlers:handleTitleActionClick] error', error);
@@ -261,7 +285,7 @@ export const ThreadCommentsHandlers = /** @lends ThreadCommentsHandlers */ {
      */
     // Ensure that all the thread comments had already rendered...
     if (setExpanded) {
-      ThreadCommentsRender.ensureThreadCommentsReady(threadId);
+      this.threadCommentsRender.ensureThreadCommentsReady(threadId);
     }
     // Toggle `expanded` class name...
     threadEl.classList.toggle('expanded', setExpanded);
@@ -296,7 +320,7 @@ export const ThreadCommentsHandlers = /** @lends ThreadCommentsHandlers */ {
     threadNodesList.forEach((node) => {
       if (setExpanded) {
         const threadId = Number(node.getAttribute('data-thread-id'));
-        ThreadCommentsRender.ensureThreadCommentsReady(threadId);
+        this.threadCommentsRender.ensureThreadCommentsReady(threadId);
       }
       node.classList.toggle('expanded', setExpanded);
     });
@@ -308,9 +332,6 @@ export const ThreadCommentsHandlers = /** @lends ThreadCommentsHandlers */ {
   loadComments() {
     return ThreadCommentsLoader.loadCommentsRequest()
       .then((json) => {
-        console.log('[ThreadCommentsHandlers:loadComments]: got data', {
-          json,
-        });
         ThreadCommentsPrepare.updateAllData(json);
       })
       .catch((error) => {
@@ -327,7 +348,7 @@ export const ThreadCommentsHandlers = /** @lends ThreadCommentsHandlers */ {
   },
 
   addNewThread() {
-    return apiHandlers.addNewThread();
+    return this.apiHandlers.addNewThread();
   },
 
   /**
@@ -380,8 +401,13 @@ export const ThreadCommentsHandlers = /** @lends ThreadCommentsHandlers */ {
     });
   },
 
-  init({ handlers }) {
+  /** @param {TThreadCommentsInitParams} initParams */
+  init(initParams) {
+    const { handlers, threadCommentsRender } = initParams;
+    this.threadCommentsRender = threadCommentsRender;
     // Export all methods as external handlers...
     CommonHelpers.exportCallbacksFromObject(handlers, this);
+    // Save params...
+    this.apiHandlers = new ApiHandlers({ threadCommentsRender });
   },
 };
