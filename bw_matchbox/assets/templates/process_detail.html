@@ -121,32 +121,39 @@
 
             <h3>Technosphere Inputs</h3>
 
-            <table class="fixed-table" width="100%">
-              <thead>
-                <tr>
-                  <th class="cell-amount"><div>Amount</div></th>
-                  <th class="cell-name"><div>Name</div></th>
-                  <th class="cell-location"><div>Location</div></th>
-                  <th class="cell-unit"><div>Unit</div></th>
-                  <th class="cell-matched"><div>Matched</div></th>
-                </tr>
-              </thead>
-              <tbody>
-                {% for row in technosphere %}
-                <tr>
-                  <td><div>{{row.amount}}</div></td>
-                  <td><div><a href="{{ url_for('process_detail', id=row.input.id) }}">{{row.input.name}}</a></div></td>
-                  <td><div>{{row.input.location}}</div></td>
-                  <td><div>{{row.input.unit}}</div></td>
-                  <td><div>{% if row.input.matched %}<i class="fa-solid fa-check"></i>{% else %}<i class="fa-solid fa-circle-xmark"></i>{% endif %}</div></td>
-                </tr>
-                {% endfor %}
-              </tbody>
-            </table>
+            {% if not technosphere|length %}
+              <p>No technosphere exchanges</p>
+            {% else %}
+              <table class="fixed-table" width="100%">
+                <thead>
+                  <tr>
+                    <th class="cell-amount"><div>Amount</div></th>
+                    <th class="cell-name"><div>Name</div></th>
+                    <th class="cell-location"><div>Location</div></th>
+                    <th class="cell-unit"><div>Unit</div></th>
+                    <th class="cell-matched"><div>Matched</div></th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {% for row in technosphere %}
+                  <tr>
+                    <td><div>{{row.amount}}</div></td>
+                    <td><div><a href="{{ url_for('process_detail', id=row.input.id) }}">{{row.input.name}}</a></div></td>
+                    <td><div>{{row.input.location}}</div></td>
+                    <td><div>{{row.input.unit}}</div></td>
+                    <td><div>{% if row.input.matched %}<i class="fa-solid fa-check"></i>{% else %}<i class="fa-solid fa-circle-xmark"></i>{% endif %}</div></td>
+                  </tr>
+                  {% endfor %}
+                </tbody>
+              </table>
+            {% endif %}
 
             <h2>Biosphere Inputs</h2>
 
-            {% if biosphere|length > 50 or not biosphere|length %}
+            {% if not biosphere|length %}
+              <p>No biosphere exchanges</p>
+            {% elif biosphere|length > 50 %}
+              {# Don't show if more than 50? #}
               <p>{{ biosphere|length }} biosphere exchanges</p>
             {% else %}
               <table class="fixed-table" width="100%">
@@ -179,6 +186,7 @@
               <p>Showing 50 of {{ total_consumers }}</p>
             {% endif %}
             {% if total_consumers %}
+              {# NOTE: Are we showing only first 50 records? Is it provided by server? #}
               <table class="fixed-table" width="100%">
                 <thead>
                   <tr>
