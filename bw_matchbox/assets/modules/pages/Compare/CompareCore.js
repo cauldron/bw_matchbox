@@ -477,30 +477,32 @@ export const CompareCore = {
     const title = [row.name, row.location, row.unit].filter(Boolean).join(' | ');
     const content = this.getEditNumberModalContent(row);
 
-    commonModal
-      .setModalContentId('set-number-modal')
-      .setTitle(title)
-      .setModalContentOptions({
-        // Scrollings and paddings will be set for inner components particaluary.
-        scrollable: false,
-        padded: false,
-      })
-      .setContent(content)
-      .showModal();
+    commonModal.ensureInit().then(() => {
+      commonModal
+        .setModalContentId('set-number-modal')
+        .setTitle(title)
+        .setModalContentOptions({
+          // Scrollings and paddings will be set for inner components particaluary.
+          scrollable: false,
+          padded: false,
+        })
+        .setContent(content)
+        .showModal();
 
-    // Set modal handlers...
-    document
-      .getElementById('rescale-button')
-      .addEventListener('click', this.rescaleAmountHandler.bind(this));
-    document
-      .getElementById('new-number-button')
-      .addEventListener('click', this.setNewNumberHandler.bind(this));
-    document
-      .getElementById('set-and-close-number-editor')
-      .addEventListener('click', this.setNumberAndCloseModalHandler.bind(this));
-    document
-      .getElementById('reset-number')
-      .addEventListener('click', this.resetNumberHandler.bind(this));
+      // Set modal handlers...
+      document
+        .getElementById('rescale-button')
+        .addEventListener('click', this.rescaleAmountHandler.bind(this));
+      document
+        .getElementById('new-number-button')
+        .addEventListener('click', this.setNewNumberHandler.bind(this));
+      document
+        .getElementById('set-and-close-number-editor')
+        .addEventListener('click', this.setNumberAndCloseModalHandler.bind(this));
+      document
+        .getElementById('reset-number')
+        .addEventListener('click', this.resetNumberHandler.bind(this));
+    });
   },
 
   /**

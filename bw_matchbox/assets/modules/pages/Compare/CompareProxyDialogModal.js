@@ -166,20 +166,22 @@ export const CompareProxyDialogModal = {
 
     const title = 'Proxy name';
 
-    commonModal
-      .setModalContentId('proxy-dialog-modal')
-      .setTitle(title)
-      .setModalContentOptions({
-        scrollable: true,
-        padded: true,
-      })
-      .setContent(content)
-      .showModal();
+    commonModal.ensureInit().then(() => {
+      commonModal
+        .setModalContentId('proxy-dialog-modal')
+        .setTitle(title)
+        .setModalContentOptions({
+          scrollable: true,
+          padded: true,
+        })
+        .setContent(content)
+        .showModal();
 
-    const submit = document.getElementById('create-proxy-submit-button');
-    submit.addEventListener('click', this.onSubmitButtonClick.bind(this));
+      const submit = document.getElementById('create-proxy-submit-button');
+      submit.addEventListener('click', this.onSubmitButtonClick.bind(this));
 
-    const matchTypeSelect = document.getElementById('match-type-select');
-    matchTypeSelect.addEventListener('change', this.onMatchTypeSelectChange.bind(this));
+      const matchTypeSelect = document.getElementById('match-type-select');
+      matchTypeSelect.addEventListener('change', this.onMatchTypeSelectChange.bind(this));
+    });
   },
 };
