@@ -1,4 +1,4 @@
-:root {
+.panels-layout {
   --thread-comments-toolbar-items-size: 38px;
 }
 
@@ -65,6 +65,10 @@
   align-items: center;
   justify-content: center;
   opacity: 0.25;
+}
+.panels-layout .thread-comments-toolbar > a.toolbar-icon.disabled {
+  opacity: 0.25;
+  pointer-events: none;
 }
 .panels-layout .thread-comments-toolbar > a.toolbar-icon:not(.disabled) {
   cursor: pointer;
