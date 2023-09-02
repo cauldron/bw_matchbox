@@ -62,3 +62,36 @@
   }
 }
 
+/* Info section */
+.allocate-layout .info-tableau {
+  position: relative;
+  transition: all var(--common-animation-time);
+  min-height: 0;
+}
+.allocate-layout.loading .info-tableau {
+  min-height: 50px;
+}
+
+/* Error */
+.allocate-layout .info-tableau .error {
+  border-radius: 4px;
+  background-color: var(--common-error-color);
+  color: #fff;
+  margin: 20px auto;
+  padding: 10px 20px;
+}
+.allocate-layout:not(.has-error) .info-tableau .error {
+  display: none;
+}
+
+/* Loader splash */
+.allocate-layout .info-tableau .loader-splash {
+  padding: 20px;
+}
+.allocate-layout:not(.loading) .info-tableau .loader-splash {
+  /* Inherited from `.loader-splash.hidden`, see `bw_matchbox/assets/css/common.css` */
+  opacity: 0;
+  pointer-events: none;
+}
+
+

@@ -788,9 +788,12 @@ def allocate_process(id):
         ),
         ds=node,
         config=config,
-        production=to_json(production),
-        technosphere=to_json(technosphere),
-        biosphere=to_json(biosphere),
+        production=production,
+        technosphere=technosphere,
+        biosphere=biosphere,
+        production_json=to_json(production),
+        technosphere_json=to_json(technosphere),
+        biosphere_json=to_json(biosphere),
     )
 
 
