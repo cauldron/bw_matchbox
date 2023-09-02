@@ -1,5 +1,6 @@
 // @ts-check
 
+import { useDebug } from '../../common/CommonConstants.js';
 import * as CommonHelpers from '../../common/CommonHelpers.js';
 
 // Import only types...
@@ -35,6 +36,7 @@ export class AllocatePageRender {
       amount, // number; // 0.06008158208572887
       input, // TAllocationRecord; // {name: 'Clay-Williams', unit: 'kilogram', location: 'GLO', product: 'LLC', categories: 'Unknown'}
       output, // TAllocationRecord; // {name: 'Smith LLC', unit: 'kilogram', location: 'GLO', product: 'Inc', categories: 'Unknown'}
+      inGroup,
     } = row;
     const {
       categories, // 'Unknown' | TCategory[]; // ['air']
@@ -43,9 +45,25 @@ export class AllocatePageRender {
       product, // string; // 'LLC'
       unit, // string; // 'kilogram'
     } = input;
+    const isInGroup = inGroup != undefined;
+    // DEBUG: Show dragging effect...
+    const isDragging = useDebug && name === 'Ellis Group';
     const nameContent = `<a href="/process/${id}">${name}</a>`;
+    const className = [
+      // Dragging?
+      isDragging && 'dragging',
+      // Is in group?
+      isInGroup && 'in-group',
+    ]
+      .filter(Boolean)
+      .join(' ');
     const content = `
-      <tr id="${id}">
+      <tr
+        data-id="${id}"
+        data-type="${type}"
+        data-in-group="${inGroup || ''}"
+        class="${className}"
+      >
         <td><div>${amount}</div></td>
         <td><div>${nameContent}</div></td>
         <td><div>${location}</div></td>
@@ -86,18 +104,37 @@ export class AllocatePageRender {
     CommonHelpers.updateNodeContent(node, content);
   }
 
-  renderTechnosphereInputTable() {
+  /** @param {TAllocationType} type */
+  updateInputTableState(type) {
     const { nodes, state } = this;
-    const { technosphere } = state;
-    const hasData = Array.isArray(technosphere) && technosphere.length;
-    const node = nodes.getTechnosphereInputsNode();
-    this.renderInputTableToNode(node, technosphere);
+    // Get only ungrouped items...
+    const visibleData = state[type].filter((item) => !item.inGroup);
+    const visibleCount = visibleData.length;
     const rootNode = nodes.getRootNode();
-    rootNode.classList.toggle('has-technosphere-data', hasData);
+    const statisticsNode = nodes.getStatisticsNode();
+    const statisticsItems = statisticsNode.querySelectorAll('#' + type + '-count');
+    rootNode.classList.toggle('has-' + type + '-data', !!visibleCount);
+    if (statisticsItems.length) {
+      for (const countNode of statisticsItems) {
+        countNode.innerHTML = String(visibleCount);
+      }
+    }
+  }
+
+  /** @param {TAllocationType} type */
+  renderInputTable(type) {
+    const { nodes, state } = this;
+    const data = state[type];
+    const rootNode = nodes.getRootNode();
+    const node = rootNode.querySelector('#' + type + '-inputs');
+    this.renderInputTableToNode(node, data);
+    this.updateInputTableState(type);
   }
 
   renderAllInputTables() {
-    this.renderTechnosphereInputTable();
+    this.renderInputTable('technosphere');
+    this.renderInputTable('biosphere');
+    this.renderInputTable('production');
   }
 
   renderAllData() {

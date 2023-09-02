@@ -31,15 +31,23 @@ export class AllocatePageNodes {
     return this.rootNode;
   }
 
-  getTechnosphereInputsNode() {
+  getGroupsToolbarNode() {
+    const columnsLayout = this.getRootNode();
+    return columnsLayout.querySelector('#allocate-groups-toolbar');
+  }
+
+  getColumnsLayoutNode() {
+    const columnsLayout = this.getRootNode();
+    return columnsLayout.querySelector('#allocate-columns-layout');
+  }
+
+  getStatisticsNode() {
     const rootNode = this.getRootNode();
-    // TODO?
-    return rootNode.querySelector('#technosphere-inputs');
+    return rootNode.querySelector('#statistics-info');
   }
 
   getErrorNode() {
     const rootNode = this.getRootNode();
-    // TODO?
     return rootNode.querySelector('.info-tableau .error');
   }
 }

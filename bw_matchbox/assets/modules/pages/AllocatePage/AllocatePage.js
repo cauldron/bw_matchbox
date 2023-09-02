@@ -3,8 +3,7 @@
 import { AllocatePageNodes } from './AllocatePageNodes.js';
 import { AllocatePageState } from './AllocatePageState.js';
 import { AllocatePageRender } from './AllocatePageRender.js';
-// import { AllocatePageInit } from './AllocatePageInit.js';
-// import { AllocatePageHandlers } from './AllocatePageHandlers.js';
+import { AllocatePageHandlers } from './AllocatePageHandlers.js';
 
 export class AllocatePage {
   /** External data...
@@ -23,13 +22,8 @@ export class AllocatePage {
   nodes;
   /** @type {AllocatePageRender} */
   render;
-
-  /* // TODO: Future modules: state, nodes, init, handlers
-   * [>* @type {AllocatePageInit} <]
-   * init;
-   * [>* @type {AllocatePageHandlers} <]
-   * handlers;
-   */
+  /** @type {AllocatePageHandlers} */
+  handlers;
 
   /**
    * @param {TSharedParams} sharedParams
@@ -84,6 +78,13 @@ export class AllocatePage {
       // Modules...
       nodes,
       state,
+    }));
+    const _handlers = (this.handlers = new AllocatePageHandlers({
+      // Modules...
+      nodes,
+      state,
+      render,
+      callbacks,
     }));
 
     render.renderAllData();

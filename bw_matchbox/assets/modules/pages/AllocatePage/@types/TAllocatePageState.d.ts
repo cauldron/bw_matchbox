@@ -12,13 +12,19 @@ class TAllocatePageStateParams {
 
 class AllocatePageState /* implements TAllocatePageStateParams */ {
   // Properties come from `TAllocatePageStateParams`...
-  // Data...
+
+  // Source data...
   biosphere: TAllocationData[];
   production: TAllocationData[];
   technosphere: TAllocationData[];
+
+  // Allocated groups...
+  groups: TAllocationGroup[];
+
   // Current configuration parameters...
   currentRole: TUserRole;
   currentUser: TUserName;
+
   // Modules...
   nodes: AllocatePageNodes;
 

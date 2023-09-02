@@ -16,4 +16,5 @@ interface TAllocationData {
   amount: number; // 0.06008158208572887
   input: TAllocationRecord; // {name: 'Clay-Williams', unit: 'kilogram', location: 'GLO', product: 'LLC', categories: 'Unknown'}
   output: TAllocationRecord; // {name: 'Smith LLC', unit: 'kilogram', location: 'GLO', product: 'Inc', categories: 'Unknown'}
+  inGroup?: TLocalGroupId; // Local data: input data is in group (should not be displayed in source data, but in group)
 }
