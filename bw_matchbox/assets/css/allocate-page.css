@@ -15,23 +15,17 @@
   /* border: 1px solid red; */
   display: flex;
   flex-direction: column;
-  position: fixed;
-  left: 0;
-  right: 0;
-  top: 0;
-  bottom: 0;
-  overflow: hidden;
 }
 
 .allocate-layout .allocate-columns-layout {
   /* border: 1px solid green; */
   display: flex;
-  flex-direction: row;
   flex: 1;
   overflow: hidden;
   align-items: stretch;
   align-content: stretch;
   border-top: 1px solid var(--border-color);
+  flex-direction: column;
 }
 
 .allocate-layout .allocate-columns-layout-column {
@@ -39,14 +33,32 @@
 }
 
 .allocate-layout .allocate-groups-column {
-  /* border: 1px solid purple; */
-  border-right: 1px solid var(--border-color);
-  /* Make columns resizable */
-  resize: horizontal;
-  width: 30%;
+  border-bottom: 1px solid var(--border-color);
 }
-.allocate-layout .allocate-sources-column {
-  /* border: 1px solid purple; */
-  flex: 1;
+
+/* Adaptive layout */
+@media screen and (width >= 600px) {
+  .allocate-layout {
+    position: fixed;
+    left: 0;
+    right: 0;
+    top: 0;
+    bottom: 0;
+    overflow: hidden;
+  }
+  .allocate-layout .allocate-columns-layout {
+    flex-direction: row;
+  }
+  .allocate-layout .allocate-groups-column {
+    border-bottom: 0;
+    border-right: 1px solid var(--border-color);
+    /* Make columns resizable */
+    resize: horizontal;
+    width: 30%;
+  }
+  .allocate-layout .allocate-sources-column {
+    /* border: 1px solid purple; */
+    flex: 1;
+  }
 }
 
