@@ -41,6 +41,7 @@
   display: flex;
   gap: 5px;
   align-items: center;
+  flex-wrap: wrap;
 }
 .panels-layout .thread-comments-toolbar > .group > *,
 .panels-layout .thread-comments-toolbar > * {
@@ -55,6 +56,7 @@
   opacity: 0.5;
 }
 .panels-layout .thread-comments-toolbar > a.toolbar-icon {
+  flex-shrink: 0;
   background-color: #bbb;
   /* background-color: var(--layout-theme-primary-color); */
   color: #fff;

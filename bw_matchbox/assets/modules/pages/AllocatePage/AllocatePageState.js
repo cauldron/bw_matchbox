@@ -86,5 +86,7 @@ export class AllocatePageState {
     // Set initialized state...
     const rootNode = this.nodes.getRootNode();
     rootNode.classList.toggle('inited', true);
+    const columnsLayout = this.nodes.getColumnsLayoutNode();
+    columnsLayout.classList.toggle('common-hidden', false);
   }
 }
