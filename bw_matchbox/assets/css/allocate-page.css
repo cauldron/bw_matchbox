@@ -11,6 +11,11 @@
   padding-bottom: 0;
 }
 
+.allocate-header .common-page-header,
+.allocate-header .common-page-header .title {
+  margin-bottom: 0;
+}
+
 .allocate-layout {
   /* border: 1px solid red; */
   display: flex;
@@ -26,6 +31,13 @@
   align-content: stretch;
   border-top: 1px solid var(--border-color);
   flex-direction: column;
+  transition: all var(--common-animation-time);
+  opacity: 0;
+  /* display: none; */
+}
+.allocate-layout.inited .allocate-columns-layout {
+  /* display: flex; */
+  opacity: 1;
 }
 
 .allocate-layout .allocate-columns-layout-column {
@@ -66,10 +78,21 @@
 .allocate-layout .info-tableau {
   position: relative;
   transition: all var(--common-animation-time);
-  min-height: 0;
+  min-height: 40px;
+  margin: 10px 0;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  align-items: stretch;
+  justify-content: center;
 }
 .allocate-layout.loading .info-tableau {
   min-height: 50px;
+}
+
+.allocate-layout .info-tableau .statistics-info {
+  text-align: center;
+  opacity: 0.5;
 }
 
 /* Error */
@@ -88,10 +111,14 @@
 .allocate-layout .info-tableau .loader-splash {
   padding: 20px;
 }
-.allocate-layout:not(.loading) .info-tableau .loader-splash {
+.allocate-layout.inited:not(.loading) .info-tableau .loader-splash {
   /* Inherited from `.loader-splash.hidden`, see `bw_matchbox/assets/css/common.css` */
   opacity: 0;
   pointer-events: none;
 }
 
-
+/* Data tables */
+.allocate-layout.has-technosphere-data .technosphere-empty,
+.allocate-layout:not(.has-technosphere-data) .technosphere-table {
+  display: none;
+}

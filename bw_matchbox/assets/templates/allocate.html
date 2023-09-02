@@ -16,6 +16,7 @@
     </div>
     <div class="info-tableau">
       {# TODO: Show some info/statistics here (to keep plcae for loader? #}
+      <div class="statistics-info" id="statistics-info">Statistics info...</div>
       <div class="error" id="error">Sample error text</div>
       <div id="loader-splash" class="loader-splash bg-white full-cover"><div class="loader-spinner"></div></div>
     </div>
@@ -25,45 +26,45 @@
       <p>allocate-groups-column</p>
     </div>
     <div id="allocate-sources-column" class="allocate-columns-layout-column allocate-sources-column">
-      <p>allocate-sources-column</p>
 
       <h3>Technosphere Inputs</h3>
 
-      {% if not technosphere|length %}
-        <p>No technosphere exchanges</p>
-      {% else %}
-        <table class="fixed-table" width="100%">
-          <thead>
-            <tr>
-              <th class="cell-amount"><div>Amount</div></th>
-              <th class="cell-name"><div>Name</div></th>
-              <th class="cell-location"><div>Location</div></th>
-              <th class="cell-unit"><div>Unit</div></th>
-            </tr>
-          </thead>
-          <tbody>
-            {% for row in technosphere %}
-              <!--
-                {{ row|safe }}
-              -->
-            {#
-              amount: 0.06008158208572887
-              id: 199
-              input: {name: 'Clay-Williams', unit: 'kilogram', location: 'GLO', product: 'LLC', categories: 'Unknown'}
-              output: {name: 'Smith LLC', unit: 'kilogram', location: 'GLO', product: 'Inc', categories: 'Unknown'}
-              type: "technosphere"
-            #}
-            <tr>
-              <td><div>{{row.amount}}</div></td>
-              <td><div><a href="{{ url_for('process_detail', id=row.id) }}">{{row.input.name}}</a></div></td>
-              <td><div>{{row.input.location}}</div></td>
-              <td><div>{{row.input.unit}}</div></td>
-            </tr>
-            {% endfor %}
-          </tbody>
-        </table>
-      {% endif %}
+      <div class="info technosphere-empty">No technosphere exchanges</div>
+      <table class="fixed-table technosphere-table" width="100%">
+        <thead>
+          <tr>
+            <th class="cell-amount"><div>Amount</div></th>
+            <th class="cell-name"><div>Name</div></th>
+            <th class="cell-location"><div>Location</div></th>
+            <th class="cell-unit"><div>Unit</div></th>
+          </tr>
+        </thead>
+        <tbody id="technosphere-inputs">
+          {#
 
+          Row data:
+          {
+            amount: 0.06008158208572887
+            id: 199
+            input: {name: 'Clay-Williams', unit: 'kilogram', location: 'GLO', product: 'LLC', categories: 'Unknown'}
+            output: {name: 'Smith LLC', unit: 'kilogram', location: 'GLO', product: 'Inc', categories: 'Unknown'}
+            type: "technosphere"
+          }
+
+          Render example:
+
+          ```
+          <tr>
+            <td><div>{{row.amount}}</div></td>
+            <td><div><a href="{{ url_for('process_detail', id=row.id) }}">{{row.input.name}}</a></div></td>
+            <td><div>{{row.input.location}}</div></td>
+            <td><div>{{row.input.unit}}</div></td>
+          </tr>
+          ```
+
+          #}
+        </tbody>
+      </table>
 
     </div>
   </div>
@@ -80,9 +81,12 @@
   // Core module
   import { AllocatePage } from '/assets/modules/pages/AllocatePage/AllocatePage.js';
 
+  const rootNode = document.getElementById('allocate-layout');
+
   // Global variables...
   const sharedParams = {
     // Current configuration parameters...
+    rootNode,
     currentRole: '{{ config.role }}',
     currentUser: '{{ config.user }}',
     // Data...
@@ -91,7 +95,7 @@
     biosphere: {{ biosphere_json|safe }},
   };
 
-  console.log('[allocate]', sharedParams);
+  console.log('[allocate:template]', sharedParams);
 
   // Export to global scope (to access from generated html code handlers).
   window.allocatePage = new AllocatePage(sharedParams);

@@ -1,8 +1,8 @@
 class TAllocatePageStateParams {
   // Data...
-  biosphere: TAllocationItem[];
-  production: TAllocationItem[];
-  technosphere: TAllocationItem[];
+  biosphere: TAllocationData[];
+  production: TAllocationData[];
+  technosphere: TAllocationData[];
   // Current configuration parameters...
   currentRole: TUserRole;
   currentUser: TUserName;
@@ -10,18 +10,17 @@ class TAllocatePageStateParams {
   nodes: AllocatePageNodes;
 }
 
-class AllocatePageState implements TAllocatePageStateParams {
-  /* // Properties come from `TAllocatePageStateParams`...
-   * // Data...
-   * biosphere: TAllocationItem[];
-   * production: TAllocationItem[];
-   * technosphere: TAllocationItem[];
-   * // Current configuration parameters...
-   * currentRole: TUserRole;
-   * currentUser: TUserName;
-   * // Modules...
-   * nodes: AllocatePageNodes;
-   */
+class AllocatePageState /* implements TAllocatePageStateParams */ {
+  // Properties come from `TAllocatePageStateParams`...
+  // Data...
+  biosphere: TAllocationData[];
+  production: TAllocationData[];
+  technosphere: TAllocationData[];
+  // Current configuration parameters...
+  currentRole: TUserRole;
+  currentUser: TUserName;
+  // Modules...
+  nodes: AllocatePageNodes;
 
   // Interface...
   setLoading: (isLoading: boolean) => void;

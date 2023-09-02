@@ -1,9 +1,10 @@
 interface TSharedParams {
   // Data...
-  biosphere: TAllocationItem[];
-  production: TAllocationItem[];
-  technosphere: TAllocationItem[];
+  biosphere: TAllocationData[];
+  production: TAllocationData[];
+  technosphere: TAllocationData[];
   // Current configuration parameters...
+  rootNode?: HTMLElement;
   currentRole: TUserRole;
   currentUser: TUserName;
 }

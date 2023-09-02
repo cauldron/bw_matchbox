@@ -2,6 +2,7 @@
 
 import { AllocatePageNodes } from './AllocatePageNodes.js';
 import { AllocatePageState } from './AllocatePageState.js';
+import { AllocatePageRender } from './AllocatePageRender.js';
 // import { AllocatePageInit } from './AllocatePageInit.js';
 // import { AllocatePageHandlers } from './AllocatePageHandlers.js';
 
@@ -18,9 +19,10 @@ export class AllocatePage {
 
   /** @type {AllocatePageState} */
   state;
-
   /** @type {AllocatePageNodes} */
   nodes;
+  /** @type {AllocatePageRender} */
+  render;
 
   /* // TODO: Future modules: state, nodes, init, handlers
    * [>* @type {AllocatePageInit} <]
@@ -40,7 +42,9 @@ export class AllocatePage {
 
     // Save public data...
     this.sharedParams = sharedParams;
+    const { rootNode } = sharedParams;
 
+    // Will be initialized in `handlers` instance...
     const { callbacks } = this;
 
     const {
@@ -64,7 +68,7 @@ export class AllocatePage {
     });
 
     // TODO: Init sub-modules...
-    const nodes = (this.nodes = new AllocatePageNodes());
+    const nodes = (this.nodes = new AllocatePageNodes({ rootNode }));
     const state = (this.state = new AllocatePageState({
       // Modules...
       nodes,
@@ -76,7 +80,13 @@ export class AllocatePage {
       currentUser,
       currentRole,
     }));
+    const render = (this.render = new AllocatePageRender({
+      // Modules...
+      nodes,
+      state,
+    }));
 
+    render.renderAllData();
     state.setInited();
   }
 }

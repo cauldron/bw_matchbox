@@ -93,7 +93,7 @@
 .thread-comments .threads-list .thread:not(.empty) .main-row:hover .expand-button {
   background-color: var(--layout-theme-primary-color);
   color: rgba(255 255 255 / 75%);
-  opacity: .75;
+  opacity: 0.75;
 }
 .thread-comments .threads-list .thread:not(.resolved, .empty) .main-row:hover .expand-button {
   background-color: var(--common-error-color);

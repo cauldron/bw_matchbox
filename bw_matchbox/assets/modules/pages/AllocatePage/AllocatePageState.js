@@ -20,11 +20,11 @@ export class AllocatePageState {
   /** @type {TUserRole} */
   currentRole;
 
-  /** @type {TAllocationItem[]} */
+  /** @type {TAllocationData[]} */
   biosphere;
-  /** @type {TAllocationItem[]} */
+  /** @type {TAllocationData[]} */
   production;
-  /** @type {TAllocationItem[]} */
+  /** @type {TAllocationData[]} */
   technosphere;
 
   /** @param {TAllocatePageStateParams} params */

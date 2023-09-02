@@ -166,7 +166,7 @@ export function htmlToElements(html) {
 
 /** updateNodeContent -- Replace all inner dom node content.
  * @param {Element} node
- * @param {string|HTMLElement|HTMLElement[]} content
+ * @param {THtmlContent} content
  */
 export function updateNodeContent(node, content) {
   if (!node) {
