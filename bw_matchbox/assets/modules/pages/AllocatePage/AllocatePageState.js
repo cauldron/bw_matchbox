@@ -8,7 +8,7 @@ import { AllocatePageNodes } from './AllocatePageNodes.js';
 /* eslint-enable no-unused-vars */
 
 /**
- * @implements TAllocatePageState
+ * @class AllocatePageState
  */
 export class AllocatePageState {
   // Modules...
@@ -31,7 +31,7 @@ export class AllocatePageState {
 
   // Groups...
 
-  /** @type TAllocatePageState['groups'] */
+  /** @type TAllocationGroup[] */
   groups;
 
   /** Counter used to generate the unique id and name of the new groups
@@ -39,7 +39,9 @@ export class AllocatePageState {
    */
   newGroupsCount;
 
-  /** @param {TAllocatePageStateParams} params */
+  /** @constructor
+   * @param {TAllocatePageStateParams} params
+   */
   constructor(params) {
     // Modules...
     this.nodes = params.nodes;

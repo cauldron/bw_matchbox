@@ -5,11 +5,13 @@ import * as CommonHelpers from '../../common/CommonHelpers.js';
 // Import only types...
 /* eslint-disable no-unused-vars */
 import { AllocatePageNodes } from './AllocatePageNodes.js';
+import { AllocatePageRender } from './AllocatePageRender.js';
 import { AllocatePageUpdaters } from './AllocatePageUpdaters.js';
+import { AllocatePageState } from './AllocatePageState.js';
 /* eslint-enable no-unused-vars */
 
 /**
- * @implements {TAllocatePageHandlers}
+ * @class AllocatePageHandlers
  */
 export class AllocatePageHandlers {
   // Modules...
@@ -22,8 +24,7 @@ export class AllocatePageHandlers {
   /** type {AllocatePageUpdaters} */
   updaters;
 
-  /**
-   * @constructor
+  /** @constructor
    * @param {object} params
    * @param {AllocatePageNodes} params.nodes
    * @param {AllocatePageState} params.state

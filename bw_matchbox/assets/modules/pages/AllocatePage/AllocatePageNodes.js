@@ -7,7 +7,7 @@ export class AllocatePageNodes {
   /** @type {HTMLElement} */
   rootNode;
 
-  /**
+  /** @constructor
    * @param {object} [params]
    * @param {HTMLElement} [params.rootNode]
    */

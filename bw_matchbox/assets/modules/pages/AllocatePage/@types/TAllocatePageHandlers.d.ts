@@ -5,6 +5,3 @@ interface TAllocatePageHandlersParams {
   render: AllocatePageRender;
   callbacks: TSharedHandlers;
 }
-
-class AllocatePageHandlers implements TAllocatePageHandlersParams {}
-type TAllocatePageHandlers = AllocatePageHandlers;

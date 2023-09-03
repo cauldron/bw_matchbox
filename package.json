@@ -50,7 +50,7 @@
     "stylelint-fix": "echo --Lint styles-- && stylelint bw_matchbox/**/*.{css,scss,less} --fix",
     "lint": "echo --Lint sources-- && eslint bw_matchbox --ext js",
     "type-check": "echo --Run typescript linter-- && tsc --pretty --noEmit",
-    "check-all": "echo --Run all pre-commit check-ups-- && npm-run-all prettier stylelint lint && echo --All check-ups are passed--",
+    "check-all": "echo --Run all pre-commit check-ups-- && npm-run-all prettier stylelint lint type-check && echo --All check-ups are passed--",
     "start": "echo --Run dev flask server /venv, dev/-- && python bw_matchbox/bin/matchbox.py webapp config.toml",
     "test": "echo \"Error: no test specified\" && exit 1"
   }

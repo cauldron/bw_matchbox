@@ -6,6 +6,8 @@ import * as CommonHelpers from '../../common/CommonHelpers.js';
 // Import only types...
 /* eslint-disable no-unused-vars */
 import { AllocatePageNodes } from './AllocatePageNodes.js';
+import { AllocatePageRender } from './AllocatePageRender.js';
+import { AllocatePageState } from './AllocatePageState.js';
 /* eslint-enable no-unused-vars */
 
 /**
@@ -20,8 +22,7 @@ export class AllocatePageUpdaters {
   /** type {AllocatePageRender} */
   render;
 
-  /**
-   * @constructor
+  /** @constructor
    * @param {object} params
    * @param {AllocatePageNodes} params.nodes
    * @param {AllocatePageState} params.state

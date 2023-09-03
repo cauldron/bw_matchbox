@@ -14,7 +14,7 @@ export class AllocatePage {
    */
   callbacks = {};
 
-  /**
+  /** @constructor
    * @param {TSharedParams} sharedParams
    */
   constructor(sharedParams) {

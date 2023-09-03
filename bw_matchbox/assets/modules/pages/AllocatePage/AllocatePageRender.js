@@ -3,14 +3,12 @@
 import { useDebug } from '../../common/CommonConstants.js';
 import * as CommonHelpers from '../../common/CommonHelpers.js';
 
-// Import only types...
+// Import types...
 /* eslint-disable no-unused-vars */
 import { AllocatePageNodes } from './AllocatePageNodes.js';
+import { AllocatePageState } from './AllocatePageState.js';
 /* eslint-enable no-unused-vars */
 
-/**
- * @implements {TAllocatePageRender}
- */
 export class AllocatePageRender {
   // Modules...
   /** @type AllocatePageNodes */
@@ -20,7 +18,7 @@ export class AllocatePageRender {
   /** @type TSharedHandlers} */
   callbacks;
 
-  /**
+  /** @constructor
    * @param {object} params
    * @param {AllocatePageNodes} params.nodes
    * @param {AllocatePageState} params.state
