@@ -83,6 +83,30 @@ export class AllocatePageUpdaters {
 
   // State updaters...
 
+  /** @param {TLocalGroupId} groupId */
+  updateGroupProps(groupId) {
+    const { nodes, state } = this;
+    const groupNode = nodes.getGroupNode(groupId);
+    if (groupNode) {
+      const { groups } = state;
+      const group = groups.find(({ localId }) => localId === groupId);
+      if (!group) {
+        throw new Error(`Not found group for group id "${groupId}"`);
+      }
+      const { items, name } = group;
+      const itemsCount = items.length;
+      const hasItems = !!itemsCount;
+      groupNode.classList.toggle('empty', !hasItems);
+      if (!hasItems) {
+        groupNode.classList.remove('expanded');
+      }
+      const countNode = groupNode.querySelector('#group-items-count');
+      countNode.innerHTML = String(itemsCount || 'empty');
+      const nameNode = groupNode.querySelector('#group-name');
+      nameNode.innerHTML = name;
+    }
+  }
+
   updateGroupsState() {
     const { nodes, state } = this;
     const { groups } = state;
@@ -219,6 +243,43 @@ export class AllocatePageUpdaters {
      */
     if (!opts.omitUpdate) {
       this.updateGroupsState();
+    }
+  }
+
+  /**
+   * @param {object} params
+   * @param {TLocalGroupId} params.groupId
+   * @param {TAllocationId} params.itemId
+   * @param {object} [opts]
+   * @param {boolean} [opts.omitUpdate]
+   */
+  removeGroupItemUpdater(params, opts = {}) {
+    const { groupId, itemId } = params;
+    const { state } = this;
+    const { groups } = state;
+    const group = groups.find(({ localId }) => localId === groupId);
+    if (!group) {
+      throw new Error(`Not found group for group id "${groupId}"`);
+    }
+    const { items } = group;
+    const itemPos = items.findIndex((item) => item.id === itemId);
+    if (itemPos === -1) {
+      throw new Error(`Not found item for id "${itemId}"`);
+    }
+    const item = items[itemPos];
+    console.log('[AllocatePageUpdaters:removeGroupItemUpdater]', {
+      groupId,
+      itemId,
+      group,
+      item,
+    });
+    this.restoreGroupedItemToInputs(item, { omitUpdate: true });
+    // Remove item from list...
+    items.splice(itemPos, 1);
+    if (!opts.omitUpdate) {
+      this.updateInputTableState(item.type);
+      this.updateGroupsState();
+      this.updateGroupProps(groupId);
     }
   }
 

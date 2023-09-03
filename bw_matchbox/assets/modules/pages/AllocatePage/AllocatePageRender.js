@@ -3,6 +3,8 @@
 import { useDebug } from '../../common/CommonConstants.js';
 import * as CommonHelpers from '../../common/CommonHelpers.js';
 
+import * as AllocatePageHelpers from './AllocatePageHelpers.js';
+
 // Import types...
 /* eslint-disable no-unused-vars */
 import { AllocatePageNodes } from './AllocatePageNodes.js';
@@ -18,7 +20,7 @@ export class AllocatePageRender {
   nodes;
   /** @type AllocatePageState */
   state;
-  /** @type TSharedHandlers} */
+  /** @type TSharedHandlers */
   callbacks;
 
   /** @constructor
@@ -35,43 +37,9 @@ export class AllocatePageRender {
   }
 
   initActionHandlers() {
-    // Set action handlers...
+    // Set initial action handlers...
     const toolbarNode = this.nodes.getGroupsToolbarNode();
-    this.addActionHandlers(toolbarNode);
-  }
-
-  // Helpers...
-
-  /** @param {HTMLElement} node */
-  addActionHandlers(node) {
-    const { callbacks } = this;
-    const actionNodes = node.querySelectorAll('[action-id]');
-    /* console.log('[AllocatePageRender:addActionHandlers]', {
-     *   node,
-     *   actionNodes,
-     * });
-     */
-    actionNodes.forEach((actionNode) => {
-      const actionId = actionNode.getAttribute('action-id');
-      const action = actionId && callbacks[actionId];
-      /* console.log('[AllocatePageRender:addActionHandlers] item', {
-       *   actionId,
-       *   action,
-       * });
-       */
-      if (!action) {
-        const error = new Error(`Not found action for id "${actionId}"`);
-        // eslint-disable-next-line no-console
-        console.warn('[AllocatePageRender:addActionHandlers]', error, {
-          actionNode,
-        });
-        return;
-      }
-      // Just for case: remove previous listener
-      actionNode.removeEventListener('click', action);
-      // Add listener...
-      actionNode.addEventListener('click', action);
-    });
+    AllocatePageHelpers.addActionHandlers(toolbarNode, this.callbacks);
   }
 
   // Render groups...
@@ -102,10 +70,13 @@ export class AllocatePageRender {
         data-type="${type}"
         class="group-item"
       >
-        #${id}
-        ${name}
-        (${type})
-        <!-- TODO: Remove item buttons -->
+        <div class="title">
+          <span id="item-name">${name}</span>
+          <span id="item-type">(${type})</span>
+        </div>
+        <div class="title-actions">
+          <a action-id="removeGroupItem" title="Remove item" class="theme-error"><i class="fa fa-xmark"></i></a>
+        </div>
       </div>
     `;
     console.log('[AllocatePageRender:createGroupItemContent]', type, id, {
@@ -160,9 +131,12 @@ export class AllocatePageRender {
       name, // string;
       items, // TAllocationData[];
     } = group;
+    const itemsCount = items.length;
+    const hasItems = !!itemsCount;
     const className = [
       // prettier-ignore
       'group',
+      !hasItems && 'empty',
     ]
       .filter(Boolean)
       .join(' ');
@@ -170,17 +144,21 @@ export class AllocatePageRender {
     const groupTitleActions = this.renderGroupTitleActions(group);
     const content = `
       <div
-        group-id="${localId}"
+        data-group-id="${localId}"
         class="${className}"
-        action-id="expandGroup"
       >
-        <div class="group-header">
+        <div action-id="expandGroup" class="group-header">
           <div class="expand-button-wrapper" title="Expand/collapse group items">
             <a class="expand-button">
               <i class="fa fa-chevron-right"></i>
             </a>
           </div>
-          <div class="title">${name}</div>
+          <div class="title">
+            <span id="group-name">${name}</span>
+            <span id="group-items-count-wrapper">
+              (<span id="group-items-count">${itemsCount || 'empty'}</span>)
+            </span>
+          </div>
           <div class="title-actions">
             ${groupTitleActions}
           </div>
@@ -216,7 +194,7 @@ export class AllocatePageRender {
     const content = this.createGroupsContent(groups).join('\n');
     const node = nodes.getGroupsListNode();
     CommonHelpers.updateNodeContent(node, content);
-    this.addActionHandlers(node);
+    AllocatePageHelpers.addActionHandlers(node, this.callbacks);
     callbacks.updateGroupsState();
   }
 
@@ -300,7 +278,7 @@ export class AllocatePageRender {
   renderInputTableToNode(node, data) {
     const content = this.createInputTableContent(data).join('\n');
     CommonHelpers.updateNodeContent(node, content);
-    this.addActionHandlers(node);
+    AllocatePageHelpers.addActionHandlers(node, this.callbacks);
   }
 
   /** @param {TAllocationType} type */

@@ -19,18 +19,22 @@ export class AllocatePageHandlers {
   // Modules...
   /** @type {AllocatePageNodes} */
   nodes;
+  /** @type {AllocatePageState} */
+  state;
   /** @type {AllocatePageUpdaters} */
   updaters;
 
   /** @constructor
    * @param {object} params
    * @param {AllocatePageNodes} params.nodes
+   * @param {AllocatePageState} params.state
    * @param {AllocatePageUpdaters} params.updaters
    * @param {TSharedHandlers} params.callbacks
    */
   constructor(params) {
     // Modules...
     this.nodes = params.nodes;
+    this.state = params.state;
     this.updaters = params.updaters;
     // Export all methods as external handlers...
     CommonHelpers.exportCallbacksFromInstance(params.callbacks, this);
@@ -41,7 +45,7 @@ export class AllocatePageHandlers {
     const node = /** @type {HTMLElement} */ (event.currentTarget);
     const groupNode = node.closest('.group');
     /* // DEBUG
-     * const groupId = Number(groupNode && groupNode.getAttribute('group-id'))
+     * const groupId = Number(groupNode && groupNode.getAttribute('data-group-id'))
      * console.log('[AllocatePageHandlers:expandGroup]', {
      *   groupNode,
      *   groupId,
@@ -129,6 +133,7 @@ export class AllocatePageHandlers {
       });
       // eslint-disable-next-line no-debugger
       debugger;
+      this.updaters.setError(error);
     }
   }
 
@@ -136,15 +141,56 @@ export class AllocatePageHandlers {
   confirmGroups(event) {
     event.preventDefault();
     event.stopPropagation();
-    console.log('[AllocatePageHandlers:confirmGroups]', {
-    });
+    console.log('[AllocatePageHandlers:confirmGroups]', {});
     debugger;
     // TODO!
   }
 
   addNewGroup() {
-    console.log('[AllocatePageHandlers:addNewGroup]', {
-    });
+    console.log('[AllocatePageHandlers:addNewGroup]', {});
     debugger;
+  }
+
+  /** @param {PointerEvent} event */
+  removeGroupItem(event) {
+    const { updaters } = this;
+    // const { groups } = state;
+    event.preventDefault();
+    event.stopPropagation();
+    const node = /** @type {HTMLElement} */ (event.currentTarget);
+    const groupNode = node.closest('.group');
+    const itemNode = node.closest('.group-item');
+    try {
+      const groupId = /** @type TLocalGroupId */ (
+        Number(groupNode && groupNode.getAttribute('data-group-id'))
+      );
+      const itemId = /** @type TAllocationId */ (
+        Number(itemNode && itemNode.getAttribute('data-id'))
+      );
+      // const itemType = [>* @type TAllocationType <] (
+      //   itemNode && itemNode.getAttribute('data-type')
+      // );
+      console.log('[AllocatePageHandlers:removeGroupItem]', {
+        itemId,
+        // itemType,
+        itemNode,
+        node,
+      });
+      updaters.removeGroupItemUpdater({ groupId, itemId });
+      if (itemNode) {
+        itemNode.remove();
+      }
+    } catch (error) {
+      // eslint-disable-next-line no-console
+      console.error('[AllocatePageHandlers:removeGroupItem]', error, {
+        event,
+        node,
+        groupNode,
+        itemNode,
+      });
+      // eslint-disable-next-line no-debugger
+      debugger;
+      this.updaters.setError(error);
+    }
   }
 }

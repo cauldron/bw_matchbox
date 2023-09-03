@@ -90,6 +90,7 @@ export class AllocatePage {
     });
     const _handlers = new AllocatePageHandlers({
       nodes,
+      state,
       updaters,
       callbacks,
     });

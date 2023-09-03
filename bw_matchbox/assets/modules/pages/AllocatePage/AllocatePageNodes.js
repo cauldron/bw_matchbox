@@ -64,7 +64,7 @@ export class AllocatePageNodes {
    */
   getGroupNode(groupId) {
     const groupsListNode = this.getGroupsListNode();
-    return groupsListNode.querySelector('.group[group-id="' + groupId + '"]');
+    return groupsListNode.querySelector('.group[data-group-id="' + groupId + '"]');
   }
 
   /** Restore grouped item in one of input tables.
