@@ -12,7 +12,7 @@ import { AllocatePageNodes } from './AllocatePageNodes.js';
  */
 export class AllocatePageState {
   // Modules...
-  /** type AllocatePageNodes */
+  /** @type AllocatePageNodes */
   nodes;
 
   /** @type TUserName */

@@ -300,10 +300,11 @@
 .allocate-layout .allocate-groups-list .group-header .expand-button-wrapper {
   margin-top: 1px;
   font-size: 0.75em;
+  padding-bottom: 2px;
 }
 .allocate-layout .allocate-groups-list .group-header .title {
   flex: 1;
-  /* margin-top: var(--allocate-groups-expand-button-title-top-margin); */
+  line-height: 1.3;
   display: flex;
   justify-content: space-between;
   align-items: center;
@@ -359,7 +360,7 @@
   /* align-self: flex-start; */
   display: flex;
   justify-content: flex-end;
-  gap: 2px;
+  gap: 8px;
 }
 .allocate-layout .title-actions a {
   font-size: 0.9em;

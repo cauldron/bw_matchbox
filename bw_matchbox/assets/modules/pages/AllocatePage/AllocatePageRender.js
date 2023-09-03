@@ -9,6 +9,9 @@ import { AllocatePageNodes } from './AllocatePageNodes.js';
 import { AllocatePageState } from './AllocatePageState.js';
 /* eslint-enable no-unused-vars */
 
+/** DEBUG: Show some input table rows in 'dragging' state */
+const showDemoDragging = false;
+
 export class AllocatePageRender {
   // Modules...
   /** @type AllocatePageNodes */
@@ -48,20 +51,26 @@ export class AllocatePageRender {
      *   actionNodes,
      * });
      */
-    actionNodes.forEach((subNode) => {
-      const actionId = subNode.getAttribute('action-id');
+    actionNodes.forEach((actionNode) => {
+      const actionId = actionNode.getAttribute('action-id');
       const action = actionId && callbacks[actionId];
       /* console.log('[AllocatePageRender:addActionHandlers] item', {
        *   actionId,
        *   action,
        * });
        */
-      if (action) {
-        // Just for case: remove previous listener
-        subNode.removeEventListener('click', action);
-        // Add listener...
-        subNode.addEventListener('click', action);
+      if (!action) {
+        const error = new Error(`Not found action for id "${actionId}"`);
+        // eslint-disable-next-line no-console
+        console.warn('[AllocatePageRender:addActionHandlers]', error, {
+          actionNode,
+        });
+        return;
       }
+      // Just for case: remove previous listener
+      actionNode.removeEventListener('click', action);
+      // Add listener...
+      actionNode.addEventListener('click', action);
     });
   }
 
@@ -128,6 +137,7 @@ export class AllocatePageRender {
      * } = group;
      */
     const actions = [
+      `<a action-id="editGroup" title="Edit group" class="theme-primary"><i class="fa fa-edit"></i></a>`,
       `<a action-id="removeGroup" title="Remove group" class="theme-error"><i class="fa fa-trash"></i></a>`,
     ].filter(Boolean);
     /* console.log('[GroupCommentsRender:renderHelpers:renderGroupTitleActions]', {
@@ -200,30 +210,14 @@ export class AllocatePageRender {
     return content;
   }
 
-  updateGroupsState() {
-    const { nodes, state } = this;
-    const { groups } = state;
-    const groupsCount = groups.length;
-    // Get only ungrouped items...
-    const rootNode = nodes.getRootNode();
-    const statisticsNode = nodes.getStatisticsNode();
-    const groupsCountItems = statisticsNode.querySelectorAll('#groups-count');
-    rootNode.classList.toggle('has-groups', !!groupsCount);
-    if (groupsCountItems.length) {
-      groupsCountItems.forEach((countNode) => {
-        countNode.innerHTML = String(groupsCount);
-      });
-    }
-  }
-
   renderGroups() {
-    const { nodes, state } = this;
+    const { nodes, state, callbacks } = this;
     const { groups } = state;
     const content = this.createGroupsContent(groups).join('\n');
     const node = nodes.getGroupsListNode();
     CommonHelpers.updateNodeContent(node, content);
     this.addActionHandlers(node);
-    this.updateGroupsState();
+    callbacks.updateGroupsState();
   }
 
   // Render input tables...
@@ -250,7 +244,7 @@ export class AllocatePageRender {
     } = input;
     const isInGroup = inGroup != undefined;
     // DEBUG: Show dragging effect...
-    const isDragging = useDebug && name === 'Ellis Group';
+    const isDragging = showDemoDragging && useDebug && name === 'Ellis Group';
     const nameContent = `<a href="/process/${id}">${name}</a>`;
     const className = [
       'input-row',
@@ -310,30 +304,13 @@ export class AllocatePageRender {
   }
 
   /** @param {TAllocationType} type */
-  updateInputTableState(type) {
-    const { nodes, state } = this;
-    // Get only ungrouped items...
-    const visibleData = state[type].filter((item) => !item.inGroup);
-    const visibleCount = visibleData.length;
-    const rootNode = nodes.getRootNode();
-    const statisticsNode = nodes.getStatisticsNode();
-    const statisticsItems = statisticsNode.querySelectorAll('#' + type + '-count');
-    rootNode.classList.toggle('has-' + type + '-data', !!visibleCount);
-    if (statisticsItems.length) {
-      statisticsItems.forEach((countNode) => {
-        countNode.innerHTML = String(visibleCount);
-      });
-    }
-  }
-
-  /** @param {TAllocationType} type */
   renderInputTable(type) {
-    const { nodes, state } = this;
+    const { nodes, state, callbacks } = this;
     const data = state[type];
     const rootNode = nodes.getRootNode();
     const node = /** @type HTMLElement */ (rootNode.querySelector('#' + type + '-inputs'));
     this.renderInputTableToNode(node, data);
-    this.updateInputTableState(type);
+    callbacks.updateInputTableState(type);
   }
 
   renderAllInputTables() {

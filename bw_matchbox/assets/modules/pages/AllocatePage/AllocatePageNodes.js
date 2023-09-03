@@ -58,6 +58,32 @@ export class AllocatePageNodes {
     return sourcesColumnNode.querySelector('#' + type + '-inputs');
   }
 
+  /**
+   * @param {TLocalGroupId} groupId
+   * @return {HTMLElement}
+   */
+  getGroupNode(groupId) {
+    const groupsListNode = this.getGroupsListNode();
+    return groupsListNode.querySelector('.group[group-id="' + groupId + '"]');
+  }
+
+  /** Restore grouped item in one of input tables.
+   * @param {TAllocationData} item
+   * @return {HTMLElement}
+   */
+  getInputNode(item) {
+    const {
+      id, // TAllocationId;
+      type, // TAllocationType; // 'technosphere'
+      // amount, // number; // 0.06008158208572887
+      // input, // TAllocationRecord; // {name: 'Clay-Williams', unit: 'kilogram', location: 'GLO', product: 'LLC', categories: 'Unknown'}
+      // output, // TAllocationRecord; // {name: 'Smith LLC', unit: 'kilogram', location: 'GLO', product: 'Inc', categories: 'Unknown'}
+      // inGroup, // TLocalGroupId; // Local data: input data is in group (should not be displayed in source data, but in group)
+    } = item;
+    const inputsListNode = this.getInputsListNode(type);
+    return inputsListNode.querySelector('.input-row[data-id="' + id + '"]');
+  }
+
   getColumnsLayoutNode() {
     const columnsLayout = this.getRootNode();
     return columnsLayout.querySelector('#allocate-columns-layout');

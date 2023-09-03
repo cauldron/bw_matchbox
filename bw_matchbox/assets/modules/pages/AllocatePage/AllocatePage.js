@@ -86,12 +86,10 @@ export class AllocatePage {
     const updaters = new AllocatePageUpdaters({
       nodes,
       state,
-      render,
+      callbacks,
     });
     const _handlers = new AllocatePageHandlers({
       nodes,
-      state,
-      render,
       updaters,
       callbacks,
     });
