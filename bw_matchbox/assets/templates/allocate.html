@@ -46,26 +46,26 @@
       <div id="allocate-groups-toolbar" class="allocate-groups-toolbar">
         {# Groups toolbar #}
         <a
-          id="addNewGroup"
+          action-id="addNewGroup"
           title="Create group"
           class="toolbar-icon theme-primary"
-          onClick="allocatePage.callbacks.addNewGroup(this)"
+          {# onClick="allocatePage.callbacks.addNewGroup(this)" #}
         >
           <i class="fa fa-plus"></i>
         </a>
         <a
-          id="expandAllGroups"
+          action-id="expandAllGroups"
           title="Collapse/expand all groups"
           class="toolbar-icon theme-primary disabled"
-          onClick="allocatePage.callbacks.expandAllGroups(this)"
+          {# onClick="allocatePage.callbacks.expandAllGroups(this)" #}
         >
           <i class="fa fa-expand"></i>
         </a>
         <a
-          id="expandAllGroups"
+          action-id="confirmGroups"
           title="Confirm created groups"
           class="toolbar-icon theme-success disabled"
-          onClick="allocatePage.callbacks.confirmGroups(this)"
+          {# onClick="allocatePage.callbacks.confirmGroups(this)" #}
         >
           <i class="fa fa-check"></i>
         </a>

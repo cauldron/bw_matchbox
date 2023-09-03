@@ -81,11 +81,6 @@
 .thread-comments .threads-list .thread.resolved:not(.empty) .main-row .expand-button {
   color: var(--common-success-color);
 }
-/*
- * .thread-comments .threads-list .thread:not(.resolved, .empty):hover .main-row .expand-button {
- *   color: var(--layout-theme-primary-color);
- * }
- */
 .thread-comments .threads-list .thread:not(.empty) .main-row {
   cursor: pointer;
   transition: all var(--common-animation-time);
@@ -104,14 +99,10 @@
 .thread-comments .threads-list .thread.expanded .main-row .expand-button {
   transform: rotate(90deg);
 }
-.thread-comments .threads-list .thread .main-row .title .title-text {
-}
 .thread-comments .threads-list .thread .main-row .title .title-text .time {
   opacity: 0.5;
   display: inline-block;
   margin-right: 4px;
-}
-.thread-comments .threads-list .thread .main-row .title .title-text .name {
 }
 .thread-comments .threads-list .thread .main-row .title .title-text .name {
   font-weight: bold;

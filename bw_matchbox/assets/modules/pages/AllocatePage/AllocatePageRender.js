@@ -13,16 +13,58 @@ import { AllocatePageNodes } from './AllocatePageNodes.js';
  */
 export class AllocatePageRender {
   // Modules...
-  /** type {AllocatePageNodes} */
+  /** @type AllocatePageNodes */
   nodes;
-  /** type {AllocatePageState} */
+  /** @type AllocatePageState */
   state;
+  /** @type TSharedHandlers} */
+  callbacks;
 
-  /** @param {TAllocatePageRenderParams} params */
+  /**
+   * @param {object} params
+   * @param {AllocatePageNodes} params.nodes
+   * @param {AllocatePageState} params.state
+   * @param {TSharedHandlers} params.callbacks
+   */
   constructor(params) {
     // Modules...
     this.nodes = params.nodes;
     this.state = params.state;
+    this.callbacks = params.callbacks;
+  }
+
+  initActionHandlers() {
+    // Set action handlers...
+    const toolbarNode = this.nodes.getGroupsToolbarNode();
+    this.addActionHandlers(toolbarNode);
+  }
+
+  // Helpers...
+
+  /** @param {HTMLElement} node */
+  addActionHandlers(node) {
+    const { callbacks } = this;
+    const actionNodes = node.querySelectorAll('[action-id]');
+    /* console.log('[AllocatePageRender:addActionHandlers]', {
+     *   node,
+     *   actionNodes,
+     * });
+     */
+    actionNodes.forEach((subNode) => {
+      const actionId = subNode.getAttribute('action-id');
+      const action = actionId && callbacks[actionId];
+      /* console.log('[AllocatePageRender:addActionHandlers] item', {
+       *   actionId,
+       *   action,
+       * });
+       */
+      if (action) {
+        // Just for case: remove previous listener
+        subNode.removeEventListener('click', action);
+        // Add listener...
+        subNode.addEventListener('click', action);
+      }
+    });
   }
 
   // Render groups...
@@ -75,6 +117,31 @@ export class AllocatePageRender {
     return content;
   }
 
+  /** renderGroupTitleActions
+   * @param {TAllocationGroup} _group
+   * @return {string} HTML content
+   */
+  renderGroupTitleActions(_group) {
+    /*
+     * const {
+     *   localId, // TLocalGroupId;
+     *   name, // string;
+     *   items, // TAllocationData[];
+     * } = group;
+     */
+    const actions = [
+      `<a action-id="removeGroup" title="Remove group"><i class="fa fa-trash"></i></a>`,
+    ].filter(Boolean);
+    /* console.log('[GroupCommentsRender:renderHelpers:renderGroupTitleActions]', {
+     *   actions,
+     *   reporter,
+     *   currentUser,
+     *   group,
+     * });
+     */
+    return actions.join('\n');
+  }
+
   /**
    * @param {TAllocationGroup} group
    * @return {string}
@@ -92,14 +159,23 @@ export class AllocatePageRender {
       .filter(Boolean)
       .join(' ');
     const itemsContent = items.map(this.createGroupItemContent.bind(this));
+    const groupTitleActions = this.renderGroupTitleActions(group);
     const content = `
       <div
         group-id="${localId}"
         class="${className}"
+        action-id="expandGroup"
       >
         <div class="group-header">
-          <div class="name">${name}</div>
-          <!-- TODO: Collapse/remove group buttons -->
+          <div class="expand-button-wrapper" title="Expand/collapse group items">
+            <a class="expand-button">
+              <i class="fa fa-chevron-right"></i>
+            </a>
+          </div>
+          <div class="title">${name}</div>
+          <div class="title-actions">
+            ${groupTitleActions}
+          </div>
         </div>
         <div class="group-content">
           <div class="group-items">
@@ -148,6 +224,7 @@ export class AllocatePageRender {
     const content = this.createGroupsContent(groups).join('\n');
     const node = nodes.getGroupsListNode();
     CommonHelpers.updateNodeContent(node, content);
+    this.addActionHandlers(node);
     this.updateGroupsState();
   }
 
@@ -230,6 +307,7 @@ export class AllocatePageRender {
   renderInputTableToNode(node, data) {
     const content = this.createInputTableContent(data).join('\n');
     CommonHelpers.updateNodeContent(node, content);
+    this.addActionHandlers(node);
   }
 
   /** @param {TAllocationType} type */

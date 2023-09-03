@@ -34,6 +34,7 @@ export class AllocatePageHandlers {
     this.render = params.render;
     // Export all methods as external handlers...
     CommonHelpers.exportCallbacksFromInstance(params.callbacks, this);
+    // TODO: Save callbacks for future use?
   }
 
   expandAllGroups() {
@@ -43,6 +44,25 @@ export class AllocatePageHandlers {
     });
     debugger;
   }
+
+  /** @param {PointerEvent} event */
+  expandGroup(event) {
+    const node = /** @type {HTMLElement} */ (event.currentTarget);
+    const groupNode = node.closest('.group');
+    /* // DEBUG
+     * const { state } = this;
+     * const groupId = Number(groupNode && groupNode.getAttribute('group-id'))
+     * console.log('[AllocatePageHandlers:expandAllGroups]', {
+     *   groupNode,
+     *   groupId,
+     *   state,
+     *   node,
+     * });
+     */
+    groupNode.classList.toggle('expanded');
+  }
+
+  // TODO: removeGroup
 
   confirmGroups() {
     const { state } = this;

@@ -31,6 +31,7 @@ export class AllocatePageNodes {
     return this.rootNode;
   }
 
+  /** @return {HTMLElement} */
   getGroupsToolbarNode() {
     const columnsLayout = this.getRootNode();
     return columnsLayout.querySelector('#allocate-groups-toolbar');

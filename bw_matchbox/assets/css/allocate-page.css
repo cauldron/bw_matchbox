@@ -1,7 +1,7 @@
 .allocate-layout {
   --border-color: #ddd;
   --allocate-groups-toolbar-items-size: 38px;
-  /* Dragging colors */
+  /* Effects colors */
   --allocate-groups-bg-color05: rgb(30 174 219 / 5%);
   --allocate-groups-bg-color1: rgb(30 174 219 / 10%);
   --allocate-groups-bg-color2: rgb(30 174 219 / 20%);
@@ -9,6 +9,11 @@
   --allocate-groups-bg-color4: rgb(30 174 219 / 40%);
   --allocate-groups-bg-color5: rgb(30 174 219 / 50%);
   --allocate-groups-animation-time: 1.5s;
+  /* Groups variables */
+  --allocate-groups-expand-button-size: 24px;
+  --allocate-groups-title-action-button-size: 24px;
+  --allocate-groups-expand-button-title-top-margin: 5px;
+  --allocate-groups-expand-button-gap: 8px;
 }
 
 .allocate-layout {
@@ -165,7 +170,9 @@
   background-color: #fff;
 }
 
-/* Info section */
+
+/** Info section */
+
 .allocate-layout .info-tableau {
   position: relative;
   transition: all var(--common-animation-time);
@@ -227,6 +234,7 @@
   pointer-events: none;
 }
 
+
 /** Data tables */
 
 /* Hide empty table, show empty information blocks */
@@ -274,3 +282,118 @@
     background-color: var(--allocate-groups-bg-color3);
   }
 }
+
+
+/** Groups */
+
+.allocate-layout .allocate-groups-list {
+}
+.allocate-layout .allocate-groups-list .group {
+  display: flex;
+  flex-direction: column;
+}
+.allocate-layout .allocate-groups-list .group-header {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  gap: var(--allocate-groups-expand-button-gap);
+  margin: 5px 0;
+  border: 1px solid green;
+}
+
+.allocate-layout .allocate-groups-list .group-header .expand-button-wrapper {
+  margin-top: 1px;
+  font-size: 0.75em;
+}
+.allocate-layout .allocate-groups-list .group-header .title {
+  flex: 1;
+  /* margin-top: var(--allocate-groups-expand-button-title-top-margin); */
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 10px;
+}
+.allocate-layout .allocate-groups-list .group-header .expand-button,
+.allocate-layout .allocate-groups-list .group-header .expand-button-wrapper {
+  width: var(--allocate-groups-expand-button-size);
+  height: var(--allocate-groups-expand-button-size);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+.allocate-layout .allocate-groups-list .group-header .expand-button,
+.allocate-layout .allocate-groups-list .group-header .expand-button-wrapper {
+  transition: all var(--common-animation-time);
+  border-radius: 50%;
+}
+.allocate-layout .allocate-groups-list .group.empty .group-header .expand-button {
+  color: #ccc;
+  cursor: default;
+  opacity: 0.25;
+  pointer-events: none;
+}
+.allocate-layout .allocate-groups-list .group:not(.empty) .group-header .expand-button {
+  cursor: pointer;
+  color: #bbb;
+  opacity: 0.75;
+}
+.allocate-layout .allocate-groups-list .group:not(.empty) .group-header {
+  cursor: pointer;
+  transition: all var(--common-animation-time);
+}
+.allocate-layout .allocate-groups-list .group:not(.empty) .group-header:hover .expand-button {
+  background-color: var(--layout-theme-primary-color);
+  color: rgba(255 255 255 / 75%);
+  opacity: 0.75;
+}
+.allocate-layout .allocate-groups-list .group.expanded .group-header .expand-button {
+  transform: rotate(90deg);
+}
+.allocate-layout .allocate-groups-list .group:not(.expanded) .group-content {
+  display: none;
+}
+
+/* Title actions */
+.allocate-layout .allocate-groups-list .group.expanded .group-header .title-actions {
+  /* Adjust group title actions block position */
+  /* margin-top: -2px; */
+  /* margin-right: -2px; */
+}
+.allocate-layout .title-actions {
+  /* align-self: flex-start; */
+  display: flex;
+  justify-content: flex-end;
+  gap: 2px;
+}
+.allocate-layout .title-actions a {
+  font-size: 0.9em;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: var(--comments-title-action-button-size);
+  height: var(--comments-title-action-button-size);
+  border-radius: 4px;
+  opacity: 0.5;
+}
+.allocate-layout .title-actions a.disabled {
+  color: #ddd;
+  cursor: default;
+}
+.allocate-layout .title-actions a:not(.disabled) {
+  color: #bbb;
+  transition: all var(--common-animation-time);
+  cursor: pointer;
+}
+.allocate-layout .group-header:hover .title-actions a:not(.disabled) {
+  color: var(--layout-theme-primary-color);
+}
+.allocate-layout .title-actions a:not(.disabled):active,
+.allocate-layout .title-actions a:not(.disabled):hover {
+  opacity: 1;
+}
+.allocate-layout .title-actions a:not(.disabled):active {
+  background-color: var(--layout-theme-primary-color);
+  box-shadow: 0 0 4px 2px var(--layout-theme-primary-color);
+  color: #fff;
+}
+

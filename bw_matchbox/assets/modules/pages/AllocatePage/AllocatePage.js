@@ -106,17 +106,19 @@ export class AllocatePage {
       // Modules...
       nodes,
       state,
+      callbacks,
     });
-    const handlers = new AllocatePageHandlers({
+    const _handlers = new AllocatePageHandlers({
       // Modules...
       nodes,
       state,
       render,
       callbacks,
     });
-    // updaters
+    // TODO: updaters
 
     render.renderAllData();
+    render.initActionHandlers();
     state.setInited();
   }
 }
