@@ -1,4 +1,4 @@
-class TAllocatePageHandlersParams {
+interface TAllocatePageHandlersParams {
   // Modules...
   nodes: AllocatePageNodes;
   state: AllocatePageState;

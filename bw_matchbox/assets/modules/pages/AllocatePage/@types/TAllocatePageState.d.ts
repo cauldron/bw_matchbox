@@ -1,4 +1,4 @@
-class TAllocatePageStateParams {
+interface TAllocatePageStateParams {
   // Groups...
   groups?: TAllocationGroup[];
   // Data...
@@ -31,13 +31,15 @@ class AllocatePageState /* implements TAllocatePageStateParams */ {
   // Modules...
   nodes: AllocatePageNodes;
 
-  // Interface...
-  setLoading: (isLoading: boolean) => void;
-  setError: (error: string | Error | string[] | Error[]) => void;
-  clearError: () => void;
+  /* // Interface (moved to updaters)...
+   * setLoading: (isLoading: boolean) => void;
+   * setError: (error: string | Error | string[] | Error[]) => void;
+   * clearError: () => void;
+   */
 
   // Data methods...
 
   addNewGroup: (group: TAllocationGroup) => void;
+  // removeGroup: (groupId: TLocalGroupId) => void;
 }
 type TAllocatePageState = AllocatePageState;

@@ -1,6 +1,6 @@
 // @ts-check
 
-import * as CommonHelpers from '../../common/CommonHelpers.js';
+// import * as CommonHelpers from '../../common/CommonHelpers.js';
 
 // Import only types...
 /* eslint-disable no-unused-vars */
@@ -53,45 +53,6 @@ export class AllocatePageState {
     // Current configuration parameters...
     this.currentRole = params.currentRole;
     this.currentUser = params.currentUser;
-  }
-
-  /**
-   * @param {boolean} isLoading
-   */
-  setLoading(isLoading) {
-    const rootEl = document.getElementById('process-detail');
-    rootEl.classList.toggle('loading', !!isLoading);
-  }
-
-  /** setError -- Set and show error.
-   * @param {string|Error|string[]|Error[]} error - Error or errors list.
-   */
-  setError(error) {
-    const hasErrors = !!error;
-    const rootNode = this.nodes.getRootNode();
-    rootNode.classList.toggle('has-error', hasErrors);
-    // Show error...
-    const text = CommonHelpers.getErrorText(error);
-    const errorNode = this.nodes.getErrorNode();
-    console.error('[AllocatePageState:setError]', {
-      error,
-      errorNode,
-    });
-    if (errorNode) {
-      errorNode.innerHTML = text;
-    }
-  }
-
-  clearError() {
-    this.setError(undefined);
-  }
-
-  setInited() {
-    // Set initialized state...
-    const rootNode = this.nodes.getRootNode();
-    rootNode.classList.toggle('inited', true);
-    const columnsLayout = this.nodes.getColumnsLayoutNode();
-    columnsLayout.classList.toggle('common-hidden', false);
   }
 
   /** @param {TAllocationGroup} group */

@@ -6,46 +6,23 @@ import { AllocatePageNodes } from './AllocatePageNodes.js';
 import { AllocatePageState } from './AllocatePageState.js';
 import { AllocatePageRender } from './AllocatePageRender.js';
 import { AllocatePageHandlers } from './AllocatePageHandlers.js';
+import { AllocatePageUpdaters } from './AllocatePageUpdaters.js';
 
 export class AllocatePage {
-  /** External data...
-   * @type {TSharedParams}
-   */
-  sharedParams = undefined;
-
   /** Handlers exchange object
    * @type {TSharedHandlers}
    */
   callbacks = {};
 
-  /* XXX: To store modules?
-   * [>* @type {AllocatePageState} <]
-   * state;
-   * [>* @type {AllocatePageNodes} <]
-   * nodes;
-   * [>* @type {AllocatePageRender} <]
-   * render;
-   * [>* @type {AllocatePageHandlers} <]
-   * handlers;
-   */
-
   /**
    * @param {TSharedParams} sharedParams
    */
   constructor(sharedParams) {
-    /* // (Optional) Pre-initialize common submodules...
-     * commonModal.preInit();
-     * commonNotify.preInit();
-     */
-
-    // Save public data...
-    this.sharedParams = sharedParams;
-    const { rootNode } = sharedParams;
-
     // Will be initialized in `handlers` instance...
     const { callbacks } = this;
 
     const {
+      rootNode,
       // Data...
       production,
       technosphere,
@@ -77,7 +54,6 @@ export class AllocatePage {
       });
     }
 
-
     console.log('[AllocatePage:constructor]', {
       // Data...
       production,
@@ -103,22 +79,26 @@ export class AllocatePage {
       currentRole,
     });
     const render = new AllocatePageRender({
-      // Modules...
       nodes,
       state,
       callbacks,
     });
-    const _handlers = new AllocatePageHandlers({
-      // Modules...
+    const updaters = new AllocatePageUpdaters({
       nodes,
       state,
       render,
+    });
+    const _handlers = new AllocatePageHandlers({
+      nodes,
+      state,
+      render,
+      updaters,
       callbacks,
     });
-    // TODO: updaters
 
     render.renderAllData();
     render.initActionHandlers();
-    state.setInited();
+    updaters.setInited();
+    updaters.setLoading(false);
   }
 }

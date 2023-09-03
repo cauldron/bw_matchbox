@@ -37,9 +37,25 @@ export class AllocatePageNodes {
     return columnsLayout.querySelector('#allocate-groups-toolbar');
   }
 
+  /** @return {HTMLElement} */
   getGroupsListNode() {
     const columnsLayout = this.getRootNode();
     return columnsLayout.querySelector('#allocate-groups-list');
+  }
+
+  /** @return {HTMLElement} */
+  getSourcesColumnNode() {
+    const columnsLayout = this.getRootNode();
+    return columnsLayout.querySelector('#allocate-sources-column');
+  }
+
+  /**
+   * @param {TAllocationType} type
+   * @return {HTMLElement}
+   */
+  getInputsListNode(type) {
+    const sourcesColumnNode = this.getSourcesColumnNode();
+    return sourcesColumnNode.querySelector('#' + type + '-inputs');
   }
 
   getColumnsLayoutNode() {

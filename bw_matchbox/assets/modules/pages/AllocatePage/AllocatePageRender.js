@@ -130,7 +130,7 @@ export class AllocatePageRender {
      * } = group;
      */
     const actions = [
-      `<a action-id="removeGroup" title="Remove group"><i class="fa fa-trash"></i></a>`,
+      `<a action-id="removeGroup" title="Remove group" class="theme-error"><i class="fa fa-trash"></i></a>`,
     ].filter(Boolean);
     /* console.log('[GroupCommentsRender:renderHelpers:renderGroupTitleActions]', {
      *   actions,
@@ -212,9 +212,9 @@ export class AllocatePageRender {
     const groupsCountItems = statisticsNode.querySelectorAll('#groups-count');
     rootNode.classList.toggle('has-groups', !!groupsCount);
     if (groupsCountItems.length) {
-      for (const countNode of groupsCountItems) {
+      groupsCountItems.forEach((countNode) => {
         countNode.innerHTML = String(groupsCount);
-      }
+      });
     }
   }
 
@@ -255,6 +255,7 @@ export class AllocatePageRender {
     const isDragging = useDebug && name === 'Ellis Group';
     const nameContent = `<a href="/process/${id}">${name}</a>`;
     const className = [
+      'input-row',
       // Dragging?
       isDragging && 'dragging',
       // Is in group?
@@ -321,9 +322,9 @@ export class AllocatePageRender {
     const statisticsItems = statisticsNode.querySelectorAll('#' + type + '-count');
     rootNode.classList.toggle('has-' + type + '-data', !!visibleCount);
     if (statisticsItems.length) {
-      for (const countNode of statisticsItems) {
+      statisticsItems.forEach((countNode) => {
         countNode.innerHTML = String(visibleCount);
-      }
+      });
     }
   }
 
@@ -332,7 +333,7 @@ export class AllocatePageRender {
     const { nodes, state } = this;
     const data = state[type];
     const rootNode = nodes.getRootNode();
-    const node = rootNode.querySelector('#' + type + '-inputs');
+    const node = /** @type HTMLElement */ (rootNode.querySelector('#' + type + '-inputs'));
     this.renderInputTableToNode(node, data);
     this.updateInputTableState(type);
   }
