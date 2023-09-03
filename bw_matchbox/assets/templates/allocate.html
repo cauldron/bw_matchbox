@@ -44,10 +44,11 @@
   <div id="allocate-columns-layout" class="allocate-columns-layout common-hidden">
     <div id="allocate-groups-column" class="allocate-columns-layout-column allocate-groups-column">
       <div id="allocate-groups-toolbar" class="allocate-groups-toolbar">
+        {# Groups toolbar #}
         <a
           id="addNewGroup"
           title="Create group"
-          class="toolbar-icon"
+          class="toolbar-icon theme-primary"
           onClick="allocatePage.callbacks.addNewGroup(this)"
         >
           <i class="fa fa-plus"></i>
@@ -55,7 +56,7 @@
         <a
           id="expandAllGroups"
           title="Collapse/expand all groups"
-          class="toolbar-icon disabled"
+          class="toolbar-icon theme-primary disabled"
           onClick="allocatePage.callbacks.expandAllGroups(this)"
         >
           <i class="fa fa-expand"></i>
@@ -63,7 +64,7 @@
         <a
           id="expandAllGroups"
           title="Confirm created groups"
-          class="toolbar-icon theme-success"
+          class="toolbar-icon theme-success disabled"
           onClick="allocatePage.callbacks.confirmGroups(this)"
         >
           <i class="fa fa-check"></i>
@@ -72,6 +73,8 @@
       <div id="allocate-groups-content" class="allocate-groups-content">
         <h3>Groups</h3>
         <p class="info-empty groups-empty">No groups created yet</p>
+        <div id="allocate-groups-list" class="allocate-groups-list">
+        </div>
       </div>
     </div>
     <div id="allocate-sources-column" class="allocate-columns-layout-column allocate-sources-column">

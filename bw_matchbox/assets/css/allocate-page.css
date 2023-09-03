@@ -119,9 +119,7 @@
 }
 .allocate-layout .allocate-groups-toolbar > a.toolbar-icon {
   flex-shrink: 0;
-  background-color: #bbb;
-  /* background-color: var(--layout-theme-primary-color); */
-  color: #fff;
+  color: #777;
   border-radius: 4px;
   width: var(--allocate-groups-toolbar-items-size);
   height: var(--allocate-groups-toolbar-items-size);
@@ -134,13 +132,28 @@
 .allocate-layout .allocate-groups-toolbar > a.toolbar-icon.disabled {
   opacity: 0.25;
   pointer-events: none;
+  background-color: rgba(0 0 0 / 15%);
 }
 .allocate-layout .allocate-groups-toolbar > a.toolbar-icon:not(.disabled) {
   cursor: pointer;
   opacity: 0.5;
 }
-.allocate-layout .allocate-groups-toolbar:hover > a.toolbar-icon:not(.disabled) {
+.allocate-layout .allocate-groups-toolbar > a.toolbar-icon:not(.disabled),
+.allocate-layout .allocate-groups-toolbar > a.toolbar-icon:not(.disabled)[class*='theme-'] {
+  color: #fff;
+  background-color: #999;
+}
+.allocate-layout .allocate-groups-toolbar > a.toolbar-icon.theme-primary:not(.disabled) {
   background-color: var(--layout-theme-primary-color);
+}
+.allocate-layout .allocate-groups-toolbar > a.toolbar-icon.theme-warn:not(.disabled) {
+  background-color: var(--common-warn-color);
+}
+.allocate-layout .allocate-groups-toolbar > a.toolbar-icon.theme-error:not(.disabled) {
+  background-color: var(--common-error-color);
+}
+.allocate-layout .allocate-groups-toolbar > a.toolbar-icon.theme-success:not(.disabled) {
+  background-color: var(--common-success-color);
 }
 .allocate-layout .allocate-groups-toolbar > a.toolbar-icon:not(.disabled):active,
 .allocate-layout .allocate-groups-toolbar > a.toolbar-icon:not(.disabled):hover {

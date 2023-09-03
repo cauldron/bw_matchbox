@@ -8,47 +8,51 @@ import { AllocatePageNodes } from './AllocatePageNodes.js';
 /* eslint-enable no-unused-vars */
 
 /**
- * @implements {TAllocatePageState}
+ * @implements TAllocatePageState
  */
 export class AllocatePageState {
   // Modules...
-  /** type {AllocatePageNodes} */
+  /** type AllocatePageNodes */
   nodes;
 
-  /** @type {TUserName} */
+  /** @type TUserName */
   currentUser;
-  /** @type {TUserRole} */
+  /** @type TUserRole */
   currentRole;
 
-  /** @type {TAllocationData[]} */
+  // External input data...
+
+  /** @type TAllocationData[] */
   biosphere;
-  /** @type {TAllocationData[]} */
+  /** @type TAllocationData[] */
   production;
-  /** @type {TAllocationData[]} */
+  /** @type TAllocationData[] */
   technosphere;
+
+  // Groups...
+
+  /** @type TAllocatePageState['groups'] */
+  groups;
+
+  /** Counter used to generate the unique id and name of the new groups
+   * @type {number}
+   */
+  newGroupsCount;
 
   /** @param {TAllocatePageStateParams} params */
   constructor(params) {
-    const {
-      // Modules...
-      nodes,
-      // Data...
-      production,
-      technosphere,
-      biosphere,
-      // Current configuration parameters...
-      currentRole,
-      currentUser,
-    } = params;
     // Modules...
-    this.nodes = nodes;
+    this.nodes = params.nodes;
+    // Groups...
+    this.groups = params.groups || [];
+    this.newGroupsCount = this.groups.length;
     // Data...
-    this.production = production;
-    this.technosphere = technosphere;
-    this.biosphere = biosphere;
+    this.production = params.production;
+    this.technosphere = params.technosphere;
+    this.biosphere = params.biosphere;
     // Current configuration parameters...
-    this.currentRole = currentRole;
-    this.currentUser = currentUser;
+    this.currentRole = params.currentRole;
+    this.currentUser = params.currentUser;
   }
 
   /**
@@ -88,5 +92,11 @@ export class AllocatePageState {
     rootNode.classList.toggle('inited', true);
     const columnsLayout = this.nodes.getColumnsLayoutNode();
     columnsLayout.classList.toggle('common-hidden', false);
+  }
+
+  /** @param {TAllocationGroup} group */
+  addNewGroup(group) {
+    this.groups.push(group);
+    // TODO: Update data?
   }
 }

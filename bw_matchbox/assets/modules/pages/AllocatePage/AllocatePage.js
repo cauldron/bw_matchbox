@@ -1,5 +1,7 @@
 // @ts-check
 
+import { useDebug } from '../../common/CommonConstants.js';
+
 import { AllocatePageNodes } from './AllocatePageNodes.js';
 import { AllocatePageState } from './AllocatePageState.js';
 import { AllocatePageRender } from './AllocatePageRender.js';
@@ -16,14 +18,16 @@ export class AllocatePage {
    */
   callbacks = {};
 
-  /** @type {AllocatePageState} */
-  state;
-  /** @type {AllocatePageNodes} */
-  nodes;
-  /** @type {AllocatePageRender} */
-  render;
-  /** @type {AllocatePageHandlers} */
-  handlers;
+  /* XXX: To store modules?
+   * [>* @type {AllocatePageState} <]
+   * state;
+   * [>* @type {AllocatePageNodes} <]
+   * nodes;
+   * [>* @type {AllocatePageRender} <]
+   * render;
+   * [>* @type {AllocatePageHandlers} <]
+   * handlers;
+   */
 
   /**
    * @param {TSharedParams} sharedParams
@@ -51,6 +55,29 @@ export class AllocatePage {
       currentUser,
     } = sharedParams;
 
+    /** @type TAllocationGroup[] */
+    const groups = [];
+
+    // DEBUG: Add sample group...
+    if (useDebug) {
+      const localId = 1;
+      const sampleItem = technosphere[0];
+      const sampleGroup = {
+        name: 'Sample group',
+        localId,
+        items: [sampleItem],
+      };
+      sampleItem.inGroup = localId;
+      groups.push(sampleGroup);
+      console.log('[AllocatePage:constructor] Add sample group', {
+        localId,
+        sampleItem,
+        sampleGroup,
+        groups,
+      });
+    }
+
+
     console.log('[AllocatePage:constructor]', {
       // Data...
       production,
@@ -62,30 +89,32 @@ export class AllocatePage {
     });
 
     // TODO: Init sub-modules...
-    const nodes = (this.nodes = new AllocatePageNodes({ rootNode }));
-    const state = (this.state = new AllocatePageState({
+    const nodes = new AllocatePageNodes({ rootNode });
+    const state = new AllocatePageState({
       // Modules...
       nodes,
       // Data...
+      groups,
       production,
       technosphere,
       biosphere,
       // Current configuration parameters...
       currentUser,
       currentRole,
-    }));
-    const render = (this.render = new AllocatePageRender({
+    });
+    const render = new AllocatePageRender({
       // Modules...
       nodes,
       state,
-    }));
-    const _handlers = (this.handlers = new AllocatePageHandlers({
+    });
+    const handlers = new AllocatePageHandlers({
       // Modules...
       nodes,
       state,
       render,
       callbacks,
-    }));
+    });
+    // updaters
 
     render.renderAllData();
     state.setInited();

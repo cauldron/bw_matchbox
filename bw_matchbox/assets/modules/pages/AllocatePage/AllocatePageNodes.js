@@ -36,6 +36,11 @@ export class AllocatePageNodes {
     return columnsLayout.querySelector('#allocate-groups-toolbar');
   }
 
+  getGroupsListNode() {
+    const columnsLayout = this.getRootNode();
+    return columnsLayout.querySelector('#allocate-groups-list');
+  }
+
   getColumnsLayoutNode() {
     const columnsLayout = this.getRootNode();
     return columnsLayout.querySelector('#allocate-columns-layout');

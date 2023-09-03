@@ -1,4 +1,6 @@
 class TAllocatePageStateParams {
+  // Groups...
+  groups?: TAllocationGroup[];
   // Data...
   biosphere: TAllocationData[];
   production: TAllocationData[];
@@ -20,6 +22,7 @@ class AllocatePageState /* implements TAllocatePageStateParams */ {
 
   // Allocated groups...
   groups: TAllocationGroup[];
+  newGroupsCount: number;
 
   // Current configuration parameters...
   currentRole: TUserRole;
@@ -32,5 +35,9 @@ class AllocatePageState /* implements TAllocatePageStateParams */ {
   setLoading: (isLoading: boolean) => void;
   setError: (error: string | Error | string[] | Error[]) => void;
   clearError: () => void;
+
+  // Data methods...
+
+  addNewGroup: (group: TAllocationGroup) => void;
 }
 type TAllocatePageState = AllocatePageState;

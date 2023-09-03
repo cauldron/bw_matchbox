@@ -22,10 +22,10 @@ export class AllocatePageHandlers {
   /**
    * @constructor
    * @param {object} params
-   * @param {AllocatePageNodes} params.nodes;
-   * @param {AllocatePageState} params.state;
-   * @param {AllocatePageRender} params.render;
-   * @param {TSharedHandlers} params.callbacks;
+   * @param {AllocatePageNodes} params.nodes
+   * @param {AllocatePageState} params.state
+   * @param {AllocatePageRender} params.render
+   * @param {TSharedHandlers} params.callbacks
    */
   constructor(params) {
     // Modules...
