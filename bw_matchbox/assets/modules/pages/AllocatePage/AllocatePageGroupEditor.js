@@ -308,7 +308,7 @@ export class AllocatePageGroupEditor {
       cancel && cancel.addEventListener('mousedown', this._boundHandleCancelEdit);
     }
     const inputNode = this.getGroupTitleInputNode();
-    if (inputNode && !useDebug) {
+    if (inputNode /* && !useDebug */) {
       inputNode.addEventListener('blur', this._boundHandleBlur);
     }
   }

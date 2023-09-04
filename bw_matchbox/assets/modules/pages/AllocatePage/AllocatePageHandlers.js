@@ -85,7 +85,10 @@ export class AllocatePageHandlers {
      * });
      */
     groupNodesList.forEach((node) => {
-      node.classList.toggle('expanded', setExpanded);
+      // Expand if not empty...
+      if (!node.classList.contains('empty')) {
+        node.classList.toggle('expanded', setExpanded);
+      }
     });
   }
 

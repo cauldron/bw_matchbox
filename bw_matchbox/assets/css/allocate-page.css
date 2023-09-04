@@ -107,7 +107,7 @@
     min-width: 20%;
     max-width: 80%;
     /* Initial width of the left column */
-    width: 50%;
+    width: 30%;
   }
   .allocate-layout .allocate-sources-column {
     /* border: 1px solid purple; */

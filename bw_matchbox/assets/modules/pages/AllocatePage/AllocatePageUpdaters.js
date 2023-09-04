@@ -355,6 +355,9 @@ export class AllocatePageUpdaters {
   moveInputsToGroup(groupId, dragItemsList) {
     const { nodes, state, render, callbacks } = this;
     const { groups } = state;
+    const groupNode = nodes.getGroupNode(groupId);
+    // Expand node...
+    groupNode.classList.toggle('expanded', true);
     const groupData = groups.find(({ localId }) => localId === groupId);
     const { items } = groupData;
     console.log('[AllocatePageUpdaters:moveInputsToGroup]: start', {
