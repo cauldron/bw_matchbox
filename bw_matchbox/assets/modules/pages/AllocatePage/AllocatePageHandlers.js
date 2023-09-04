@@ -12,6 +12,8 @@ import { AllocatePageUpdaters } from './AllocatePageUpdaters.js';
 import { AllocatePageState } from './AllocatePageState.js';
 /* eslint-enable no-unused-vars */
 
+const dragInputsType = 'application/drag-inputs';
+
 /**
  * @class AllocatePageHandlers
  */
@@ -201,5 +203,95 @@ export class AllocatePageHandlers {
       debugger;
       this.updaters.setError(error);
     }
+  }
+
+  /** @param {DragEvent} event */
+  handleGroupDragDrop(event) {
+    const {
+      // prettier-ignore
+      dataTransfer,
+      currentTarget,
+    } = event;
+    const dragTypes = dataTransfer.types;
+    if (!dragTypes.includes(dragInputsType)) {
+      // Wrong drag type: do nothing
+      return;
+    }
+    event.preventDefault();
+    const { updaters } = this;
+    const dragItemsListJson = dataTransfer.getData(dragInputsType);
+    const dragItemsList = /** @type TDragInputItem[] */ (JSON.parse(dragItemsListJson));
+    const node = /** @type HTMLElement */ (currentTarget);
+    const groupId = /** @type TLocalGroupId */ Number(node.getAttribute('data-group-id'));
+    console.log('[AllocatePageHandlers:handleGroupDragDrop]', {
+      groupId,
+      dragItemsList,
+      dragItemsListJson,
+      dragTypes,
+      node,
+      dataTransfer,
+      event,
+    });
+    updaters.moveInputsToGroup(groupId, dragItemsList);
+  }
+
+  /** @param {DragEvent} event */
+  handleGroupDragOver(event) {
+    const {
+      // prettier-ignore
+      dataTransfer,
+      currentTarget,
+      target,
+    } = event;
+    const dragTypes = dataTransfer.types;
+    if (!dragTypes.includes(dragInputsType)) {
+      // Wrong drag type: do nothing
+      return;
+    }
+    event.preventDefault();
+    const node = /** @type HTMLElement */ (currentTarget);
+    // const id = Number(node.getAttribute('data-id'));
+    // const type = node.getAttribute('data-type');
+    console.log('[AllocatePageHandlers:handleGroupDragOver]', {
+      dragTypes,
+      node,
+      dataTransfer,
+      currentTarget,
+      target,
+      event,
+    });
+    dataTransfer.dropEffect = 'move';
+  }
+
+  /** @param {DragEvent} event */
+  handleInputTableDragStart(event) {
+    // event.preventDefault();
+    const {
+      // prettier-ignore
+      dataTransfer,
+      currentTarget,
+      target,
+    } = event;
+    const node = /** @type HTMLElement */ (currentTarget);
+    const id = /** @type TAllocationId */ Number(node.getAttribute('data-id'));
+    const type = /** @type TAllocationType */ (node.getAttribute('data-type'));
+    /** @type TDragInputItem */
+    const dragItem = { type, id };
+    const dragItemsList = [dragItem];
+    const dragItemsListJson = JSON.stringify(dragItemsList);
+    dataTransfer.setData(dragInputsType, dragItemsListJson);
+    console.log('[AllocatePageHandlers:handleInputTableDragStart]', {
+      dragInputsType,
+      dragItem,
+      dragItemsList,
+      dragItemsListJson,
+      id,
+      type,
+      node,
+      dataTransfer,
+      currentTarget,
+      target,
+      event,
+    });
   }
 }

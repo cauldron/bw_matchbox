@@ -63,7 +63,7 @@ export class AllocatePageState {
     const { groups } = this;
     const lastGroupIdx = groups.length - 1;
     const lastGroup = groups[lastGroupIdx];
-    let groupId = lastGroup.localId + 1; // this.newGroupsCount;
+    let groupId = lastGroup ? lastGroup.localId + 1 : 1; // this.newGroupsCount;
     while (!this.isUniqueGroupId(groupId)) {
       groupId++;
     }

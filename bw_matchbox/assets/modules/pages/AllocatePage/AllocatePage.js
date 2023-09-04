@@ -8,6 +8,9 @@ import { AllocatePageRender } from './AllocatePageRender.js';
 import { AllocatePageHandlers } from './AllocatePageHandlers.js';
 import { AllocatePageUpdaters } from './AllocatePageUpdaters.js';
 
+/** DEBUG: Use sample group by default */
+const useSampleGroup = false;
+
 export class AllocatePage {
   /** Handlers exchange object
    * @type {TSharedHandlers}
@@ -36,7 +39,7 @@ export class AllocatePage {
     const groups = [];
 
     // DEBUG: Add sample group...
-    if (useDebug) {
+    if (useDebug && useSampleGroup) {
       const localId = 1;
       const sampleItem = technosphere[0];
       const sampleGroup = {

@@ -52,17 +52,17 @@ export class AllocatePageRender {
     const {
       id, // TAllocationId;
       type, // TAllocationType; // 'technosphere'
-      amount, // number; // 0.06008158208572887
+      // amount, // number; // 0.06008158208572887
       input, // TAllocationRecord; // {name: 'Clay-Williams', unit: 'kilogram', location: 'GLO', product: 'LLC', categories: 'Unknown'}
-      output, // TAllocationRecord; // {name: 'Smith LLC', unit: 'kilogram', location: 'GLO', product: 'Inc', categories: 'Unknown'}
+      // output, // TAllocationRecord; // {name: 'Smith LLC', unit: 'kilogram', location: 'GLO', product: 'Inc', categories: 'Unknown'}
       // inGroup,
     } = item;
     const {
-      categories, // 'Unknown' | TCategory[]; // ['air']
-      location, // string; // 'GLO'
+      // categories, // 'Unknown' | TCategory[]; // ['air']
+      // location, // string; // 'GLO'
       name, // string; // 'Clay-Williams'
-      product, // string; // 'LLC'
-      unit, // string; // 'kilogram'
+      // product, // string; // 'LLC'
+      // unit, // string; // 'kilogram'
     } = input;
     const content = `
       <div
@@ -79,19 +79,20 @@ export class AllocatePageRender {
         </div>
       </div>
     `;
-    console.log('[AllocatePageRender:createGroupItemContent]', type, id, {
-      id, // TAllocationId;
-      type, // TAllocationType; // 'technosphere'
-      amount, // number; // 0.06008158208572887
-      input, // TAllocationRecord; // {name: 'Clay-Williams', unit: 'kilogram', location: 'GLO', product: 'LLC', categories: 'Unknown'}
-      output, // TAllocationRecord; // {name: 'Smith LLC', unit: 'kilogram', location: 'GLO', product: 'Inc', categories: 'Unknown'}
-      categories, // 'Unknown' | TCategory[]; // ['air']
-      location, // string; // 'GLO'
-      name, // string; // 'Clay-Williams'
-      product, // string; // 'LLC'
-      unit, // string; // 'kilogram'
-      content,
-    });
+    /* console.log('[AllocatePageRender:createGroupItemContent]', type, id, {
+     *   id, // TAllocationId;
+     *   type, // TAllocationType; // 'technosphere'
+     *   // amount, // number; // 0.06008158208572887
+     *   input, // TAllocationRecord; // {name: 'Clay-Williams', unit: 'kilogram', location: 'GLO', product: 'LLC', categories: 'Unknown'}
+     *   // output, // TAllocationRecord; // {name: 'Smith LLC', unit: 'kilogram', location: 'GLO', product: 'Inc', categories: 'Unknown'}
+     *   // categories, // 'Unknown' | TCategory[]; // ['air']
+     *   location, // string; // 'GLO'
+     *   name, // string; // 'Clay-Williams'
+     *   // product, // string; // 'LLC'
+     *   // unit, // string; // 'kilogram'
+     *   content,
+     * });
+     */
     return content;
   }
 
@@ -164,19 +165,39 @@ export class AllocatePageRender {
           </div>
         </div>
         <div class="group-content">
-          <div class="group-items">
-            ${itemsContent.join('\n')}
-          </div>
+          ${itemsContent.join('\n')}
         </div>
       </div>
     `;
-    console.log('[AllocatePageRender:createGroupContent]', localId, {
-      localId, // TLocalGroupId;
-      name, // string;
-      items, // TAllocationData[];
-      content,
-    });
+    /* console.log('[AllocatePageRender:createGroupContent]', localId, {
+     *   localId, // TLocalGroupId;
+     *   name, // string;
+     *   items, // TAllocationData[];
+     *   content,
+     * });
+     */
     return content;
+  }
+
+  /**
+   * @param {TAllocationGroup} group
+   * @param {TAllocationData} item
+   *
+   */
+  renderNewGroupContentItem(group, item) {
+    const { nodes } = this;
+    const {
+      localId: groupId, // TLocalGroupId;
+      // name, // string;
+      // items, // TAllocationData[];
+    } = group;
+    const groupNode = nodes.getGroupNode(groupId);
+    const contentNode = groupNode.querySelector('.group-content');
+    groupNode.classList.toggle('empty', false);
+    const itemContent = this.createGroupItemContent(item);
+    const itemContentNode = CommonHelpers.htmlToElement(itemContent);
+    contentNode.append(itemContentNode);
+    AllocatePageHelpers.addActionHandlers(itemContentNode, this.callbacks);
   }
 
   /**
@@ -188,6 +209,30 @@ export class AllocatePageRender {
     return content;
   }
 
+  /** @param {HTMLElement} node */
+  addGroupDragHandlers(node) {
+    if (!node.classList.contains('group')) {
+      const groupNodes = node.querySelectorAll('.group');
+      groupNodes.forEach(this.addGroupDragHandlers.bind(this));
+      return;
+    }
+    const { callbacks } = this;
+    const { handleGroupDragOver, handleGroupDragDrop } = callbacks;
+    console.log('[AllocatePageRender:addGroupDragHandlers]', {
+      handleGroupDragOver,
+      handleGroupDragDrop,
+      node,
+    });
+    if (handleGroupDragOver) {
+      node.removeEventListener('dragover', handleGroupDragOver);
+      node.addEventListener('dragover', handleGroupDragOver);
+    }
+    if (handleGroupDragDrop) {
+      node.removeEventListener('drop', handleGroupDragDrop);
+      node.addEventListener('drop', handleGroupDragDrop);
+    }
+  }
+
   renderGroups() {
     const { nodes, state, callbacks } = this;
     const { groups } = state;
@@ -195,6 +240,7 @@ export class AllocatePageRender {
     const groupsListNode = nodes.getGroupsListNode();
     CommonHelpers.updateNodeContent(groupsListNode, content);
     AllocatePageHelpers.addActionHandlers(groupsListNode, this.callbacks);
+    this.addGroupDragHandlers(groupsListNode);
     callbacks.updateGroupsState();
   }
 
@@ -208,6 +254,7 @@ export class AllocatePageRender {
     const groupsListNode = nodes.getGroupsListNode();
     groupsListNode.append(groupNode);
     AllocatePageHelpers.addActionHandlers(groupNode, this.callbacks);
+    this.addGroupDragHandlers(groupNode);
     callbacks.updateGroupsState();
   }
 
@@ -223,14 +270,14 @@ export class AllocatePageRender {
       type, // TAllocationType; // 'technosphere'
       amount, // number; // 0.06008158208572887
       input, // TAllocationRecord; // {name: 'Clay-Williams', unit: 'kilogram', location: 'GLO', product: 'LLC', categories: 'Unknown'}
-      output, // TAllocationRecord; // {name: 'Smith LLC', unit: 'kilogram', location: 'GLO', product: 'Inc', categories: 'Unknown'}
+      // output, // TAllocationRecord; // {name: 'Smith LLC', unit: 'kilogram', location: 'GLO', product: 'Inc', categories: 'Unknown'}
       inGroup,
     } = item;
     const {
-      categories, // 'Unknown' | TCategory[]; // ['air']
+      // categories, // 'Unknown' | TCategory[]; // ['air']
       location, // string; // 'GLO'
       name, // string; // 'Clay-Williams'
-      product, // string; // 'LLC'
+      // product, // string; // 'LLC'
       unit, // string; // 'kilogram'
     } = input;
     const isInGroup = inGroup != undefined;
@@ -252,6 +299,7 @@ export class AllocatePageRender {
         data-type="${type}"
         data-in-group="${inGroup || ''}"
         class="${className}"
+        draggable="true"
       >
         <td><div>${amount}</div></td>
         <td><div>${nameContent}</div></td>
@@ -259,19 +307,20 @@ export class AllocatePageRender {
         <td><div>${unit}</div></td>
       </tr>
     `;
-    console.log('[AllocatePageRender:createInputTableRowContent]', type, id, {
-      id, // TAllocationId;
-      type, // TAllocationType; // 'technosphere'
-      amount, // number; // 0.06008158208572887
-      input, // TAllocationRecord; // {name: 'Clay-Williams', unit: 'kilogram', location: 'GLO', product: 'LLC', categories: 'Unknown'}
-      output, // TAllocationRecord; // {name: 'Smith LLC', unit: 'kilogram', location: 'GLO', product: 'Inc', categories: 'Unknown'}
-      categories, // 'Unknown' | TCategory[]; // ['air']
-      location, // string; // 'GLO'
-      name, // string; // 'Clay-Williams'
-      product, // string; // 'LLC'
-      unit, // string; // 'kilogram'
-      content,
-    });
+    /* console.log('[AllocatePageRender:createInputTableRowContent]', type, id, {
+     *   id, // TAllocationId;
+     *   type, // TAllocationType; // 'technosphere'
+     *   amount, // number; // 0.06008158208572887
+     *   input, // TAllocationRecord; // {name: 'Clay-Williams', unit: 'kilogram', location: 'GLO', product: 'LLC', categories: 'Unknown'}
+     *   // output, // TAllocationRecord; // {name: 'Smith LLC', unit: 'kilogram', location: 'GLO', product: 'Inc', categories: 'Unknown'}
+     *   // categories, // 'Unknown' | TCategory[]; // ['air']
+     *   location, // string; // 'GLO'
+     *   name, // string; // 'Clay-Williams'
+     *   // product, // string; // 'LLC'
+     *   unit, // string; // 'kilogram'
+     *   content,
+     * });
+     */
     return content;
   }
 
@@ -284,6 +333,23 @@ export class AllocatePageRender {
     return content;
   }
 
+  /** @param {HTMLElement} parentNode */
+  addInputTableDragHandlers(parentNode) {
+    const { callbacks } = this;
+    const { handleInputTableDragStart } = callbacks;
+    const dragNodes = parentNode.querySelectorAll('tr.input-row');
+    console.log('[AllocatePageRender:addInputTableDragHandlers]', {
+      handleInputTableDragStart,
+      dragNodes,
+    });
+    dragNodes.forEach((node) => {
+      // Just for case: remove previous listener
+      node.removeEventListener('dragstart', handleInputTableDragStart);
+      // Add listener...
+      node.addEventListener('dragstart', handleInputTableDragStart);
+    });
+  }
+
   /**
    * @param {HTMLElement} node
    * @param {TAllocationData[]} data
@@ -292,6 +358,7 @@ export class AllocatePageRender {
     const content = this.createInputTableContent(data).join('\n');
     CommonHelpers.updateNodeContent(node, content);
     AllocatePageHelpers.addActionHandlers(node, this.callbacks);
+    this.addInputTableDragHandlers(node);
   }
 
   /** @param {TAllocationType} type */

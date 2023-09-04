@@ -347,4 +347,57 @@ export class AllocatePageUpdaters {
     render.renderNewGroup(newGroup);
     this.editGroupUpdater(groupId);
   }
+
+  /**
+   * @param {TLocalGroupId} groupId
+   * @param {TDragInputItem[]} dragItemsList
+   */
+  moveInputsToGroup(groupId, dragItemsList) {
+    const { nodes, state, render, callbacks } = this;
+    const { groups } = state;
+    const groupData = groups.find(({ localId }) => localId === groupId);
+    const { items } = groupData;
+    console.log('[AllocatePageUpdaters:moveInputsToGroup]: start', {
+      items,
+      groupData,
+      groupId,
+      dragItemsList,
+    });
+    /** @type TAllocationType[] */
+    const affectedTypes = [];
+    dragItemsList.forEach(({ type, id }) => {
+      const inputsList = state[type];
+      const inputItem = inputsList && inputsList.find((item) => item.id === id);
+      const inputNode = inputItem && nodes.getInputNode(inputItem);
+      console.log('[AllocatePageUpdaters:moveInputsToGroup]: item', {
+        inputNode,
+        inputItem,
+        inputsList,
+        type,
+        id,
+        groupId,
+      });
+      if (!affectedTypes[type]) {
+        affectedTypes.push(type);
+      }
+      inputItem.inGroup = groupId;
+      inputNode.classList.toggle('in-group', true);
+      inputNode.setAttribute('data-in-group', String(groupId));
+      items.push(inputItem);
+      render.renderNewGroupContentItem(groupData, inputItem);
+    });
+    console.log('[AllocatePageUpdaters:moveInputsToGroup]: done', {
+      affectedTypes,
+      items,
+      groupData,
+      groupId,
+      dragItemsList,
+    });
+    // Update groups & inputs...
+    this.updateGroupsState();
+    this.updateGroupProps(groupId);
+    affectedTypes.forEach((type) => {
+      this.updateInputTableState(type);
+    });
+  }
 }
