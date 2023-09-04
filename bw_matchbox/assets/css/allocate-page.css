@@ -104,9 +104,10 @@
     /* Make columns resizable */
     resize: horizontal;
     overflow: hidden;
-    width: 30%;
     min-width: 20%;
     max-width: 80%;
+    /* Initial width of the left column */
+    width: 50%;
   }
   .allocate-layout .allocate-sources-column {
     /* border: 1px solid purple; */
@@ -286,6 +287,7 @@
 .allocate-layout .allocate-groups-list {
 }
 .allocate-layout .allocate-groups-list .group {
+  overflow: hidden;
   display: flex;
   flex-direction: column;
   border-radius: 4px;
@@ -305,9 +307,31 @@
   font-size: 0.75em;
   padding-bottom: 2px;
 }
+.allocate-layout .allocate-groups-list .group-header .title-editor,
 .allocate-layout .allocate-groups-list .group-header .title {
   flex: 1;
   line-height: 1.3;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.allocate-layout .allocate-groups-list .group-header.edit-group [action-id='editGroup'],
+.allocate-layout .allocate-groups-list .group-header:not(.edit-group) .title-editor,
+.allocate-layout .allocate-groups-list .group-header.edit-group .title {
+  display: none;
+}
+.allocate-layout .allocate-groups-list .group-header .title-editor {
+  display: flex;
+  align-items: center;
+  gap: 2px;
+}
+.allocate-layout .allocate-groups-list .group-header input#title-editor-input {
+  flex: 1;
+  margin: 0;
+  width: 100%;
+  border: 0;
+  background: none;
+  padding: 0;
+  height: auto;
 }
 .allocate-layout .allocate-groups-list .group-header .title #group-items-count-wrapper {
   opacity: 0.5;
@@ -363,6 +387,7 @@
 .allocate-layout .allocate-groups-list .group-item {
   overflow: hidden;
   display: flex;
+  align-items: center;
   flex-direction: row;
   gap: 10px;
   padding: 2px 10px;

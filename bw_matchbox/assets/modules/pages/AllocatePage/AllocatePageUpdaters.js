@@ -3,11 +3,13 @@
 import * as CommonHelpers from '../../common/CommonHelpers.js';
 // import { useDebug } from '../../common/CommonConstants.js';
 
+import { AllocatePageGroupEditor } from './AllocatePageGroupEditor.js';
+
 // Import only types...
 /* eslint-disable no-unused-vars */
 import { AllocatePageNodes } from './AllocatePageNodes.js';
-import { AllocatePageRender } from './AllocatePageRender.js';
 import { AllocatePageState } from './AllocatePageState.js';
+// import { AllocatePageRender } from './AllocatePageRender.js';
 /* eslint-enable no-unused-vars */
 
 /**
@@ -15,12 +17,12 @@ import { AllocatePageState } from './AllocatePageState.js';
  */
 export class AllocatePageUpdaters {
   // Modules...
-  /** @type {AllocatePageNodes} */
+  /** @type AllocatePageNodes */
   nodes;
-  /** @type {AllocatePageState} */
+  /** @type AllocatePageState */
   state;
 
-  /** @type TSharedHandlers} */
+  /** @type TSharedHandlers */
   callbacks;
 
   /** @constructor
@@ -285,19 +287,44 @@ export class AllocatePageUpdaters {
 
   /** @param {TLocalGroupId} groupId */
   editGroupUpdater(groupId) {
-    const { nodes, state } = this;
-    const { groups } = state;
-    const groupNode = nodes.getGroupNode(groupId);
-    const groupIdx = groups.findIndex(({ localId }) => localId === groupId);
-    const groupData = groups[groupIdx];
-    console.log('[AllocatePageUpdaters:editGroupUpdater]', {
-      groupData,
-      groupIdx,
-      groupNode,
-      groupId,
-      groups,
-    });
-    debugger;
+    const { nodes, state, callbacks } = this;
+    const editor = new AllocatePageGroupEditor({ nodes, state, callbacks });
+    /* console.log('[AllocatePageUpdaters:editGroupUpdater]', {
+     *   groupId,
+     * });
+     */
+    editor
+      .startEdit(groupId)
+      .then((result) => {
+        const {
+          groupId, // TLocalGroupId
+        } = result;
+        /* console.log('[AllocatePageUpdaters:editGroupUpdater]', {
+         *   groupId, // TLocalGroupId
+         *   result,
+         *   editor,
+         * });
+         */
+        this.updateGroupProps(groupId);
+      })
+      .catch((error) => {
+        if (error instanceof Error) {
+          // eslint-disable-next-line no-console
+          console.error('[AllocatePageUpdaters:editGroupUpdater] error', error, {
+            groupId,
+            editor,
+          });
+          // eslint-disable-next-line no-debugger
+          debugger;
+          this.setError(error);
+        } else {
+          // eslint-disable-next-line no-console
+          console.warn('[AllocatePageUpdaters:editGroupUpdater] warn', error, {
+            groupId,
+            editor,
+          });
+        }
+      });
   }
 
   /** @param {TAllocationGroup} group */
