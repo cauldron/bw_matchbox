@@ -24,16 +24,19 @@ export class ProcessDetailPage {
   callbacks = {};
 
   /** @type {TThreadComments} */
-  threadComments = undefined;
+  threadComments;
 
   /** @type {ProcessDetailPageState} */
-  state = undefined;
+  state;
 
   /** @type {ProcessDetailPageNodes} */
-  nodes = undefined;
+  nodes;
 
   /** @type {ProcessDetailPageInit} */
-  init = undefined;
+  init;
+
+  /** @type {ProcessDetailPageHandlers} */
+  handlers;
 
   /**
    * @param {TSharedParams} sharedParams
@@ -76,7 +79,7 @@ export class ProcessDetailPage {
       threadComments,
     });
 
-    // Set initialized class...
+    // Set initialized state...
     const layoutNode = nodes.getLayoutNode();
     layoutNode.classList.toggle('inited', true);
   }

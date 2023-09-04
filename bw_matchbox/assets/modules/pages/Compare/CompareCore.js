@@ -186,7 +186,7 @@ export const CompareCore = {
   },
 
   /**
-   * @param {{ classList: { toggle: (arg0: string, arg1: boolean) => void; }; }} elem
+   * @param {HTMLElement} elem
    */
   replaceWithTargetHandler(elem) {
     // CompareRowClick.disableRowClickHandler(); // NOTE: It's not inside the row
@@ -309,7 +309,7 @@ export const CompareCore = {
   // Edit number modal dialog (TODO: Extract all this code into it's own dedicated module?)
 
   /**
-   * @param {{ getAttribute: (arg0: string) => any; }} elem
+   * @param {HTMLElement} elem
    */
   replaceAmountRowHandler(elem) {
     CompareRowClick.disableRowClickHandler();
@@ -465,7 +465,7 @@ export const CompareCore = {
   },
 
   /**
-   * @param {{ closest: (arg0: string) => any; }} link
+   * @param {HTMLAnchorElement} link
    */
   editNumberHandler(link) {
     CompareRowClick.disableRowClickHandler();
@@ -515,7 +515,7 @@ export const CompareCore = {
   // Copy to clipboard
 
   /**
-   * @param {{ getAttribute: (arg0: string) => any; }} node
+   * @param {HTMLElement} node
    */
   copyToClipboardHandler(node) {
     const { sharedParams } = this;

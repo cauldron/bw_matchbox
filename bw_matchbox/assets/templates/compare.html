@@ -13,13 +13,13 @@
     </div>
     <div class="five columns">
     {% if config.role == 'editors' %}
-    <button class="button-primary" id="save-mapping-button">{% if proxy and proxy != "None" %}Create Proxy</button>
-    <button class="button-primary" id="one-to-one">1-to-1 Proxy</button>{% else %}Save{% endif %}</button>
+    <button id="save-mapping-button" class="button-primary">{% if proxy and proxy != "None" %}Create Proxy</button>
+    <button id="one-to-one" class="button-primary">1-to-1 Proxy</button>{% else %}Save{% endif %}</button>
     {% endif %}
     </div>
   </div>
   <div class="row collapsed-tools">
-    <button class="button-primary" id="expand-all-collapsed">Expand all collapsed rows</button>
+    <button id="expand-all-collapsed" class="button-primary">Expand all collapsed rows</button>
   </div>
   <div class="row compare-tables">
     <div class="column one-half">
@@ -35,7 +35,7 @@
           </div>
         </h3>
       </div>
-      <table class="fixed-table fixed-table-active compare-table" id="source-table" width="100%">
+      <table id="source-table" class="fixed-table fixed-table-active compare-table" width="100%">
       </table>
       <p>{{ source_biosphere_number }} biosphere exchanges</p>
     </div>
@@ -53,7 +53,7 @@
           </div>
         </h3>
       </div>
-      <table class="fixed-table fixed-table-active compare-table" id="target-table" width="100%">
+      <table id="target-table" class="fixed-table fixed-table-active compare-table" width="100%">
       </table>
       <p>{{ target_biosphere_number }} biosphere exchanges</p>
     </div>

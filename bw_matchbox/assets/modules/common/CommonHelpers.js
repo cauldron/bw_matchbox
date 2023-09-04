@@ -136,7 +136,7 @@ export function quoteHtmlAttr(str, preserveCR) {
 
 /** htmlToElement -- Create dom node instance from html string
  * @param {string} html - Html representing a single element
- * @return {ChildNode}
+ * @return {HTMLElement}
  */
 export function htmlToElement(html) {
   const template = document.createElement('template');
@@ -146,7 +146,7 @@ export function htmlToElement(html) {
   html = html.trim(); // Never return a text node of whitespace as the result
   template.innerHTML = html;
   const content = template.content;
-  return content.firstChild;
+  return /** @type HTMLElement */ (content.firstChild);
 }
 
 /**
@@ -166,7 +166,7 @@ export function htmlToElements(html) {
 
 /** updateNodeContent -- Replace all inner dom node content.
  * @param {Element} node
- * @param {string|HTMLElement|HTMLElement[]} content
+ * @param {THtmlContent} content
  */
 export function updateNodeContent(node, content) {
   if (!node) {

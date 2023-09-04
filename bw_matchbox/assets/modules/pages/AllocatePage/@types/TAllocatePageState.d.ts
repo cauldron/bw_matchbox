@@ -1,0 +1,13 @@
+interface TAllocatePageStateParams {
+  // Groups...
+  groups?: TAllocationGroup[];
+  // Data...
+  biosphere: TAllocationData[];
+  production: TAllocationData[];
+  technosphere: TAllocationData[];
+  // Current configuration parameters...
+  currentRole: TUserRole;
+  currentUser: TUserName;
+  // Modules...
+  nodes: AllocatePageNodes;
+}

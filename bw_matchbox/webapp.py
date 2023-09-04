@@ -741,6 +741,8 @@ def to_json(lst):
     return json.dumps(
         [
             {
+                # TODO: To use empty list as default value for the `categories`
+                # property (it provides list otherwise)?
                 "input": {
                     MAPPING.get(key, key): exc.input.get(key, "Unknown") for key in KEYS
                 },
@@ -781,14 +783,17 @@ def allocate_process(id):
         "allocate.html",
         title="Allocate {} {} {}".format(
             node.get("name", "Unknown")[:20],
-            node.get("location", "Unknown")[:5],
-            node.get("unit", "Unknown")[:5],
+            node.get("location", "Unknown")[:7],
+            node.get("unit", "Unknown")[:7],
         ),
         ds=node,
         config=config,
-        production=to_json(production),
-        technosphere=to_json(technosphere),
-        biosphere=to_json(biosphere),
+        production=production,
+        technosphere=technosphere,
+        biosphere=biosphere,
+        production_json=to_json(production),
+        technosphere_json=to_json(technosphere),
+        biosphere_json=to_json(biosphere),
     )
 
 

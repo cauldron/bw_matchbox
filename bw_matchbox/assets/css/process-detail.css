@@ -1,4 +1,4 @@
-:root {
+.panels-layout {
   --thread-comments-toolbar-items-size: 38px;
 }
 
@@ -41,6 +41,7 @@
   display: flex;
   gap: 5px;
   align-items: center;
+  flex-wrap: wrap;
 }
 .panels-layout .thread-comments-toolbar > .group > *,
 .panels-layout .thread-comments-toolbar > * {
@@ -55,6 +56,7 @@
   opacity: 0.5;
 }
 .panels-layout .thread-comments-toolbar > a.toolbar-icon {
+  flex-shrink: 0;
   background-color: #bbb;
   /* background-color: var(--layout-theme-primary-color); */
   color: #fff;
@@ -65,6 +67,10 @@
   align-items: center;
   justify-content: center;
   opacity: 0.25;
+}
+.panels-layout .thread-comments-toolbar > a.toolbar-icon.disabled {
+  opacity: 0.25;
+  pointer-events: none;
 }
 .panels-layout .thread-comments-toolbar > a.toolbar-icon:not(.disabled) {
   cursor: pointer;

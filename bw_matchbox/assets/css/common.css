@@ -28,6 +28,9 @@
 }
 
 /* Basic layout */
+.common-hidden {
+  display: none;
+}
 
 /* Issue #7: Widen default Skeleton page width */
 .container {
@@ -216,6 +219,12 @@
   .panels-layout-side.hidden,
   .panels-layout-side {
     display: block;
+  }
+  .panels-layout-resizable {
+    /* TODO: Make optin to resize panels?
+    resize: horizontal;
+    overflow: hidden;
+    */
   }
   .panels-layout-main,
   .panels-layout-side {
