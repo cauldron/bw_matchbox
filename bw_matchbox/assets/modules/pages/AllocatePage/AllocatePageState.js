@@ -34,11 +34,6 @@ export class AllocatePageState {
   /** @type TAllocationGroup[] */
   groups;
 
-  /** Counter used to generate the unique id and name of the new groups
-   * @type {number}
-   */
-  newGroupsCount;
-
   /** @constructor
    * @param {TAllocatePageStateParams} params
    */
@@ -47,7 +42,6 @@ export class AllocatePageState {
     this.nodes = params.nodes;
     // Groups...
     this.groups = params.groups || [];
-    this.newGroupsCount = this.groups.length;
     // Data...
     this.production = params.production;
     this.technosphere = params.technosphere;
@@ -57,9 +51,22 @@ export class AllocatePageState {
     this.currentUser = params.currentUser;
   }
 
-  /** @param {TAllocationGroup} group */
-  addNewGroup(group) {
-    this.groups.push(group);
-    // TODO: Update data?
+  /** @param {TLocalGroupId} groupId */
+  isUniqueGroupId(groupId) {
+    const { groups } = this;
+    const found = groups.find(({ localId }) => localId === groupId);
+    return !found;
+  }
+
+  /** @return {TLocalGroupId} */
+  getUniqueGroupId() {
+    const { groups } = this;
+    const lastGroupIdx = groups.length - 1;
+    const lastGroup = groups[lastGroupIdx];
+    let groupId = lastGroup.localId + 1; // this.newGroupsCount;
+    while (!this.isUniqueGroupId(groupId)) {
+      groupId++;
+    }
+    return groupId;
   }
 }

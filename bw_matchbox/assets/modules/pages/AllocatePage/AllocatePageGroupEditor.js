@@ -2,7 +2,7 @@
 
 import * as CommonPromises from '../../common/CommonPromises.js';
 import * as CommonHelpers from '../../common/CommonHelpers.js';
-// import { useDebug } from '../../common/CommonConstants.js';
+import { useDebug } from '../../common/CommonConstants.js';
 
 // Import only types...
 /* eslint-disable no-unused-vars */
@@ -33,6 +33,12 @@ export class AllocatePageGroupEditor {
   /** @type CommonPromises.TDeferred */
   _editorDefer;
 
+  /** @type boolean */
+  editing = false;
+
+  /** @type number */
+  clickedInsideTimer;
+
   /** @type TLocalGroupId */
   groupId;
 
@@ -49,11 +55,28 @@ export class AllocatePageGroupEditor {
     this.state = state;
     this.callbacks = callbacks;
     // Bind events...
-    this._boundOnKeyPress = this.onKeyPress.bind(this);
+    this._boundHandleKeyPress = this.handleKeyPress.bind(this);
     this._boundHandleCancelEdit = this.handleCancelEdit.bind(this);
     this._boundHandleFinishEdit = this.handleFinishEdit.bind(this);
-    this._boundOnInnerClick = this.onInnerClick.bind(this);
+    this._boundHandleInnerClick = this.handleInnerClick.bind(this);
+    this._boundHandleBlur = this.handleBlur.bind(this);
   }
+
+  // Timer...
+
+  clearClickedInsideTimer = () => {
+    if (this.clickedInsideTimer) {
+      clearTimeout(this.clickedInsideTimer);
+      this.clickedInsideTimer = undefined;
+    }
+  };
+
+  setClickedInsideTimer = () => {
+    this.clearClickedInsideTimer();
+    this.clickedInsideTimer = setTimeout(this.clearClickedInsideTimer, 200);
+  };
+
+  // Nodes...
 
   /**
    * @return {HTMLElement}
@@ -153,7 +176,7 @@ export class AllocatePageGroupEditor {
     const inputNode = this.getGroupTitleInputNode();
     if (inputNode) {
       inputNode.focus();
-      // inputNode.select();
+      inputNode.select();
     }
   }
 
@@ -176,12 +199,14 @@ export class AllocatePageGroupEditor {
   prepareHeaderNode() {
     const groupNode = this.getGroupNode();
     const groupHeaderNode = this.getGroupHeaderNode();
+    this.ensureEditorNode();
     groupHeaderNode.classList.toggle('edit-group', true);
     groupNode.classList.toggle('edit-group', true);
     this.focusEditorNode();
   }
 
   releaseHeaderNode() {
+    console.log('[AllocatePageGroupEditor:releaseHeaderNode]');
     const groupNode = this.getGroupNode();
     const editorNode = this.getEditorNode();
     const groupHeaderNode = this.getGroupHeaderNode();
@@ -213,10 +238,11 @@ export class AllocatePageGroupEditor {
   /**
    * @param {KeyboardEvent} event
    */
-  onKeyPress(event) {
+  handleKeyPress(event) {
     const { key } = event;
+    // console.log('[AllocatePageGroupEditor:handleKeyPress]', key);
     if (key === 'Escape') {
-      this.stopEdit('escKeyPressed');
+      this.stopEdit('closed on escape pressed');
     }
     if (key === 'Enter') {
       this.stopEdit(true);
@@ -227,15 +253,27 @@ export class AllocatePageGroupEditor {
    * @param {PointerEvent} event
    */
   handleCancelEdit(event) {
-    event.preventDefault();
-    event.stopPropagation();
-    this.stopEdit('outerClick');
+    if (!this.clickedInsideTimer) {
+      event.preventDefault();
+      event.stopPropagation();
+      console.log('[AllocatePageGroupEditor:handleCancelEdit]');
+      this.stopEdit('edit canceled by pointer event');
+    }
+  }
+
+  /**
+   * @param {PointerEvent} event
+   */
+  handleBlur(event) {
+    setTimeout(this._boundHandleCancelEdit, 100, event);
   }
 
   /**
    * @param {PointerEvent} event
    */
   handleFinishEdit(event) {
+    this.setClickedInsideTimer();
+    console.log('[AllocatePageGroupEditor:handleFinishEdit]');
     event.preventDefault();
     event.stopPropagation();
     this.stopEdit(true);
@@ -244,7 +282,9 @@ export class AllocatePageGroupEditor {
   /**
    * @param {PointerEvent} event
    */
-  onInnerClick(event) {
+  handleInnerClick(event) {
+    this.setClickedInsideTimer();
+    console.log('[AllocatePageGroupEditor:handleInnerClick]');
     // Prevent editor finish on click
     event.preventDefault();
     event.stopPropagation();
@@ -257,28 +297,28 @@ export class AllocatePageGroupEditor {
   }
 
   addEventHandlers() {
-    document.addEventListener('keydown', this._boundOnKeyPress);
-    document.body.addEventListener('click', this._boundHandleCancelEdit);
+    document.addEventListener('keydown', this._boundHandleKeyPress);
+    document.body.addEventListener('click', this._boundHandleCancelEdit); // Outer click
     const editorNode = this.getGroupTitleEditorNode();
     if (editorNode) {
-      editorNode.addEventListener('click', this._boundOnInnerClick);
+      editorNode.addEventListener('click', this._boundHandleInnerClick);
       const finish = editorNode.querySelector('a[edit-action-id=finish]');
       const cancel = editorNode.querySelector('a[edit-action-id=cancel]');
       finish && finish.addEventListener('mousedown', this._boundHandleFinishEdit);
       cancel && cancel.addEventListener('mousedown', this._boundHandleCancelEdit);
     }
     const inputNode = this.getGroupTitleInputNode();
-    if (inputNode) {
-      inputNode.addEventListener('blur', this._boundHandleCancelEdit);
+    if (inputNode && !useDebug) {
+      inputNode.addEventListener('blur', this._boundHandleBlur);
     }
   }
 
   removeEventHandlers() {
-    document.removeEventListener('keydown', this._boundOnKeyPress);
+    document.removeEventListener('keydown', this._boundHandleKeyPress);
     document.body.removeEventListener('click', this._boundHandleCancelEdit);
     const editorNode = this.getGroupTitleEditorNode();
     if (editorNode) {
-      editorNode.removeEventListener('click', this._boundOnInnerClick);
+      editorNode.removeEventListener('click', this._boundHandleInnerClick);
       const finish = editorNode.querySelector('a[edit-action-id=finish]');
       const cancel = editorNode.querySelector('a[edit-action-id=cancel]');
       finish && finish.removeEventListener('mousedown', this._boundHandleFinishEdit);
@@ -286,7 +326,7 @@ export class AllocatePageGroupEditor {
     }
     const inputNode = this.getGroupTitleInputNode();
     if (inputNode) {
-      inputNode.removeEventListener('blur', this._boundHandleCancelEdit);
+      inputNode.removeEventListener('blur', this._boundHandleBlur);
     }
   }
 
@@ -296,20 +336,26 @@ export class AllocatePageGroupEditor {
    */
   startEdit(groupId) {
     this._editorDefer = undefined;
+    this.editing = true;
     this.groupId = groupId;
     this.prepareHeaderNode();
-    this.addEventHandlers();
+    // Delay for waiting to release current (if any) pressed button
+    setTimeout(this.addEventHandlers.bind(this), 300);
     return this.getEditorPromise();
   }
 
   /** @param {boolean|string} [status] */
   stopEdit(status) {
-    if (status === true) {
-      this.finishEditor();
-    } else {
-      this.cancelEditor(status || 'stopped');
+    console.log('[AllocatePageGroupEditor:stopEdit]', this.editing);
+    if (this.editing) {
+      this.editing = false;
+      if (status === true) {
+        this.finishEditor();
+      } else {
+        this.cancelEditor(status || 'stopped');
+      }
+      this.removeEventHandlers();
+      this.releaseHeaderNode();
     }
-    this.removeEventHandlers();
-    this.releaseHeaderNode();
   }
 }

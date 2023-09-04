@@ -1,6 +1,7 @@
 // @ts-check
 
 import * as CommonHelpers from '../../common/CommonHelpers.js';
+import { commonNotify } from '../../common/CommonNotify.js';
 // import { useDebug } from '../../common/CommonConstants.js';
 
 import { AllocatePageGroupEditor } from './AllocatePageGroupEditor.js';
@@ -9,7 +10,7 @@ import { AllocatePageGroupEditor } from './AllocatePageGroupEditor.js';
 /* eslint-disable no-unused-vars */
 import { AllocatePageNodes } from './AllocatePageNodes.js';
 import { AllocatePageState } from './AllocatePageState.js';
-// import { AllocatePageRender } from './AllocatePageRender.js';
+import { AllocatePageRender } from './AllocatePageRender.js';
 /* eslint-enable no-unused-vars */
 
 /**
@@ -21,6 +22,8 @@ export class AllocatePageUpdaters {
   nodes;
   /** @type AllocatePageState */
   state;
+  /** @type AllocatePageRender */
+  render;
 
   /** @type TSharedHandlers */
   callbacks;
@@ -29,12 +32,14 @@ export class AllocatePageUpdaters {
    * @param {object} params
    * @param {AllocatePageNodes} params.nodes
    * @param {AllocatePageState} params.state
+   * @param {AllocatePageRender} params.render
    * @param {TSharedHandlers} params.callbacks
    */
   constructor(params) {
     // Modules...
     this.nodes = params.nodes;
     this.state = params.state;
+    this.render = params.render;
     this.callbacks = params.callbacks;
     // Export all methods as external handlers...
     CommonHelpers.exportCallbacksFromInstance(params.callbacks, this);
@@ -66,6 +71,8 @@ export class AllocatePageUpdaters {
       error,
       errorNode,
     });
+    // TODO: Show multiple toasts for multiple (if got list of) errors?
+    commonNotify.showError(text);
     if (errorNode) {
       errorNode.innerHTML = text;
     }
@@ -327,9 +334,17 @@ export class AllocatePageUpdaters {
       });
   }
 
-  /** @param {TAllocationGroup} group */
-  addNewGroupUpdater(group) {
-    this.state.addNewGroup(group);
-    // TODO: Update data?
+  addGroupUpdater() {
+    const { state, render } = this;
+    const groupId = state.getUniqueGroupId();
+    /** @type TAllocationGroup */
+    const newGroup = {
+      localId: groupId,
+      name: 'New group ' + groupId,
+      items: [],
+    };
+    state.groups.push(newGroup);
+    render.renderNewGroup(newGroup);
+    this.editGroupUpdater(groupId);
   }
 }

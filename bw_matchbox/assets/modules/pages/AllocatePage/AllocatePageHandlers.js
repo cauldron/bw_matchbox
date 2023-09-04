@@ -147,8 +147,17 @@ export class AllocatePageHandlers {
   }
 
   addNewGroup() {
-    console.log('[AllocatePageHandlers:addNewGroup]', {});
-    debugger;
+    try {
+      // console.log('[AllocatePageHandlers:addNewGroup]');
+      const { updaters } = this;
+      updaters.addGroupUpdater();
+    } catch (error) {
+      // eslint-disable-next-line no-console
+      console.error('[AllocatePageHandlers:addNewGroup]', error);
+      // eslint-disable-next-line no-debugger
+      debugger;
+      this.updaters.setError(error);
+    }
   }
 
   /** @param {PointerEvent} event */

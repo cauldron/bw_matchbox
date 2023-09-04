@@ -192,9 +192,22 @@ export class AllocatePageRender {
     const { nodes, state, callbacks } = this;
     const { groups } = state;
     const content = this.createGroupsContent(groups).join('\n');
-    const node = nodes.getGroupsListNode();
-    CommonHelpers.updateNodeContent(node, content);
-    AllocatePageHelpers.addActionHandlers(node, this.callbacks);
+    const groupsListNode = nodes.getGroupsListNode();
+    CommonHelpers.updateNodeContent(groupsListNode, content);
+    AllocatePageHelpers.addActionHandlers(groupsListNode, this.callbacks);
+    callbacks.updateGroupsState();
+  }
+
+  /**
+   * @param {TAllocationGroup} group
+   */
+  renderNewGroup(group) {
+    const { nodes, callbacks } = this;
+    const groupContent = this.createGroupContent(group);
+    const groupNode = CommonHelpers.htmlToElement(groupContent);
+    const groupsListNode = nodes.getGroupsListNode();
+    groupsListNode.append(groupNode);
+    AllocatePageHelpers.addActionHandlers(groupNode, this.callbacks);
     callbacks.updateGroupsState();
   }
 
