@@ -203,6 +203,8 @@
   font-weight: normal;
 }
 .allocate-layout:not(.has-groups) .info-tableau .has-groups-info,
+.allocate-layout:not(.has-moved-inputs) .info-tableau .has-groups-info .has-moved-inputs,
+.allocate-layout.has-moved-inputs .info-tableau .has-groups-info .no-moved-inputs,
 .allocate-layout.has-groups .info-tableau .no-groups-info {
   display: none;
 }

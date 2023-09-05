@@ -3,7 +3,6 @@
 import * as CommonHelpers from '../../common/CommonHelpers.js';
 import { commonNotify } from '../../common/CommonNotify.js';
 import { commonIndicators } from '../../common/CommonIndicators.js';
-// import { useDebug } from '../../common/CommonConstants.js';
 
 import { AllocatePageGroupEditor } from './AllocatePageGroupEditor.js';
 
@@ -176,8 +175,6 @@ export class AllocatePageUpdaters {
     } = item;
     const inputsList = state[type];
     const inputData = inputsList && inputsList.find((item) => item.id === id);
-    // const sourcesColumnNode = nodes.getSourcesColumnNode();
-    // const inputsListNode = nodes.getInputsListNode(type);
     const inputNode = nodes.getInputNode(item); // inputsListNode && inputsListNode.querySelector('.input-row[data-id="' + id + '"]');
     console.log('[AllocatePageUpdaters:restoreGroupedItemToInputs]', {
       inputData,
@@ -356,8 +353,10 @@ export class AllocatePageUpdaters {
    * @param {TDragInputItem[]} dragItemsList
    */
   moveInputsToGroup(groupId, dragItemsList) {
-    const { nodes, state, render, callbacks } = this;
+    const { nodes, state, render } = this;
     const { groups } = state;
+    const rootNode = nodes.getRootNode();
+    rootNode.classList.toggle('has-moved-inputs');
     const groupNode = nodes.getGroupNode(groupId);
     // Expand node...
     groupNode.classList.toggle('expanded', true);
