@@ -1,0 +1,50 @@
+.common-indicator {
+  --common-indicators-animation-time: 1000ms;
+  --common-indicators-color0: rgb(30 174 219 / 0%);
+  --common-indicators-color1: rgb(30 174 219 / 10%);
+  --common-indicators-color2: rgb(30 174 219 / 20%);
+  --common-indicators-color3: rgb(30 174 219 / 30%);
+  --common-indicators-color4: rgb(30 174 219 / 40%);
+  --common-indicators-color5: rgb(30 174 219 / 50%);
+
+  position: relative;
+  transition: all var(--common-indicators-animation-time) ease-out;
+}
+.common-indicator .common-indicator-curtain {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  background-color: var(--layout-theme-primary-color);
+  animation: common-indicator-opacity-animation var(--common-indicators-animation-time);
+  animation-timing-function: ease-out;
+  opacity: 0;
+  pointer-events: none;
+}
+
+.common-indicator.common-indicator-animation {
+  animation: common-indicator-background-animation var(--common-indicators-animation-time);
+  animation-timing-function: ease-out;
+}
+
+/* Indicate animation... */
+@keyframes common-indicator-opacity-animation {
+  0% {
+    opacity: 0.5;
+  }
+
+  100% {
+    opacity: 0;
+  }
+}
+/* Indicate animation... */
+@keyframes common-indicator-background-animation {
+  0% {
+    background-color: var(--common-indicators-color5);
+  }
+
+  100% {
+    background-color: var(--common-indicators-color0);
+  }
+}

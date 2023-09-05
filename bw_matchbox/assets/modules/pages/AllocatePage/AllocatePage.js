@@ -6,10 +6,15 @@ import { AllocatePageNodes } from './AllocatePageNodes.js';
 import { AllocatePageState } from './AllocatePageState.js';
 import { AllocatePageRender } from './AllocatePageRender.js';
 import { AllocatePageHandlers } from './AllocatePageHandlers.js';
+import { AllocatePageInputsDragger } from './AllocatePageInputsDragger.js';
 import { AllocatePageUpdaters } from './AllocatePageUpdaters.js';
 
-/** DEBUG: Use sample group by default */
-const useSampleGroup = false;
+/** Use sample group by default */
+const createDefaultGroup = true;
+const defaultGroupName = 'Group name';
+const defaultGroupId = 1;
+/** DEBUG: Add demo item to default group for debugging */
+const addSampeItemToDefaultGroup = true;
 
 export class AllocatePage {
   /** Handlers exchange object
@@ -38,21 +43,22 @@ export class AllocatePage {
     /** @type TAllocationGroup[] */
     const groups = [];
 
-    // DEBUG: Add sample group...
-    if (useDebug && useSampleGroup) {
-      const localId = 1;
-      const sampleItem = technosphere[0];
-      const sampleGroup = {
-        name: 'Sample group',
-        localId,
-        items: [sampleItem],
+    // Add initial group...
+    if (createDefaultGroup) {
+      const defaultGroup = {
+        name: defaultGroupName,
+        localId: defaultGroupId,
+        items: [],
       };
-      sampleItem.inGroup = localId;
-      groups.push(sampleGroup);
+      groups.push(defaultGroup);
+      if (useDebug && addSampeItemToDefaultGroup && technosphere[0]) {
+        const sampleItem = technosphere[0];
+        sampleItem.inGroup = defaultGroupId;
+        defaultGroup.items.push(sampleItem);
+      }
       console.log('[AllocatePage:constructor] Add sample group', {
-        localId,
-        sampleItem,
-        sampleGroup,
+        defaultGroupId,
+        defaultGroup,
         groups,
       });
     }
@@ -92,7 +98,15 @@ export class AllocatePage {
       render,
       callbacks,
     });
-    const _handlers = new AllocatePageHandlers({
+    // eslint-disable-next-line no-unused-vars
+    const handlers = new AllocatePageHandlers({
+      nodes,
+      state,
+      updaters,
+      callbacks,
+    });
+    // eslint-disable-next-line no-unused-vars
+    const inputsDragger = new AllocatePageInputsDragger({
       nodes,
       state,
       updaters,

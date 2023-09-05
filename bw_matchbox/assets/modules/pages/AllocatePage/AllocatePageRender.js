@@ -182,7 +182,7 @@ export class AllocatePageRender {
   /**
    * @param {TAllocationGroup} group
    * @param {TAllocationData} item
-   *
+   * @return {HTMLElement}
    */
   renderNewGroupContentItem(group, item) {
     const { nodes } = this;
@@ -198,6 +198,7 @@ export class AllocatePageRender {
     const itemContentNode = CommonHelpers.htmlToElement(itemContent);
     contentNode.append(itemContentNode);
     AllocatePageHelpers.addActionHandlers(itemContentNode, this.callbacks);
+    return itemContentNode;
   }
 
   /**
@@ -217,15 +218,36 @@ export class AllocatePageRender {
       return;
     }
     const { callbacks } = this;
-    const { handleGroupDragOver, handleGroupDragDrop } = callbacks;
+    const {
+      // prettier-ignore
+      handleGroupDragEnter,
+      handleGroupDragLeave,
+      handleGroupDragOver,
+      handleGroupDragEnd,
+      handleGroupDragDrop,
+    } = callbacks;
     console.log('[AllocatePageRender:addGroupDragHandlers]', {
+      handleGroupDragEnter,
+      handleGroupDragLeave,
       handleGroupDragOver,
       handleGroupDragDrop,
       node,
     });
+    if (handleGroupDragEnter) {
+      node.removeEventListener('dragenter', handleGroupDragEnter);
+      node.addEventListener('dragenter', handleGroupDragEnter);
+    }
+    if (handleGroupDragLeave) {
+      node.removeEventListener('dragleave', handleGroupDragLeave);
+      node.addEventListener('dragleave', handleGroupDragLeave);
+    }
     if (handleGroupDragOver) {
       node.removeEventListener('dragover', handleGroupDragOver);
       node.addEventListener('dragover', handleGroupDragOver);
+    }
+    if (handleGroupDragEnd) {
+      node.removeEventListener('dragend', handleGroupDragEnd);
+      node.addEventListener('dragend', handleGroupDragEnd);
     }
     if (handleGroupDragDrop) {
       node.removeEventListener('drop', handleGroupDragDrop);
@@ -246,6 +268,7 @@ export class AllocatePageRender {
 
   /**
    * @param {TAllocationGroup} group
+   * @return {HTMLElement}
    */
   renderNewGroup(group) {
     const { nodes, callbacks } = this;
@@ -256,6 +279,7 @@ export class AllocatePageRender {
     AllocatePageHelpers.addActionHandlers(groupNode, this.callbacks);
     this.addGroupDragHandlers(groupNode);
     callbacks.updateGroupsState();
+    return groupNode;
   }
 
   // Render input tables...
@@ -273,13 +297,16 @@ export class AllocatePageRender {
       // output, // TAllocationRecord; // {name: 'Smith LLC', unit: 'kilogram', location: 'GLO', product: 'Inc', categories: 'Unknown'}
       inGroup,
     } = item;
+    const amountStr = amount.toExponential(4);
     const {
-      // categories, // 'Unknown' | TCategory[]; // ['air']
+      categories, // 'Unknown' | TCategory[]; // ['air']
       location, // string; // 'GLO'
       name, // string; // 'Clay-Williams'
       // product, // string; // 'LLC'
       unit, // string; // 'kilogram'
     } = input;
+    const locationStr =
+      type === 'biosphere' ? (Array.isArray(categories) ? categories.join(', ') : '') : location;
     const isInGroup = inGroup != undefined;
     // DEBUG: Show dragging effect...
     const isDragging = showDemoDragging && useDebug && name === 'Ellis Group';
@@ -293,17 +320,23 @@ export class AllocatePageRender {
     ]
       .filter(Boolean)
       .join(' ');
+    const attributes = [
+      // NOTE: Only 'technosphere' and 'biosphere' inputs can be added into the groups.
+      type !== 'production' && 'draggable="true"',
+    ]
+      .filter(Boolean)
+      .join(' ');
     const content = `
       <tr
         data-id="${id}"
         data-type="${type}"
         data-in-group="${inGroup || ''}"
         class="${className}"
-        draggable="true"
+        ${attributes}
       >
-        <td><div>${amount}</div></td>
+        <td><div>${amountStr}</div></td>
         <td><div>${nameContent}</div></td>
-        <td><div>${location}</div></td>
+        <td><div>${locationStr}</div></td>
         <td><div>${unit}</div></td>
       </tr>
     `;
@@ -335,18 +368,36 @@ export class AllocatePageRender {
 
   /** @param {HTMLElement} parentNode */
   addInputTableDragHandlers(parentNode) {
+    const tableNode = parentNode.tagName === 'TABLE' ? parentNode : parentNode.closest('table');
+    const type = /** @type TAllocationType */ (tableNode.getAttribute('data-type'));
+    console.log('[AllocatePageRender:addInputTableDragHandlers] start', {
+      parentNode,
+      tableNode,
+      type,
+    });
+    // Don't need any handlers for production table
+    if (type === 'production') {
+      return;
+    }
     const { callbacks } = this;
-    const { handleInputTableDragStart } = callbacks;
+    const { handleInputTableDragStart, handleInputTableClick } = callbacks;
     const dragNodes = parentNode.querySelectorAll('tr.input-row');
     console.log('[AllocatePageRender:addInputTableDragHandlers]', {
+      parentNode,
       handleInputTableDragStart,
       dragNodes,
+      type,
     });
     dragNodes.forEach((node) => {
-      // Just for case: remove previous listener
-      node.removeEventListener('dragstart', handleInputTableDragStart);
-      // Add listener...
-      node.addEventListener('dragstart', handleInputTableDragStart);
+      // Remove previous listeners (just for case) and add new ones...
+      if (handleInputTableDragStart) {
+        node.removeEventListener('dragstart', handleInputTableDragStart);
+        node.addEventListener('dragstart', handleInputTableDragStart);
+      }
+      if (handleInputTableClick) {
+        node.removeEventListener('click', handleInputTableClick);
+        node.addEventListener('click', handleInputTableClick);
+      }
     });
   }
 

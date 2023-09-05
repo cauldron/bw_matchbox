@@ -7,12 +7,10 @@ import * as AllocatePageHelpers from './AllocatePageHelpers.js';
 // Import only types...
 /* eslint-disable no-unused-vars */
 import { AllocatePageNodes } from './AllocatePageNodes.js';
-import { AllocatePageRender } from './AllocatePageRender.js';
+// import { AllocatePageRender } from './AllocatePageRender.js';
 import { AllocatePageUpdaters } from './AllocatePageUpdaters.js';
 import { AllocatePageState } from './AllocatePageState.js';
 /* eslint-enable no-unused-vars */
-
-const dragInputsType = 'application/drag-inputs';
 
 /**
  * @class AllocatePageHandlers
@@ -208,93 +206,45 @@ export class AllocatePageHandlers {
     }
   }
 
-  /** @param {DragEvent} event */
-  handleGroupDragDrop(event) {
-    const {
-      // prettier-ignore
-      dataTransfer,
-      currentTarget,
-    } = event;
-    const dragTypes = dataTransfer.types;
-    if (!dragTypes.includes(dragInputsType)) {
-      // Wrong drag type: do nothing
-      return;
+  /** @param {HTMLElement} [rowNode] */
+  _setOnlySelectedRow(rowNode) {
+    // Select only node...
+    if (rowNode) {
+      rowNode.classList.toggle('selected', true);
     }
-    event.preventDefault();
-    const { updaters } = this;
-    const dragItemsListJson = dataTransfer.getData(dragInputsType);
-    const dragItemsList = /** @type TDragInputItem[] */ (JSON.parse(dragItemsListJson));
-    const node = /** @type HTMLElement */ (currentTarget);
-    const groupId = /** @type TLocalGroupId */ Number(node.getAttribute('data-group-id'));
-    console.log('[AllocatePageHandlers:handleGroupDragDrop]', {
-      groupId,
-      dragItemsList,
-      dragItemsListJson,
-      dragTypes,
-      node,
-      dataTransfer,
-      event,
+    // And deselect all the other previously selected rows...
+    const { nodes } = this;
+    const sourcesColumnNode = nodes.getSourcesColumnNode();
+    const selectedRows = sourcesColumnNode.querySelectorAll('.input-row.selected');
+    selectedRows.forEach((node) => {
+      const isCurrent = node === rowNode;
+      if (!isCurrent) {
+        node.classList.toggle('selected', false);
+      }
     });
-    updaters.moveInputsToGroup(groupId, dragItemsList);
   }
 
-  /** @param {DragEvent} event */
-  handleGroupDragOver(event) {
-    const {
-      // prettier-ignore
-      dataTransfer,
-      currentTarget,
-      target,
-    } = event;
-    const dragTypes = dataTransfer.types;
-    if (!dragTypes.includes(dragInputsType)) {
-      // Wrong drag type: do nothing
-      return;
+  /** @param {PointerEvent} event */
+  handleInputTableClick(event) {
+    const { ctrlKey, currentTarget } = event;
+    const itemNode = /** @type {HTMLElement} */ (currentTarget);
+    const itemId = /** @type TAllocationId */ (
+      Number(itemNode && itemNode.getAttribute('data-id'))
+    );
+    const itemType = /** @type TAllocationType */ (itemNode && itemNode.getAttribute('data-type'));
+    console.log('[AllocatePageHandlers:handleInputTableClick]', {
+      ctrlKey,
+      itemId,
+      itemType,
+      itemNode,
+      event,
+    });
+    if (ctrlKey) {
+      // Toggle selection for row if clicked with control key...
+      itemNode.classList.toggle('selected');
+    } else {
+      // ...Else select only current row...
+      this._setOnlySelectedRow(itemNode);
     }
-    event.preventDefault();
-    const node = /** @type HTMLElement */ (currentTarget);
-    // const id = Number(node.getAttribute('data-id'));
-    // const type = node.getAttribute('data-type');
-    console.log('[AllocatePageHandlers:handleGroupDragOver]', {
-      dragTypes,
-      node,
-      dataTransfer,
-      currentTarget,
-      target,
-      event,
-    });
-    dataTransfer.dropEffect = 'move';
-  }
-
-  /** @param {DragEvent} event */
-  handleInputTableDragStart(event) {
-    // event.preventDefault();
-    const {
-      // prettier-ignore
-      dataTransfer,
-      currentTarget,
-      target,
-    } = event;
-    const node = /** @type HTMLElement */ (currentTarget);
-    const id = /** @type TAllocationId */ Number(node.getAttribute('data-id'));
-    const type = /** @type TAllocationType */ (node.getAttribute('data-type'));
-    /** @type TDragInputItem */
-    const dragItem = { type, id };
-    const dragItemsList = [dragItem];
-    const dragItemsListJson = JSON.stringify(dragItemsList);
-    dataTransfer.setData(dragInputsType, dragItemsListJson);
-    console.log('[AllocatePageHandlers:handleInputTableDragStart]', {
-      dragInputsType,
-      dragItem,
-      dragItemsList,
-      dragItemsListJson,
-      id,
-      type,
-      node,
-      dataTransfer,
-      currentTarget,
-      target,
-      event,
-    });
   }
 }
