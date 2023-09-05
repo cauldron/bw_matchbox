@@ -205,4 +205,46 @@ export class AllocatePageHandlers {
       this.updaters.setError(error);
     }
   }
+
+  /** @param {HTMLElement} [rowNode] */
+  _setOnlySelectedRow(rowNode) {
+    // Select only node...
+    if (rowNode) {
+      rowNode.classList.toggle('selected', true);
+    }
+    // And deselect all the other previously selected rows...
+    const { nodes } = this;
+    const sourcesColumnNode = nodes.getSourcesColumnNode();
+    const selectedRows = sourcesColumnNode.querySelectorAll('.input-row.selected');
+    selectedRows.forEach((node) => {
+      const isCurrent = node === rowNode;
+      if (!isCurrent) {
+        node.classList.toggle('selected', false);
+      }
+    });
+  }
+
+  /** @param {PointerEvent} event */
+  handleInputTableClick(event) {
+    const { ctrlKey, currentTarget } = event;
+    const itemNode = /** @type {HTMLElement} */ (currentTarget);
+    const itemId = /** @type TAllocationId */ (
+      Number(itemNode && itemNode.getAttribute('data-id'))
+    );
+    const itemType = /** @type TAllocationType */ (itemNode && itemNode.getAttribute('data-type'));
+    console.log('[AllocatePageHandlers:handleInputTableClick]', {
+      ctrlKey,
+      itemId,
+      itemType,
+      itemNode,
+      event,
+    });
+    if (ctrlKey) {
+      // Toggle selection for row if clicked with control key...
+      itemNode.classList.toggle('selected');
+    } else {
+      // ...Else select only current row...
+      this._setOnlySelectedRow(itemNode);
+    }
+  }
 }

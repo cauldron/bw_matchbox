@@ -210,6 +210,23 @@ export class AllocatePageInputsDragger {
     dataTransfer.dropEffect = 'move';
   }
 
+  /** @return {TDragInputItem[]} */
+  _getSelectedItemsListToDrag() {
+    const { nodes } = this;
+    const sourcesColumnNode = nodes.getSourcesColumnNode();
+    const selectedRows = sourcesColumnNode.querySelectorAll('.input-row.selected');
+    const selectedRowsList = Array.from(selectedRows);
+    /** @type {TDragInputItem[]} */
+    const itemsList = selectedRowsList.map((node) => {
+      const id = /** @type TAllocationId */ Number(node.getAttribute('data-id'));
+      const type = /** @type TAllocationType */ (node.getAttribute('data-type'));
+      /** @type {TDragInputItem} */
+      const item = { type, id };
+      return item;
+    });
+    return itemsList;
+  }
+
   /** @param {DragEvent} event */
   handleInputTableDragStart(event) {
     // event.preventDefault();
@@ -219,25 +236,46 @@ export class AllocatePageInputsDragger {
       currentTarget,
     } = event;
     const node = /** @type HTMLElement */ (currentTarget);
-    const id = /** @type TAllocationId */ Number(node.getAttribute('data-id'));
-    const type = /** @type TAllocationType */ (node.getAttribute('data-type'));
-    /** @type TDragInputItem */
-    const dragItem = { type, id };
-    const dragItemsList = [dragItem];
-    const dragItemsListJson = JSON.stringify(dragItemsList);
-    dataTransfer.setData(dragInputsType, dragItemsListJson);
-    /* console.log('[AllocatePageInputsDragger:handleInputTableDragStart]', {
-     *   dragInputsType,
-     *   dragItem,
-     *   dragItemsList,
-     *   dragItemsListJson,
-     *   id,
-     *   type,
-     *   node,
-     *   dataTransfer,
-     *   currentTarget,
-     *   event,
-     * });
+    const isSelected = node.classList.contains('selected');
+    console.log('[AllocatePageInputsDragger:handleInputTableDragStart] start', {
+      isSelected,
+      dragInputsType,
+      node,
+      dataTransfer,
+      currentTarget,
+      event,
+    });
+    // Drag only selected nodes!
+    if (!isSelected) {
+      event.preventDefault();
+      return false;
+    }
+    /* // UNUSED: Move only one item
+     * const id = [>* @type TAllocationId <] Number(node.getAttribute('data-id'));
+     * const type = [>* @type TAllocationType <] (node.getAttribute('data-type'));
+     * [>* @type TDragInputItem <]
+     * const dragItem = { type, id };
+     * const dragItemsList = [dragItem];
      */
+    // Move all the selected items...
+    const selectedItems = this._getSelectedItemsListToDrag();
+    const dragItemsListJson = JSON.stringify(selectedItems);
+    dataTransfer.setData(dragInputsType, dragItemsListJson);
+    console.log('[AllocatePageInputsDragger:handleInputTableDragStart]', {
+      dragInputsType,
+      /* // Single items:
+       * id,
+       * type,
+       * dragItem,
+       * dragItemsList,
+       */
+      // All items:
+      selectedItems,
+      dragItemsListJson,
+      node,
+      dataTransfer,
+      currentTarget,
+      event,
+    });
   }
 }

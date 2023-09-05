@@ -249,6 +249,11 @@
   display: none;
 }
 
+/* Active table */
+.allocate-layout .inputs-table-active tbody .input-row {
+  cursor: copy;
+}
+
 /* Hide grouped rows */
 .allocate-layout .inputs-table tbody tr {
   transition: all var(--common-animation-time);
@@ -256,7 +261,7 @@
 .allocate-layout .inputs-table .input-row.in-group {
   display: none;
 }
-.allocate-layout .inputs-table .input-row.dragging {
+.allocate-layout .inputs-table .input-row.selected {
   background: var(--allocate-groups-bg-color1);
   background: repeating-linear-gradient(
     45deg,
@@ -265,14 +270,11 @@
     var(--allocate-groups-bg-color1) 10px,
     var(--allocate-groups-bg-color1) 20px
   );
-  animation: allocate-groups-dragging-animation var(--allocate-groups-animation-time) infinite;
-  animation-timing-function: ease-in-out;
-  opacity: 0.5;
-  pointer-events: none;
+  cursor: grab;
 }
 
 /* Dragging row animation... */
-@keyframes allocate-groups-dragging-animation {
+@keyframes allocate-groups-background-animation {
   0% {
     background-color: var(--allocate-groups-bg-color3);
   }
@@ -316,7 +318,7 @@
   );
   /* // Stripped background
   */
-  animation: allocate-groups-dragging-animation var(--allocate-groups-animation-time) infinite;
+  animation: allocate-groups-background-animation var(--allocate-groups-animation-time) infinite;
   animation-timing-function: ease-in-out;
 }
 .allocate-layout .allocate-groups-list .group.dragging > * {

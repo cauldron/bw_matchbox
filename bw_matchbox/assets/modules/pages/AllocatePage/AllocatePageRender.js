@@ -368,18 +368,36 @@ export class AllocatePageRender {
 
   /** @param {HTMLElement} parentNode */
   addInputTableDragHandlers(parentNode) {
+    const tableNode = parentNode.tagName === 'TABLE' ? parentNode : parentNode.closest('table');
+    const type = /** @type TAllocationType */ (tableNode.getAttribute('data-type'));
+    console.log('[AllocatePageRender:addInputTableDragHandlers] start', {
+      parentNode,
+      tableNode,
+      type,
+    });
+    // Don't need any handlers for production table
+    if (type === 'production') {
+      return;
+    }
     const { callbacks } = this;
-    const { handleInputTableDragStart } = callbacks;
+    const { handleInputTableDragStart, handleInputTableClick } = callbacks;
     const dragNodes = parentNode.querySelectorAll('tr.input-row');
     console.log('[AllocatePageRender:addInputTableDragHandlers]', {
+      parentNode,
       handleInputTableDragStart,
       dragNodes,
+      type,
     });
     dragNodes.forEach((node) => {
-      // Just for case: remove previous listener
-      node.removeEventListener('dragstart', handleInputTableDragStart);
-      // Add listener...
-      node.addEventListener('dragstart', handleInputTableDragStart);
+      // Remove previous listeners (just for case) and add new ones...
+      if (handleInputTableDragStart) {
+        node.removeEventListener('dragstart', handleInputTableDragStart);
+        node.addEventListener('dragstart', handleInputTableDragStart);
+      }
+      if (handleInputTableClick) {
+        node.removeEventListener('click', handleInputTableClick);
+        node.addEventListener('click', handleInputTableClick);
+      }
     });
   }
 
