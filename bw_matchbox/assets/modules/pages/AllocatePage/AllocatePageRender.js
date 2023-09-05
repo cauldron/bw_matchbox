@@ -217,15 +217,36 @@ export class AllocatePageRender {
       return;
     }
     const { callbacks } = this;
-    const { handleGroupDragOver, handleGroupDragDrop } = callbacks;
+    const {
+      // prettier-ignore
+      handleGroupDragEnter,
+      handleGroupDragLeave,
+      handleGroupDragOver,
+      handleGroupDragEnd,
+      handleGroupDragDrop,
+    } = callbacks;
     console.log('[AllocatePageRender:addGroupDragHandlers]', {
+      handleGroupDragEnter,
+      handleGroupDragLeave,
       handleGroupDragOver,
       handleGroupDragDrop,
       node,
     });
+    if (handleGroupDragEnter) {
+      node.removeEventListener('dragenter', handleGroupDragEnter);
+      node.addEventListener('dragenter', handleGroupDragEnter);
+    }
+    if (handleGroupDragLeave) {
+      node.removeEventListener('dragleave', handleGroupDragLeave);
+      node.addEventListener('dragleave', handleGroupDragLeave);
+    }
     if (handleGroupDragOver) {
       node.removeEventListener('dragover', handleGroupDragOver);
       node.addEventListener('dragover', handleGroupDragOver);
+    }
+    if (handleGroupDragEnd) {
+      node.removeEventListener('dragend', handleGroupDragEnd);
+      node.addEventListener('dragend', handleGroupDragEnd);
     }
     if (handleGroupDragDrop) {
       node.removeEventListener('drop', handleGroupDragDrop);

@@ -268,6 +268,7 @@
   opacity: 0.5;
   pointer-events: none;
 }
+
 /* Dragging row animation... */
 @keyframes allocate-groups-dragging-animation {
   0% {
@@ -297,7 +298,30 @@
   border-radius: 4px;
   background-color: #f8f8f8;
   padding: 0 10px;
+  transition: all var(--common-animation-time);
 }
+
+/* Dragging... */
+
+.allocate-layout .allocate-groups-list .group.dragging {
+  background: var(--allocate-groups-bg-color1);
+  background: repeating-linear-gradient(
+    45deg,
+    var(--allocate-groups-bg-color2),
+    var(--allocate-groups-bg-color2) 10px,
+    var(--allocate-groups-bg-color1) 10px,
+    var(--allocate-groups-bg-color1) 20px
+  );
+  /* // Stripped background
+  */
+  animation: allocate-groups-dragging-animation var(--allocate-groups-animation-time) infinite;
+  animation-timing-function: ease-in-out;
+}
+.allocate-layout .allocate-groups-list .group.dragging > * {
+  pointer-events: none;
+  opacity: 0.5;
+}
+
 .allocate-layout .allocate-groups-list .group-header {
   display: flex;
   flex-direction: row;

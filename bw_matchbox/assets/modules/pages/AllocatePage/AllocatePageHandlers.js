@@ -7,12 +7,15 @@ import * as AllocatePageHelpers from './AllocatePageHelpers.js';
 // Import only types...
 /* eslint-disable no-unused-vars */
 import { AllocatePageNodes } from './AllocatePageNodes.js';
-import { AllocatePageRender } from './AllocatePageRender.js';
+// import { AllocatePageRender } from './AllocatePageRender.js';
 import { AllocatePageUpdaters } from './AllocatePageUpdaters.js';
 import { AllocatePageState } from './AllocatePageState.js';
 /* eslint-enable no-unused-vars */
 
 const dragInputsType = 'application/drag-inputs';
+
+/** Update dragging state timeout */
+const dragUpdateTimeout = 100;
 
 /**
  * @class AllocatePageHandlers
@@ -25,6 +28,11 @@ export class AllocatePageHandlers {
   state;
   /** @type {AllocatePageUpdaters} */
   updaters;
+
+  /** @type HTMLElement */
+  dragGroupNode;
+  /** @type TSetTimeout */
+  dragUpdateHandler;
 
   /** @constructor
    * @param {object} params
@@ -208,6 +216,41 @@ export class AllocatePageHandlers {
     }
   }
 
+  // Dragging groups...
+
+  dragUpdate = () => {
+    this.cancelDragUpdate();
+    const { dragGroupNode, nodes } = this;
+    const groupNodes = nodes.getGroupNodes(); // groupListNode.querySelectorAll('.group');
+    groupNodes.forEach((node) => {
+      const isDragging = node === dragGroupNode;
+      node.classList.toggle('dragging', isDragging);
+    });
+  };
+
+  cancelDragUpdate() {
+    if (this.dragUpdateHandler) {
+      clearTimeout(this.dragUpdateHandler);
+      this.dragUpdateHandler = undefined;
+    }
+  }
+
+  /** @param {HTMLElement} [node] */
+  setDragUpdate(node) {
+    this.dragGroupNode = node;
+    if (node) {
+      node.classList.toggle('dragging', true);
+    }
+    this.dragUpdateHandler = setTimeout(this.dragUpdate, dragUpdateTimeout);
+  }
+
+  /** @param {DragEvent} event */
+  checkGroupDragEvent(event) {
+    const { dataTransfer } = event;
+    const dragTypes = dataTransfer.types;
+    return dragTypes.includes(dragInputsType);
+  }
+
   /** @param {DragEvent} event */
   handleGroupDragDrop(event) {
     const {
@@ -215,8 +258,7 @@ export class AllocatePageHandlers {
       dataTransfer,
       currentTarget,
     } = event;
-    const dragTypes = dataTransfer.types;
-    if (!dragTypes.includes(dragInputsType)) {
+    if (!this.checkGroupDragEvent(event)) {
       // Wrong drag type: do nothing
       return;
     }
@@ -225,12 +267,13 @@ export class AllocatePageHandlers {
     const dragItemsListJson = dataTransfer.getData(dragInputsType);
     const dragItemsList = /** @type TDragInputItem[] */ (JSON.parse(dragItemsListJson));
     const node = /** @type HTMLElement */ (currentTarget);
+    // node.classList.toggle('dragging', false);
+    this.setDragUpdate(undefined);
     const groupId = /** @type TLocalGroupId */ Number(node.getAttribute('data-group-id'));
     console.log('[AllocatePageHandlers:handleGroupDragDrop]', {
       groupId,
       dragItemsList,
       dragItemsListJson,
-      dragTypes,
       node,
       dataTransfer,
       event,
@@ -239,28 +282,96 @@ export class AllocatePageHandlers {
   }
 
   /** @param {DragEvent} event */
+  handleGroupDragEnter(event) {
+    const {
+      // prettier-ignore
+      dataTransfer,
+      currentTarget,
+    } = event;
+    event.preventDefault();
+    if (!this.checkGroupDragEvent(event)) {
+      // Wrong drag type: do nothing
+      return;
+    }
+    const node = /** @type HTMLElement */ (currentTarget);
+    // node.classList.toggle('dragging', true);
+    this.setDragUpdate(node);
+    console.log('[AllocatePageHandlers:handleGroupDragEnter]', {
+      node,
+      event,
+    });
+    dataTransfer.dropEffect = 'move';
+  }
+
+  /** @param {DragEvent} event */
+  handleGroupDragLeave(event) {
+    const {
+      // prettier-ignore
+      currentTarget,
+    } = event;
+    event.preventDefault();
+    if (!this.checkGroupDragEvent(event)) {
+      // Wrong drag type: do nothing
+      return;
+    }
+    const node = /** @type HTMLElement */ (currentTarget);
+    this.setDragUpdate(undefined);
+    // node.classList.toggle('dragging', false);
+    console.log('[AllocatePageHandlers:handleGroupDragLeave]', {
+      node,
+      event,
+    });
+  }
+
+  /** @param {DragEvent} event */
   handleGroupDragOver(event) {
     const {
       // prettier-ignore
       dataTransfer,
       currentTarget,
-      target,
     } = event;
-    const dragTypes = dataTransfer.types;
-    if (!dragTypes.includes(dragInputsType)) {
+    event.preventDefault();
+    if (!this.checkGroupDragEvent(event)) {
+      // Wrong drag type: do nothing
+      return;
+    }
+    const node = /** @type HTMLElement */ (currentTarget);
+    // node.classList.toggle('dragging', true);
+    this.setDragUpdate(node);
+    console.log('[AllocatePageHandlers:handleGroupDragOver]', {
+      dataTransfer,
+      node,
+      event,
+    });
+    dataTransfer.dropEffect = 'move';
+  }
+
+  /** @param {DragEvent} event */
+  handleGroupDragEnd(event) {
+    const {
+      // prettier-ignore
+      dataTransfer,
+      currentTarget,
+    } = event;
+    console.log('[AllocatePageHandlers:handleGroupDragEnd] before', {
+      dataTransfer,
+      event,
+      currentTarget,
+    });
+    if (!this.checkGroupDragEvent(event)) {
       // Wrong drag type: do nothing
       return;
     }
     event.preventDefault();
-    const node = /** @type HTMLElement */ (currentTarget);
-    // const id = Number(node.getAttribute('data-id'));
-    // const type = node.getAttribute('data-type');
-    console.log('[AllocatePageHandlers:handleGroupDragOver]', {
-      dragTypes,
-      node,
+    // const { nodes } = this;
+    // const groupNodes = nodes.getGroupNodes(); // groupListNode.querySelectorAll('.group');
+    // groupNodes.forEach((node) => {
+    //   node.classList.toggle('dragging', false);
+    // });
+    // const node = [>* @type HTMLElement <] (currentTarget);
+    this.setDragUpdate(undefined);
+    console.log('[AllocatePageHandlers:handleGroupDragEnd]', {
       dataTransfer,
-      currentTarget,
-      target,
       event,
     });
     dataTransfer.dropEffect = 'move';
@@ -273,7 +384,6 @@ export class AllocatePageHandlers {
       // prettier-ignore
       dataTransfer,
       currentTarget,
-      target,
     } = event;
     const node = /** @type HTMLElement */ (currentTarget);
     const id = /** @type TAllocationId */ Number(node.getAttribute('data-id'));
@@ -283,18 +393,18 @@ export class AllocatePageHandlers {
     const dragItemsList = [dragItem];
     const dragItemsListJson = JSON.stringify(dragItemsList);
     dataTransfer.setData(dragInputsType, dragItemsListJson);
-    console.log('[AllocatePageHandlers:handleInputTableDragStart]', {
-      dragInputsType,
-      dragItem,
-      dragItemsList,
-      dragItemsListJson,
-      id,
-      type,
-      node,
-      dataTransfer,
-      currentTarget,
-      target,
-      event,
-    });
+    /* console.log('[AllocatePageHandlers:handleInputTableDragStart]', {
+     *   dragInputsType,
+     *   dragItem,
+     *   dragItemsList,
+     *   dragItemsListJson,
+     *   id,
+     *   type,
+     *   node,
+     *   dataTransfer,
+     *   currentTarget,
+     *   event,
+     * });
+     */
   }
 }

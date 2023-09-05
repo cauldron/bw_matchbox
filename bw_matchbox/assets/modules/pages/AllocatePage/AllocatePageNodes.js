@@ -59,6 +59,14 @@ export class AllocatePageNodes {
   }
 
   /**
+   * @return {NodeListOf<HTMLElement>}
+   */
+  getGroupNodes() {
+    const groupsListNode = this.getGroupsListNode();
+    return groupsListNode.querySelectorAll('.group');
+  }
+
+  /**
    * @param {TLocalGroupId} groupId
    * @return {HTMLElement}
    */
