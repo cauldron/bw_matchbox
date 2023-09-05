@@ -49,7 +49,7 @@ export class AllocatePageInputsDragger {
     CommonHelpers.exportCallbacksFromInstance(params.callbacks, this);
   }
 
-  // Dragging groups...
+  // Helpers...
 
   _dragUpdate = () => {
     this._cancelDragUpdate();
@@ -76,6 +76,34 @@ export class AllocatePageInputsDragger {
     }
     this.dragUpdateHandler = setTimeout(this._dragUpdate, dragUpdateTimeout);
   }
+
+  _clearAllSelectedItems() {
+    const { nodes } = this;
+    const sourcesColumnNode = nodes.getSourcesColumnNode();
+    const selectedRows = sourcesColumnNode.querySelectorAll('.input-row.selected');
+    selectedRows.forEach((node) => {
+      node.classList.toggle('selected', false);
+    });
+  }
+
+  /** @return {TDragInputItem[]} */
+  _getSelectedItemsListToDrag() {
+    const { nodes } = this;
+    const sourcesColumnNode = nodes.getSourcesColumnNode();
+    const selectedRows = sourcesColumnNode.querySelectorAll('.input-row.selected');
+    const selectedRowsList = Array.from(selectedRows);
+    /** @type {TDragInputItem[]} */
+    const itemsList = selectedRowsList.map((node) => {
+      const id = /** @type TAllocationId */ Number(node.getAttribute('data-id'));
+      const type = /** @type TAllocationType */ (node.getAttribute('data-type'));
+      /** @type {TDragInputItem} */
+      const item = { type, id };
+      return item;
+    });
+    return itemsList;
+  }
+
+  // Public handlers...
 
   /** @param {DragEvent} event */
   checkGroupDragEvent(event) {
@@ -111,6 +139,7 @@ export class AllocatePageInputsDragger {
       dataTransfer,
       event,
     });
+    this._clearAllSelectedItems();
     updaters.moveInputsToGroup(groupId, dragItemsList);
   }
 
@@ -208,23 +237,6 @@ export class AllocatePageInputsDragger {
       event,
     });
     dataTransfer.dropEffect = 'move';
-  }
-
-  /** @return {TDragInputItem[]} */
-  _getSelectedItemsListToDrag() {
-    const { nodes } = this;
-    const sourcesColumnNode = nodes.getSourcesColumnNode();
-    const selectedRows = sourcesColumnNode.querySelectorAll('.input-row.selected');
-    const selectedRowsList = Array.from(selectedRows);
-    /** @type {TDragInputItem[]} */
-    const itemsList = selectedRowsList.map((node) => {
-      const id = /** @type TAllocationId */ Number(node.getAttribute('data-id'));
-      const type = /** @type TAllocationType */ (node.getAttribute('data-type'));
-      /** @type {TDragInputItem} */
-      const item = { type, id };
-      return item;
-    });
-    return itemsList;
   }
 
   /** @param {DragEvent} event */
