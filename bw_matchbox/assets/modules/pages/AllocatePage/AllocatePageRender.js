@@ -182,7 +182,7 @@ export class AllocatePageRender {
   /**
    * @param {TAllocationGroup} group
    * @param {TAllocationData} item
-   *
+   * @return {HTMLElement}
    */
   renderNewGroupContentItem(group, item) {
     const { nodes } = this;
@@ -198,6 +198,7 @@ export class AllocatePageRender {
     const itemContentNode = CommonHelpers.htmlToElement(itemContent);
     contentNode.append(itemContentNode);
     AllocatePageHelpers.addActionHandlers(itemContentNode, this.callbacks);
+    return itemContentNode;
   }
 
   /**
@@ -267,6 +268,7 @@ export class AllocatePageRender {
 
   /**
    * @param {TAllocationGroup} group
+   * @return {HTMLElement}
    */
   renderNewGroup(group) {
     const { nodes, callbacks } = this;
@@ -277,6 +279,7 @@ export class AllocatePageRender {
     AllocatePageHelpers.addActionHandlers(groupNode, this.callbacks);
     this.addGroupDragHandlers(groupNode);
     callbacks.updateGroupsState();
+    return groupNode;
   }
 
   // Render input tables...

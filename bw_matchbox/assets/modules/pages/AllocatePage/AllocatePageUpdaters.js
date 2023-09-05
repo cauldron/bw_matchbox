@@ -2,6 +2,7 @@
 
 import * as CommonHelpers from '../../common/CommonHelpers.js';
 import { commonNotify } from '../../common/CommonNotify.js';
+import { commonIndicators } from '../../common/CommonIndicators.js';
 // import { useDebug } from '../../common/CommonConstants.js';
 
 import { AllocatePageGroupEditor } from './AllocatePageGroupEditor.js';
@@ -196,6 +197,7 @@ export class AllocatePageUpdaters {
     if (inputNode) {
       inputNode.classList.remove('in-group');
       inputNode.removeAttribute('data-in-group');
+      commonIndicators.indicate(inputNode, { animate: 'self' });
     }
     if (!opts.omitUpdate) {
       this.updateInputTableState(type);
@@ -344,7 +346,8 @@ export class AllocatePageUpdaters {
       items: [],
     };
     state.groups.push(newGroup);
-    render.renderNewGroup(newGroup);
+    const groupNode = render.renderNewGroup(newGroup);
+    commonIndicators.indicate(groupNode, { animate: 'curtain' });
     this.editGroupUpdater(groupId);
   }
 
@@ -387,7 +390,8 @@ export class AllocatePageUpdaters {
       inputNode.classList.toggle('in-group', true);
       inputNode.setAttribute('data-in-group', String(groupId));
       items.push(inputItem);
-      render.renderNewGroupContentItem(groupData, inputItem);
+      const newNode = render.renderNewGroupContentItem(groupData, inputItem);
+      commonIndicators.indicate(newNode, { animate: 'self' });
     });
     console.log('[AllocatePageUpdaters:moveInputsToGroup]: done', {
       affectedTypes,

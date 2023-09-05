@@ -6,6 +6,7 @@ import { AllocatePageNodes } from './AllocatePageNodes.js';
 import { AllocatePageState } from './AllocatePageState.js';
 import { AllocatePageRender } from './AllocatePageRender.js';
 import { AllocatePageHandlers } from './AllocatePageHandlers.js';
+import { AllocatePageInputsDragger } from './AllocatePageInputsDragger.js';
 import { AllocatePageUpdaters } from './AllocatePageUpdaters.js';
 
 /** Use sample group by default */
@@ -97,7 +98,15 @@ export class AllocatePage {
       render,
       callbacks,
     });
-    const _handlers = new AllocatePageHandlers({
+    // eslint-disable-next-line no-unused-vars
+    const handlers = new AllocatePageHandlers({
+      nodes,
+      state,
+      updaters,
+      callbacks,
+    });
+    // eslint-disable-next-line no-unused-vars
+    const inputsDragger = new AllocatePageInputsDragger({
       nodes,
       state,
       updaters,

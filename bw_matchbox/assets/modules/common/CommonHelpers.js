@@ -314,13 +314,22 @@ export function addScript(url) {
  */
 export function addCssStyle(url) {
   return new Promise((resolve, reject) => {
+    // Try to find exists node...
+    const testNode = document.head.querySelector(
+      'link[href="' + url + '"], link[data-url="' + url + '"]',
+    );
+    if (testNode) {
+      // Style already found!
+      return resolve({ type: 'already-loaded', target: testNode });
+    }
     // reject(new Error('test')); // DEBUG: Test errors catching
-    const script = document.createElement('link');
-    script.setAttribute('href', url);
-    script.setAttribute('type', 'text/css');
-    script.setAttribute('rel', 'stylesheet');
-    script.addEventListener('load', resolve);
-    script.addEventListener('error', (event) => {
+    const node = document.createElement('link');
+    node.setAttribute('href', url);
+    node.setAttribute('type', 'text/css');
+    node.setAttribute('rel', 'stylesheet');
+    node.setAttribute('data-url', url);
+    node.addEventListener('load', resolve);
+    node.addEventListener('error', (event) => {
       const {
         target,
         // srcElement,
@@ -341,7 +350,7 @@ export function addCssStyle(url) {
       debugger;
       reject(error);
     });
-    document.head.appendChild(script);
+    document.head.appendChild(node);
   });
 }
 

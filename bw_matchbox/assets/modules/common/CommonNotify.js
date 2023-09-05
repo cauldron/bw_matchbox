@@ -1,7 +1,6 @@
 // @ts-check
 
 import * as CommonHelpers from './CommonHelpers.js';
-// import * as CommonPromises from './CommonPromises.js';
 import { InitChunks } from './InitChunks.js';
 
 const cssStyleUrl = '/assets/css/common-notify.css';
@@ -26,8 +25,7 @@ const initChunksList = [
 /** // Used types...
  * @typedef {(typeof initChunksList)[number]} TInitChunkId;
  * @typedef {Record<TInitChunkId, boolean>} TInitChunks;
- * @typedef {number} TTimeoutHandler;
- * @typedef {{ node: HTMLDivElement, handler?: TTimeoutHandler }} TNotifyData;
+ * @typedef {{ node: HTMLDivElement, handler?: TSetTimeout }} TNotifyData;
  * // TCallback -- Callback function.
  * @typedef {() => void} TCallback
  */

@@ -1,7 +1,6 @@
 // @ts-check
 
 import * as CommonHelpers from './CommonHelpers.js';
-// import * as CommonPromises from './CommonPromises.js';
 import { InitChunks } from './InitChunks.js';
 
 const cssStyleUrl = '/assets/css/common-modal.css';
