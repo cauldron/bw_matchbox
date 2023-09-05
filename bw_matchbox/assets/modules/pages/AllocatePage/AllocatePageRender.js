@@ -299,12 +299,14 @@ export class AllocatePageRender {
     } = item;
     const amountStr = amount.toExponential(4);
     const {
-      // categories, // 'Unknown' | TCategory[]; // ['air']
+      categories, // 'Unknown' | TCategory[]; // ['air']
       location, // string; // 'GLO'
       name, // string; // 'Clay-Williams'
       // product, // string; // 'LLC'
       unit, // string; // 'kilogram'
     } = input;
+    const locationStr =
+      type === 'biosphere' ? (Array.isArray(categories) ? categories.join(', ') : '') : location;
     const isInGroup = inGroup != undefined;
     // DEBUG: Show dragging effect...
     const isDragging = showDemoDragging && useDebug && name === 'Ellis Group';
@@ -334,7 +336,7 @@ export class AllocatePageRender {
       >
         <td><div>${amountStr}</div></td>
         <td><div>${nameContent}</div></td>
-        <td><div>${location}</div></td>
+        <td><div>${locationStr}</div></td>
         <td><div>${unit}</div></td>
       </tr>
     `;
