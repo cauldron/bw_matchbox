@@ -297,6 +297,7 @@ export class AllocatePageRender {
       // output, // TAllocationRecord; // {name: 'Smith LLC', unit: 'kilogram', location: 'GLO', product: 'Inc', categories: 'Unknown'}
       inGroup,
     } = item;
+    const amountStr = amount.toExponential(4);
     const {
       // categories, // 'Unknown' | TCategory[]; // ['air']
       location, // string; // 'GLO'
@@ -331,7 +332,7 @@ export class AllocatePageRender {
         class="${className}"
         ${attributes}
       >
-        <td><div>${amount}</div></td>
+        <td><div>${amountStr}</div></td>
         <td><div>${nameContent}</div></td>
         <td><div>${location}</div></td>
         <td><div>${unit}</div></td>
