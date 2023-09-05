@@ -391,7 +391,7 @@ export class AllocatePageUpdaters {
       inputNode.setAttribute('data-in-group', String(groupId));
       items.push(inputItem);
       const newNode = render.renderNewGroupContentItem(groupData, inputItem);
-      commonIndicators.indicate(newNode, { animate: 'self' });
+      commonIndicators.indicate(newNode, { animate: 'curtain' });
     });
     console.log('[AllocatePageUpdaters:moveInputsToGroup]: done', {
       affectedTypes,

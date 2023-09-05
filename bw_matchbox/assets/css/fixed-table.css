@@ -1,11 +1,9 @@
-:root {
+.fixed-table {
   --fixed-table-bg-color1: rgb(30 174 219 / 10%);
   --fixed-table-td-padding-h-at-edges: 8px;
   --fixed-table-td-padding-h: 4px;
   --fixed-table-td-padding-v: 8px;
-}
 
-.fixed-table {
   width: 100%;
   border: 0;
   table-layout: fixed;
@@ -17,6 +15,9 @@
 
 .fixed-table-active tbody tr {
   cursor: pointer; /* All rows are always interactive. */
+}
+.fixed-table-draggable-rows tbody tr {
+  cursor: grab; /* All rows are always interactive. */
 }
 
 .fixed-table tbody tr:hover {

@@ -317,13 +317,19 @@ export class AllocatePageRender {
     ]
       .filter(Boolean)
       .join(' ');
+    const attributes = [
+      // NOTE: Only 'technosphere' and 'biosphere' inputs can be added into the groups.
+      type !== 'production' && 'draggable="true"',
+    ]
+      .filter(Boolean)
+      .join(' ');
     const content = `
       <tr
         data-id="${id}"
         data-type="${type}"
         data-in-group="${inGroup || ''}"
         class="${className}"
-        draggable="true"
+        ${attributes}
       >
         <td><div>${amount}</div></td>
         <td><div>${nameContent}</div></td>

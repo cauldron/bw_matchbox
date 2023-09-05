@@ -80,10 +80,27 @@
     </div>
     <div id="allocate-sources-column" class="allocate-columns-layout-column allocate-sources-column">
 
+      <div class="info-inputs-section production-inputs">
+        <h3>Production</h3>
+        <p class="info-empty production-empty">No production exchanges</p>
+        <table class="fixed-table inputs-table inputs-table-production" data-type="production" width="100%">
+          <thead>
+            <tr>
+              <th class="cell-amount"><div>Amount</div></th>
+              <th class="cell-name"><div>Name</div></th>
+              <th class="cell-location"><div>Location</div></th>
+              <th class="cell-unit"><div>Unit</div></th>
+            </tr>
+          </thead>
+          <tbody id="production-inputs">
+          </tbody>
+        </table>
+      </div>
+
       <div class="info-inputs-section technosphere-inputs">
         <h3>Technosphere Inputs</h3>
         <p class="info-empty technosphere-empty">No technosphere exchanges</p>
-        <table class="fixed-table inputs-table inputs-table-technosphere" data-type="technosphere" width="100%">
+        <table class="fixed-table fixed-table-draggable-rows inputs-table inputs-table-technosphere" data-type="technosphere" width="100%">
           <thead>
             <tr>
               <th class="cell-amount"><div>Amount</div></th>
@@ -119,7 +136,7 @@
       <div class="info-inputs-section biosphere-inputs">
         <h3>Biosphere Inputs</h3>
         <p class="info-empty biosphere-empty">No biosphere exchanges</p>
-        <table class="fixed-table inputs-table inputs-table-biosphere" data-type="biosphere" width="100%">
+        <table class="fixed-table fixed-table-draggable-rows inputs-table inputs-table-biosphere" data-type="biosphere" width="100%">
           <thead>
             <tr>
               <th class="cell-amount"><div>Amount</div></th>
@@ -129,23 +146,6 @@
             </tr>
           </thead>
           <tbody id="biosphere-inputs">
-          </tbody>
-        </table>
-      </div>
-
-      <div class="info-inputs-section production-inputs">
-        <h3>Production Inputs</h3>
-        <p class="info-empty production-empty">No production exchanges</p>
-        <table class="fixed-table inputs-table inputs-table-production" data-type="production" width="100%">
-          <thead>
-            <tr>
-              <th class="cell-amount"><div>Amount</div></th>
-              <th class="cell-name"><div>Name</div></th>
-              <th class="cell-location"><div>Location</div></th>
-              <th class="cell-unit"><div>Unit</div></th>
-            </tr>
-          </thead>
-          <tbody id="production-inputs">
           </tbody>
         </table>
       </div>
