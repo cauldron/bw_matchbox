@@ -307,12 +307,16 @@ export class AllocatePageRender {
       // product, // string; // 'LLC'
       unit, // string; // 'kilogram'
     } = input;
-    const locationStr =
-      type === 'biosphere' ? (Array.isArray(categories) ? categories.join(', ') : '') : location;
+    const isBiosphere = type === 'biosphere';
+    const locationStr = isBiosphere
+      ? Array.isArray(categories)
+        ? categories.join(', ')
+        : ''
+      : location;
     const isInGroup = inGroup != undefined;
     // DEBUG: Show dragging effect...
     const isDragging = showDemoDragging && useDebug && name === 'Ellis Group';
-    const nameContent = `<a href="/process/${id}">${name}</a>`;
+    const nameContent = isBiosphere ? name : `<a href="/process/${id}">${name}</a>`;
     const className = [
       'input-row',
       // Dragging?
