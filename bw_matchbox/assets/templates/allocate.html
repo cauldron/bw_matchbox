@@ -20,6 +20,10 @@
       {# TODO: Show some info/statistics here (to keep plcae for loader? #}
       <div id="statistics-info" class="statistics-info">
         <span class="statistics-info-item">
+          <label>Productions:</label>
+          <span id="production-count">0</span>
+        </span>
+        <span class="statistics-info-item">
           <label>Technosphere inputs:</label>
           <span id="technosphere-count">0</span>
         </span>
@@ -28,31 +32,27 @@
           <span id="biosphere-count">0</span>
         </span>
         <span class="statistics-info-item">
-          <label>Production inputs:</label>
-          <span id="production-count">0</span>
-        </span>
-        <span class="statistics-info-item">
           <label>Groups:</label>
           <span id="groups-count">0</span>
         </span>
       </div>
       <div id="no-groups" class="info no-groups-info"><i class="fa fa-circle-info"></i> Create some groups to start dragging the inputs.</div>
       <div id="no-groups" class="info has-groups-info"><i class="fa fa-circle-info"></i>
-        <span class="no-moved-inputs">Select inputs to drag them to the group. Use <code>control</code> key to select multiple inputs.</span>
-        <span class="has-moved-inputs">All inputs must be added to a group.</span>
+        <span class="no-moved-inputs">Select inputs in 'Technosphere' and 'Biosphere' tables to drag them to the group.</span>
+        <span class="has-moved-inputs">All inputs from 'Technosphere' and 'Biosphere' tables must be added to a group.</span>
       </div>
       <div id="error" class="error">Sample error text</div>
       <div id="loader-splash" class="loader-splash bg-white full-cover"><div class="loader-spinner"></div></div>
     </div>
   </div>
   <div id="allocate-columns-layout" class="allocate-columns-layout common-hidden">
-    <div id="allocate-groups-column" class="allocate-columns-layout-column allocate-groups-column">
-      <div id="allocate-groups-toolbar" class="allocate-groups-toolbar">
+    <div id="allocate-groups-column" class="allocate-columns-layout-column allocate-layout-column allocate-groups-column">
+      <div id="allocate-groups-toolbar" class="allocate-layout-toolbar allocate-groups-toolbar">
         {# Groups toolbar #}
         <a
           action-id="addNewGroup"
           title="Create group"
-          class="toolbar-icon theme-primary"
+          class="toolbar-action toolbar-icon theme-primary"
           {# onClick="allocatePage.callbacks.addNewGroup(this)" #}
         >
           <i class="fa fa-plus"></i>
@@ -60,105 +60,120 @@
         <a
           action-id="expandAllGroups"
           title="Collapse/expand all groups"
-          class="toolbar-icon theme-primary disabled"
+          class="toolbar-action toolbar-icon theme-primary disabled"
           {# onClick="allocatePage.callbacks.expandAllGroups(this)" #}
         >
           <i class="fa fa-expand"></i>
         </a>
         <a
-          action-id="confirmGroups"
+          action-id="startAllocate"
           title="Confirm created groups"
-          class="toolbar-icon theme-success disabled"
-          {# onClick="allocatePage.callbacks.confirmGroups(this)" #}
+          class="toolbar-action toolbar-button theme-success disabled"
+          {# onClick="allocatePage.callbacks.startAllocate(this)" #}
         >
           <i class="fa fa-check"></i>
+          Allocate
         </a>
       </div>
-      <div id="allocate-groups-content" class="allocate-groups-content">
+      <div id="allocate-groups-content" class="allocate-layout-content allocate-groups-content">
         <h3>Groups</h3>
         <p class="info-empty groups-empty">No groups created</p>
         <div id="allocate-groups-list" class="allocate-groups-list">
         </div>
       </div>
     </div>
-    <div id="allocate-sources-column" class="allocate-columns-layout-column allocate-sources-column">
-
-      <div class="info-inputs-section production-inputs">
-        <h3>Production</h3>
-        <p class="info-empty production-empty">No production exchanges</p>
-        <table class="fixed-table inputs-table inputs-table-production" data-type="production" width="100%">
-          <thead>
-            <tr>
-              <th class="cell-amount"><div>Amount</div></th>
-              <th class="cell-name"><div>Name</div></th>
-              <th class="cell-location"><div>Location</div></th>
-              <th class="cell-unit"><div>Unit</div></th>
-            </tr>
-          </thead>
-          <tbody id="production-inputs">
-          </tbody>
-        </table>
+    <div id="allocate-sources-column" class="allocate-columns-layout-column allocate-layout-column allocate-sources-column">
+      <div id="allocate-sources-toolbar" class="allocate-layout-toolbar allocate-sources-toolbar">
+        <a
+          action-id="selectAllInputs"
+          title="Select/deselect all inputs"
+          class="toolbar-action toolbar-icon theme-primary"
+        >
+          <i class="fa fa-asterisk"></i>
+        </a>
       </div>
+      <div id="allocate-groups-content" class="allocate-layout-content allocate-groups-content">
 
-      <div class="info-inputs-section technosphere-inputs">
-        <h3>Technosphere Inputs</h3>
-        <p class="info-empty technosphere-empty">No technosphere exchanges</p>
-        <table class="fixed-table inputs-table inputs-table-active inputs-table-technosphere" data-type="technosphere" width="100%">
-          <thead>
-            <tr>
-              <th class="cell-amount"><div>Amount</div></th>
-              <th class="cell-name"><div>Name</div></th>
-              <th class="cell-location"><div>Location</div></th>
-              <th class="cell-unit"><div>Unit</div></th>
-            </tr>
-          </thead>
-          <tbody id="technosphere-inputs">
-            {#
-            Row data:
-            {
-              amount: 0.06008158208572887
-              id: 199
-              input: {name: 'Clay-Williams', unit: 'kilogram', location: 'GLO', product: 'LLC', categories: 'Unknown'}
-              output: {name: 'Smith LLC', unit: 'kilogram', location: 'GLO', product: 'Inc', categories: 'Unknown'}
-              type: "technosphere"
-            }
-            Render example:
-            ```
-            <tr>
-              <td><div>{{row.amount}}</div></td>
-              <td><div><a href="{{ url_for('process_detail', id=row.id) }}">{{row.input.name}}</a></div></td>
-              <td><div>{{row.input.location}}</div></td>
-              <td><div>{{row.input.unit}}</div></td>
-            </tr>
-            ```
-            #}
-          </tbody>
-        </table>
+        <div class="info-inputs-section production-inputs">
+          <h3>Production</h3>
+          <p class="info-empty production-empty">No production exchanges</p>
+          <table class="fixed-table fixed-table-inactive inputs-table inputs-table-production" data-type="production" width="100%">
+            <thead>
+              <tr>
+                <th class="cell-amount"><div>Amount</div></th>
+                <th class="cell-name"><div>Name</div></th>
+                <th class="cell-location"><div>Location</div></th>
+                <th class="cell-unit"><div>Unit</div></th>
+              </tr>
+            </thead>
+            <tbody id="production-inputs">
+            </tbody>
+          </table>
+        </div>
+
+        <div class="info-inputs-section technosphere-inputs">
+          <h3>Technosphere Inputs</h3>
+          <p class="info-empty technosphere-empty">No technosphere exchanges</p>
+          <table class="fixed-table inputs-table inputs-table-active inputs-table-technosphere" data-type="technosphere" width="100%">
+            <thead>
+              <tr>
+                <th class="cell-amount"><div>Amount</div></th>
+                <th class="cell-name"><div>Name</div></th>
+                <th class="cell-location"><div>Location</div></th>
+                <th class="cell-unit"><div>Unit</div></th>
+              </tr>
+            </thead>
+            <tbody id="technosphere-inputs">
+              {#
+              Row data:
+              {
+                amount: 0.06008158208572887
+                id: 199
+                input: {name: 'Clay-Williams', unit: 'kilogram', location: 'GLO', product: 'LLC', categories: 'Unknown'}
+                output: {name: 'Smith LLC', unit: 'kilogram', location: 'GLO', product: 'Inc', categories: 'Unknown'}
+                type: "technosphere"
+              }
+              Render example:
+              ```
+              <tr>
+                <td><div>{{row.amount}}</div></td>
+                <td><div><a href="{{ url_for('process_detail', id=row.id) }}">{{row.input.name}}</a></div></td>
+                <td><div>{{row.input.location}}</div></td>
+                <td><div>{{row.input.unit}}</div></td>
+              </tr>
+              ```
+              #}
+            </tbody>
+          </table>
+        </div>
+
+        <div class="info-inputs-section biosphere-inputs">
+          <h3>Biosphere Inputs</h3>
+          <p class="info-empty biosphere-empty">No biosphere exchanges</p>
+          <table class="fixed-table inputs-table inputs-table-active inputs-table-biosphere" data-type="biosphere" width="100%">
+            <thead>
+              <tr>
+                <th class="cell-amount"><div>Amount</div></th>
+                <th class="cell-name"><div>Name</div></th>
+                <th class="cell-location"><div>Categories</div></th>
+                <th class="cell-unit"><div>Unit</div></th>
+              </tr>
+            </thead>
+            <tbody id="biosphere-inputs">
+            </tbody>
+          </table>
+        </div>
+
       </div>
-
-      <div class="info-inputs-section biosphere-inputs">
-        <h3>Biosphere Inputs</h3>
-        <p class="info-empty biosphere-empty">No biosphere exchanges</p>
-        <table class="fixed-table inputs-table inputs-table-active inputs-table-biosphere" data-type="biosphere" width="100%">
-          <thead>
-            <tr>
-              <th class="cell-amount"><div>Amount</div></th>
-              <th class="cell-name"><div>Name</div></th>
-              <th class="cell-location"><div>Categories</div></th>
-              <th class="cell-unit"><div>Unit</div></th>
-            </tr>
-          </thead>
-          <tbody id="biosphere-inputs">
-          </tbody>
-        </table>
-      </div>
-
     </div>
   </div>
 </div>
 
 {# TODO: It's possible to dynamically load all required styles using `CommonHelpers.addCssStyle` method. #}
 <link rel="stylesheet" href="{{ url_for('static', filename='css/allocate-page.css') }}">
+<link rel="stylesheet" href="{{ url_for('static', filename='css/allocate-page-toolbar.css') }}">
+<link rel="stylesheet" href="{{ url_for('static', filename='css/allocate-page-inputs-table.css') }}">
+<link rel="stylesheet" href="{{ url_for('static', filename='css/allocate-page-groups.css') }}">
 
 <!-- Start page scripts -->
 <script type="module">

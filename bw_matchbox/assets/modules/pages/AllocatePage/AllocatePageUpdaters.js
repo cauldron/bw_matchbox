@@ -135,8 +135,6 @@ export class AllocatePageUpdaters {
     const toolbarNode = nodes.getGroupsToolbarNode();
     const expandAllGroups = toolbarNode.querySelector('[action-id=expandAllGroups]');
     expandAllGroups.classList.toggle('disabled', !hasGroups);
-    const confirmGroups = toolbarNode.querySelector('[action-id=confirmGroups]');
-    confirmGroups.classList.toggle('disabled', !hasGroups);
   }
 
   /** @param {TAllocationType} type */
@@ -198,6 +196,7 @@ export class AllocatePageUpdaters {
     }
     if (!opts.omitUpdate) {
       this.updateInputTableState(type);
+      this.updateStartAllocationState();
     }
   }
 
@@ -288,6 +287,7 @@ export class AllocatePageUpdaters {
       this.updateInputTableState(item.type);
       this.updateGroupsState();
       this.updateGroupProps(groupId);
+      this.updateStartAllocationState();
     }
   }
 
@@ -339,13 +339,39 @@ export class AllocatePageUpdaters {
     /** @type TAllocationGroup */
     const newGroup = {
       localId: groupId,
-      name: 'New group ' + groupId,
+      name: 'Group ' + groupId,
       items: [],
     };
     state.groups.push(newGroup);
     const groupNode = render.renderNewGroup(newGroup);
     commonIndicators.indicate(groupNode, { animate: 'curtain' });
     this.editGroupUpdater(groupId);
+  }
+
+  /** @return {NodeListOf<HTMLElement>} */
+  _getAvailableInputRows() {
+    const { nodes } = this;
+    const sourcesColumnNode = nodes.getSourcesColumnNode();
+    const availableRows = sourcesColumnNode.querySelectorAll(
+      '.input-row:not(.in-group, [data-type="production"]',
+    );
+    return /** @type {NodeListOf<HTMLElement>} */ (availableRows);
+  }
+
+  /** Update 'allocation enabled' state */
+  updateStartAllocationState() {
+    const { nodes } = this;
+    const toolbarNode = nodes.getGroupsToolbarNode();
+    const startAllocate = toolbarNode.querySelector('[action-id=startAllocate]');
+    const availableRows = this._getAvailableInputRows();
+    const availableRowsCount = availableRows.length;
+    console.log('[AllocatePageUpdaters:updateStartAllocationState]', {
+      toolbarNode,
+      startAllocate,
+      availableRows,
+      availableRowsCount,
+    });
+    startAllocate.classList.toggle('disabled', !!availableRowsCount);
   }
 
   /**
@@ -405,5 +431,7 @@ export class AllocatePageUpdaters {
     affectedTypes.forEach((type) => {
       this.updateInputTableState(type);
     });
+    // Update 'allocate' button state...
+    this.updateStartAllocationState();
   }
 }

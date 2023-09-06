@@ -20,7 +20,7 @@
   cursor: grab; /* All rows are always interactive. */
 }
 
-.fixed-table tbody tr:hover {
+.fixed-table:not(.fixed-table-inactive) tbody tr:hover {
   background-color: var(--fixed-table-bg-color1);
 }
 

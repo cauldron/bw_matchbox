@@ -1,0 +1,66 @@
+/* Groups toolbar */
+
+.allocate-layout .allocate-layout-toolbar {
+  --allocate-layout-toolbar-items-size: 38px;
+
+  display: flex;
+  gap: 5px;
+  align-items: center;
+  transition: all var(--common-animation-time);
+  flex-wrap: wrap;
+}
+.allocate-layout .allocate-layout-toolbar > a.toolbar-action {
+  flex-shrink: 0;
+  color: #777;
+  border-radius: 4px;
+  height: var(--allocate-layout-toolbar-items-size);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  opacity: 0.25;
+  transition: all var(--common-animation-time);
+}
+.allocate-layout .allocate-layout-toolbar > a.toolbar-icon {
+  width: var(--allocate-layout-toolbar-items-size);
+}
+.allocate-layout .allocate-layout-toolbar > a.toolbar-button {
+  padding: 0 12px;
+  gap: 8px;
+}
+.allocate-layout .allocate-layout-toolbar > a.toolbar-action.disabled {
+  opacity: 0.25;
+  pointer-events: none;
+  background-color: rgba(0 0 0 / 15%);
+}
+.allocate-layout .allocate-layout-toolbar > a.toolbar-action:not(.disabled) {
+  cursor: pointer;
+  opacity: 0.5;
+}
+.allocate-layout .allocate-layout-toolbar > a.toolbar-action:not(.disabled),
+.allocate-layout .allocate-layout-toolbar > a.toolbar-action:not(.disabled)[class*='theme-'] {
+  color: #fff;
+  background-color: #999;
+}
+.allocate-layout .allocate-layout-toolbar > a.toolbar-action.theme-primary:not(.disabled) {
+  background-color: var(--layout-theme-primary-color);
+}
+.allocate-layout .allocate-layout-toolbar > a.toolbar-action.theme-warn:not(.disabled) {
+  background-color: var(--common-warn-color);
+}
+.allocate-layout .allocate-layout-toolbar > a.toolbar-action.theme-error:not(.disabled) {
+  background-color: var(--common-error-color);
+}
+.allocate-layout .allocate-layout-toolbar > a.toolbar-action.theme-success:not(.disabled) {
+  background-color: var(--common-success-color);
+}
+.allocate-layout .allocate-layout-toolbar > a.toolbar-action:not(.disabled):active,
+.allocate-layout .allocate-layout-toolbar > a.toolbar-action:not(.disabled):hover {
+  opacity: 1;
+}
+.allocate-layout .allocate-layout-toolbar > a.toolbar-action:not(.disabled):active {
+  color: var(--layout-theme-primary-color);
+  box-shadow: 0 0 4px var(--layout-theme-primary-color);
+  background-color: #fff;
+}
+
+

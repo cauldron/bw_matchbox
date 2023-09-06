@@ -1,0 +1,37 @@
+/** Data tables */
+
+/* Hide empty table, show empty information blocks */
+.allocate-layout.has-technosphere-data .technosphere-empty,
+.allocate-layout:not(.has-technosphere-data) .inputs-table-technosphere,
+.allocate-layout.has-biosphere-data .biosphere-empty,
+.allocate-layout:not(.has-biosphere-data) .inputs-table-biosphere,
+.allocate-layout.has-production-data .production-empty,
+.allocate-layout:not(.has-production-data) .inputs-table-production {
+  display: none;
+}
+
+/* Active table */
+.allocate-layout .inputs-table-active tbody .input-row {
+  cursor: default;
+}
+
+/* Hide grouped rows */
+.allocate-layout .inputs-table tbody tr {
+  transition: all var(--common-animation-time);
+}
+.allocate-layout .inputs-table .input-row.in-group {
+  display: none;
+}
+.allocate-layout .inputs-table .input-row.selected {
+  background: var(--allocate-groups-bg-color1);
+  background: repeating-linear-gradient(
+    45deg,
+    var(--allocate-groups-bg-color2),
+    var(--allocate-groups-bg-color2) 10px,
+    var(--allocate-groups-bg-color1) 10px,
+    var(--allocate-groups-bg-color1) 20px
+  );
+  cursor: grab;
+}
+
+
