@@ -38,8 +38,10 @@ export class AllocatePageRender {
 
   initActionHandlers() {
     // Set initial action handlers...
-    const toolbarNode = this.nodes.getGroupsToolbarNode();
-    AllocatePageHelpers.addActionHandlers(toolbarNode, this.callbacks);
+    const groupsToolbarNode = this.nodes.getGroupsToolbarNode();
+    AllocatePageHelpers.addActionHandlers(groupsToolbarNode, this.callbacks);
+    const inputsToolbarNode = this.nodes.getInputsToolbarNode();
+    AllocatePageHelpers.addActionHandlers(inputsToolbarNode, this.callbacks);
   }
 
   // Render groups...

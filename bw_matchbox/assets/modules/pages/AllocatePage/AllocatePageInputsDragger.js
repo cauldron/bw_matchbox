@@ -1,7 +1,6 @@
 // @ts-check
 
 import * as CommonHelpers from '../../common/CommonHelpers.js';
-// import { commonIndicators } from '../../common/CommonIndicators.js';
 
 // Import only types...
 /* eslint-disable no-unused-vars */

@@ -90,6 +90,40 @@ export class AllocatePageHandlers {
     });
   }
 
+  selectAllInputs() {
+    const { nodes } = this;
+    const inputsListNode = nodes.getSourcesColumnNode();
+    // Find all available non-production rows...
+    const inputNodesList = Array.from(
+      inputsListNode.querySelectorAll('.input-row:not(.in-group, [data-type="production"]'),
+    );
+    const allCount = inputNodesList.length;
+    const selectedInputs = inputNodesList.filter((node) => node.classList.contains('selected'));
+    const selectedCount = selectedInputs.length;
+    const isAllUnselected = !selectedCount;
+    const isAllSelected = !isAllUnselected && selectedCount === allCount;
+    const isSome = !isAllUnselected && !isAllSelected;
+    const isAll = !isSome;
+    const setSelected = isAll ? !isAllSelected : false;
+    /* console.log('[InputCommentsHandlers:selectAllInputs]', {
+     *   inputsListNode,
+     *   inputNodesList,
+     *   allCount,
+     *   selectedInputs,
+     *   selectedCount,
+     *   isAllUnselected,
+     *   isAllSelected,
+     *   isSome,
+     *   isAll,
+     *   setSelected,
+     * });
+     */
+    inputNodesList.forEach((node) => {
+      // Expand if not empty...
+      node.classList.toggle('selected', setSelected);
+    });
+  }
+
   /** @param {PointerEvent} event */
   removeGroup(event) {
     event.preventDefault();
@@ -141,10 +175,10 @@ export class AllocatePageHandlers {
   }
 
   /** @param {PointerEvent} event */
-  confirmGroups(event) {
+  startAllocate(event) {
     event.preventDefault();
     event.stopPropagation();
-    console.log('[AllocatePageHandlers:confirmGroups]', {});
+    console.log('[AllocatePageHandlers:startAllocate]', {});
     debugger;
     // TODO!
   }
@@ -226,25 +260,19 @@ export class AllocatePageHandlers {
 
   /** @param {PointerEvent} event */
   handleInputTableClick(event) {
-    const { ctrlKey, currentTarget } = event;
+    const { currentTarget } = event;
     const itemNode = /** @type {HTMLElement} */ (currentTarget);
     const itemId = /** @type TAllocationId */ (
       Number(itemNode && itemNode.getAttribute('data-id'))
     );
     const itemType = /** @type TAllocationType */ (itemNode && itemNode.getAttribute('data-type'));
     console.log('[AllocatePageHandlers:handleInputTableClick]', {
-      ctrlKey,
       itemId,
       itemType,
       itemNode,
       event,
     });
-    if (ctrlKey) {
-      // Toggle selection for row if clicked with control key...
-      itemNode.classList.toggle('selected');
-    } else {
-      // ...Else select only current row...
-      this._setOnlySelectedRow(itemNode);
-    }
+    // Toggle selection for row if clicked with control key...
+    itemNode.classList.toggle('selected');
   }
 }

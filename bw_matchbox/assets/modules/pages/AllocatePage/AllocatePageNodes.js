@@ -32,6 +32,12 @@ export class AllocatePageNodes {
   }
 
   /** @return {HTMLElement} */
+  getInputsToolbarNode() {
+    const columnsLayout = this.getRootNode();
+    return columnsLayout.querySelector('#allocate-sources-toolbar');
+  }
+
+  /** @return {HTMLElement} */
   getGroupsToolbarNode() {
     const columnsLayout = this.getRootNode();
     return columnsLayout.querySelector('#allocate-groups-toolbar');
