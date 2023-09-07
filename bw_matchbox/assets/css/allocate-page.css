@@ -96,6 +96,8 @@
   .allocate-layout .allocate-layout-column {
     display: flex;
     flex-direction: column;
+  }
+  .allocate-layout .allocate-groups-column {
     border-bottom: 0;
     border-right: 1px solid var(--border-color);
     /* Make columns resizable */
@@ -106,7 +108,7 @@
     /* Initial width of the left column */
     width: 30%;
   }
-  .allocate-layout .allocate-layout-column {
+  .allocate-layout .allocate-sources-column {
     /* border: 1px solid purple; */
     flex: 1;
   }
