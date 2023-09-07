@@ -1,8 +1,5 @@
 // @ts-check
 
-import { useDebug } from '../../common/CommonConstants.js';
-// import * as CommonHelpers from '../../common/CommonHelpers.js';
-
 import * as AllocatePageHelpers from './AllocatePageHelpers.js';
 
 // Import types...
@@ -82,7 +79,7 @@ export class AllocatePageRenderAllocate {
    * @param {boolean} params.isLastProduction
    * @return {string}
    */
-  createProductionGroupNode({ data, group, isLastProduction }) {
+  createProductionGroup({ data, group, isLastProduction }) {
     // UNUSED: Production data...
     const {
       id: productionId, // 191
@@ -99,6 +96,8 @@ export class AllocatePageRenderAllocate {
     const itemsContentList = items.map((item) => {
       return this.createProductionGroupItemNode({ data, group, item });
     });
+    const itemsCount = items.length;
+    const isEmpty = !itemsCount;
     const itemsContent = itemsContentList.join('\n');
     const initialValue = isLastProduction ? 1 : 0;
     const inputId = `production-${productionId}-group-${groupId}-fraction`;
@@ -122,8 +121,26 @@ export class AllocatePageRenderAllocate {
             ${isLastProduction ? 'disabled' : ''}
           />
         </div>
-        <div class="group-items">
-          ${itemsContent}
+        <div class="group-items ${isEmpty ? 'empty' : ''}">
+          <div class="shortcut empty">
+            <span class="label">Empty</span>
+          </div>
+          <div
+            action-id="toggleAllocateGroupItems"
+            class="shortcut action"
+            title="Click to expand inputs list"
+          >
+            <span class="handler"><i class="fa fa-chevron-right"></i></span>
+            <span class="label">Contains items:</span>
+            <span class="number">${items.length}</span>
+          </div>
+          <div
+            action-id="toggleAllocateGroupItems"
+            class="list action"
+            title="Click to collapse inputs list"
+          >
+            ${itemsContent}
+          </div>
         </div>
       </div>
     `;
@@ -139,7 +156,7 @@ export class AllocatePageRenderAllocate {
     const { state } = this;
     const { groups } = state;
     const groupsContentList = groups.map((group) => {
-      return this.createProductionGroupNode({ data, group, isLastProduction });
+      return this.createProductionGroup({ data, group, isLastProduction });
     });
     console.log('[AllocatePageRenderAllocate:createProductionGroups]', {
       groupsContentList,
@@ -214,5 +231,12 @@ export class AllocatePageRenderAllocate {
       state,
     });
     containerNode.innerHTML = content;
+    AllocatePageHelpers.addActionHandlers(containerNode, this.callbacks);
+  }
+
+  clearAllocateNodes() {
+    const { nodes } = this;
+    const containerNode = nodes.getAllocateModeContentContainerNode();
+    containerNode.innerHTML = '';
   }
 }

@@ -39,7 +39,7 @@
 .allocate-layout .allocate-layout-toolbar > a.toolbar-action:not(.disabled),
 .allocate-layout .allocate-layout-toolbar > a.toolbar-action:not(.disabled)[class*='theme-'] {
   color: #fff;
-  background-color: #999;
+  background-color: #666;
 }
 .allocate-layout .allocate-layout-toolbar > a.toolbar-action.theme-primary:not(.disabled) {
   background-color: var(--layout-theme-primary-color);

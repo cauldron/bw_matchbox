@@ -448,8 +448,12 @@ export class AllocatePageUpdaters {
     rootNode.classList.toggle('allocate-mode', true);
     const allocateLayout = nodes.getAllocateModeLayoutNode();
     allocateLayout.classList.toggle('common-hidden', false);
-    // TODO: Render allocate nodes...
-    // render.renderAllocateNodes();
+  }
+
+  backFromAllocateModeDomNodes() {
+    const { nodes } = this;
+    const rootNode = nodes.getRootNode();
+    rootNode.classList.toggle('allocate-mode', false);
   }
 
   // Allocate...
@@ -457,5 +461,12 @@ export class AllocatePageUpdaters {
     const { renderAllocate } = this;
     renderAllocate.renderAllocateNodes();
     this.updateAllocateModeDomNodes();
+  }
+
+  // Allocate...
+  backFromAllocateMode() {
+    const { renderAllocate } = this;
+    this.backFromAllocateModeDomNodes();
+    renderAllocate.clearAllocateNodes();
   }
 }

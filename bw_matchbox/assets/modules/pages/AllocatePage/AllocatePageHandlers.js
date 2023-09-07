@@ -182,6 +182,14 @@ export class AllocatePageHandlers {
     updaters.startAllocateMode();
   }
 
+  /** @param {PointerEvent} event */
+  backFromAllocate(event) {
+    const { updaters } = this;
+    event.preventDefault();
+    event.stopPropagation();
+    updaters.backFromAllocateMode();
+  }
+
   addNewGroup() {
     try {
       // console.log('[AllocatePageHandlers:addNewGroup]');
@@ -273,5 +281,22 @@ export class AllocatePageHandlers {
     });
     // Toggle selection for row if clicked with control key...
     itemNode.classList.toggle('selected');
+  }
+
+  // Allocation mode...
+
+  /** @param {PointerEvent} event */
+  toggleAllocateGroupItems(event) {
+    event.preventDefault();
+    event.stopPropagation();
+    const node = /** @type {HTMLElement} */ (event.currentTarget);
+    const groupItemsNode = node.closest('.group-items');
+    /* console.log('[AllocatePageHandlers:toggleAllocateGroupItems]', {
+     *   groupItemsNode,
+     *   node,
+     *   event,
+     * });
+     */
+    groupItemsNode && groupItemsNode.classList.toggle('expanded');
   }
 }

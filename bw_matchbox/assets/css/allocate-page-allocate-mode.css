@@ -16,10 +16,13 @@
 }
 
 .allocate-layout .allocate-mode-layout .production {
-  min-width: 250px;
+  min-width: 200px;
+  max-width: 500px;
   display: flex;
   flex-direction: column;
   gap: 10px;
+  line-height: 1.3;
+  flex: 1;
 }
 
 .allocate-layout .allocate-mode-layout .production > .header {
@@ -42,15 +45,12 @@
   flex-direction: column;
   gap: 10px;
 }
-.allocate-layout .allocate-mode-layout .production .header {
-  line-height: 1.3;
-}
 .allocate-layout .allocate-mode-layout .production .group > .header {
   padding: 5px 10px;
   background-color: #ccc;
 }
 .allocate-layout .allocate-mode-layout .production .group-fraction {
-  padding: 0px 8px;
+  padding: 0 8px;
 }
 .allocate-layout .allocate-mode-layout .production .group-fraction input {
   width: 100%;
@@ -63,14 +63,46 @@
 }
 .allocate-layout .allocate-mode-layout .production .group-items {
   padding: 0 10px;
+  padding-bottom: 7px;
+}
+.allocate-layout .allocate-mode-layout .production .group-items .list {
   display: flex;
   flex-direction: column;
   gap: 5px;
-  padding-bottom: 7px;
 }
 .allocate-layout .allocate-mode-layout .production .group-item {
 }
 .allocate-layout .allocate-mode-layout .production .group-item .type {
-  opacity: .5;
+  opacity: 0.5;
 }
 
+/* Collapsed/expanded group items */
+.allocate-layout .allocate-mode-layout .production .empty {
+  /* opacity: .5; */
+}
+.allocate-layout .allocate-mode-layout .production .action:not(.disabled) {
+  transition: all var(--common-animation-time);
+  opacity: 0.6;
+  cursor: pointer;
+}
+.allocate-layout .allocate-mode-layout .production .action:not(.disabled):hover {
+  opacity: 1;
+  /* text-decoration: underline; */
+}
+.allocate-layout .allocate-mode-layout .production .group-items:not(.expanded) .list,
+.allocate-layout .allocate-mode-layout .production .group-items:not(.empty) .shortcut.empty,
+.allocate-layout .allocate-mode-layout .production .group-items.empty .shortcut.action,
+.allocate-layout .allocate-mode-layout .production .group-items.expanded .shortcut {
+  display: none;
+}
+.allocate-layout .allocate-mode-layout .production .group-items .shortcut .label {
+  opacity: 0.5;
+}
+.allocate-layout .allocate-mode-layout .production .group-items .shortcut .handler {
+  color: var(--layout-theme-primary-color);
+  display: inline-block;
+  margin-right: 2px;
+}
+.allocate-layout .allocate-mode-layout .production .group-items .shortcut .handler .fa {
+  font-size: 75%;
+}
