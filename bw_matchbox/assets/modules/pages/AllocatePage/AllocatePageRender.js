@@ -436,6 +436,12 @@ export class AllocatePageRender {
 
   // Common methods...
 
+  initDomNodes() {
+    const { nodes } = this;
+    const rootNode = nodes.getRootNode();
+    rootNode.classList.toggle('DEBUG', useDebug);
+  }
+
   renderAllData() {
     this.renderAllInputTables();
     this.renderGroups();

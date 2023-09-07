@@ -113,6 +113,7 @@ export class AllocatePage {
       callbacks,
     });
 
+    render.initDomNodes();
     render.renderAllData();
     render.initActionHandlers();
     updaters.setInited();
