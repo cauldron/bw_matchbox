@@ -5,6 +5,7 @@ import { useDebug } from '../../common/CommonConstants.js';
 import { AllocatePageNodes } from './AllocatePageNodes.js';
 import { AllocatePageState } from './AllocatePageState.js';
 import { AllocatePageRender } from './AllocatePageRender.js';
+import { AllocatePageRenderAllocate } from './AllocatePageRenderAllocate.js';
 import { AllocatePageHandlers } from './AllocatePageHandlers.js';
 import { AllocatePageInputsDragger } from './AllocatePageInputsDragger.js';
 import { AllocatePageUpdaters } from './AllocatePageUpdaters.js';
@@ -12,10 +13,12 @@ import { AllocatePageUpdaters } from './AllocatePageUpdaters.js';
 /** Use sample group by default */
 const createDefaultGroup = true;
 const defaultGroupName = 'Group name';
+/** @type TLocalGroupId */
 const defaultGroupId = 1;
 /** DEBUG: Add demo item to default group for debugging */
 const addSampeItemToDebugGroup = true;
 const addAllInputsToDebugGroup = true;
+const useSecondDebugGroup = true;
 
 export class AllocatePage {
   /** Handlers exchange object
@@ -59,6 +62,21 @@ export class AllocatePage {
         allItems.forEach((item) => {
           item.inGroup = defaultGroupId;
         });
+        if (useSecondDebugGroup) {
+          // DEBUG: Add some inputs to the second group...
+          /** @type TLocalGroupId */
+          const secondGroupId = defaultGroupId + 1;
+          /** @type TAllocationGroup */
+          const secondGroup = {
+            name: 'Second group',
+            localId: secondGroupId,
+            items: defaultGroup.items.splice(0, 1),
+          };
+          secondGroup.items.forEach((item) => {
+            item.inGroup = secondGroupId;
+          });
+          groups.push(secondGroup);
+        }
       } else if (useDebug && addSampeItemToDebugGroup && technosphere[0]) {
         const sampleItem = technosphere[0];
         sampleItem.inGroup = defaultGroupId;
@@ -100,10 +118,16 @@ export class AllocatePage {
       state,
       callbacks,
     });
+    const renderAllocate = new AllocatePageRenderAllocate({
+      nodes,
+      state,
+      callbacks,
+    });
     const updaters = new AllocatePageUpdaters({
       nodes,
       state,
       render,
+      renderAllocate,
       callbacks,
     });
     // eslint-disable-next-line no-unused-vars
@@ -124,6 +148,7 @@ export class AllocatePage {
     render.initDomNodes();
     render.renderAllData();
     render.initActionHandlers();
+    renderAllocate.initActionHandlers();
     updaters.updateStartAllocationState();
     updaters.setInited();
     updaters.setLoading(false);

@@ -11,6 +11,7 @@ import { AllocatePageGroupEditor } from './AllocatePageGroupEditor.js';
 import { AllocatePageNodes } from './AllocatePageNodes.js';
 import { AllocatePageState } from './AllocatePageState.js';
 import { AllocatePageRender } from './AllocatePageRender.js';
+import { AllocatePageRenderAllocate } from './AllocatePageRenderAllocate.js';
 /* eslint-enable no-unused-vars */
 
 /**
@@ -24,6 +25,8 @@ export class AllocatePageUpdaters {
   state;
   /** @type AllocatePageRender */
   render;
+  /** @type AllocatePageRenderAllocate */
+  renderAllocate;
 
   /** @type TSharedHandlers */
   callbacks;
@@ -33,6 +36,7 @@ export class AllocatePageUpdaters {
    * @param {AllocatePageNodes} params.nodes
    * @param {AllocatePageState} params.state
    * @param {AllocatePageRender} params.render
+   * @param {AllocatePageRenderAllocate} params.renderAllocate
    * @param {TSharedHandlers} params.callbacks
    */
   constructor(params) {
@@ -40,6 +44,7 @@ export class AllocatePageUpdaters {
     this.nodes = params.nodes;
     this.state = params.state;
     this.render = params.render;
+    this.renderAllocate = params.renderAllocate;
     this.callbacks = params.callbacks;
     // Export all methods as external handlers...
     CommonHelpers.exportCallbacksFromInstance(params.callbacks, this);
@@ -449,6 +454,8 @@ export class AllocatePageUpdaters {
 
   // Allocate...
   startAllocateMode() {
+    const { renderAllocate } = this;
+    renderAllocate.renderAllocateNodes();
     this.updateAllocateModeDomNodes();
   }
 }

@@ -42,8 +42,8 @@ export class AllocatePageRender {
     AllocatePageHelpers.addActionHandlers(groupsToolbarNode, this.callbacks);
     const inputsToolbarNode = this.nodes.getInputsToolbarNode();
     AllocatePageHelpers.addActionHandlers(inputsToolbarNode, this.callbacks);
-    const allocateModeToolbarNode = this.nodes.getAllocateModeToolbarNode();
-    AllocatePageHelpers.addActionHandlers(allocateModeToolbarNode, this.callbacks);
+    // const allocateModeToolbarNode = this.nodes.getAllocateModeToolbarNode();
+    // AllocatePageHelpers.addActionHandlers(allocateModeToolbarNode, this.callbacks);
   }
 
   // Render groups...
@@ -434,14 +434,6 @@ export class AllocatePageRender {
     this.renderInputTable('technosphere');
     this.renderInputTable('biosphere');
     this.renderInputTable('production');
-  }
-
-  // Allocate mode...
-
-  renderAllocateNodes() {
-    const { nodes, state } = this;
-    console.log('[AllocatePageRender:renderAllocateNodes]');
-    // debugger;
   }
 
   // Common methods...
