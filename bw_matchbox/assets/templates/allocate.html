@@ -1,6 +1,6 @@
 {% include 'header.html' %}
 
-<div id="allocate-layout" class="__panels-layout allocate-layout">
+<div id="allocate-layout" class="allocate-layout">
   <div id="allocate-header" class="allocate-header">
     {% include 'navigation.html' %}
     <div class="common-page-header">
@@ -17,8 +17,11 @@
       </h3>
     </div>
     <div class="info-tableau">
-      {# TODO: Show some info/statistics here (to keep plcae for loader? #}
-      <div id="statistics-info" class="statistics-info">
+      {# TODO: Show some info/statistics for alocate-mode?
+      <div id="statistics-info-allocate" class="statistics-info">
+      </div>
+      #}
+      <div id="statistics-info-select" class="statistics-info info-select">
         <span class="statistics-info-item">
           <label>Productions:</label>
           <span id="production-count">0</span>
@@ -36,24 +39,80 @@
           <span id="groups-count">0</span>
         </span>
       </div>
-      <div id="no-groups" class="info no-groups-info"><i class="fa fa-circle-info"></i> Create some groups to start dragging the inputs.</div>
-      <div id="no-groups" class="info has-groups-info"><i class="fa fa-circle-info"></i>
+      <div id="no-groups" class="info info-select no-groups-info"><i class="fa fa-circle-info"></i> Create some groups to start dragging the inputs.</div>
+      <div id="no-groups" class="info info-select has-groups-info"><i class="fa fa-circle-info"></i>
         <span class="no-moved-inputs">Select inputs in 'Technosphere' and 'Biosphere' tables to drag them to the group.</span>
         <span class="has-moved-inputs">All inputs from 'Technosphere' and 'Biosphere' tables must be added to a group.</span>
+      </div>
+      <div id="no-groups" class="info info-allocate"><i class="fa fa-circle-info"></i>
+        <span class="default">Distribute groups by product.</span>
       </div>
       <div id="error" class="error">Sample error text</div>
       <div id="loader-splash" class="loader-splash bg-white full-cover"><div class="loader-spinner"></div></div>
     </div>
   </div>
-  <div id="allocate-columns-layout" class="allocate-columns-layout common-hidden">
-    <div id="allocate-groups-column" class="allocate-columns-layout-column allocate-layout-column allocate-groups-column">
+  <div id="allocate-mode-layout" class="allocate-root-layout allocate-mode-layout common-hidden">
+    <div id="allocate-mode-column" class="allocate-layout-column allocate-mode-column">
+      <div id="allocate-mode-toolbar" class="allocate-layout-toolbar allocate-mode-toolbar">
+        {# Allocate mode toolbar #}
+        <a
+          action-id="confirmAllocate"
+          title="Confirm created groups"
+          class="toolbar-action toolbar-button theme-success disabled"
+        >
+          <i class="fa fa-check"></i>
+          Confirm
+        </a>
+      </div>
+      <div id="allocate-mode-content" class="allocate-layout-content allocate-mode-content">
+        <h3>Allocate groups</h3>
+        <div id="allocate-mode-content-container" class="allocate-mode-content-container">
+          <p>
+          allocate-mode-layout
+          allocate-mode-layout
+          allocate-mode-layout
+          allocate-mode-layout
+          allocate-mode-layout
+          allocate-mode-layout
+          allocate-mode-layout
+          allocate-mode-layout
+          allocate-mode-layout
+          allocate-mode-layout
+          allocate-mode-layout
+          </p>
+          <p>allocate-mode-layout</p>
+          <p>allocate-mode-layout</p>
+          <p>allocate-mode-layout</p>
+          <p>allocate-mode-layout</p>
+          <p>allocate-mode-layout</p>
+          <p>allocate-mode-layout</p>
+          <p>allocate-mode-layout</p>
+          <p>allocate-mode-layout</p>
+          <p>allocate-mode-layout</p>
+          <p>allocate-mode-layout</p>
+          <p>allocate-mode-layout</p>
+          <p>allocate-mode-layout</p>
+          <p>allocate-mode-layout</p>
+          <p>allocate-mode-layout</p>
+          <p>allocate-mode-layout</p>
+          <p>allocate-mode-layout</p>
+          <p>allocate-mode-layout</p>
+          <p>allocate-mode-layout</p>
+          <p>allocate-mode-layout</p>
+          <p>allocate-mode-layout</p>
+          <p>allocate-mode-layout</p>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div id="allocate-columns-layout" class="allocate-root-layout allocate-columns-layout common-hidden">
+    <div id="allocate-groups-column" class="allocate-layout-column allocate-groups-column">
       <div id="allocate-groups-toolbar" class="allocate-layout-toolbar allocate-groups-toolbar">
         {# Groups toolbar #}
         <a
           action-id="addNewGroup"
           title="Create group"
           class="toolbar-action toolbar-icon theme-primary"
-          {# onClick="allocatePage.callbacks.addNewGroup(this)" #}
         >
           <i class="fa fa-plus"></i>
         </a>
@@ -61,7 +120,6 @@
           action-id="expandAllGroups"
           title="Collapse/expand all groups"
           class="toolbar-action toolbar-icon theme-primary disabled"
-          {# onClick="allocatePage.callbacks.expandAllGroups(this)" #}
         >
           <i class="fa fa-expand"></i>
         </a>
@@ -69,7 +127,6 @@
           action-id="startAllocate"
           title="Confirm created groups"
           class="toolbar-action toolbar-button theme-success disabled"
-          {# onClick="allocatePage.callbacks.startAllocate(this)" #}
         >
           <i class="fa fa-check"></i>
           Allocate
@@ -82,7 +139,7 @@
         </div>
       </div>
     </div>
-    <div id="allocate-sources-column" class="allocate-columns-layout-column allocate-layout-column allocate-sources-column">
+    <div id="allocate-sources-column" class="allocate-layout-column allocate-sources-column">
       <div id="allocate-sources-toolbar" class="allocate-layout-toolbar allocate-sources-toolbar">
         <a
           action-id="selectAllInputs"
@@ -174,6 +231,7 @@
 <link rel="stylesheet" href="{{ url_for('static', filename='css/allocate-page-toolbar.css') }}">
 <link rel="stylesheet" href="{{ url_for('static', filename='css/allocate-page-inputs-table.css') }}">
 <link rel="stylesheet" href="{{ url_for('static', filename='css/allocate-page-groups.css') }}">
+<link rel="stylesheet" href="{{ url_for('static', filename='css/allocate-page-allocate-mode.css') }}">
 
 <!-- Start page scripts -->
 <script type="module">

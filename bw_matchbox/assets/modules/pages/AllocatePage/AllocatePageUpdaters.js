@@ -122,7 +122,7 @@ export class AllocatePageUpdaters {
     const groupsCount = groups.length;
     // Get only ungrouped items...
     const rootNode = nodes.getRootNode();
-    const statisticsNode = nodes.getStatisticsNode();
+    const statisticsNode = nodes.getSelectStatisticsNode();
     const groupsCountItems = statisticsNode.querySelectorAll('#groups-count');
     const hasGroups = !!groupsCount;
     rootNode.classList.toggle('has-groups', hasGroups);
@@ -144,7 +144,7 @@ export class AllocatePageUpdaters {
     const visibleData = state[type].filter((item) => !item.inGroup);
     const visibleCount = visibleData.length;
     const rootNode = nodes.getRootNode();
-    const statisticsNode = nodes.getStatisticsNode();
+    const statisticsNode = nodes.getSelectStatisticsNode();
     const statisticsItems = statisticsNode.querySelectorAll('#' + type + '-count');
     rootNode.classList.toggle('has-' + type + '-data', !!visibleCount);
     if (statisticsItems.length) {
@@ -433,5 +433,22 @@ export class AllocatePageUpdaters {
     });
     // Update 'allocate' button state...
     this.updateStartAllocationState();
+  }
+
+  // Allocate mode...
+
+  updateAllocateModeDomNodes() {
+    const { nodes } = this;
+    const rootNode = nodes.getRootNode();
+    rootNode.classList.toggle('allocate-mode', true);
+    const allocateLayout = nodes.getAllocateModeLayoutNode();
+    allocateLayout.classList.toggle('common-hidden', false);
+    // TODO: Render allocate nodes...
+    // render.renderAllocateNodes();
+  }
+
+  // Allocate...
+  startAllocateMode() {
+    this.updateAllocateModeDomNodes();
   }
 }

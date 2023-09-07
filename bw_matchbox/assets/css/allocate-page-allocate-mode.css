@@ -1,0 +1,13 @@
+.allocate-layout:not(.allocate-mode) .allocate-mode-layout,
+.allocate-layout.allocate-mode .allocate-columns-layout {
+  display: none;
+}
+
+/* Allocate mode content container */
+.allocate-layout .allocate-mode-content-container {
+  overflow: auto;
+  flex: 1;
+}
+.allocate-layout .allocate-mode-content-container p {
+  white-space: nowrap;
+}

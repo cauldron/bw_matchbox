@@ -14,7 +14,8 @@ const createDefaultGroup = true;
 const defaultGroupName = 'Group name';
 const defaultGroupId = 1;
 /** DEBUG: Add demo item to default group for debugging */
-const addSampeItemToDefaultGroup = true;
+const addSampeItemToDebugGroup = true;
+const addAllInputsToDebugGroup = true;
 
 export class AllocatePage {
   /** Handlers exchange object
@@ -45,18 +46,25 @@ export class AllocatePage {
 
     // Add initial group...
     if (createDefaultGroup) {
+      /** @type TAllocationGroup */
       const defaultGroup = {
         name: defaultGroupName,
         localId: defaultGroupId,
         items: [],
       };
       groups.push(defaultGroup);
-      if (useDebug && addSampeItemToDefaultGroup && technosphere[0]) {
+      if (useDebug && addAllInputsToDebugGroup) {
+        const allItems = [...technosphere, ...biosphere];
+        defaultGroup.items.push.apply(defaultGroup.items, allItems);
+        allItems.forEach((item) => {
+          item.inGroup = defaultGroupId;
+        });
+      } else if (useDebug && addSampeItemToDebugGroup && technosphere[0]) {
         const sampleItem = technosphere[0];
         sampleItem.inGroup = defaultGroupId;
         defaultGroup.items.push(sampleItem);
       }
-      console.log('[AllocatePage:constructor] Add sample group', {
+      console.log('[AllocatePage:constructor] Default group', {
         defaultGroupId,
         defaultGroup,
         groups,
@@ -116,6 +124,7 @@ export class AllocatePage {
     render.initDomNodes();
     render.renderAllData();
     render.initActionHandlers();
+    updaters.updateStartAllocationState();
     updaters.setInited();
     updaters.setLoading(false);
   }

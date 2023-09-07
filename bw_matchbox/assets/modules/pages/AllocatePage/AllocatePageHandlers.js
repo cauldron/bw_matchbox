@@ -176,11 +176,10 @@ export class AllocatePageHandlers {
 
   /** @param {PointerEvent} event */
   startAllocate(event) {
+    const { updaters } = this;
     event.preventDefault();
     event.stopPropagation();
-    console.log('[AllocatePageHandlers:startAllocate]', {});
-    debugger;
-    // TODO!
+    updaters.startAllocateMode();
   }
 
   addNewGroup() {
