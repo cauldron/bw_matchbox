@@ -152,7 +152,12 @@
   transition: all var(--common-animation-time);
   font-size: 75%;
 }
-.allocate-layout .allocate-mode-layout .production-group .group-items.expanded .shortcut .handler .fa {
+.allocate-layout
+  .allocate-mode-layout
+  .production-group
+  .group-items.expanded
+  .shortcut
+  .handler
+  .fa {
   transform: rotate(90deg);
 }
-

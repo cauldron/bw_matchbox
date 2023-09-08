@@ -449,7 +449,9 @@ export class AllocatePageUpdaters {
    */
   getAllocateModeFractionValueProps(inputNode) {
     const id = inputNode.getAttribute('id');
-    const productionId = /** @type TAllocationId */ (Number(inputNode.getAttribute('data-production-id')));
+    const productionId = /** @type TAllocationId */ (
+      Number(inputNode.getAttribute('data-production-id'))
+    );
     const groupId = /** @type TAllocationId */ (Number(inputNode.getAttribute('data-group-id')));
     const value = Number(inputNode.value);
     return {
