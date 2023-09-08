@@ -506,14 +506,16 @@ export class AllocatePageAllocateModeUpdaters {
     this.resetAllocationFractions();
   }
 
-  // Final action. Prepare and send data to the server...
-  confirmAllocateUpdater() {
-    const { state, updaters } = this;
+  /** Prepare and data to the server.
+   * @result {TAllocationResult}
+   */
+  getAllocationResultData() {
+    const { state } = this;
     const { processId, groups, fractions, production } = state;
     /** @type TAllocationResultGroup[] */
     const resultGroups = groups.map((group) => {
       const {
-        localId: groupId, // TLocalGroupId
+        // localId: groupId, // TLocalGroupId
         name, // string
         items, // TAllocationData[]
       } = group;
@@ -541,7 +543,7 @@ export class AllocatePageAllocateModeUpdaters {
         const {
           localId: groupId, // TLocalGroupId
           name, // string
-          items, // TAllocationData[]
+          // items, // TAllocationData[]
         } = group;
         const factor = fractions[groupId][productionId];
         /** @type TAllocationResultAllocationGroup */
@@ -564,14 +566,22 @@ export class AllocatePageAllocateModeUpdaters {
       groups: resultGroups, // TAllocationResultGroup[]
       allocation: allocationList, // TAllocationResultAllocation[]
     };
+    return allocationResult;
+  }
+
+  // Final action. Prepare and send data to the server...
+  confirmAllocateUpdater() {
+    const { updaters } = this;
+    const allocationResult = this.getAllocationResultData();
+    // TODO: Send data to the server.
     const resultJson = JSON.stringify(allocationResult, undefined, 2);
     const resultStr = resultJson.replace(/"/g, "'").replace(/'([^':]+)':/g, '$1:');
     console.log('[AllocatePageAllocateModeUpdaters:confirmAllocateUpdater]', {
       resultStr,
       allocationResult,
-      groups,
-      fractions,
-      production,
+      // groups,
+      // fractions,
+      // production,
     });
     const previewContent = `
       <h4>These results will be sent to the server:</h4>
