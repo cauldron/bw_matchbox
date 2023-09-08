@@ -15,6 +15,9 @@ export class AllocatePageState {
   /** @type AllocatePageNodes */
   nodes;
 
+  /** @type TProcessId */
+  processId;
+
   /** @type TUserName */
   currentUser;
   /** @type TUserRole */
@@ -49,6 +52,7 @@ export class AllocatePageState {
     this.technosphere = params.technosphere;
     this.biosphere = params.biosphere;
     // Current configuration parameters...
+    this.processId = params.processId;
     this.currentRole = params.currentRole;
     this.currentUser = params.currentUser;
   }

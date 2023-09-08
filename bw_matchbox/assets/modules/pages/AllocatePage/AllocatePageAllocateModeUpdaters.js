@@ -1,6 +1,6 @@
 // @ts-check
 
-import * as CommonHelpers from '../../common/CommonHelpers.js';
+import { commonModal } from '../../common/CommonModal.js';
 
 import * as AllocatePageHelpers from './AllocatePageHelpers.js';
 
@@ -508,13 +508,95 @@ export class AllocatePageAllocateModeUpdaters {
 
   // Final action. Prepare and send data to the server...
   confirmAllocateUpdater() {
-    const { state } = this;
-    const { groups, fractions, production } = state;
+    const { state, updaters } = this;
+    const { processId, groups, fractions, production } = state;
+    /** @type TAllocationResultGroup[] */
+    const resultGroups = groups.map((group) => {
+      const {
+        localId: groupId, // TLocalGroupId
+        name, // string
+        items, // TAllocationData[]
+      } = group;
+      const technosphere = items.filter(({ type }) => type === 'technosphere').map(({ id }) => id);
+      const biosphere = items.filter(({ type }) => type === 'biosphere').map(({ id }) => id);
+      /** @type TAllocationResultGroup */
+      const result = {
+        name, // string
+        technosphere, // TAllocationId[]
+        biosphere, // TAllocationId[]
+      };
+      return result;
+    });
+    /** @type TAllocationResultAllocation[] */
+    const allocationList = production.map((data) => {
+      const {
+        id: productionId, // 191
+        // type, // 'production'
+        // amount, // 0.6858156846465647
+        // input, // {name: 'Clay-Williams', unit: 'kilogram', location: 'GLO', product: 'LLC', categories: 'Unknown'}
+        // output, // {name: 'Smith LLC', unit: 'kilogram', location: 'GLO', product: 'Inc', categories: 'Unknown'}
+      } = data;
+      /** @type TAllocationResultAllocationGroup[] */
+      const allocationGroups = groups.map((group) => {
+        const {
+          localId: groupId, // TLocalGroupId
+          name, // string
+          items, // TAllocationData[]
+        } = group;
+        const factor = fractions[groupId][productionId];
+        /** @type TAllocationResultAllocationGroup */
+        const allocationGroup = {
+          name, // string
+          factor, // number
+        };
+        return allocationGroup;
+      });
+      /** @type TAllocationResultAllocation */
+      const allocationItem = {
+        product: productionId, // TAllocationId // production[].id
+        groups: allocationGroups, // TAllocationResultAllocationGroup[]
+      };
+      return allocationItem;
+    });
+    /** @type TAllocationResult */
+    const allocationResult = {
+      process: processId,
+      groups: resultGroups, // TAllocationResultGroup[]
+      allocation: allocationList, // TAllocationResultAllocation[]
+    };
+    const resultJson = JSON.stringify(allocationResult, undefined, 2);
+    const resultStr = resultJson.replace(/"/g, "'").replace(/'([^':]+)':/g, '$1:');
     console.log('[AllocatePageAllocateModeUpdaters:confirmAllocateUpdater]', {
+      resultStr,
+      allocationResult,
       groups,
       fractions,
       production,
     });
-    debugger;
+    const previewContent = `
+      <h4>These results will be sent to the server:</h4>
+      <pre>${resultStr}
+      </pre>
+    `;
+    updaters.setLoading(true);
+    commonModal.ensureInit().then(() => {
+      commonModal
+        .setModalContentId('show-allocation-result')
+        .setTitle('Allocation result preview')
+        .setModalWindowOptions({
+          // autoHeight: true,
+          width: 'md',
+        })
+        .setModalContentOptions({
+          // Scrollings and paddings will be set for inner components particaluary.
+          scrollable: true,
+          padded: true,
+        })
+        .setContent(previewContent)
+        .onHide(() => {
+          updaters.setLoading(false);
+        })
+        .showModal();
+    });
   }
 }
