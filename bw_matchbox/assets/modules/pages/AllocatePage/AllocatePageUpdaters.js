@@ -66,6 +66,7 @@ export class AllocatePageUpdaters {
    * @param {boolean} [opts.omitNotify] - Don't show error toast
    */
   setError(error, opts = {}) {
+    // TODO: Update error detecting/displaying mechanism to use of the identified errors strorage.
     const hasErrors = !!error;
     const rootNode = this.nodes.getRootNode();
     rootNode.classList.toggle('has-error', hasErrors);
@@ -102,6 +103,33 @@ export class AllocatePageUpdaters {
   }
 
   // State updaters...
+
+  /** @param {TLocalGroupId} groupId */
+  checkUniqueGroupNames(groupId) {
+    const { nodes, state } = this;
+    const { groups } = state;
+    const groupNames = groups.map(({ name }) => name);
+    /** @type TLocalGroupId[] */
+    const duplicatedGroupIds = groups.reduce((result, { localId, name }) => {
+      if (groupNames.includes(name) && !result.includes(localId)) {
+        result.push(localId);
+      }
+      return result;
+    }, []);
+    groups.forEach(({ localId }) => {
+      const groupNode = nodes.getGroupNode(localId);
+      const isDuplicated = duplicatedGroupIds.includes(groupId);
+      groupNode.classList.toggle('duplicated-name', isDuplicated);
+    });
+    if (duplicatedGroupIds.length) {
+      const error = new Error('Group names should be unique.');
+      // eslint-disable-next-line no-console
+      console.warn('[AllocatePageUpdaters:checkUniqueGroupNames]', error, {
+        groupNames,
+      });
+      this.setError(error);
+    }
+  }
 
   /** @param {TLocalGroupId} groupId */
   updateGroupProps(groupId) {
@@ -316,13 +344,13 @@ export class AllocatePageUpdaters {
         const {
           groupId, // TLocalGroupId
         } = result;
-        /* console.log('[AllocatePageUpdaters:editGroupUpdater]', {
-         *   groupId, // TLocalGroupId
-         *   result,
-         *   editor,
-         * });
-         */
+        console.log('[AllocatePageUpdaters:editGroupUpdater]', {
+          groupId, // TLocalGroupId
+          result,
+          editor,
+        });
         this.updateGroupProps(groupId);
+        this.checkUniqueGroupNames(groupId);
       })
       .catch((error) => {
         if (error instanceof Error) {

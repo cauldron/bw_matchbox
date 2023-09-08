@@ -27,12 +27,7 @@
   padding: 0 12px;
   gap: 8px;
 }
-.allocate-layout .allocate-layout-toolbar > a.toolbar-action.disabled {
-  opacity: 0.25;
-  pointer-events: none;
-  background-color: rgba(0 0 0 / 10%);
-  color: #666;
-}
+
 .allocate-layout .allocate-layout-toolbar > a.toolbar-action:not(.disabled) {
   cursor: pointer;
   opacity: 0.5;
@@ -62,4 +57,23 @@
   color: var(--layout-theme-primary-color);
   box-shadow: 0 0 4px var(--layout-theme-primary-color);
   background-color: #fff;
+}
+
+/* Disabled buttons */
+.allocate-layout .allocate-layout-toolbar > a.toolbar-action.disabled {
+  opacity: 0.25;
+  pointer-events: none;
+  background-color: rgba(0 0 0 / 10%);
+  color: #666;
+}
+/* Disable some particular buttons -- depends on error status */
+.allocate-layout.has-error .allocate-layout-toolbar > a.toolbar-action[action-id='startAllocate'],
+.allocate-layout.has-error
+  .allocate-layout-toolbar
+  > a.toolbar-action[action-id='confirmAllocate'] {
+  opacity: 0.25;
+  pointer-events: none;
+  /* background: none; */
+  background-color: rgba(0 0 0 / 10%);
+  color: #666;
 }

@@ -3,17 +3,6 @@
   display: none;
 }
 
-/* Finish button -- depends on error status */
-.allocate-layout.has-error
-  .allocate-layout-toolbar
-  > a.toolbar-action[action-id='confirmAllocate'] {
-  opacity: 0.25;
-  pointer-events: none;
-  /* background: none; */
-  background-color: rgba(0 0 0 / 10%);
-  color: #666;
-}
-
 /* Allocate mode content container */
 .allocate-layout .allocate-mode-content-scroller {
   overflow: auto;

@@ -60,6 +60,14 @@
   overflow: hidden;
   text-overflow: ellipsis;
 }
+/* Duplicated name error */
+.allocate-layout .allocate-groups-list .group.duplicated-name {
+  background-color: rgba(187 0 0 / 15%);
+}
+.allocate-layout .allocate-groups-list .group.duplicated-name .title #group-name {
+  color: var(--common-error-color);
+  font-weight: bold;
+}
 .allocate-layout .allocate-groups-list .group-header.edit-group > .title-actions,
 .allocate-layout .allocate-groups-list .group-header:not(.edit-group) .title-editor,
 .allocate-layout .allocate-groups-list .group-header.edit-group .title {

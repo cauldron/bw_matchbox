@@ -41,6 +41,7 @@ export class AllocatePage {
       technosphere,
       biosphere,
       // Current configuration parameters...
+      processId,
       currentRole,
       currentUser,
     } = sharedParams;
@@ -96,6 +97,7 @@ export class AllocatePage {
       technosphere,
       biosphere,
       // Current configuration parameters...
+      processId,
       currentRole,
       currentUser,
     });
@@ -111,6 +113,7 @@ export class AllocatePage {
       technosphere,
       biosphere,
       // Current configuration parameters...
+      processId,
       currentUser,
       currentRole,
     });
