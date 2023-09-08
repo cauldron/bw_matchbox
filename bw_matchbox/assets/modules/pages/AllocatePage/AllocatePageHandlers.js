@@ -9,6 +9,7 @@ import * as AllocatePageHelpers from './AllocatePageHelpers.js';
 import { AllocatePageNodes } from './AllocatePageNodes.js';
 // import { AllocatePageRender } from './AllocatePageRender.js';
 import { AllocatePageUpdaters } from './AllocatePageUpdaters.js';
+import { AllocatePageAllocateModeUpdaters } from './AllocatePageAllocateModeUpdaters.js';
 import { AllocatePageState } from './AllocatePageState.js';
 /* eslint-enable no-unused-vars */
 
@@ -23,12 +24,15 @@ export class AllocatePageHandlers {
   state;
   /** @type {AllocatePageUpdaters} */
   updaters;
+  /** @type {AllocatePageAllocateModeUpdaters} */
+  allocateModeUpdaters;
 
   /** @constructor
    * @param {object} params
    * @param {AllocatePageNodes} params.nodes
    * @param {AllocatePageState} params.state
    * @param {AllocatePageUpdaters} params.updaters
+   * @param {AllocatePageAllocateModeUpdaters} params.allocateModeUpdaters
    * @param {TSharedHandlers} params.callbacks
    */
   constructor(params) {
@@ -36,6 +40,7 @@ export class AllocatePageHandlers {
     this.nodes = params.nodes;
     this.state = params.state;
     this.updaters = params.updaters;
+    this.allocateModeUpdaters = params.allocateModeUpdaters;
     // Export all methods as external handlers...
     CommonHelpers.exportCallbacksFromInstance(params.callbacks, this);
   }
@@ -176,18 +181,18 @@ export class AllocatePageHandlers {
 
   /** @param {PointerEvent} event */
   startAllocate(event) {
-    const { updaters } = this;
+    const { allocateModeUpdaters } = this;
     event.preventDefault();
     event.stopPropagation();
-    updaters.startAllocateMode();
+    allocateModeUpdaters.startAllocateMode();
   }
 
   /** @param {PointerEvent} event */
   backFromAllocate(event) {
-    const { updaters } = this;
+    const { allocateModeUpdaters } = this;
     event.preventDefault();
     event.stopPropagation();
-    updaters.backFromAllocateMode();
+    allocateModeUpdaters.backFromAllocateMode();
   }
 
   addNewGroup() {
@@ -304,17 +309,17 @@ export class AllocatePageHandlers {
    * @param {InputEvent} event
    */
   handleAllocateFractionValueChange(event) {
-    const { updaters } = this;
+    const { allocateModeUpdaters } = this;
     const inputNode = /** @type {HTMLInputElement} */ (event.currentTarget);
-    updaters.checkAllocateModeFractionValueOnChange(inputNode);
+    allocateModeUpdaters.checkAllocateModeFractionValueOnChange(inputNode);
   }
 
   /** Check the value after each small change
    * @param {InputEvent} event
    */
   handleAllocateFractionValueInput(event) {
-    const { updaters } = this;
+    const { allocateModeUpdaters } = this;
     const inputNode = /** @type {HTMLInputElement} */ (event.currentTarget);
-    updaters.checkAllocateModeFractionValueOnInput(inputNode);
+    allocateModeUpdaters.checkAllocateModeFractionValueOnInput(inputNode);
   }
 }

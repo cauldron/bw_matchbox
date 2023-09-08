@@ -9,6 +9,7 @@ import { AllocatePageRenderAllocate } from './AllocatePageRenderAllocate.js';
 import { AllocatePageHandlers } from './AllocatePageHandlers.js';
 import { AllocatePageInputsDragger } from './AllocatePageInputsDragger.js';
 import { AllocatePageUpdaters } from './AllocatePageUpdaters.js';
+import { AllocatePageAllocateModeUpdaters } from './AllocatePageAllocateModeUpdaters.js';
 
 /** Use sample group by default */
 const createDefaultGroup = true;
@@ -130,11 +131,20 @@ export class AllocatePage {
       renderAllocate,
       callbacks,
     });
+    const allocateModeUpdaters = new AllocatePageAllocateModeUpdaters({
+      nodes,
+      state,
+      render,
+      renderAllocate,
+      updaters,
+      callbacks,
+    });
     // eslint-disable-next-line no-unused-vars
     const handlers = new AllocatePageHandlers({
       nodes,
       state,
       updaters,
+      allocateModeUpdaters,
       callbacks,
     });
     // eslint-disable-next-line no-unused-vars
