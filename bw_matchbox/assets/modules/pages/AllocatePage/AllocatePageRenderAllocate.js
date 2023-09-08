@@ -80,7 +80,8 @@ export class AllocatePageRenderAllocate {
    * @return {string}
    */
   createProductionGroup({ data, group, isLastProduction }) {
-    // UNUSED: Production data...
+    const { state } = this;
+    const { fractions } = state;
     const {
       id: productionId, // 191
       // type, // 'production'
@@ -99,7 +100,7 @@ export class AllocatePageRenderAllocate {
     const itemsCount = items.length;
     const isEmpty = !itemsCount;
     const itemsContent = itemsContentList.join('\n');
-    const initialValue = isLastProduction ? 1 : 0;
+    const initialValue = fractions[groupId][productionId]; // isLastProduction ? 1 : 0;
     const inputId = `production-${productionId}-group-${groupId}-fraction`;
     return `
       <div
@@ -117,6 +118,8 @@ export class AllocatePageRenderAllocate {
             type="text"
             name="${inputId}"
             id="${inputId}"
+            data-production-id="${productionId}"
+            data-group-id="${groupId}"
             value="${initialValue}"
             ${isLastProduction ? 'disabled' : ''}
           />

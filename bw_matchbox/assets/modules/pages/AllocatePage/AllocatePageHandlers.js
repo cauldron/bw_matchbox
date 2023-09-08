@@ -299,4 +299,22 @@ export class AllocatePageHandlers {
      */
     groupItemsNode && groupItemsNode.classList.toggle('expanded');
   }
+
+  /** Check the value only when user finished changing it
+   * @param {InputEvent} event
+   */
+  handleAllocateFractionValueChange(event) {
+    const { updaters } = this;
+    const inputNode = /** @type {HTMLInputElement} */ (event.currentTarget);
+    updaters.checkAllocateModeFractionValueOnChange(inputNode);
+  }
+
+  /** Check the value after each small change
+   * @param {InputEvent} event
+   */
+  handleAllocateFractionValueInput(event) {
+    const { updaters } = this;
+    const inputNode = /** @type {HTMLInputElement} */ (event.currentTarget);
+    updaters.checkAllocateModeFractionValueOnInput(inputNode);
+  }
 }

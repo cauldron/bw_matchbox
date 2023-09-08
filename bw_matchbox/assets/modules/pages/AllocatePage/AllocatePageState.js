@@ -33,6 +33,8 @@ export class AllocatePageState {
 
   /** @type TAllocationGroup[] */
   groups;
+  /** @type TAllocationFractions */
+  fractions;
 
   /** @constructor
    * @param {TAllocatePageStateParams} params
