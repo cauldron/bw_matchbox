@@ -14,23 +14,40 @@
   gap: 10px;
   margin: 10px 0;
 }
-.allocate-layout .allocate-mode-content-container {
-}
 .allocate-layout .allocate-mode-content-container .allocate-table {
   display: table;
-  /* width: 100%; */
   border: 0;
+  margin: 0;
   /* table-layout: fixed; */
   border-style: solid;
   border-spacing: 10px;
+  border-collapse: separate;
 }
 .allocate-layout .allocate-mode-content-container .allocate-table .allocate-row {
   display: table-row;
 }
-.allocate-layout .allocate-mode-content-container .allocate-table .allocate-column {
+.allocate-layout .allocate-mode-content-container .allocate-table .allocate-cell {
+  border: 0;
   display: table-cell;
-  min-width: 250px;
-  max-width: 500px;
+  vertical-align: top;
+  /* NOTE: Min and max width don't work for table cells
+   * min-width: 250px;
+   * max-width: 500px;
+   */
+  --column-width: 250px;
+  width: var(--column-width);
+  max-width: var(--column-width);
+  min-width: var(--column-width);
+  overflow: hidden;
+}
+.allocate-layout .allocate-mode-content-container .allocate-table .allocate-cell > div {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  width: 100%;
+  position: relative;
+}
+.allocate-layout .allocate-mode-content-container .allocate-table .production-group-cell {
+  padding: 0;
 }
 
 .allocate-layout .allocate-mode-layout .production-header {
@@ -52,6 +69,13 @@
   padding: 5px 10px;
   background-color: #ccc;
 }
+.allocate-layout .allocate-mode-layout .group-item > .header > .title,
+.allocate-layout .allocate-mode-layout .production-group > .header > .title {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  width: 100%;
+  position: relative;
+}
 .allocate-layout .allocate-mode-layout .production-group .group-fraction {
   padding: 0 8px;
 }
@@ -59,7 +83,7 @@
   width: 100%;
   margin: 0;
 }
-.allocate-layout .allocate-mode-layout .production.last .group-fraction input {
+.allocate-layout .allocate-mode-layout .production-group.last .group-fraction input {
   background-color: rgba(255 255 255 / 50%);
   opacity: 0.5;
   pointer-events: none;
@@ -116,6 +140,7 @@
   height: 24px;
   border-radius: 50%;
   display: flex;
+  flex-shrink: 0;
   align-items: center;
   justify-content: center;
 }

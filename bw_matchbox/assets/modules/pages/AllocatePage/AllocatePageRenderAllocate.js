@@ -103,7 +103,7 @@ export class AllocatePageRenderAllocate {
     const inputId = `production-${productionId}-group-${groupId}-fraction`;
     return `
       <div
-        class="production-group"
+        class="production-group ${isLastProduction ? 'last' : ''}"
         data-production-id="${productionId}"
         data-group-id="${groupId}"
       >
@@ -164,14 +164,14 @@ export class AllocatePageRenderAllocate {
       // unit, // 'kilogram'
     } = input;
     return `
-      <div
-        class="allocate-column production-header"
+      <td
+        class="allocate-cell production-header"
         data-production-id="${id}"
       >
         <div class="title">
           <span class="name">${name}</span>
         </div>
-      </div>
+      </td>
     `;
   }
 
@@ -192,9 +192,9 @@ export class AllocatePageRenderAllocate {
       state,
     });
     return `
-      <div class="allocate-row allocate-row-headers">
+      <tr class="allocate-row allocate-row-headers">
         ${content}
-      </div>
+      </tr>
     `;
   }
 
@@ -217,13 +217,13 @@ export class AllocatePageRenderAllocate {
       const isLastProduction = idx === lastProductionIdx;
       const groupItem = this.createProductionGroup({ data, group, isLastProduction });
       return `
-        <div
-          class="allocate-column production-group-column"
+        <td
+          class="allocate-cell production-group-cell"
           data-production-id="${productionId}"
           data-group-id="${groupId}"
         >
           ${groupItem}
-        </div>
+        </td>
       `;
     });
     const content = contentList.join('\n');
@@ -235,12 +235,12 @@ export class AllocatePageRenderAllocate {
       state,
     });
     return `
-      <div
+      <tr
         data-group-id="${groupId}"
         class="allocate-row allocate-row-group"
       >
         ${content}
-      </div>
+      </tr>
     `;
   }
 
@@ -264,9 +264,9 @@ export class AllocatePageRenderAllocate {
     ];
     const content = contentList.join('\n');
     return `
-      <div class="allocate-table">
+      <table class="allocate-table">
         ${content}
-      </div>
+      </table>
     `;
   }
 
