@@ -150,7 +150,7 @@ export class AllocatePageHandlers {
       });
       // eslint-disable-next-line no-debugger
       debugger;
-      this.updaters.setError(error);
+      this.updaters.setError('recent', error);
     }
   }
 
@@ -175,7 +175,7 @@ export class AllocatePageHandlers {
       });
       // eslint-disable-next-line no-debugger
       debugger;
-      this.updaters.setError(error);
+      this.updaters.setError('recent', error);
     }
   }
 
@@ -205,7 +205,7 @@ export class AllocatePageHandlers {
       console.error('[AllocatePageHandlers:addNewGroup]', error);
       // eslint-disable-next-line no-debugger
       debugger;
-      this.updaters.setError(error);
+      this.updaters.setError('recent', error);
     }
   }
 
@@ -248,7 +248,7 @@ export class AllocatePageHandlers {
       });
       // eslint-disable-next-line no-debugger
       debugger;
-      this.updaters.setError(error);
+      this.updaters.setError('recent', error);
     }
   }
 

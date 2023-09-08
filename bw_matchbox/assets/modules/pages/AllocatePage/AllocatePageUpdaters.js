@@ -61,37 +61,26 @@ export class AllocatePageUpdaters {
   }
 
   /** setError -- Set and show error.
-   * @param {string|Error|string[]|Error[]} error - Error or errors list.
-   * @param {object} [opts] - Options
-   * @param {boolean} [opts.omitNotify] - Don't show error toast
+   * @param {string} id - Error id
+   * @param {TErrorLikePlural} error - Error or errors list
    */
-  setError(error, opts = {}) {
-    // TODO: Update error detecting/displaying mechanism to use of the identified errors strorage.
-    const hasErrors = !!error;
-    const rootNode = this.nodes.getRootNode();
-    rootNode.classList.toggle('has-error', hasErrors);
-    // Show error...
-    const text = CommonHelpers.getErrorText(error);
-    const errorNode = this.nodes.getErrorNode();
-    if (text) {
-      // eslint-disable-next-line no-console
-      console.error('[AllocatePageState:setError]', {
-        text,
-        error,
-        errorNode,
-      });
-      // TODO: Show multiple toasts for multiple (if got list of) errors?
-      if (!opts.omitNotify && text !== errorNode.innerHTML) {
-        commonNotify.showError(text);
-      }
-    }
-    if (errorNode) {
-      errorNode.innerHTML = text;
-    }
+  setError(id, error) {
+    const { state, render } = this;
+    state.errors[id] = error;
+    render.renderErrors();
   }
 
-  clearError() {
-    this.setError(undefined);
+  /** setError -- Set and show error.
+   * @param {string} id - Error id
+   */
+  clearError(id) {
+    this.setError(id, undefined);
+  }
+
+  clearAllErrors() {
+    const { state, render } = this;
+    state.errors = {};
+    render.renderErrors();
   }
 
   setInited() {
@@ -141,9 +130,9 @@ export class AllocatePageUpdaters {
       console.warn('[AllocatePageUpdaters:checkUniqueGroupNames]', error, {
         duplicatedNames,
       });
-      this.setError(error);
+      this.setError('unique-group-names', error);
     } else {
-      this.clearError();
+      this.clearError('unique-group-names');
     }
   }
 
@@ -303,6 +292,7 @@ export class AllocatePageUpdaters {
      *   groups,
      * });
      */
+    this.checkUniqueGroupNames();
     if (!opts.omitUpdate) {
       this.updateGroupsState();
     }
@@ -378,7 +368,7 @@ export class AllocatePageUpdaters {
           });
           // eslint-disable-next-line no-debugger
           debugger;
-          this.setError(error);
+          this.setError('recent', error);
         } else {
           // eslint-disable-next-line no-console
           console.warn('[AllocatePageUpdaters:editGroupUpdater] warn', error, {

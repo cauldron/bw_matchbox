@@ -15,6 +15,9 @@ export class AllocatePageState {
   /** @type AllocatePageNodes */
   nodes;
 
+  /** @type Record<string, TErrorLikePlural> */
+  errors = {};
+
   /** @type TProcessId */
   processId;
 

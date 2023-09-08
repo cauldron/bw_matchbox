@@ -46,6 +46,49 @@ export class AllocatePageRender {
     // AllocatePageHelpers.addActionHandlers(allocateModeToolbarNode, this.callbacks);
   }
 
+  // Basic...
+
+  renderErrors() {
+    const { state, nodes } = this;
+    const { errors } = state;
+    const nonEmptyErrorIds = Object.entries(errors)
+      .map(([id, error]) => {
+        if (error) {
+          return id;
+        }
+      })
+      .filter(Boolean);
+    /** @type string[] */
+    const contentList = [];
+    nonEmptyErrorIds.forEach((id) => {
+      const item = errors[id];
+      const list = Array.isArray(item) ? item : [item];
+      list.forEach((error) => {
+        const text = CommonHelpers.getErrorText(error);
+        // TODO: Detect error type?
+        if (text) {
+          contentList.push(`<div data-error-id="${id}" class="error-item">${text}</div>`);
+        }
+      });
+    });
+    // TODO: Update error detecting/displaying mechanism to use of the identified errors strorage.
+    const hasErrors = !!contentList.length;
+    const rootNode = nodes.getRootNode();
+    rootNode.classList.toggle('has-error', hasErrors);
+    // Show error...
+    const errorNode = nodes.getErrorNode();
+    const content = contentList.join('\n');
+    if (hasErrors) {
+      // eslint-disable-next-line no-console
+      console.warn('[AllocatePageRender:renderErrors]', {
+        nonEmptyErrorIds,
+        contentList,
+        errors,
+      });
+    }
+    errorNode.innerHTML = content;
+  }
+
   // Render groups...
 
   /**
