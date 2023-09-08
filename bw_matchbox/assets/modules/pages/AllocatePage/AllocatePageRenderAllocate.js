@@ -8,6 +8,8 @@ import { AllocatePageNodes } from './AllocatePageNodes.js';
 import { AllocatePageState } from './AllocatePageState.js';
 /* eslint-enable no-unused-vars */
 
+const useRowsLayout = true;
+
 export class AllocatePageRenderAllocate {
   // Modules...
   /** @type AllocatePageNodes */
@@ -103,7 +105,7 @@ export class AllocatePageRenderAllocate {
     const inputId = `production-${productionId}-group-${groupId}-fraction`;
     return `
       <div
-        class="group"
+        class="production-group"
         data-production-id="${productionId}"
         data-group-id="${groupId}"
       >
@@ -134,11 +136,7 @@ export class AllocatePageRenderAllocate {
             <span class="label">Contains items:</span>
             <span class="number">${items.length}</span>
           </div>
-          <div
-            action-id="toggleAllocateGroupItems"
-            class="list action"
-            title="Click to collapse inputs list"
-          >
+          <div class="list">
             ${itemsContent}
           </div>
         </div>
@@ -172,7 +170,7 @@ export class AllocatePageRenderAllocate {
    * @param {boolean} params.isLastProduction
    * @return {string}
    */
-  createProductionSection({ data, isLastProduction }) {
+  createProductionHeader({ data, isLastProduction }) {
     const {
       id, // 191
       // type, // 'production'
@@ -187,6 +185,32 @@ export class AllocatePageRenderAllocate {
       // product, // 'LLC'
       // unit, // 'kilogram'
     } = input;
+    return `
+      <div
+        class="allocate-column production-header"
+        data-production-id="${id}"
+      >
+        <div class="title">
+          <span class="name">${name}</span>
+        </div>
+      </div>
+    `;
+  }
+
+  /**
+   * @param {object} params
+   * @param {TAllocationData} params.data
+   * @param {boolean} params.isLastProduction
+   * @return {string}
+   */
+  createProductionSection({ data, isLastProduction }) {
+    const {
+      id, // 191
+      // type, // 'production'
+      // amount, // 0.6858156846465647
+      // input, // {name: 'Clay-Williams', unit: 'kilogram', location: 'GLO', product: 'LLC', categories: 'Unknown'}
+      // output, // {name: 'Smith LLC', unit: 'kilogram', location: 'GLO', product: 'Inc', categories: 'Unknown'}
+    } = data;
     const groupsContentList = this.createProductionGroups({ data, isLastProduction });
     const groupsContent = groupsContentList.join('\n');
     const className = [
@@ -196,16 +220,13 @@ export class AllocatePageRenderAllocate {
     ]
       .filter(Boolean)
       .join(' ');
+    const headerContent = this.createProductionSection({ data, isLastProduction });
     return `
       <div
         class="${className}"
         data-production-id="${id}"
       >
-        <div class="header">
-          <div class="title">
-            <span class="name">${name}</span>
-          </div>
-        </div>
+        ${headerContent}
         <div class="groups">
           ${groupsContent}
         </div>
@@ -213,9 +234,9 @@ export class AllocatePageRenderAllocate {
     `;
   }
 
-  renderAllocateNodes() {
-    const { nodes, state } = this;
-    const containerNode = nodes.getAllocateModeContentContainerNode();
+  /** @return {string} */
+  createAllocateSections() {
+    const { state } = this;
     const { production } = state;
     const lastProductionIdx = production.length - 1;
     const contentList = production.map((data, idx) => {
@@ -223,12 +244,118 @@ export class AllocatePageRenderAllocate {
       return this.createProductionSection({ data, isLastProduction });
     });
     const content = contentList.join('\n');
-    console.log('[AllocatePageRenderAllocate:renderAllocateNodes]', {
+    console.log('[AllocatePageRenderAllocate:createAllocateSections]', {
       contentList,
       content,
       production,
-      containerNode,
       state,
+    });
+    return content;
+  }
+
+  /** @return {string} */
+  createAllocateRowsHeaders() {
+    const { state } = this;
+    const { production } = state;
+    const lastProductionIdx = production.length - 1;
+    const contentList = production.map((data, idx) => {
+      const isLastProduction = idx === lastProductionIdx;
+      return this.createProductionHeader({ data, isLastProduction });
+    });
+    const content = contentList.join('\n');
+    console.log('[AllocatePageRenderAllocate:createAllocateRowsHeaders]', {
+      contentList,
+      content,
+      production,
+      state,
+    });
+    return `
+      <div class="allocate-row allocate-row-headers">
+        ${content}
+      </div>
+    `;
+  }
+
+  /**
+   * @param {object} params
+   * @param {TAllocationGroup} params.group
+   * @return {string}
+   */
+  createAllocateRowsGroup({ group }) {
+    const { state } = this;
+    const {
+      localId: groupId, // TLocalGroupId;
+      name, // string;
+      items, // TAllocationData[];
+    } = group;
+    const { production } = state;
+    const lastProductionIdx = production.length - 1;
+    const contentList = production.map((data, idx) => {
+      const productionId = data.id;
+      const isLastProduction = idx === lastProductionIdx;
+      const groupItem = this.createProductionGroup({ data, group, isLastProduction });
+      return `
+        <div
+          class="allocate-column production-group-column"
+          data-production-id="${productionId}"
+          data-group-id="${groupId}"
+        >
+          ${groupItem}
+        </div>
+      `;
+    });
+    const content = contentList.join('\n');
+    console.log('[AllocatePageRenderAllocate:createAllocateRowsGroup]', {
+      group,
+      contentList,
+      content,
+      production,
+      state,
+    });
+    return `
+      <div
+        data-group-id="${groupId}"
+        class="allocate-row allocate-row-group"
+      >
+        ${content}
+      </div>
+    `;
+  }
+
+  /** @return {string} */
+  createAllocateRows() {
+    const { state } = this;
+    const { groups } = state;
+    const headers = this.createAllocateRowsHeaders();
+    console.log('[AllocatePageRenderAllocate:createAllocateRows]', {
+      headers,
+      groups,
+      state,
+    });
+    const groupRows = groups.map((group) => {
+      return this.createAllocateRowsGroup({ group });
+    });
+    const contentList = [
+      // prettier-ignore
+      headers,
+      ...groupRows,
+    ];
+    const content = contentList.join('\n');
+    return `
+      <div class="allocate-table">
+        ${content}
+      </div>
+    `;
+  }
+
+  renderAllocateNodes() {
+    const { nodes } = this;
+    const content = useRowsLayout ? this.createAllocateRows() : this.createAllocateSections();
+    const containerNode = nodes.getAllocateModeContentContainerNode();
+    containerNode.classList.toggle('rows-layout', useRowsLayout);
+    console.log('[AllocatePageRenderAllocate:renderAllocateNodes]', {
+      content,
+      containerNode,
     });
     containerNode.innerHTML = content;
     AllocatePageHelpers.addActionHandlers(containerNode, this.callbacks);
