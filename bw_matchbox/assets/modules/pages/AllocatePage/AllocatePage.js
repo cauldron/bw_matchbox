@@ -17,9 +17,9 @@ const defaultGroupName = 'Group name';
 /** @type TLocalGroupId */
 const defaultGroupId = 1;
 /** DEBUG: Add demo item to default group for debugging */
-const addSampeItemToDebugGroup = true;
-const addAllInputsToDebugGroup = true;
-const useSecondDebugGroup = true;
+const addSampeItemToDebugGroup = false;
+const addAllInputsToDebugGroup = false;
+const useSecondDebugGroup = false;
 
 export class AllocatePage {
   /** Handlers exchange object
