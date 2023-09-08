@@ -311,7 +311,7 @@ export class AllocatePageHandlers {
   handleAllocateFractionValueChange(event) {
     const { allocateModeUpdaters } = this;
     const inputNode = /** @type {HTMLInputElement} */ (event.currentTarget);
-    allocateModeUpdaters.checkAllocateModeFractionValueOnChange(inputNode);
+    allocateModeUpdaters.setAllocateModeFractionValueOnChange(inputNode);
   }
 
   /** Check the value after each small change
@@ -320,6 +320,11 @@ export class AllocatePageHandlers {
   handleAllocateFractionValueInput(event) {
     const { allocateModeUpdaters } = this;
     const inputNode = /** @type {HTMLInputElement} */ (event.currentTarget);
-    allocateModeUpdaters.checkAllocateModeFractionValueOnInput(inputNode);
+    allocateModeUpdaters.setAllocateModeFractionValueOnInput(inputNode);
+  }
+
+  confirmAllocate() {
+    const { allocateModeUpdaters } = this;
+    allocateModeUpdaters.confirmAllocateUpdater();
   }
 }

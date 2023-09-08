@@ -3,6 +3,17 @@
   display: none;
 }
 
+/* Finish button -- depends on error status */
+.allocate-layout.has-error
+  .allocate-layout-toolbar
+  > a.toolbar-action[action-id='confirmAllocate'] {
+  opacity: 0.25;
+  pointer-events: none;
+  /* background: none; */
+  background-color: rgba(0 0 0 / 10%);
+  color: #666;
+}
+
 /* Allocate mode content container */
 .allocate-layout .allocate-mode-content-scroller {
   overflow: auto;
@@ -27,6 +38,8 @@
   display: table-row;
 }
 .allocate-layout .allocate-mode-content-container .allocate-table .allocate-cell {
+  --column-width: 250px;
+
   border: 0;
   display: table-cell;
   vertical-align: top;
@@ -34,7 +47,6 @@
    * min-width: 250px;
    * max-width: 500px;
    */
-  --column-width: 250px;
   width: var(--column-width);
   max-width: var(--column-width);
   min-width: var(--column-width);
@@ -82,6 +94,10 @@
 .allocate-layout .allocate-mode-layout .production-group .group-fraction input {
   width: 100%;
   margin: 0;
+}
+.allocate-layout .allocate-mode-layout .production-group .group-fraction input.error {
+  border-color: var(--common-error-color);
+  box-shadow: 0 0 4px var(--common-error-color);
 }
 .allocate-layout .allocate-mode-layout .production-group.last .group-fraction input {
   background-color: rgba(255 255 255 / 50%);
@@ -134,7 +150,6 @@
 .allocate-layout .allocate-mode-layout .production-group .group-items .shortcut .handler {
   transition: background-color var(--common-animation-time);
   color: var(--layout-theme-primary-color);
-  display: inline-block;
   margin-right: 2px;
   width: 24px;
   height: 24px;

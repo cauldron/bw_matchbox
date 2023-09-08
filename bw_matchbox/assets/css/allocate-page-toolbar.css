@@ -30,7 +30,8 @@
 .allocate-layout .allocate-layout-toolbar > a.toolbar-action.disabled {
   opacity: 0.25;
   pointer-events: none;
-  background-color: rgba(0 0 0 / 15%);
+  background-color: rgba(0 0 0 / 10%);
+  color: #666;
 }
 .allocate-layout .allocate-layout-toolbar > a.toolbar-action:not(.disabled) {
   cursor: pointer;

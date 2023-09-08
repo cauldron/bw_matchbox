@@ -2,6 +2,8 @@
 
 import * as CommonHelpers from '../../common/CommonHelpers.js';
 
+import * as AllocatePageHelpers from './AllocatePageHelpers.js';
+
 // Import only types...
 /* eslint-disable no-unused-vars */
 import { AllocatePageNodes } from './AllocatePageNodes.js';
@@ -47,11 +49,25 @@ export class AllocatePageAllocateModeUpdaters {
     this.renderAllocate = params.renderAllocate;
     this.updaters = params.updaters;
     this.callbacks = params.callbacks;
-    // Export all methods as external handlers...
-    CommonHelpers.exportCallbacksFromInstance(params.callbacks, this);
+    /* // Export all methods as external handlers...
+     * CommonHelpers.exportCallbacksFromInstance(params.callbacks, this);
+     */
   }
 
   // Allocate mode...
+
+  /** Normalize number after float point number operations
+   * @param {number} number
+   * @return {number}
+   */
+  normalizeFractionNumber(number) {
+    let value = String(number);
+    if (value.includes('0000')) {
+      // Optimize if contains a lot of zeros (fix floating number bugs, eg '0.15000000000000002' -> '0.15')...
+      value = value.replace(/(\.\d*[1-9])0{4,}\d*$/, '$1');
+    }
+    return Number(value);
+  }
 
   /**
    * @param {HTMLInputElement} inputNode
@@ -62,55 +78,348 @@ export class AllocatePageAllocateModeUpdaters {
       Number(inputNode.getAttribute('data-production-id'))
     );
     const groupId = /** @type TAllocationId */ (Number(inputNode.getAttribute('data-group-id')));
-    const value = Number(inputNode.value);
+    const value = inputNode.value;
+    const number = Number(value);
     return {
       id,
       productionId,
       groupId,
       value,
+      number,
     };
   }
 
   /** Check if value is correct?
-   * @param {number} value
+   * @param {object} params
+   * @param {number} params.number
+   * @param {string} [params.value]
    * @return boolean
    */
-  checkAllocateModeFractionValue(value) {
-    if (value < 0) {
-      return false;
+  checkAllocateModeFractionValue({ number, value }) {
+    const strValue = value || String(number);
+    if (value != undefined && !value) {
+      throw new Error('Entered empty string');
     }
-    if (value > 1) {
-      return false;
+    if (isNaN(number)) {
+      throw new Error('Expected number from 0 to 1. Got non-number "' + strValue + '".');
+    }
+    if (number < 0 || number > 1) {
+      throw new Error('Expected number from 0 to 1. Got invalid number (' + strValue + ').');
     }
     return true;
   }
 
-  /** Check the value only when user finished changing it
-   * @param {HTMLInputElement} inputNode
+  /**
+   * @param {object} params
+   * @param {TAllocationId} params.productionId
+   * @param {TLocalGroupId} params.groupId
+   * @param {HTMLElement} [params.contentNode]
+   * @param {boolean} params.hasError
    */
-  checkAllocateModeFractionValueOnChange(inputNode) {
-    const { id, value, productionId, groupId } = this.getAllocateModeFractionValueProps(inputNode);
-    console.log('[AllocatePageUpdaters:checkAllocateModeFractionValueOnChange]', {
-      id,
+  setAllocateModeFractionInputErrorStatus({ productionId, groupId, contentNode, hasError }) {
+    const { nodes } = this;
+    const inputId = AllocatePageHelpers.getAllocateModeFractionInputId({ productionId, groupId });
+    if (!contentNode) {
+      contentNode = nodes.getAllocateModeContentContainerNode();
+    }
+    const inputNode = /** @type HTMLInputElement */ (contentNode.querySelector('input#' + inputId));
+    console.log('[AllocatePageAllocateModeUpdaters:setAllocateModeFractionInputErrorStatus]', {
       productionId,
       groupId,
-      value,
+      inputId,
+      contentNode,
       inputNode,
+    });
+    inputNode.classList.toggle('error', hasError);
+  }
+
+  /**
+   * @param {object} params
+   * @param {TLocalGroupId} params.groupId
+   * @param {boolean} params.hasError
+   */
+  setAllocateModeFractionRowErrorStatus({ groupId, hasError }) {
+    const { state, nodes } = this;
+    const { production } = state;
+    const productionIds = /** @type TAllocationId[] */ (production.map(({ id }) => id));
+    const contentNode = nodes.getAllocateModeContentContainerNode();
+    console.log('[AllocatePageAllocateModeUpdaters:setAllocateModeFractionRowErrorStatus]', {
+      hasError,
+      groupId,
+      productionIds,
+      production,
+      contentNode,
+    });
+    productionIds.forEach((productionId) => {
+      this.setAllocateModeFractionInputErrorStatus({
+        productionId,
+        groupId,
+        contentNode,
+        hasError,
+      });
+    });
+  }
+
+  /**
+   * @param {object} params
+   * @param {TAllocationId} params.productionId
+   * @param {TLocalGroupId} params.groupId
+   * @param {boolean} params.hasError
+   * @param {boolean} [params.setErrorForEntireNode] - Set error status for entire row or only current input?
+   */
+  setAllocateModeFractionErrorStatus({ productionId, groupId, hasError, setErrorForEntireNode }) {
+    const { nodes } = this;
+    const inputId = AllocatePageHelpers.getAllocateModeFractionInputId({ productionId, groupId }); // `production-${productionId}-group-${groupId}-fraction`;
+    const contentNode = nodes.getAllocateModeContentContainerNode();
+    const inputNode = /** @type HTMLInputElement */ (contentNode.querySelector('input#' + inputId));
+    console.log('[AllocatePageAllocateModeUpdaters:setAllocateModeFractionErrorStatus]', {
+      productionId,
+      groupId,
+      inputId,
+      contentNode,
+      inputNode,
+    });
+    // Set error status for entire row or only current input?
+    if (setErrorForEntireNode) {
+      // Set error status for entire row?
+      this.setAllocateModeFractionRowErrorStatus({ groupId, hasError });
+    } else {
+      // Set error status for only current item.
+      this.setAllocateModeFractionInputErrorStatus({ productionId, groupId, hasError });
+    }
+  }
+
+  /**
+   * @param {object} params
+   * @param {number} params.number
+   * @param {TAllocationId} params.productionId
+   * @param {TLocalGroupId} params.groupId
+   * @param {boolean} [params.omitError] - Set error status?
+   * @param {boolean} [params.setErrorForEntireNode] - Set error status for entire row or only current input?
+   * @param {boolean} [params.toExponential] - Convert to scientific notation
+   */
+  updateAllocateModeFractionInputDomValue({
+    number,
+    productionId,
+    groupId,
+    omitError,
+    setErrorForEntireNode,
+    toExponential,
+  }) {
+    const { nodes } = this;
+    const inputId = AllocatePageHelpers.getAllocateModeFractionInputId({ productionId, groupId }); // `production-${productionId}-group-${groupId}-fraction`;
+    const contentNode = nodes.getAllocateModeContentContainerNode();
+    const inputNode = /** @type HTMLInputElement */ (contentNode.querySelector('input#' + inputId));
+    console.log('[AllocatePageAllocateModeUpdaters:updateAllocateModeFractionInputDomValue]', {
+      number,
+      productionId,
+      groupId,
+      inputId,
+      contentNode,
+      inputNode,
+    });
+    const value = toExponential ? number.toExponential(4) : String(number);
+    inputNode.value = value;
+    // Set input field error status (using try...catch)...
+    if (!omitError) {
+      let hasError = false;
+      try {
+        this.checkAllocateModeFractionValue({ number });
+      } catch (error) {
+        // eslint-disable-next-line no-console
+        console.warn('[AllocatePageAllocateModeUpdaters:updateAllocateModeFractionInputDomValue]', {
+          error,
+          productionId,
+          groupId,
+        });
+        hasError = true;
+      }
+      this.setAllocateModeFractionErrorStatus({
+        productionId,
+        groupId,
+        hasError,
+        setErrorForEntireNode,
+      });
+    }
+  }
+
+  /**
+   * @param {object} params
+   * @param {TLocalGroupId} params.groupId
+   */
+  checkAllGroupInputs({ groupId }) {
+    const { state, nodes } = this;
+    const { production } = state;
+    const productionIds = /** @type TAllocationId[] */ (production.map(({ id }) => id));
+    const lastProductionId = productionIds[productionIds.length - 1];
+    const contentNode = /** @type HTMLElement */ (nodes.getAllocateModeContentContainerNode());
+    let summ = 0;
+    productionIds.forEach((productionId) => {
+      const inputId = AllocatePageHelpers.getAllocateModeFractionInputId({ productionId, groupId });
+      const inputNode = /** @type HTMLInputElement */ (
+        contentNode.querySelector('input#' + inputId)
+      );
+      const value = inputNode.value;
+      const number = Number(value);
+      console.log('[AllocatePageAllocateModeUpdaters:checkAllGroupInputs]', {
+        // inputId,
+        // inputNode,
+        value,
+        number,
+        productionId,
+        groupId,
+      });
+      this.checkAllocateModeFractionValue({ number, value });
+      if (productionId !== lastProductionId) {
+        summ += number;
+      }
+    });
+    if (summ > 1) {
+      throw new Error(`The sum of fractions should not exceed 1! Not it's equal to (${summ}).`);
+    }
+  }
+
+  /**
+   * @param {object} params
+   * @param {number} params.number
+   * @param {TAllocationId} params.productionId
+   * @param {TLocalGroupId} params.groupId
+   */
+  updateAllocateModeFractionValue({ number, productionId, groupId }) {
+    const { state } = this;
+    const { fractions, production } = state;
+    const fractionsGroup = fractions[groupId];
+    fractionsGroup[productionId] = number;
+    this.checkAllGroupInputs({ groupId });
+    const productionIds = /** @type TAllocationId[] */ (production.map(({ id }) => id));
+    const lastProductionId = productionIds[productionIds.length - 1];
+    const otherProductionIds = productionIds.filter((id) => id !== lastProductionId);
+    const otherValues = otherProductionIds.map(
+      (id) => /* id === productionId ? number : */ fractionsGroup[id],
+    );
+    const otherSumm = otherValues.reduce((summ, num) => summ + num, 0);
+    const lastValueRaw = 1 - otherSumm;
+    const lastValue = this.normalizeFractionNumber(lastValueRaw);
+    console.log('[AllocatePageAllocateModeUpdaters:updateAllocateModeFractionValue]', {
+      number,
+      productionId,
+      groupId,
+      lastValue,
+      lastValueRaw,
+      otherValues,
+      otherSumm,
+      lastProductionId,
+      fractionsGroup,
+      productionIds,
+      otherProductionIds,
+    });
+    if (otherSumm > 1) {
+      throw new Error(
+        `The sum of fractions should not exceed 1! Not it's equal to (${otherSumm}).`,
+      );
+    }
+    this.updateAllocateModeFractionInputDomValue({
+      number: lastValue,
+      productionId: lastProductionId,
+      groupId,
+      // toExponential: true,
+      // omitError: false,
+    });
+  }
+
+  /** Set the value for input node
+   * @param {object} params
+   * @param {number} params.number
+   * @param {string} params.value
+   * @param {TAllocationId} params.productionId
+   * @param {TLocalGroupId} params.groupId
+   */
+  setAllocateModeFractionValue({ number, value, productionId, groupId }) {
+    // const { state } = this;
+    console.log('[AllocatePageUpdaters:setAllocateModeFractionValue]', {
+      number,
+      value,
+      productionId,
+      groupId,
+    });
+    let hasError = false;
+    try {
+      // this.checkAllocateModeFractionValue({ number, value });
+      // this.checkAllGroupInputs({ groupId });
+      console.log('[AllocatePageUpdaters:setAllocateModeFractionValue] update', {
+        value,
+        productionId,
+        groupId,
+      });
+      // const { fractions } = state;
+      // const fractionsGroup = fractions[groupId];
+      // Number changed?
+      // if (fractionsGroup[productionId] !== number) {
+      this.updateAllocateModeFractionValue({ number, productionId, groupId });
+      this.updaters.clearError();
+    } catch (error) {
+      // eslint-disable-next-line no-console
+      console.error('[AllocatePageAllocateModeUpdaters:setAllocateModeFractionValue]', {
+        error,
+        value,
+        productionId,
+        groupId,
+      });
+      this.updaters.setError(error);
+      hasError = true;
+    }
+    const setErrorForEntireNode = true;
+    this.setAllocateModeFractionErrorStatus({
+      productionId,
+      groupId,
+      hasError,
+      setErrorForEntireNode,
     });
   }
 
   /** Check the value after each small change
    * @param {HTMLInputElement} inputNode
    */
-  checkAllocateModeFractionValueOnInput(inputNode) {
-    const { id, value, productionId, groupId } = this.getAllocateModeFractionValueProps(inputNode);
-    console.log('[AllocatePageUpdaters:checkAllocateModeFractionValueOnInput]', {
+  setAllocateModeFractionValueOnChange(inputNode) {
+    const { id, number, value, productionId, groupId } =
+      this.getAllocateModeFractionValueProps(inputNode);
+    console.log('[AllocatePageUpdaters:setAllocateModeFractionValueOnChange]', {
       id,
       productionId,
       groupId,
+      number,
       value,
       inputNode,
     });
+    this.setAllocateModeFractionValue({ number, value, productionId, groupId });
+  }
+
+  /** Check the value after each small change
+   * @param {HTMLInputElement} inputNode
+   */
+  setAllocateModeFractionValueOnInput(inputNode) {
+    const { id, number, value, productionId, groupId } =
+      this.getAllocateModeFractionValueProps(inputNode);
+    if (isNaN(number)) {
+      console.warn('[AllocatePageUpdaters:setAllocateModeFractionValueOnInput]: Not a number', {
+        number,
+        value,
+        id,
+        productionId,
+        groupId,
+        inputNode,
+      });
+    } else {
+      console.log('[AllocatePageUpdaters:setAllocateModeFractionValueOnInput]', {
+        number,
+        value,
+        id,
+        productionId,
+        groupId,
+        inputNode,
+      });
+      this.setAllocateModeFractionValue({ number, value, productionId, groupId });
+    }
   }
 
   updateAllocateModeInputNodes() {
@@ -195,5 +504,17 @@ export class AllocatePageAllocateModeUpdaters {
     renderAllocate.clearAllocateNodes();
     this.resetAllocateMode();
     this.resetAllocationFractions();
+  }
+
+  // Final action. Prepare and send data to the server...
+  confirmAllocateUpdater() {
+    const { state } = this;
+    const { groups, fractions, production } = state;
+    console.log('[AllocatePageAllocateModeUpdaters:confirmAllocateUpdater]', {
+      groups,
+      fractions,
+      production,
+    });
+    debugger;
   }
 }

@@ -101,7 +101,7 @@ export class AllocatePageRenderAllocate {
     const isEmpty = !itemsCount;
     const itemsContent = itemsContentList.join('\n');
     const initialValue = fractions[groupId][productionId]; // isLastProduction ? 1 : 0;
-    const inputId = `production-${productionId}-group-${groupId}-fraction`;
+    const inputId = AllocatePageHelpers.getAllocateModeFractionInputId({ productionId, groupId }); // `production-${productionId}-group-${groupId}-fraction`;
     return `
       <div
         class="production-group ${isLastProduction ? 'last' : ''}"

@@ -62,8 +62,10 @@ export class AllocatePageUpdaters {
 
   /** setError -- Set and show error.
    * @param {string|Error|string[]|Error[]} error - Error or errors list.
+   * @param {object} [opts] - Options
+   * @param {boolean} [opts.omitNotify] - Don't show error toast
    */
-  setError(error) {
+  setError(error, opts = {}) {
     const hasErrors = !!error;
     const rootNode = this.nodes.getRootNode();
     rootNode.classList.toggle('has-error', hasErrors);
@@ -78,7 +80,9 @@ export class AllocatePageUpdaters {
         errorNode,
       });
       // TODO: Show multiple toasts for multiple (if got list of) errors?
-      commonNotify.showError(text);
+      if (!opts.omitNotify && text !== errorNode.innerHTML) {
+        commonNotify.showError(text);
+      }
     }
     if (errorNode) {
       errorNode.innerHTML = text;
