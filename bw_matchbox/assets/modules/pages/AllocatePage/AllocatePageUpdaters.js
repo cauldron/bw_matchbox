@@ -104,30 +104,46 @@ export class AllocatePageUpdaters {
 
   // State updaters...
 
-  /** @param {TLocalGroupId} groupId */
-  checkUniqueGroupNames(groupId) {
+  checkUniqueGroupNames() {
     const { nodes, state } = this;
     const { groups } = state;
-    const groupNames = groups.map(({ name }) => name);
-    /** @type TLocalGroupId[] */
-    const duplicatedGroupIds = groups.reduce((result, { localId, name }) => {
-      if (groupNames.includes(name) && !result.includes(localId)) {
-        result.push(localId);
+    /** @type Record<string, TLocalGroupId[]> */
+    const groupNameCounts = groups.reduce((result, { localId, name }) => {
+      if (!result[name]) {
+        result[name] = [];
       }
+      result[name].push(localId);
       return result;
-    }, []);
+    }, {});
+    const duplicatedNames = [];
+    /** @type TLocalGroupId[] */
+    const duplicatedGroupIds = Object.entries(groupNameCounts)
+      .map(([name, list]) => {
+        if (list.length > 1) {
+          duplicatedNames.push(name);
+          return list;
+        }
+      })
+      .filter(Boolean)
+      .reduce((result, list) => {
+        result.push.apply(result, list);
+        return result;
+      }, []);
+    // Update all groups...
     groups.forEach(({ localId }) => {
       const groupNode = nodes.getGroupNode(localId);
-      const isDuplicated = duplicatedGroupIds.includes(groupId);
+      const isDuplicated = duplicatedGroupIds.includes(localId);
       groupNode.classList.toggle('duplicated-name', isDuplicated);
     });
     if (duplicatedGroupIds.length) {
       const error = new Error('Group names should be unique.');
       // eslint-disable-next-line no-console
       console.warn('[AllocatePageUpdaters:checkUniqueGroupNames]', error, {
-        groupNames,
+        duplicatedNames,
       });
       this.setError(error);
+    } else {
+      this.clearError();
     }
   }
 
@@ -344,13 +360,14 @@ export class AllocatePageUpdaters {
         const {
           groupId, // TLocalGroupId
         } = result;
-        console.log('[AllocatePageUpdaters:editGroupUpdater]', {
-          groupId, // TLocalGroupId
-          result,
-          editor,
-        });
+        /* console.log('[AllocatePageUpdaters:editGroupUpdater]', {
+         *   groupId, // TLocalGroupId
+         *   result,
+         *   editor,
+         * });
+         */
         this.updateGroupProps(groupId);
-        this.checkUniqueGroupNames(groupId);
+        this.checkUniqueGroupNames();
       })
       .catch((error) => {
         if (error instanceof Error) {

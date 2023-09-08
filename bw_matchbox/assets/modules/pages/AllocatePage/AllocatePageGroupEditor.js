@@ -220,7 +220,7 @@ export class AllocatePageGroupEditor {
     const inputNode = this.getGroupTitleInputNode();
     const { value } = inputNode;
     const groupData = this.getGroupData();
-    groupData.name = value;
+    groupData.name = value.trim();
     const defer = this.getEditorDefer();
     /** @type TEditorResult */
     const result = {

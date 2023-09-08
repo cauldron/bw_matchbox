@@ -62,7 +62,7 @@
 }
 /* Duplicated name error */
 .allocate-layout .allocate-groups-list .group.duplicated-name {
-  background-color: rgba(187 0 0 / 15%);
+  background-color: rgba(187 0 0 / 10%);
 }
 .allocate-layout .allocate-groups-list .group.duplicated-name .title #group-name {
   color: var(--common-error-color);
