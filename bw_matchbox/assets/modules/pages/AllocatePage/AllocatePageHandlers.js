@@ -9,6 +9,7 @@ import * as AllocatePageHelpers from './AllocatePageHelpers.js';
 import { AllocatePageNodes } from './AllocatePageNodes.js';
 // import { AllocatePageRender } from './AllocatePageRender.js';
 import { AllocatePageUpdaters } from './AllocatePageUpdaters.js';
+import { AllocatePageAllocateModeUpdaters } from './AllocatePageAllocateModeUpdaters.js';
 import { AllocatePageState } from './AllocatePageState.js';
 /* eslint-enable no-unused-vars */
 
@@ -23,12 +24,15 @@ export class AllocatePageHandlers {
   state;
   /** @type {AllocatePageUpdaters} */
   updaters;
+  /** @type {AllocatePageAllocateModeUpdaters} */
+  allocateModeUpdaters;
 
   /** @constructor
    * @param {object} params
    * @param {AllocatePageNodes} params.nodes
    * @param {AllocatePageState} params.state
    * @param {AllocatePageUpdaters} params.updaters
+   * @param {AllocatePageAllocateModeUpdaters} params.allocateModeUpdaters
    * @param {TSharedHandlers} params.callbacks
    */
   constructor(params) {
@@ -36,6 +40,7 @@ export class AllocatePageHandlers {
     this.nodes = params.nodes;
     this.state = params.state;
     this.updaters = params.updaters;
+    this.allocateModeUpdaters = params.allocateModeUpdaters;
     // Export all methods as external handlers...
     CommonHelpers.exportCallbacksFromInstance(params.callbacks, this);
   }
@@ -145,7 +150,7 @@ export class AllocatePageHandlers {
       });
       // eslint-disable-next-line no-debugger
       debugger;
-      this.updaters.setError(error);
+      this.updaters.setError('recent', error);
     }
   }
 
@@ -170,17 +175,24 @@ export class AllocatePageHandlers {
       });
       // eslint-disable-next-line no-debugger
       debugger;
-      this.updaters.setError(error);
+      this.updaters.setError('recent', error);
     }
   }
 
   /** @param {PointerEvent} event */
   startAllocate(event) {
+    const { allocateModeUpdaters } = this;
     event.preventDefault();
     event.stopPropagation();
-    console.log('[AllocatePageHandlers:startAllocate]', {});
-    debugger;
-    // TODO!
+    allocateModeUpdaters.startAllocateMode();
+  }
+
+  /** @param {PointerEvent} event */
+  backFromAllocate(event) {
+    const { allocateModeUpdaters } = this;
+    event.preventDefault();
+    event.stopPropagation();
+    allocateModeUpdaters.backFromAllocateMode();
   }
 
   addNewGroup() {
@@ -193,7 +205,7 @@ export class AllocatePageHandlers {
       console.error('[AllocatePageHandlers:addNewGroup]', error);
       // eslint-disable-next-line no-debugger
       debugger;
-      this.updaters.setError(error);
+      this.updaters.setError('recent', error);
     }
   }
 
@@ -236,7 +248,7 @@ export class AllocatePageHandlers {
       });
       // eslint-disable-next-line no-debugger
       debugger;
-      this.updaters.setError(error);
+      this.updaters.setError('recent', error);
     }
   }
 
@@ -274,5 +286,45 @@ export class AllocatePageHandlers {
     });
     // Toggle selection for row if clicked with control key...
     itemNode.classList.toggle('selected');
+  }
+
+  // Allocation mode...
+
+  /** @param {PointerEvent} event */
+  toggleAllocateGroupItems(event) {
+    event.preventDefault();
+    event.stopPropagation();
+    const node = /** @type {HTMLElement} */ (event.currentTarget);
+    const groupItemsNode = node.closest('.group-items');
+    /* console.log('[AllocatePageHandlers:toggleAllocateGroupItems]', {
+     *   groupItemsNode,
+     *   node,
+     *   event,
+     * });
+     */
+    groupItemsNode && groupItemsNode.classList.toggle('expanded');
+  }
+
+  /** Check the value only when user finished changing it
+   * @param {InputEvent} event
+   */
+  handleAllocateFractionValueChange(event) {
+    const { allocateModeUpdaters } = this;
+    const inputNode = /** @type {HTMLInputElement} */ (event.currentTarget);
+    allocateModeUpdaters.setAllocateModeFractionValueOnChange(inputNode);
+  }
+
+  /** Check the value after each small change
+   * @param {InputEvent} event
+   */
+  handleAllocateFractionValueInput(event) {
+    const { allocateModeUpdaters } = this;
+    const inputNode = /** @type {HTMLInputElement} */ (event.currentTarget);
+    allocateModeUpdaters.setAllocateModeFractionValueOnInput(inputNode);
+  }
+
+  confirmAllocate() {
+    const { allocateModeUpdaters } = this;
+    allocateModeUpdaters.confirmAllocateUpdater();
   }
 }

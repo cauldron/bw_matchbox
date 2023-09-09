@@ -1,3 +1,5 @@
+/* stylelint-disable selector-class-pattern */
+
 .allocate-layout {
   --border-color: #ddd;
   --allocate-layout-toolbar-items-size: 38px;
@@ -21,10 +23,10 @@
   flex-direction: column;
 }
 
+/* Content cells */
+.allocate-layout .allocate-mode-content,
 .allocate-layout .allocate-groups-content,
 .allocate-layout .allocate-sources-content,
-/* .allocate-layout .allocate-columns-layout-column, */
-/* .allocate-layout .allocate-sources-column, */
 .allocate-layout .allocate-header {
   padding: 20px;
 }
@@ -32,17 +34,15 @@
   padding-bottom: 0;
 }
 
-/* .allocate-layout h3, */
 .allocate-layout .allocate-header .common-page-header,
 .allocate-layout .allocate-header .common-page-header .title {
   margin-bottom: 0;
 }
 
-.allocate-layout .allocate-columns-layout {
+.allocate-layout .allocate-root-layout {
   /* border: 1px solid green; */
   display: flex;
   flex: 1;
-  overflow: hidden;
   align-items: stretch;
   align-content: stretch;
   border-top: 1px solid var(--border-color);
@@ -50,11 +50,11 @@
   transition: all var(--common-animation-time);
   opacity: 0;
 }
-.allocate-layout.inited .allocate-columns-layout {
+.allocate-layout.inited .allocate-root-layout {
   opacity: 1;
 }
 
-.allocate-layout .allocate-layout-column {
+.allocate-layout .allocate-groups-column {
   border-bottom: 1px solid var(--border-color);
 }
 .allocate-layout .allocate-layout-toolbar {
@@ -71,6 +71,7 @@
   }
 }
 @media screen and (width >= 600px) {
+  /* 1st phase: Create groups */
   .allocate-layout {
     position: fixed;
     left: 0;
@@ -79,7 +80,12 @@
     bottom: 0;
     overflow: hidden;
   }
-  .allocate-layout .allocate-columns-layout {
+  .allocate-layout .allocate-root-layout.allocate-mode-layout {
+    overflow: hidden;
+    flex-direction: column;
+  }
+  .allocate-layout .allocate-root-layout.allocate-columns-layout {
+    overflow: hidden;
     flex-direction: row;
   }
   .allocate-layout .allocate-layout-toolbar {
@@ -87,8 +93,9 @@
   }
   .allocate-layout .allocate-layout-content {
     flex: 1;
+    display: flex;
+    flex-direction: column;
   }
-  /* .allocate-layout .allocate-columns-layout-column, */
   .allocate-layout .allocate-layout-content,
   .allocate-layout .allocate-layout-column {
     overflow: auto;
@@ -96,6 +103,8 @@
   .allocate-layout .allocate-layout-column {
     display: flex;
     flex-direction: column;
+  }
+  .allocate-layout .allocate-groups-column {
     border-bottom: 0;
     border-right: 1px solid var(--border-color);
     /* Make columns resizable */
@@ -106,9 +115,19 @@
     /* Initial width of the left column */
     width: 30%;
   }
-  .allocate-layout .allocate-layout-column {
+  .allocate-layout.DEBUG .allocate-groups-column {
+    /* DEBUG: Initial width of the left column */
+    width: 40%;
+  }
+  .allocate-layout .allocate-sources-column {
     /* border: 1px solid purple; */
     flex: 1;
+  }
+
+  /* 2nd phase: Allocate mode */
+
+  .allocate-layout .allocate-mode-column {
+    overflow: hidden;
   }
 }
 
@@ -130,7 +149,11 @@
 }
 
 /* Statistics */
-.allocate-layout .info-tableau .statistics-info {
+.allocate-layout:not(.allocate-mode) .info-tableau .info-allocate,
+.allocate-layout.allocate-mode .info-tableau .info-select {
+  display: none;
+}
+.allocate-layout:not(.allocate-mode) .info-tableau .statistics-info {
   text-align: center;
 }
 .allocate-layout .info-tableau .statistics-info-item {
@@ -158,11 +181,14 @@
 
 /* Error */
 .allocate-layout .info-tableau .error {
+  margin: 5px 0;
+}
+.allocate-layout .info-tableau .error .error-item {
+  margin: 5px 0;
   border-radius: 4px;
   background-color: var(--common-error-color);
   color: #fff;
-  margin: 10px 0;
-  padding: 10px 20px;
+  padding: 5px 10px;
 }
 .allocate-layout:not(.has-error) .info-tableau .error {
   display: none;

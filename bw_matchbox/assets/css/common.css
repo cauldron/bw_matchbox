@@ -10,7 +10,7 @@
   --common-animation-time: 250ms;
   --common-effect-time: 500ms;
   /* Main colors */
-  --common-error-color: #b00;
+  --common-error-color: #b00; /* 187 0 0 */
   --common-warn-color: #960;
   --common-success-color: #181;
   /* Default table cell widths */

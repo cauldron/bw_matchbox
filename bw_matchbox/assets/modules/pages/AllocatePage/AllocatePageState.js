@@ -15,6 +15,12 @@ export class AllocatePageState {
   /** @type AllocatePageNodes */
   nodes;
 
+  /** @type Record<string, TErrorLikePlural> */
+  errors = {};
+
+  /** @type TProcessId */
+  processId;
+
   /** @type TUserName */
   currentUser;
   /** @type TUserRole */
@@ -33,6 +39,8 @@ export class AllocatePageState {
 
   /** @type TAllocationGroup[] */
   groups;
+  /** @type TAllocationFractions */
+  fractions;
 
   /** @constructor
    * @param {TAllocatePageStateParams} params
@@ -47,6 +55,7 @@ export class AllocatePageState {
     this.technosphere = params.technosphere;
     this.biosphere = params.biosphere;
     // Current configuration parameters...
+    this.processId = params.processId;
     this.currentRole = params.currentRole;
     this.currentUser = params.currentUser;
   }

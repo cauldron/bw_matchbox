@@ -11,6 +11,7 @@ import { AllocatePageGroupEditor } from './AllocatePageGroupEditor.js';
 import { AllocatePageNodes } from './AllocatePageNodes.js';
 import { AllocatePageState } from './AllocatePageState.js';
 import { AllocatePageRender } from './AllocatePageRender.js';
+import { AllocatePageRenderAllocate } from './AllocatePageRenderAllocate.js';
 /* eslint-enable no-unused-vars */
 
 /**
@@ -24,6 +25,8 @@ export class AllocatePageUpdaters {
   state;
   /** @type AllocatePageRender */
   render;
+  /** @type AllocatePageRenderAllocate */
+  renderAllocate;
 
   /** @type TSharedHandlers */
   callbacks;
@@ -33,6 +36,7 @@ export class AllocatePageUpdaters {
    * @param {AllocatePageNodes} params.nodes
    * @param {AllocatePageState} params.state
    * @param {AllocatePageRender} params.render
+   * @param {AllocatePageRenderAllocate} params.renderAllocate
    * @param {TSharedHandlers} params.callbacks
    */
   constructor(params) {
@@ -40,6 +44,7 @@ export class AllocatePageUpdaters {
     this.nodes = params.nodes;
     this.state = params.state;
     this.render = params.render;
+    this.renderAllocate = params.renderAllocate;
     this.callbacks = params.callbacks;
     // Export all methods as external handlers...
     CommonHelpers.exportCallbacksFromInstance(params.callbacks, this);
@@ -56,30 +61,26 @@ export class AllocatePageUpdaters {
   }
 
   /** setError -- Set and show error.
-   * @param {string|Error|string[]|Error[]} error - Error or errors list.
+   * @param {string} id - Error id
+   * @param {TErrorLikePlural} error - Error or errors list
    */
-  setError(error) {
-    const hasErrors = !!error;
-    const rootNode = this.nodes.getRootNode();
-    rootNode.classList.toggle('has-error', hasErrors);
-    // Show error...
-    const text = CommonHelpers.getErrorText(error);
-    const errorNode = this.nodes.getErrorNode();
-    // eslint-disable-next-line no-console
-    console.error('[AllocatePageState:setError]', {
-      text,
-      error,
-      errorNode,
-    });
-    // TODO: Show multiple toasts for multiple (if got list of) errors?
-    commonNotify.showError(text);
-    if (errorNode) {
-      errorNode.innerHTML = text;
-    }
+  setError(id, error) {
+    const { state, render } = this;
+    state.errors[id] = error;
+    render.renderErrors();
   }
 
-  clearError() {
-    this.setError(undefined);
+  /** setError -- Set and show error.
+   * @param {string} id - Error id
+   */
+  clearError(id) {
+    this.setError(id, undefined);
+  }
+
+  clearAllErrors() {
+    const { state, render } = this;
+    state.errors = {};
+    render.renderErrors();
   }
 
   setInited() {
@@ -91,6 +92,49 @@ export class AllocatePageUpdaters {
   }
 
   // State updaters...
+
+  checkUniqueGroupNames() {
+    const { nodes, state } = this;
+    const { groups } = state;
+    /** @type Record<string, TLocalGroupId[]> */
+    const groupNameCounts = groups.reduce((result, { localId, name }) => {
+      if (!result[name]) {
+        result[name] = [];
+      }
+      result[name].push(localId);
+      return result;
+    }, {});
+    const duplicatedNames = [];
+    /** @type TLocalGroupId[] */
+    const duplicatedGroupIds = Object.entries(groupNameCounts)
+      .map(([name, list]) => {
+        if (list.length > 1) {
+          duplicatedNames.push(name);
+          return list;
+        }
+      })
+      .filter(Boolean)
+      .reduce((result, list) => {
+        result.push.apply(result, list);
+        return result;
+      }, []);
+    // Update all groups...
+    groups.forEach(({ localId }) => {
+      const groupNode = nodes.getGroupNode(localId);
+      const isDuplicated = duplicatedGroupIds.includes(localId);
+      groupNode.classList.toggle('duplicated-name', isDuplicated);
+    });
+    if (duplicatedGroupIds.length) {
+      const error = new Error('Group names should be unique.');
+      // eslint-disable-next-line no-console
+      console.warn('[AllocatePageUpdaters:checkUniqueGroupNames]', error, {
+        duplicatedNames,
+      });
+      this.setError('unique-group-names', error);
+    } else {
+      this.clearError('unique-group-names');
+    }
+  }
 
   /** @param {TLocalGroupId} groupId */
   updateGroupProps(groupId) {
@@ -122,7 +166,7 @@ export class AllocatePageUpdaters {
     const groupsCount = groups.length;
     // Get only ungrouped items...
     const rootNode = nodes.getRootNode();
-    const statisticsNode = nodes.getStatisticsNode();
+    const statisticsNode = nodes.getSelectStatisticsNode();
     const groupsCountItems = statisticsNode.querySelectorAll('#groups-count');
     const hasGroups = !!groupsCount;
     rootNode.classList.toggle('has-groups', hasGroups);
@@ -144,7 +188,7 @@ export class AllocatePageUpdaters {
     const visibleData = state[type].filter((item) => !item.inGroup);
     const visibleCount = visibleData.length;
     const rootNode = nodes.getRootNode();
-    const statisticsNode = nodes.getStatisticsNode();
+    const statisticsNode = nodes.getSelectStatisticsNode();
     const statisticsItems = statisticsNode.querySelectorAll('#' + type + '-count');
     rootNode.classList.toggle('has-' + type + '-data', !!visibleCount);
     if (statisticsItems.length) {
@@ -248,6 +292,7 @@ export class AllocatePageUpdaters {
      *   groups,
      * });
      */
+    this.checkUniqueGroupNames();
     if (!opts.omitUpdate) {
       this.updateGroupsState();
     }
@@ -312,6 +357,7 @@ export class AllocatePageUpdaters {
          * });
          */
         this.updateGroupProps(groupId);
+        this.checkUniqueGroupNames();
       })
       .catch((error) => {
         if (error instanceof Error) {
@@ -322,7 +368,7 @@ export class AllocatePageUpdaters {
           });
           // eslint-disable-next-line no-debugger
           debugger;
-          this.setError(error);
+          this.setError('recent', error);
         } else {
           // eslint-disable-next-line no-console
           console.warn('[AllocatePageUpdaters:editGroupUpdater] warn', error, {

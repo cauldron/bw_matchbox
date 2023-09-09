@@ -47,3 +47,13 @@ export function addActionHandlers(parentNode, callbacks) {
     actionNode.addEventListener('click', action);
   });
 }
+
+/**
+ * @param {object} params
+ * @param {TAllocationId} params.productionId
+ * @param {TLocalGroupId} params.groupId
+ * @return {string}
+ */
+export function getAllocateModeFractionInputId({ productionId, groupId }) {
+  return `production-${productionId}-group-${groupId}-fraction`;
+}

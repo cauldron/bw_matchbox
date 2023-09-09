@@ -103,13 +103,33 @@ export class AllocatePageNodes {
     return columnsLayout.querySelector('#allocate-columns-layout');
   }
 
-  getStatisticsNode() {
+  getSelectStatisticsNode() {
     const rootNode = this.getRootNode();
-    return rootNode.querySelector('#statistics-info');
+    return rootNode.querySelector('#statistics-info-select');
   }
 
   getErrorNode() {
     const rootNode = this.getRootNode();
     return rootNode.querySelector('.info-tableau .error');
+  }
+
+  // Allocate nodes...
+
+  /** @return {HTMLElement} */
+  getAllocateModeLayoutNode() {
+    const rootNode = this.getRootNode();
+    return rootNode.querySelector('#allocate-mode-layout');
+  }
+
+  /** @return {HTMLElement} */
+  getAllocateModeToolbarNode() {
+    const node = this.getAllocateModeLayoutNode();
+    return node.querySelector('#allocate-mode-toolbar');
+  }
+
+  /** @return {HTMLElement} */
+  getAllocateModeContentContainerNode() {
+    const node = this.getAllocateModeLayoutNode();
+    return node.querySelector('#allocate-mode-content-container');
   }
 }

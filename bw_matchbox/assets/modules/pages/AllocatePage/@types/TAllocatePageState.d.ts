@@ -6,6 +6,7 @@ interface TAllocatePageStateParams {
   production: TAllocationData[];
   technosphere: TAllocationData[];
   // Current configuration parameters...
+  processId: TProductId;
   currentRole: TUserRole;
   currentUser: TUserName;
   // Modules...
