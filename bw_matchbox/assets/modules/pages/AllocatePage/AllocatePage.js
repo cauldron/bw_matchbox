@@ -84,23 +84,7 @@ export class AllocatePage {
         sampleItem.inGroup = defaultGroupId;
         defaultGroup.items.push(sampleItem);
       }
-      console.log('[AllocatePage:constructor] Default group', {
-        defaultGroupId,
-        defaultGroup,
-        groups,
-      });
     }
-
-    console.log('[AllocatePage:constructor]', {
-      // Data...
-      production,
-      technosphere,
-      biosphere,
-      // Current configuration parameters...
-      processId,
-      currentRole,
-      currentUser,
-    });
 
     // TODO: Init sub-modules...
     const nodes = new AllocatePageNodes({ rootNode });

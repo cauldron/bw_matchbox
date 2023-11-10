@@ -1,7 +1,6 @@
 // @ts-check
 
 import * as CommonHelpers from '../../common/CommonHelpers.js';
-import { commonNotify } from '../../common/CommonNotify.js';
 import { commonIndicators } from '../../common/CommonIndicators.js';
 
 import { AllocatePageGroupEditor } from './AllocatePageGroupEditor.js';
@@ -210,26 +209,27 @@ export class AllocatePageUpdaters {
     const {
       id, // TAllocationId;
       type, // TAllocationType; // 'technosphere'
-      amount, // number; // 0.06008158208572887
-      input, // TAllocationRecord; // {name: 'Clay-Williams', unit: 'kilogram', location: 'GLO', product: 'LLC', categories: 'Unknown'}
-      output, // TAllocationRecord; // {name: 'Smith LLC', unit: 'kilogram', location: 'GLO', product: 'Inc', categories: 'Unknown'}
-      inGroup, // TLocalGroupId; // Local data: input data is in group (should not be displayed in source data, but in group)
+      // amount, // number; // 0.06008158208572887
+      // input, // TAllocationRecord; // {name: 'Clay-Williams', unit: 'kilogram', location: 'GLO', product: 'LLC', categories: 'Unknown'}
+      // output, // TAllocationRecord; // {name: 'Smith LLC', unit: 'kilogram', location: 'GLO', product: 'Inc', categories: 'Unknown'}
+      // inGroup, // TLocalGroupId; // Local data: input data is in group (should not be displayed in source data, but in group)
     } = item;
     const inputsList = state[type];
     const inputData = inputsList && inputsList.find((item) => item.id === id);
     const inputNode = nodes.getInputNode(item); // inputsListNode && inputsListNode.querySelector('.input-row[data-id="' + id + '"]');
-    console.log('[AllocatePageUpdaters:restoreGroupedItemToInputs]', {
-      inputData,
-      // inputsListNode,
-      inputNode,
-      inputsList,
-      id, // TAllocationId;
-      type, // TAllocationType; // 'technosphere'
-      amount, // number; // 0.06008158208572887
-      input, // TAllocationRecord; // {name: 'Clay-Williams', unit: 'kilogram', location: 'GLO', product: 'LLC', categories: 'Unknown'}
-      output, // TAllocationRecord; // {name: 'Smith LLC', unit: 'kilogram', location: 'GLO', product: 'Inc', categories: 'Unknown'}
-      inGroup, // TLocalGroupId; // Local data: input data is in group (should not be displayed in source data, but in group)
-    });
+    /* console.log('[AllocatePageUpdaters:restoreGroupedItemToInputs]', {
+     *   inputData,
+     *   // inputsListNode,
+     *   inputNode,
+     *   inputsList,
+     *   id, // TAllocationId;
+     *   type, // TAllocationType; // 'technosphere'
+     *   amount, // number; // 0.06008158208572887
+     *   input, // TAllocationRecord; // {name: 'Clay-Williams', unit: 'kilogram', location: 'GLO', product: 'LLC', categories: 'Unknown'}
+     *   output, // TAllocationRecord; // {name: 'Smith LLC', unit: 'kilogram', location: 'GLO', product: 'Inc', categories: 'Unknown'}
+     *   inGroup, // TLocalGroupId; // Local data: input data is in group (should not be displayed in source data, but in group)
+     * });
+     */
     if (inputData) {
       inputData.inGroup = undefined;
     }
@@ -319,12 +319,13 @@ export class AllocatePageUpdaters {
       throw new Error(`Not found item for id "${itemId}"`);
     }
     const item = items[itemPos];
-    console.log('[AllocatePageUpdaters:removeGroupItemUpdater]', {
-      groupId,
-      itemId,
-      group,
-      item,
-    });
+    /* console.log('[AllocatePageUpdaters:removeGroupItemUpdater]', {
+     *   groupId,
+     *   itemId,
+     *   group,
+     *   item,
+     * });
+     */
     this.restoreGroupedItemToInputs(item, { omitUpdate: true });
     // Remove item from list...
     items.splice(itemPos, 1);
@@ -411,12 +412,13 @@ export class AllocatePageUpdaters {
     const startAllocate = toolbarNode.querySelector('[action-id=startAllocate]');
     const availableRows = this._getAvailableInputRows();
     const availableRowsCount = availableRows.length;
-    console.log('[AllocatePageUpdaters:updateStartAllocationState]', {
-      toolbarNode,
-      startAllocate,
-      availableRows,
-      availableRowsCount,
-    });
+    /* console.log('[AllocatePageUpdaters:updateStartAllocationState]', {
+     *   toolbarNode,
+     *   startAllocate,
+     *   availableRows,
+     *   availableRowsCount,
+     * });
+     */
     startAllocate.classList.toggle('disabled', !!availableRowsCount);
   }
 
@@ -434,26 +436,28 @@ export class AllocatePageUpdaters {
     groupNode.classList.toggle('expanded', true);
     const groupData = groups.find(({ localId }) => localId === groupId);
     const { items } = groupData;
-    console.log('[AllocatePageUpdaters:moveInputsToGroup]: start', {
-      items,
-      groupData,
-      groupId,
-      dragItemsList,
-    });
+    /* console.log('[AllocatePageUpdaters:moveInputsToGroup]: start', {
+     *   items,
+     *   groupData,
+     *   groupId,
+     *   dragItemsList,
+     * });
+     */
     /** @type TAllocationType[] */
     const affectedTypes = [];
     dragItemsList.forEach(({ type, id }) => {
       const inputsList = state[type];
       const inputItem = inputsList && inputsList.find((item) => item.id === id);
       const inputNode = inputItem && nodes.getInputNode(inputItem);
-      console.log('[AllocatePageUpdaters:moveInputsToGroup]: item', {
-        inputNode,
-        inputItem,
-        inputsList,
-        type,
-        id,
-        groupId,
-      });
+      /* console.log('[AllocatePageUpdaters:moveInputsToGroup]: item', {
+       *   inputNode,
+       *   inputItem,
+       *   inputsList,
+       *   type,
+       *   id,
+       *   groupId,
+       * });
+       */
       if (!affectedTypes[type]) {
         affectedTypes.push(type);
       }
@@ -464,13 +468,14 @@ export class AllocatePageUpdaters {
       const newNode = render.renderNewGroupContentItem(groupData, inputItem);
       commonIndicators.indicate(newNode, { animate: 'curtain' });
     });
-    console.log('[AllocatePageUpdaters:moveInputsToGroup]: done', {
-      affectedTypes,
-      items,
-      groupData,
-      groupId,
-      dragItemsList,
-    });
+    /* console.log('[AllocatePageUpdaters:moveInputsToGroup]: done', {
+     *   affectedTypes,
+     *   items,
+     *   groupData,
+     *   groupId,
+     *   dragItemsList,
+     * });
+     */
     // Update groups & inputs...
     this.updateGroupsState();
     this.updateGroupProps(groupId);

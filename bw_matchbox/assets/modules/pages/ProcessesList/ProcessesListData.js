@@ -14,7 +14,6 @@ export const ProcessesListData = {
   orderBy: ProcessesListConstants.defaultOrderBy, // 'random' | 'name' | 'location' | 'product' (TOrderByString)
   filterBy: ProcessesListConstants.defaultFilterBy, // 'none', 'matched' | 'unmatched' | 'waitlist' (TFilterProcessesByString)
   userDb: ProcessesListConstants.defaultUserDb, // 'source' | 'target', 'proxy' (TUserDbString)
-  // database: '', // UNUSED: #41: Using `databases` and `userDb`. Server provided database value (Used only for `searchUrl` requests.)
   searchValue: '',
 
   // Stored dom nodes...

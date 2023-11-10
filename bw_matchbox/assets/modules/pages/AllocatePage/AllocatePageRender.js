@@ -273,13 +273,6 @@ export class AllocatePageRender {
       handleGroupDragEnd,
       handleGroupDragDrop,
     } = callbacks;
-    console.log('[AllocatePageRender:addGroupDragHandlers]', {
-      handleGroupDragEnter,
-      handleGroupDragLeave,
-      handleGroupDragOver,
-      handleGroupDragDrop,
-      node,
-    });
     if (handleGroupDragEnter) {
       node.removeEventListener('dragenter', handleGroupDragEnter);
       node.addEventListener('dragenter', handleGroupDragEnter);
@@ -421,11 +414,6 @@ export class AllocatePageRender {
   addInputTableDragHandlers(parentNode) {
     const tableNode = parentNode.tagName === 'TABLE' ? parentNode : parentNode.closest('table');
     const type = /** @type TAllocationType */ (tableNode.getAttribute('data-type'));
-    console.log('[AllocatePageRender:addInputTableDragHandlers] start', {
-      parentNode,
-      tableNode,
-      type,
-    });
     // Don't need any handlers for production table
     if (type === 'production') {
       return;
@@ -433,12 +421,6 @@ export class AllocatePageRender {
     const { callbacks } = this;
     const { handleInputTableDragStart, handleInputTableClick } = callbacks;
     const dragNodes = parentNode.querySelectorAll('tr.input-row');
-    console.log('[AllocatePageRender:addInputTableDragHandlers]', {
-      parentNode,
-      handleInputTableDragStart,
-      dragNodes,
-      type,
-    });
     dragNodes.forEach((node) => {
       // Remove previous listeners (just for case) and add new ones...
       if (handleInputTableDragStart) {

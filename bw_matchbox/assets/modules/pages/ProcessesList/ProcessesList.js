@@ -91,13 +91,7 @@ export const ProcessesList = {
   fetchUrlParams() {
     // Get & store the database value form the url query...
     const urlParams = CommonHelpers.parseQuery(window.location.search);
-    const {
-      // database, // UNUSED: #41: Using `databases` and `userDb`
-      q: searchValue,
-    } = urlParams;
-    /* // UNUSED: Get database from url or from server-passed data... (Used only for `searchUrl` requests.)
-     * ProcessesListData.database = database || ProcessesListData.sharedParams.database;
-     */
+    const { q: searchValue } = urlParams;
     ProcessesListData.searchValue = searchValue || '';
   },
 

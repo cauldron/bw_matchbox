@@ -130,14 +130,6 @@ export class AllocatePageInputsDragger {
     // node.classList.toggle('dragging', false);
     this._setDragUpdate(undefined);
     const groupId = /** @type TLocalGroupId */ Number(node.getAttribute('data-group-id'));
-    console.log('[AllocatePageInputsDragger:handleGroupDragDrop]', {
-      groupId,
-      dragItemsList,
-      dragItemsListJson,
-      node,
-      dataTransfer,
-      event,
-    });
     this._clearAllSelectedItems();
     updaters.moveInputsToGroup(groupId, dragItemsList);
   }
@@ -157,31 +149,17 @@ export class AllocatePageInputsDragger {
     const node = /** @type HTMLElement */ (currentTarget);
     // node.classList.toggle('dragging', true);
     this._setDragUpdate(node);
-    console.log('[AllocatePageInputsDragger:handleGroupDragEnter]', {
-      node,
-      event,
-    });
     dataTransfer.dropEffect = 'move';
   }
 
   /** @param {DragEvent} event */
   handleGroupDragLeave(event) {
-    const {
-      // prettier-ignore
-      currentTarget,
-    } = event;
     event.preventDefault();
     if (!this.checkGroupDragEvent(event)) {
       // Wrong drag type: do nothing
       return;
     }
-    const node = /** @type HTMLElement */ (currentTarget);
     this._setDragUpdate(undefined);
-    // node.classList.toggle('dragging', false);
-    console.log('[AllocatePageInputsDragger:handleGroupDragLeave]', {
-      node,
-      event,
-    });
   }
 
   /** @param {DragEvent} event */
@@ -199,11 +177,6 @@ export class AllocatePageInputsDragger {
     const node = /** @type HTMLElement */ (currentTarget);
     // node.classList.toggle('dragging', true);
     this._setDragUpdate(node);
-    console.log('[AllocatePageInputsDragger:handleGroupDragOver]', {
-      dataTransfer,
-      node,
-      event,
-    });
     dataTransfer.dropEffect = 'move';
   }
 
@@ -212,29 +185,13 @@ export class AllocatePageInputsDragger {
     const {
       // prettier-ignore
       dataTransfer,
-      currentTarget,
     } = event;
-    console.log('[AllocatePageInputsDragger:handleGroupDragEnd] before', {
-      dataTransfer,
-      event,
-      currentTarget,
-    });
     if (!this.checkGroupDragEvent(event)) {
       // Wrong drag type: do nothing
       return;
     }
     event.preventDefault();
-    // const { nodes } = this;
-    // const groupNodes = nodes.getGroupNodes(); // groupListNode.querySelectorAll('.group');
-    // groupNodes.forEach((node) => {
-    //   node.classList.toggle('dragging', false);
-    // });
-    // const node = [>* @type HTMLElement <] (currentTarget);
     this._setDragUpdate(undefined);
-    console.log('[AllocatePageInputsDragger:handleGroupDragEnd]', {
-      dataTransfer,
-      event,
-    });
     dataTransfer.dropEffect = 'move';
   }
 
@@ -248,45 +205,14 @@ export class AllocatePageInputsDragger {
     } = event;
     const node = /** @type HTMLElement */ (currentTarget);
     const isSelected = node.classList.contains('selected');
-    console.log('[AllocatePageInputsDragger:handleInputTableDragStart] start', {
-      isSelected,
-      dragInputsType,
-      node,
-      dataTransfer,
-      currentTarget,
-      event,
-    });
     // Drag only selected nodes!
     if (!isSelected) {
       event.preventDefault();
       return false;
     }
-    /* // UNUSED: Move only one item
-     * const id = [>* @type TAllocationId <] Number(node.getAttribute('data-id'));
-     * const type = [>* @type TAllocationType <] (node.getAttribute('data-type'));
-     * [>* @type TDragInputItem <]
-     * const dragItem = { type, id };
-     * const dragItemsList = [dragItem];
-     */
     // Move all the selected items...
     const selectedItems = this._getSelectedItemsListToDrag();
     const dragItemsListJson = JSON.stringify(selectedItems);
     dataTransfer.setData(dragInputsType, dragItemsListJson);
-    console.log('[AllocatePageInputsDragger:handleInputTableDragStart]', {
-      dragInputsType,
-      /* // Single items:
-       * id,
-       * type,
-       * dragItem,
-       * dragItemsList,
-       */
-      // All items:
-      selectedItems,
-      dragItemsListJson,
-      node,
-      dataTransfer,
-      currentTarget,
-      event,
-    });
   }
 }
