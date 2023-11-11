@@ -118,7 +118,6 @@ export class InitChunks {
 
   initFinished() {
     if (this.waiting) {
-      // console.log('[InitChunks:initFinished]');
       this.inited = true;
       this.error = undefined;
       this.waiting = false;

@@ -148,10 +148,10 @@ export class AllocatePageRenderAllocate {
   /**
    * @param {object} params
    * @param {TAllocationData} params.data
-   * @param {boolean} params.isLastProduction
+   * @param {boolean} params.isLastProduction - Unused here?
    * @return {string}
    */
-  createProductionHeader({ data, isLastProduction }) {
+  createProductionHeader({ data }) {
     const {
       id, // 191
       // type, // 'production'
@@ -188,12 +188,6 @@ export class AllocatePageRenderAllocate {
       return this.createProductionHeader({ data, isLastProduction });
     });
     const content = contentList.join('\n');
-    console.log('[AllocatePageRenderAllocate:createAllocateRowsHeaders]', {
-      contentList,
-      content,
-      production,
-      state,
-    });
     return `
       <tr class="allocate-row allocate-row-headers">
         ${content}
@@ -230,13 +224,6 @@ export class AllocatePageRenderAllocate {
       `;
     });
     const content = contentList.join('\n');
-    console.log('[AllocatePageRenderAllocate:createAllocateRowsGroup]', {
-      group,
-      contentList,
-      content,
-      production,
-      state,
-    });
     return `
       <tr
         data-group-id="${groupId}"
@@ -252,11 +239,6 @@ export class AllocatePageRenderAllocate {
     const { state } = this;
     const { groups } = state;
     const headers = this.createAllocateRowsHeaders();
-    console.log('[AllocatePageRenderAllocate:createAllocateRows]', {
-      headers,
-      groups,
-      state,
-    });
     const groupRows = groups.map((group) => {
       return this.createAllocateRowsGroup({ group });
     });
@@ -277,11 +259,6 @@ export class AllocatePageRenderAllocate {
     const { nodes } = this;
     const content = this.createAllocateRows();
     const containerNode = nodes.getAllocateModeContentContainerNode();
-    // containerNode.classList.toggle('rows-layout', useRowsLayout);
-    console.log('[AllocatePageRenderAllocate:renderAllocateNodes]', {
-      content,
-      containerNode,
-    });
     containerNode.innerHTML = content;
     AllocatePageHelpers.addActionHandlers(containerNode, this.callbacks);
   }

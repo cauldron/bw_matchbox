@@ -17,9 +17,6 @@
     "doc": "docs",
     "test": "tests"
   },
-  "dependencies": {
-    "ym": "^0.1.2"
-  },
   "devDependencies": {
     "@babel/eslint-parser": "^7.22.9",
     "@babel/plugin-proposal-decorators": "^7.22.7",

@@ -121,13 +121,6 @@
 .details-list li {
   margin: 10px 0;
 }
-/* // UNUSED? Using the same width on the all scren widths?
- * @media (width >= 1300px) {
- *   .details-list {
- *     column-width: 350px;
- *   }
- * }
- */
 .details-list label {
   display: inline;
   opacity: 0.5;
@@ -219,12 +212,6 @@
   .panels-layout-side.hidden,
   .panels-layout-side {
     display: block;
-  }
-  .panels-layout-resizable {
-    /* TODO: Make optin to resize panels?
-    resize: horizontal;
-    overflow: hidden;
-    */
   }
   .panels-layout-main,
   .panels-layout-side {

@@ -14,9 +14,9 @@ files:
   - 'src/**/*.less'
 ignoreFiles:
   - '**/*_/**/*'
+  - '**/*UNUSED'
   - '**/*UNUSED/**/*'
   - '**/*_'
-  - '**/*UNUSED'
   - '.build*/'
 
 rules:

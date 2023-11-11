@@ -134,13 +134,7 @@ export class AllocatePageHandlers {
     event.preventDefault();
     event.stopPropagation();
     try {
-      const { node, groupNode, groupId } =
-        AllocatePageHelpers.getGroupNodeAndIdFromActionNode(event);
-      console.log('[AllocatePageHandlers:removeGroup]', {
-        groupNode,
-        groupId,
-        node,
-      });
+      const { groupId } = AllocatePageHelpers.getGroupNodeAndIdFromActionNode(event);
       const { updaters } = this;
       updaters.removeGroupUpdater(groupId);
     } catch (error) {
@@ -159,13 +153,7 @@ export class AllocatePageHandlers {
     event.preventDefault();
     event.stopPropagation();
     try {
-      const { node, groupNode, groupId } =
-        AllocatePageHelpers.getGroupNodeAndIdFromActionNode(event);
-      console.log('[AllocatePageHandlers:editGroup]', {
-        groupNode,
-        groupId,
-        node,
-      });
+      const { groupId } = AllocatePageHelpers.getGroupNodeAndIdFromActionNode(event);
       const { updaters } = this;
       updaters.editGroupUpdater(groupId);
     } catch (error) {
@@ -197,7 +185,6 @@ export class AllocatePageHandlers {
 
   addNewGroup() {
     try {
-      // console.log('[AllocatePageHandlers:addNewGroup]');
       const { updaters } = this;
       updaters.addGroupUpdater();
     } catch (error) {
@@ -225,15 +212,6 @@ export class AllocatePageHandlers {
       const itemId = /** @type TAllocationId */ (
         Number(itemNode && itemNode.getAttribute('data-id'))
       );
-      // const itemType = [>* @type TAllocationType <] (
-      //   itemNode && itemNode.getAttribute('data-type')
-      // );
-      console.log('[AllocatePageHandlers:removeGroupItem]', {
-        itemId,
-        // itemType,
-        itemNode,
-        node,
-      });
       updaters.removeGroupItemUpdater({ groupId, itemId });
       if (itemNode) {
         itemNode.remove();
@@ -274,16 +252,6 @@ export class AllocatePageHandlers {
   handleInputTableClick(event) {
     const { currentTarget } = event;
     const itemNode = /** @type {HTMLElement} */ (currentTarget);
-    const itemId = /** @type TAllocationId */ (
-      Number(itemNode && itemNode.getAttribute('data-id'))
-    );
-    const itemType = /** @type TAllocationType */ (itemNode && itemNode.getAttribute('data-type'));
-    console.log('[AllocatePageHandlers:handleInputTableClick]', {
-      itemId,
-      itemType,
-      itemNode,
-      event,
-    });
     // Toggle selection for row if clicked with control key...
     itemNode.classList.toggle('selected');
   }

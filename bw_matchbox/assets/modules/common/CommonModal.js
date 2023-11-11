@@ -203,8 +203,6 @@ class CommonModal {
    * @param {string} [options.width] - Custom window size (sm, md, lg)
    * @param {boolean} [options.autoWidth]
    * @param {boolean} [options.autoHeight]
-   * @param {boolean} [options.fullWindowWidth] (UNUSED)
-   * @param {boolean} [options.fullWindowHeight] (UNUSED)
    */
   setModalWindowOptions(options) {
     this.checkDomNodeInit(); // NOTE: Don nodes should be created!
@@ -234,10 +232,6 @@ class CommonModal {
     if (modal.classList.contains('show')) {
       throw new Error('Trying to show already shown modal');
     }
-    /* // Use delay...
-     * setTimeout(() => {
-     * }, 30);
-     */
     window.requestAnimationFrame(() => {
       modal.classList.toggle('show', true);
       document.body.classList.toggle('has-modal', true);
