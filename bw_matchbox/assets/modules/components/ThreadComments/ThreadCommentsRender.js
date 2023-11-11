@@ -271,7 +271,9 @@ export class ThreadCommentsRender {
       });
       // eslint-disable-next-line no-debugger
       debugger;
-      commonNotify.showError(errorText);
+      /* // NOTE: Show error only when it has occured (eg in `ThreadCommentsHandlers`), not when it's rendering.
+       * commonNotify.showError(errorText);
+       */
     }
     // Update (or clear) error block content...
     errorNode.innerHTML = errorText;

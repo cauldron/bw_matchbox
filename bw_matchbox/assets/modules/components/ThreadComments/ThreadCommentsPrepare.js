@@ -17,7 +17,11 @@ export const ThreadCommentsPrepare = /** @lends ThreadCommentsPrepare */ {
   threadCommentsRender: undefined,
 
   makeDerivedData() {
-    const { comments, threads, useFakeCurrentUser } = ThreadCommentsData;
+    const {
+      comments,
+      threads,
+      // useFakeCurrentUser,
+    } = ThreadCommentsData;
     /* console.log('[ThreadCommentsPrepare:makeDerivedData]', {
      *   comments,
      *   threads,
@@ -48,10 +52,11 @@ export const ThreadCommentsPrepare = /** @lends ThreadCommentsPrepare */ {
      * });
      */
     ThreadCommentsData.users = users;
-    // DEBUG: Set first given user as current user
-    if (useFakeCurrentUser) {
-      ThreadCommentsData.currentUser = users[0];
-    }
+    /* // DEBUG: Set first given user as current user
+     * if (useFakeCurrentUser && users.length) {
+     *   ThreadCommentsData.currentUser = users[0];
+     * }
+     */
     ThreadCommentsData.processesHash = processesHash;
     ThreadCommentsData.processIds = processIds;
   },
