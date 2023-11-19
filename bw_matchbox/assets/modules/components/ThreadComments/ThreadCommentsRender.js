@@ -220,30 +220,12 @@ class RenderHelpers {
                 <span class="name">${user}</span>
                 ${isCurrentUser ? '<span class="me">(me)</span>' : ''}
               </div>
-              <!-- // UNUSED: Actions for particular comments.
-              <div class="title-actions">
-                <a id="comment-answer" title="Answer"><i class="fa-regular fa-comment"></i></a>
-                <a id="comment-resolve" title="Mark it as resolved"><i class="fa-solid fa-xmark"></i></a>
-              </div>
-              -->
             </div>
             <div class="content">
               ${content}
             </div>
           </div>
         `;
-    /* console.log('[ThreadCommentsRender:renderHelpers:renderComment]', {
-     *   html,
-     *   //\\
-     *   id, // number; // 2
-     *   position, // number; // 1
-     *   thread: threadId, // number; // 1
-     *   user, // string; // 'Puccio Bernini'
-     *   content, // string; // '...'
-     *   //\\
-     *   comment,
-     * });
-     */
     return html;
   }
 
@@ -289,7 +271,9 @@ export class ThreadCommentsRender {
       });
       // eslint-disable-next-line no-debugger
       debugger;
-      commonNotify.showError(errorText);
+      /* // NOTE: Show error only when it has occured (eg in `ThreadCommentsHandlers`), not when it's rendering.
+       * commonNotify.showError(errorText);
+       */
     }
     // Update (or clear) error block content...
     errorNode.innerHTML = errorText;

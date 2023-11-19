@@ -123,11 +123,7 @@ class CommonIndicators {
   async initCssStyle() {
     if (!this.initChunks.isChunkStarted('cssStyle')) {
       this.initChunks.startChunk('cssStyle');
-      const found = await CommonHelpers.addCssStyle(cssStyleUrl);
-      /* console.log('[CommonIndicators:initCssStyle] loaded', {
-       *   found,
-       * });
-       */
+      await CommonHelpers.addCssStyle(cssStyleUrl);
       // Inited for `cssStyle`
       this.initChunks.finishChunk('cssStyle');
     }

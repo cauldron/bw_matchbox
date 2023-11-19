@@ -249,8 +249,11 @@ def comments_create_thread():
             user=content["comment"]["user"],
         )
         return flask.redirect(flask.url_for("comments_read", thread=thread.id))
-    except (IntegrityError, KeyError):
-        flask.abort(400)
+    except Exception as error:
+        # sTraceback = str(traceback.format_exc())
+        # sError = str(error)
+        # TODO: Store error and traceback in log for further analysis?
+        flask.abort(400, 'Server error occured. See server log for more details.')
 
 
 @matchbox_app.route("/comments/create-comment", methods=["POST"])
@@ -338,56 +341,63 @@ def comments_read():
     }
 
     """
-    get_config()
+    try:
+        get_config()
 
-    comments = Comment.select().order_by(Comment.thread_id, Comment.position)
-    threads = CommentThread.select().order_by(CommentThread.id)
+        comments = Comment.select().order_by(Comment.thread_id, Comment.position)
+        threads = CommentThread.select().order_by(CommentThread.id)
 
-    user = flask.request.args.get("user")
-    reporter = flask.request.args.get("reporter")
-    process = flask.request.args.get("process")
-    resolved = flask.request.args.get("resolved")
-    thread = flask.request.args.get("thread")
+        user = flask.request.args.get("user")
+        reporter = flask.request.args.get("reporter")
+        process = flask.request.args.get("process")
+        resolved = flask.request.args.get("resolved")
+        thread = flask.request.args.get("thread")
 
-    if user:
-        comments = comments.where(Comment.user == user)
-        threads = threads.where(CommentThread.id << {o.thread_id for o in comments})
-    if reporter:
-        thread_ids = {o.id for o in threads if o.reporter == reporter}
-        threads = threads.where(CommentThread.id << thread_ids)
-        comments = comments.where(Comment.thread_id << thread_ids)
-    if process:
-        threads = threads.where(CommentThread.process_id == int(process))
-        comments = comments.where(Comment.thread_id << {o.id for o in threads})
-    if resolved and resolved in "01":
-        threads = threads.where(
-            CommentThread.resolved == (True if resolved == "1" else False)
-        )
-        comments = comments.where(Comment.thread_id << {o.id for o in threads})
-    if thread:
-        comments = comments.where(Comment.thread_id == int(thread))
-        threads = threads.where(CommentThread.id == int(thread))
+        if user:
+            comments = comments.where(Comment.user == user)
+            threads = threads.where(CommentThread.id << {o.thread_id for o in comments})
+        if reporter:
+            thread_ids = {o.id for o in threads if o.reporter == reporter}
+            threads = threads.where(CommentThread.id << thread_ids)
+            comments = comments.where(Comment.thread_id << thread_ids)
+        if process:
+            threads = threads.where(CommentThread.process_id == int(process))
+            comments = comments.where(Comment.thread_id << {o.id for o in threads})
+        if resolved and resolved in "01":
+            threads = threads.where(
+                CommentThread.resolved == (True if resolved == "1" else False)
+            )
+            comments = comments.where(Comment.thread_id << {o.id for o in threads})
+        if thread:
+            comments = comments.where(Comment.thread_id == int(thread))
+            threads = threads.where(CommentThread.id == int(thread))
 
-    threads = [
-        {
-            "id": o.id,
-            "name": o.name,
-            "reporter": o.reporter,
-            "resolved": o.resolved,
-            "created": o.created,
-            "modified": o.modified,
-            "process": format_process(o.process_id),
+        threads = [
+            {
+                "id": o.id,
+                "name": o.name,
+                "reporter": o.reporter,
+                "resolved": o.resolved,
+                "created": o.created,
+                "modified": o.modified,
+                "process": format_process(o.process_id),
+            }
+            for o in threads
+        ]
+
+        payload = {
+            "total_threads": CommentThread.select().count(),
+            "total_comments": Comment.select().count(),
+            "comments": list(comments.dicts()),
+            "threads": threads,
         }
-        for o in threads
-    ]
-
-    payload = {
-        "total_threads": CommentThread.select().count(),
-        "total_comments": Comment.select().count(),
-        "comments": list(comments.dicts()),
-        "threads": threads,
-    }
-    return flask.jsonify(payload)
+        return flask.jsonify(payload)
+    except Exception as error:
+        # sTraceback = str(traceback.format_exc())
+        # sError = str(error)
+        # TODO: Store error and traceback in log for further analysis?
+        flask.abort(400, 'Server error occured. See server log for more details.')
+    return ""
 
 
 @matchbox_app.route("/page-rank", methods=["GET"])
@@ -546,7 +556,7 @@ def processes():
     elif order_by == "importance":
         limit = limit or 250
         offset = offset or 0
-        qs = [bd.get_node(id=id_)._document for _, id_ in pr[offset : offset + limit]]
+        qs = [bd.get_node(id=id_)._document for _, id_ in pr[offset: offset + limit]]
         qs = apply_filter_to_qs(qs, filter_arg)
         total_records = len(bd.Database(config["source"]))
     else:

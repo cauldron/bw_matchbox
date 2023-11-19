@@ -204,7 +204,6 @@ export class AllocatePageGroupEditor {
   }
 
   releaseHeaderNode() {
-    // console.log('[AllocatePageGroupEditor:releaseHeaderNode]');
     const groupNode = this.getGroupNode();
     const editorNode = this.getEditorNode();
     const groupHeaderNode = this.getGroupHeaderNode();
@@ -238,7 +237,6 @@ export class AllocatePageGroupEditor {
    */
   handleKeyPress(event) {
     const { key } = event;
-    // console.log('[AllocatePageGroupEditor:handleKeyPress]', key);
     if (key === 'Escape') {
       this.stopEdit('closed on escape pressed');
     }
@@ -254,7 +252,6 @@ export class AllocatePageGroupEditor {
     if (!this.clickedInsideTimer) {
       event.preventDefault();
       event.stopPropagation();
-      // console.log('[AllocatePageGroupEditor:handleCancelEdit]');
       this.stopEdit('edit canceled by pointer event');
     }
   }
@@ -271,7 +268,6 @@ export class AllocatePageGroupEditor {
    */
   handleFinishEdit(event) {
     this.setClickedInsideTimer();
-    // console.log('[AllocatePageGroupEditor:handleFinishEdit]');
     event.preventDefault();
     event.stopPropagation();
     this.stopEdit(true);
@@ -282,7 +278,6 @@ export class AllocatePageGroupEditor {
    */
   handleInnerClick(event) {
     this.setClickedInsideTimer();
-    // console.log('[AllocatePageGroupEditor:handleInnerClick]');
     // Prevent editor finish on click
     event.preventDefault();
     event.stopPropagation();
@@ -344,7 +339,6 @@ export class AllocatePageGroupEditor {
 
   /** @param {boolean|string} [status] */
   stopEdit(status) {
-    // console.log('[AllocatePageGroupEditor:stopEdit]', this.editing);
     if (this.editing) {
       this.editing = false;
       if (status === true) {

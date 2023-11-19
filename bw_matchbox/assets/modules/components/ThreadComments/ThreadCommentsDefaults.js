@@ -2,8 +2,8 @@
 
 import { useDebug } from '../../common/CommonConstants.js';
 
-const useFakeData = useDebug && true; // DEBUG: Use fake data for tests
-const useFakeCurrentUser = useDebug && true; // DEBUG: Use first of found users instead provided by page
+const useFakeData = useDebug && false; // DEBUG: ATTENTION: Use fake data for tests
+const useFakeCurrentUser = useDebug && true; // DEBUG: ATTENTION: Use first of found users instead provided by page
 
 export const defaultDebugParams = {
   // DEBUG

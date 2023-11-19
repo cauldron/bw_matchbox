@@ -121,14 +121,15 @@ export class AllocatePageAllocateModeUpdaters {
     const inputId = AllocatePageHelpers.getAllocateModeFractionInputId({ productionId, groupId }); // `production-${productionId}-group-${groupId}-fraction`;
     const contentNode = nodes.getAllocateModeContentContainerNode();
     const inputNode = /** @type HTMLInputElement */ (contentNode.querySelector('input#' + inputId));
-    console.log('[AllocatePageAllocateModeUpdaters:updateAllocateModeFractionInputDomValue]', {
-      number,
-      productionId,
-      groupId,
-      inputId,
-      contentNode,
-      inputNode,
-    });
+    /* console.log('[AllocatePageAllocateModeUpdaters:updateAllocateModeFractionInputDomValue]', {
+     *   number,
+     *   productionId,
+     *   groupId,
+     *   inputId,
+     *   contentNode,
+     *   inputNode,
+     * });
+     */
     const value = toExponential ? number.toExponential(4) : String(number);
     inputNode.value = value;
   }
@@ -160,12 +161,13 @@ export class AllocatePageAllocateModeUpdaters {
       const value = inputNode.value;
       allValues.push(value);
       const number = Number(value);
-      console.log('[AllocatePageAllocateModeUpdaters:checkAllGroupInputs] item', {
-        value,
-        number,
-        productionId,
-        groupId,
-      });
+      /* console.log('[AllocatePageAllocateModeUpdaters:checkAllGroupInputs] item', {
+       *   value,
+       *   number,
+       *   productionId,
+       *   groupId,
+       * });
+       */
       try {
         this.checkAllocateModeFractionValue({ number, value });
       } catch (error) {
@@ -193,13 +195,14 @@ export class AllocatePageAllocateModeUpdaters {
     }
     const hasErrors = !!errors.length;
     const errorId = `allocate-group-${groupId}`;
-    console.log('[AllocatePageAllocateModeUpdaters:checkAllGroupInputs] finished', {
-      errors,
-      summ,
-      groupId,
-      invalidValues,
-      allValues,
-    });
+    /* console.log('[AllocatePageAllocateModeUpdaters:checkAllGroupInputs] finished', {
+     *   errors,
+     *   summ,
+     *   groupId,
+     *   invalidValues,
+     *   allValues,
+     * });
+     */
     this.updaters.setError(errorId, errors);
     allInputNodes.forEach((node) => {
       node.classList.toggle('error', hasErrors);
@@ -230,19 +233,20 @@ export class AllocatePageAllocateModeUpdaters {
     const otherSumm = otherValues.reduce((summ, num) => summ + num, 0);
     const lastValueRaw = 1 - otherSumm;
     const lastValue = this.normalizeFractionNumber(lastValueRaw);
-    console.log('[AllocatePageAllocateModeUpdaters:updateAllocateModeFractionValue]', {
-      number,
-      productionId,
-      groupId,
-      lastValue,
-      lastValueRaw,
-      otherValues,
-      otherSumm,
-      lastProductionId,
-      fractionsGroup,
-      productionIds,
-      otherProductionIds,
-    });
+    /* console.log('[AllocatePageAllocateModeUpdaters:updateAllocateModeFractionValue]', {
+     *   number,
+     *   productionId,
+     *   groupId,
+     *   lastValue,
+     *   lastValueRaw,
+     *   otherValues,
+     *   otherSumm,
+     *   lastProductionId,
+     *   fractionsGroup,
+     *   productionIds,
+     *   otherProductionIds,
+     * });
+     */
     this.updateAllocateModeFractionInputDomValue({
       number: lastValue,
       productionId: lastProductionId,
@@ -254,16 +258,22 @@ export class AllocatePageAllocateModeUpdaters {
    * @param {HTMLInputElement} inputNode
    */
   setAllocateModeFractionValueOnChange(inputNode) {
-    const { id, number, value, productionId, groupId } =
-      this.getAllocateModeFractionValueProps(inputNode);
-    console.log('[AllocatePageUpdaters:setAllocateModeFractionValueOnChange]', {
-      id,
+    const {
+      // id,
+      // value,
+      number,
       productionId,
       groupId,
-      number,
-      value,
-      inputNode,
-    });
+    } = this.getAllocateModeFractionValueProps(inputNode);
+    /* console.log('[AllocatePageUpdaters:setAllocateModeFractionValueOnChange]', {
+     *   id,
+     *   productionId,
+     *   groupId,
+     *   number,
+     *   value,
+     *   inputNode,
+     * });
+     */
     this.updateAllocateModeFractionValue({ number, productionId, groupId });
   }
 
@@ -274,6 +284,7 @@ export class AllocatePageAllocateModeUpdaters {
     const { id, number, value, productionId, groupId } =
       this.getAllocateModeFractionValueProps(inputNode);
     if (isNaN(number)) {
+      // eslint-disable-next-line no-console
       console.warn('[AllocatePageUpdaters:setAllocateModeFractionValueOnInput]: Not a number', {
         number,
         value,
@@ -283,14 +294,15 @@ export class AllocatePageAllocateModeUpdaters {
         inputNode,
       });
     } else {
-      console.log('[AllocatePageUpdaters:setAllocateModeFractionValueOnInput]', {
-        number,
-        value,
-        id,
-        productionId,
-        groupId,
-        inputNode,
-      });
+      /* console.log('[AllocatePageUpdaters:setAllocateModeFractionValueOnInput]', {
+       *   number,
+       *   value,
+       *   id,
+       *   productionId,
+       *   groupId,
+       *   inputNode,
+       * });
+       */
       this.updateAllocateModeFractionValue({ number, productionId, groupId });
     }
   }
@@ -449,10 +461,11 @@ export class AllocatePageAllocateModeUpdaters {
     // TODO: Send data to the server here.
     const resultJson = JSON.stringify(allocationResult, undefined, 2);
     const resultStr = resultJson.replace(/"/g, "'").replace(/'([^':]+)':/g, '$1:');
-    console.log('[AllocatePageAllocateModeUpdaters:confirmAllocateUpdater]', {
-      resultStr,
-      allocationResult,
-    });
+    /* console.log('[AllocatePageAllocateModeUpdaters:confirmAllocateUpdater]', {
+     *   resultStr,
+     *   allocationResult,
+     * });
+     */
     const previewContent = `
       <h4>These results will be sent to the server:</h4>
       <pre>${resultStr}
