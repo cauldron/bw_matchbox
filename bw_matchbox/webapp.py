@@ -451,6 +451,8 @@ def index():
 def apply_filter_to_qs(qs, filter_arg):
     if not filter_arg:
         return qs
+    elif filter_arg == "manual-match":
+        return [node for node in qs if node.data.get("matched") and node.data.get("match_type") != "1"]
     elif filter_arg == "unmatched":
         return [node for node in qs if not node.data.get("matched")]
     else:
@@ -499,7 +501,7 @@ def processes():
     * offset (int, optional): Offset from beginning of sorted values. Zero-indexed.
                     Only used if sorting.
     * filter (string, optional): Optional attribute filter. Should be one of
-                    `matched`, `unmatched`, or `waitlist`.
+                    `matched`, `unmatched`, `manual-match`, or `waitlist`.
     * search (string, optional): Optional parameter to pass to search index.
                     Note that this overrides `order_by`.
 
