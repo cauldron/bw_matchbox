@@ -14,11 +14,11 @@ const actualCount = 20;
 const actualDays = 10;
 
 /** Cookie name to store process list */
-const cookieName = 'ProcessesList';
+const cookieName = 'recent-processes';
 
-/** Helper functiuon to sort processes
- * @param {TStoredProcess} a
- * @param {TStoredProcess} b
+/** Helper function to sort processes by timestamp (the latest entries are first)
+ * @param {TRecentProcess} a
+ * @param {TRecentProcess} b
  * @return number
  */
 function sortProcessItemsByTimestampIterator(a, b) {
@@ -26,20 +26,20 @@ function sortProcessItemsByTimestampIterator(a, b) {
 }
 
 /** Sort processes list by timestamp.
- * @param {TStoredProcesses} processesList
- * @return {TStoredProcesses}
+ * @param {TRecentProcesses} processesList
+ * @return {TRecentProcesses}
  */
-function sortStoredProcesses(processesList) {
+function sortRecentProcesses(processesList) {
   // const cloned = [...processesList];
   processesList.sort(sortProcessItemsByTimestampIterator);
   return processesList;
 }
 
 /** Actualize processes list (remain {actualCount} last records for {actualDays} last days)
- * @param {TStoredProcesses} sortedList - Processes list should be sorted by date first
- * @return {TStoredProcesses}
+ * @param {TRecentProcesses} sortedList - Processes list should be sorted by date first
+ * @return {TRecentProcesses}
  */
-function actualizeStoredProcecces(sortedList) {
+function actualizeRecentProcecess(sortedList) {
   // Filter out outdated records...
   const actualizedList = [];
   const earliestValidTimestamp = actualDays && Date.now() - dailyTicks * actualDays;
@@ -60,61 +60,62 @@ function actualizeStoredProcecces(sortedList) {
 }
 
 /** Get all stored processes.
- * @return {TStoredProcesses}
+ * @return {TRecentProcesses}
  */
-export function getStoredProcesses() {
+export function getRecentProcesses() {
   const json = getCookie(cookieName);
-  const processesList = /** @type {TStoredProcesses} */ (json ? JSON.parse(json) : []);
+  const processesList = /** @type {TRecentProcesses} */ (json ? JSON.parse(json) : []);
   return processesList;
 }
 
-/** Get all stored processes.
- * @param {TStoredProcesses} processesList
- * @return {TStoredProcesses}
+/** Sort and actualize processes list
+ * @param {TRecentProcesses} processesList
+ * @return {TRecentProcesses}
  */
-function sortAndActualizeStoredProcesses(processesList) {
+function sortAndActualizeRecentProcesses(processesList) {
   const clonedList = [...processesList];
   // Sort and actualize records (remove outdated ones)?
-  sortStoredProcesses(clonedList);
-  const actualizedList = actualizeStoredProcecces(clonedList);
+  sortRecentProcesses(clonedList);
+  const actualizedList = actualizeRecentProcecess(clonedList);
   return actualizedList;
 }
-/** Get all stored processes.
- * @return {TStoredProcesses}
+/** Get actual and sorted processes
+ * @return {TRecentProcesses}
  */
-export function getActualSortedStoredProcesses() {
-  const processesList = getStoredProcesses();
-  const actualizedList = sortAndActualizeStoredProcesses(processesList);
+export function getActualSortedRecentProcesses() {
+  const processesList = getRecentProcesses();
+  const actualizedList = sortAndActualizeRecentProcesses(processesList);
   return actualizedList;
 }
 
 /** Add or update process
  * @param {number} id
  * @param {string} name
- * @return {TStoredProcesses}
+ * @return {TRecentProcesses}
  */
 export function storeProcess(id, name) {
-  /** @type TStoredProcess */
+  /** @type TRecentProcess */
   const record = {
     id,
     name,
     timestamp: Date.now(),
   };
-  const processesList = getStoredProcesses();
-  /* console.log('[StoredProcesses:storeProcess] start', {
+  const processesList = getRecentProcesses();
+  /* console.log('[RecentProcesses:storeProcess] start', {
    *   record,
    *   id,
    *   name,
    *   processesList,
    * });
    */
+  // Has the record found and updated?
   let alreadyUpdated = false;
   // Update record in the list (if exists)...
   const updatedProcesses = processesList.map((item) => {
     if (item.id === id) {
       // Record has already existed...
       alreadyUpdated = true;
-      /* console.log('[StoredProcesses:storeProcess] replace record', {
+      /* console.log('[RecentProcesses:storeProcess] replace record', {
        *   item,
        *   record,
        *   id,
@@ -128,7 +129,7 @@ export function storeProcess(id, name) {
   });
   // Otherwise add the item into the list...
   if (!alreadyUpdated) {
-    /* console.log('[StoredProcesses:storeProcess] add new record', {
+    /* console.log('[RecentProcesses:storeProcess] add new record', {
      *   record,
      *   id,
      *   name,
@@ -138,7 +139,7 @@ export function storeProcess(id, name) {
     updatedProcesses.unshift(record);
   }
   // Actualize the list...
-  const actualizedList = sortAndActualizeStoredProcesses(updatedProcesses);
+  const actualizedList = sortAndActualizeRecentProcesses(updatedProcesses);
   // Save cookie...
   const json = JSON.stringify(actualizedList);
   setCookie(cookieName, json);

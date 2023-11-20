@@ -23,6 +23,14 @@ export function setCookie(name, value, days) {
     .filter(Boolean)
     .join('; ');
   document.cookie = cookie;
+  /* console.log('[CommonCookies:setCookie]', {
+   *   cookie,
+   *   name,
+   *   value,
+   *   days,
+   *   cookies: document.cookie,
+   * });
+   */
 }
 
 /**

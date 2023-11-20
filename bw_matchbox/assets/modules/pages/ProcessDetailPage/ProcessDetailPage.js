@@ -1,6 +1,6 @@
 // @ts-check
 
-import { storeProcess } from '../../common/StoredProcesses.js';
+import { storeProcess } from '../../common/RecentProcesses.js';
 
 import { ThreadComments } from '../../components/ThreadComments/ThreadComments.js';
 
