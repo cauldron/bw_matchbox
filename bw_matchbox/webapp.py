@@ -13,7 +13,7 @@ import whoosh
 from bw2analyzer import PageRank
 from bw2data.backends import ActivityDataset as AD
 from flask_httpauth import HTTPBasicAuth
-from peewee import DoesNotExist, IntegrityError, fn
+from peewee import DoesNotExist, fn
 from werkzeug.security import check_password_hash, generate_password_hash
 
 from .comments import Comment, CommentThread
@@ -249,11 +249,11 @@ def comments_create_thread():
             user=content["comment"]["user"],
         )
         return flask.redirect(flask.url_for("comments_read", thread=thread.id))
-    except Exception as error:
+    except Exception:  # as error:
+        flask.abort(400, "Server error occured. See server log for more details.")
         # sTraceback = str(traceback.format_exc())
         # sError = str(error)
         # TODO: Store error and traceback in log for further analysis?
-        flask.abort(400, 'Server error occured. See server log for more details.')
 
 
 @matchbox_app.route("/comments/create-comment", methods=["POST"])
@@ -392,11 +392,11 @@ def comments_read():
             "threads": threads,
         }
         return flask.jsonify(payload)
-    except Exception as error:
+    except Exception:  # as error:
         # sTraceback = str(traceback.format_exc())
         # sError = str(error)
         # TODO: Store error and traceback in log for further analysis?
-        flask.abort(400, 'Server error occured. See server log for more details.')
+        flask.abort(400, "Server error occured. See server log for more details.")
     return ""
 
 
@@ -462,7 +462,11 @@ def apply_filter_to_qs(qs, filter_arg):
     if not filter_arg:
         return qs
     elif filter_arg == "manual-match":
-        return [node for node in qs if node.data.get("matched") and node.data.get("match_type") != "1"]
+        return [
+            node
+            for node in qs
+            if node.data.get("matched") and node.data.get("match_type") != "1"
+        ]
     elif filter_arg == "unmatched":
         return [node for node in qs if not node.data.get("matched")]
     else:
@@ -556,7 +560,7 @@ def processes():
     elif order_by == "importance":
         limit = limit or 250
         offset = offset or 0
-        qs = [bd.get_node(id=id_)._document for _, id_ in pr[offset: offset + limit]]
+        qs = [bd.get_node(id=id_)._document for _, id_ in pr[offset : offset + limit]]
         qs = apply_filter_to_qs(qs, filter_arg)
         total_records = len(bd.Database(config["source"]))
     else:
