@@ -22,7 +22,7 @@
   /* XXX: Can be disabed temporarily */
   display: none;
 }
-.panels-layout .thread-comments-panel {
+.panels-layout .thread-comments-panel:not(.hidden) {
   display: flex;
   flex-direction: column;
   overflow: hidden;

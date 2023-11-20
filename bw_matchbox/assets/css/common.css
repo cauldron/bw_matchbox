@@ -161,6 +161,13 @@
 .panels-layout .panels-layout-actions-button:hover {
   opacity: 1;
 }
+.panels-layout .panels-layout-actions-button.activable > * {
+  transition: all var(--common-animation-time);
+}
+.panels-layout .panels-layout-actions-button.activable.active > .icon-default,
+.panels-layout .panels-layout-actions-button.activable:not(.active) > .icon-active {
+  display: none;
+}
 .panels-layout .panels-layout-actions-button.turnaround {
   transform: rotate(-90deg);
 }
@@ -208,10 +215,6 @@
     align-items: stretch;
     justify-content: stretch;
     /* flex-direction: row-reverse; */
-  }
-  .panels-layout-side.hidden,
-  .panels-layout-side {
-    display: block;
   }
   .panels-layout-main,
   .panels-layout-side {

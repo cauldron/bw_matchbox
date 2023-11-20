@@ -180,7 +180,7 @@ export class ProcessDetailPageHandlers {
     const hasPanel = layoutNode.classList.contains('has-panel');
     const showPanel = !hasPanel;
     layoutNode.classList.toggle('has-panel', showPanel);
-    button.classList.toggle('turned', showPanel);
+    button.classList.toggle('active', showPanel);
     panel.classList.toggle('hidden', !showPanel);
     if (showPanel) {
       callbacks.ensureThreadComments();
