@@ -644,6 +644,12 @@ def search():
         )
 
 
+@matchbox_app.route("/process-attributes-json/<id>", methods=["GET"])
+@auth.login_required
+def process_attributes_json(id):
+    return flask.jsonify(format_process(id))
+
+
 @matchbox_app.route("/add-attribute/<id>", methods=["GET"])
 @auth.login_required
 def add_attribute(id):
