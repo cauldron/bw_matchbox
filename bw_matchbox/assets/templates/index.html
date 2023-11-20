@@ -1,109 +1,131 @@
 {% include 'header.html' %}
 
-<div id="processes-list-root" class="container processes-list empty loading role-{{ config.role }} has-{{ 'proxy' if config.proxy else 'no-proxy' }}">
-  {% include 'navigation.html' %}
-  <div class="page-search">
-    <p><input type="text" class="u-full-width" placeholder="Enter value to search" value="{{ query_string }}" id="query_string" /></p>
-  </div>
-  <div class="page-filters">
-    <span class="radio-group order-by">
-      {# Controls for `order_by` parameter (name, location, product;
-      default is (empty) i.e. random (see `order-random` for
-      `.processes-list` root node. #}
-      <span class="radio-group-title-wrapper">
-        <label class="radio-group-title">Order by:</label>
-      </span>
-      <span class="radio-group-item">
-        <input type="radio" name="order_by" id="order_by_random" value="random" onChange="ProcessesList.onOrderByChange(this)">
-        <label for="order_by_random">Random</label>
-      </span>
-      <span class="radio-group-item">
-        <input type="radio" name="order_by" id="order_by_name" value="name" onChange="ProcessesList.onOrderByChange(this)">
-        <label for="order_by_name">Name</label>
-      </span>
-      <span class="radio-group-item">
-        <input type="radio" name="order_by" id="order_by_location" value="location" onChange="ProcessesList.onOrderByChange(this)">
-        <label for="order_by_location">Location</label>
-      </span>
-      <span class="radio-group-item">
-        <input type="radio" name="order_by" id="order_by_product" value="product" onChange="ProcessesList.onOrderByChange(this)">
-        <label for="order_by_product">Product</label>
-      </span>
-      <span class="radio-group-item">
-        <input type="radio" name="order_by" id="order_by_importance" value="importance" onChange="ProcessesList.onOrderByChange(this)">
-        <label for="order_by_importance">Network Importance</label>
-      </span>
-    </span>
-    <span class="radio-group filter-by">
-      {# Controls for `filter` parameter: `matched`, `unmatched`, or `waitlist`. #}
-      <span class="radio-group-title-wrapper">
-        <label class="radio-group-title">Filter by:</label>
-      </span>
-      <span class="radio-group-item">
-        <input type="radio" name="filter_by" id="filter_by_none" value="none" onChange="ProcessesList.onFilterByChange(this)">
-        <label for="filter_by_none">None</label>
-      </span>
-      <span class="radio-group-item">
-        <input type="radio" name="filter_by" id="filter_by_matched" value="matched" onChange="ProcessesList.onFilterByChange(this)">
-        <label for="filter_by_matched">Matched</label>
-      </span>
-      <span class="radio-group-item">
-        <input type="radio" name="filter_by" id="filter_by_unmatched" value="unmatched" onChange="ProcessesList.onFilterByChange(this)">
-        <label for="filter_by_unmatched">Unmatched</label>
-      </span>
-      <span class="radio-group-item">
-        <input type="radio" name="filter_by" id="filter_by_waitlist" value="waitlist" onChange="ProcessesList.onFilterByChange(this)">
-        <label for="filter_by_waitlist">Waitlist</label>
-      </span>
-    </span>
-    <span class="radio-group user-db">
-      {# Controls for `database` parameter: `Source`, `Target`, `Proxy`. #}
-      <span class="radio-group-title-wrapper">
-        <label class="radio-group-title">Database:</label>
-      </span>
-      <span class="radio-group-item">
-        <input type="radio" name="user-db" id="user-db-source" value="source" onChange="ProcessesList.onUserDbChange(this)">
-        <label for="user-db-source">Source</label>
-      </span>
-      <span class="radio-group-item">
-        <input type="radio" name="user-db" id="user-db-target" value="target" onChange="ProcessesList.onUserDbChange(this)">
-        <label for="user-db-target">Target</label>
-      </span>
-      <span class="radio-group-item">
-        <input type="radio" name="user-db" id="user-db-proxy" value="proxy" onChange="ProcessesList.onUserDbChange(this)">
-        <label for="user-db-proxy">Proxy</label>
-      </span>
-    </span>
-  </div>
-  <div id="processes-list-error" class="error">
-    <!-- Error text comes here -->
-  </div>
-  <div id="processes-list-table-empty" class="processes-list-table-empty">No data has loaded for current conditions</div>
-  <table id="processes-list-table" class="fixed-table processes-list-table" width="100%">
-    <thead>
-      <tr>
-        <th class="cell-name"><div>Name</div></th>
-        <th class="cell-location"><div>Location</div></th>
-        <th class="cell-unit"><div>Unit</div></th>
-        <th class="cell-matched">
-          <div class="cell-matched-title-source">Matched</div>
-          <div class="cell-matched-title-other">Reference product</div>
-        </th>
-      </tr>
-    </thead>
-    <tbody id="processes-list-table-body">
-      {# NOTE: Content is dynamically populated in client's js code, see `ProcessesListDataRender` #}
-    </tbody>
-  </table>
-  <div class="bottom-actions">
-    <div class="bottom-actions-links">
-      <a id="action-reload-random" onClick="ProcessesList.clearAndReloadData(this)">Reload random data</a>
-      <a id="action-load-more" onClick="ProcessesList.loadMoreData(this)">Load more<span id="available-records-info"></span></a>
-      <a id="action-clear-and-reload" onClick="ProcessesList.clearAndReloadData(this)">Reload</a>
-      <span id="show-total-records-number">Loaded all the available records (<span id="total-records-number"></span>)</span>
+<div id="processes-list-layout" class="panels-layout processes-list-layout">
+
+  {% include 'recent-processes-panel.html' %}
+
+  <div id="processes-list-wrapper" class="panels-layout-main panels-layout-container">
+    <div class="panels-layout-actions">
+      <a
+        id="toggle-side-panel-button"
+        class="panels-layout-actions-button layout-actions-button activable"
+        title="Toggle history panel"
+        onClick="window.ProcessesList.toggleHistoryPanel(this)"
+      >
+        <i class="fa fa-history icon-default"></i>
+        <i class="fa fa-times icon-active"></i>
+      </a>
     </div>
-    <div id="loader-splash" class="loader-splash full-cover"><div class="loader-spinner"></div></div>
+
+    <div class="panels-layout-content panels-layout-full panels-layout-scrollable">
+      <div id="processes-list-root" class="container processes-list empty loading role-{{ config.role }} has-{{ 'proxy' if config.proxy else 'no-proxy' }}">
+        {% include 'navigation.html' %}
+        <div class="page-search">
+          <p><input type="text" class="u-full-width" placeholder="Enter value to search" value="{{ query_string }}" id="query_string" /></p>
+        </div>
+        <div class="page-filters">
+          <span class="radio-group order-by">
+            {# Controls for `order_by` parameter (name, location, product;
+            default is (empty) i.e. random (see `order-random` for
+            `.processes-list` root node. #}
+            <span class="radio-group-title-wrapper">
+              <label class="radio-group-title">Order by:</label>
+            </span>
+            <span class="radio-group-item">
+              <input type="radio" name="order_by" id="order_by_random" value="random" onChange="window.ProcessesList.onOrderByChange(this)">
+              <label for="order_by_random">Random</label>
+            </span>
+            <span class="radio-group-item">
+              <input type="radio" name="order_by" id="order_by_name" value="name" onChange="window.ProcessesList.onOrderByChange(this)">
+              <label for="order_by_name">Name</label>
+            </span>
+            <span class="radio-group-item">
+              <input type="radio" name="order_by" id="order_by_location" value="location" onChange="window.ProcessesList.onOrderByChange(this)">
+              <label for="order_by_location">Location</label>
+            </span>
+            <span class="radio-group-item">
+              <input type="radio" name="order_by" id="order_by_product" value="product" onChange="window.ProcessesList.onOrderByChange(this)">
+              <label for="order_by_product">Product</label>
+            </span>
+            <span class="radio-group-item">
+              <input type="radio" name="order_by" id="order_by_importance" value="importance" onChange="window.ProcessesList.onOrderByChange(this)">
+              <label for="order_by_importance">Network Importance</label>
+            </span>
+          </span>
+          <span class="radio-group filter-by">
+            {# Controls for `filter` parameter: `matched`, `unmatched`, or `waitlist`. #}
+            <span class="radio-group-title-wrapper">
+              <label class="radio-group-title">Filter by:</label>
+            </span>
+            <span class="radio-group-item">
+              <input type="radio" name="filter_by" id="filter_by_none" value="none" onChange="window.ProcessesList.onFilterByChange(this)">
+              <label for="filter_by_none">None</label>
+            </span>
+            <span class="radio-group-item">
+              <input type="radio" name="filter_by" id="filter_by_matched" value="matched" onChange="window.ProcessesList.onFilterByChange(this)">
+              <label for="filter_by_matched">Matched</label>
+            </span>
+            <span class="radio-group-item">
+              <input type="radio" name="filter_by" id="filter_by_unmatched" value="unmatched" onChange="window.ProcessesList.onFilterByChange(this)">
+              <label for="filter_by_unmatched">Unmatched</label>
+            </span>
+            <span class="radio-group-item">
+              <input type="radio" name="filter_by" id="filter_by_waitlist" value="waitlist" onChange="window.ProcessesList.onFilterByChange(this)">
+              <label for="filter_by_waitlist">Waitlist</label>
+            </span>
+          </span>
+          <span class="radio-group user-db">
+            {# Controls for `database` parameter: `Source`, `Target`, `Proxy`. #}
+            <span class="radio-group-title-wrapper">
+              <label class="radio-group-title">Database:</label>
+            </span>
+            <span class="radio-group-item">
+              <input type="radio" name="user-db" id="user-db-source" value="source" onChange="window.ProcessesList.onUserDbChange(this)">
+              <label for="user-db-source">Source</label>
+            </span>
+            <span class="radio-group-item">
+              <input type="radio" name="user-db" id="user-db-target" value="target" onChange="window.ProcessesList.onUserDbChange(this)">
+              <label for="user-db-target">Target</label>
+            </span>
+            <span class="radio-group-item">
+              <input type="radio" name="user-db" id="user-db-proxy" value="proxy" onChange="window.ProcessesList.onUserDbChange(this)">
+              <label for="user-db-proxy">Proxy</label>
+            </span>
+          </span>
+        </div>
+        <div id="processes-list-error" class="error">
+          <!-- Error text comes here -->
+        </div>
+        <div id="processes-list-table-empty" class="processes-list-table-empty">No data has loaded for current conditions</div>
+        <table id="processes-list-table" class="fixed-table processes-list-table" width="100%">
+          <thead>
+            <tr>
+              <th class="cell-name"><div>Name</div></th>
+              <th class="cell-location"><div>Location</div></th>
+              <th class="cell-unit"><div>Unit</div></th>
+              <th class="cell-matched">
+                <div class="cell-matched-title-source">Matched</div>
+                <div class="cell-matched-title-other">Reference product</div>
+              </th>
+            </tr>
+          </thead>
+          <tbody id="processes-list-table-body">
+            {# NOTE: Content is dynamically populated in client's js code, see `ProcessesListDataRender` #}
+          </tbody>
+        </table>
+        <div class="bottom-actions">
+          <div class="bottom-actions-links">
+            <a id="action-reload-random" onClick="window.ProcessesList.clearAndReloadData(this)">Reload random data</a>
+            <a id="action-load-more" onClick="window.ProcessesList.loadMoreData(this)">Load more<span id="available-records-info"></span></a>
+            <a id="action-clear-and-reload" onClick="window.ProcessesList.clearAndReloadData(this)">Reload</a>
+            <span id="show-total-records-number">Loaded all the available records (<span id="total-records-number"></span>)</span>
+          </div>
+          <div id="loader-splash" class="loader-splash full-cover"><div class="loader-spinner"></div></div>
+        </div>
+      </div>
+    </div>
   </div>
+
 </div>
 
 {# NOTE: All reusable modules and all related stuff like css are dynamically connecting as ES6 modules, inside the code #}

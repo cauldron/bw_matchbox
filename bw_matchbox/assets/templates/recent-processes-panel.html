@@ -1,0 +1,42 @@
+<div id="recent-processes-list-panel" class="panels-layout-side panels-layout-container panels-layout-right recent-processes-list-panel hidden">
+  {#
+  <div id="recent-processes-list-panel-toolbar" class="recent-processes-list-panel-toolbar-wrapper">
+    <div class="recent-processes-list-toolbar">
+      <a
+        id="expandAllThreads"
+        title="Collapse/expand threads"
+        class="toolbar-icon"
+        onClick="processDetailPage.callbacks.expandAllThreads(this)"
+      >
+        <i class="fa fa-expand"></i>
+      </a>
+      <a
+        id="addNewThread"
+        title="Add new thread"
+        class="toolbar-icon"
+        onClick="processDetailPage.callbacks.addNewThread(this)"
+      >
+        <i class="fa fa-plus"></i>
+      </a>
+      <div class="group">
+        <label for="threadsSortMode">Sort by:</label>
+        <select
+          id="threadsSortMode"
+          onChange="processDetailPage.callbacks.setSortMode(this)"
+        >
+          <option value="resolved|modifiedDate" selected>Resolved / Modified date</option>
+          <option value="resolved|name">Resolved / Name</option>
+        </select>
+      </div>
+    </div>
+  </div>
+  #}
+  <div class="panels-layout-content panels-layout-scrollable">
+    <div class="panels-layout-container container padded">
+      <div id="recent-processes-container" class="recent-processes-container">
+        <!-- Recent processes placehodler -->
+        <div id="temp-loader-splash" class="loader-splash"><div class="loader-spinner"></div></div>
+      </div>
+    </div>
+  </div>
+</div>

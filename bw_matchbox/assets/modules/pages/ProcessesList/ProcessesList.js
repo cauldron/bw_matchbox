@@ -1,6 +1,9 @@
 // @ts-check
 
+import { commonNotify } from '../../common/CommonNotify.js';
 import * as CommonHelpers from '../../common/CommonHelpers.js';
+
+import { RecentProcessesList } from '../../components/RecentProcesses/RecentProcessesList.js';
 
 import { ProcessesListConstants } from './ProcessesListConstants.js';
 import { ProcessesListData } from './ProcessesListData.js';
@@ -26,9 +29,11 @@ const usedModulesList = [
 export const ProcessesList = {
   __id: 'ProcessesList',
 
-  /* TODO: Handlers exchange object
-   * handlers: {},
-   */
+  /** @type {RecentProcessesList} */
+  recentProcessesList: undefined,
+
+  /** @type {Promise} */
+  recentProcessesListInitPromise: undefined,
 
   /**
    * Update value of 'order by' parameter from user
@@ -65,6 +70,75 @@ export const ProcessesList = {
     // Update `order_by` states (disable `importance` if not `source`)...
     ProcessesListStates.updateOrderByForUserDb(userDb);
     ProcessesListDataLoad.loadData();
+  },
+
+  // Side panel...
+
+  /** @return Promise */
+  ensureRecentProcessesList() {
+    try {
+      const recentProcessesList = this.getRecentProcessesList();
+      if (this.recentProcessesListInitPromise) {
+        return this.recentProcessesListInitPromise;
+      }
+      const recentProcessesContainerNode = ProcessesListNodes.getRecentProcessesContainerNode();
+      /* console.log('[ProcessesList:ensureRecentProcessesList]', {
+       *   recentProcessesList,
+       *   recentProcessesContainerNode,
+       * });
+       */
+      // Init comments module parameters
+      recentProcessesList.setParams(
+        /** @type {TRecentProcessesListParams} */ {
+          rootNode: recentProcessesContainerNode,
+          // noTableau: true,
+          // noLoader: true,
+          // noError: true,
+          noActions: true, // Disable inegrated actions panel
+        },
+      );
+      // Init sub-components...
+      this.recentProcessesListInitPromise = recentProcessesList
+        .ensureInit()
+        .then(() => {
+          return recentProcessesList.api.loadData();
+        })
+        .then(() => {
+          const recentProcessesListPanelNode = ProcessesListNodes.getRecentProcessesListPanelNode();
+          recentProcessesListPanelNode.classList.toggle('ready', true);
+        })
+        .catch((/** @type {Error} */ error) => {
+          // eslint-disable-next-line no-console
+          console.error('[ProcessesList:ensureRecentProcessesList] ensureInit error', error);
+          // eslint-disable-next-line no-debugger
+          debugger;
+          // Set error
+          this.state.setError(error);
+          commonNotify.showError(error);
+        });
+      return this.recentProcessesListInitPromise;
+    } catch (error) {
+      // eslint-disable-next-line no-console
+      console.error('[ProcessesList:ensureRecentProcessesList]', error);
+      // eslint-disable-next-line no-debugger
+      debugger;
+      commonNotify.showError(error);
+    }
+  },
+
+  toggleHistoryPanel() {
+    const layoutNode = ProcessesListNodes.getLayoutNode();
+    const panel = ProcessesListNodes.getRecentProcessesListPanelNode();
+    const button = layoutNode.querySelector('#toggle-side-panel-button');
+    const hasPanel = layoutNode.classList.contains('has-panel');
+    const showPanel = !hasPanel;
+    layoutNode.classList.toggle('has-panel', showPanel);
+    button.classList.toggle('active', showPanel);
+    panel.classList.toggle('hidden', !showPanel);
+    if (showPanel) {
+      // Start history component
+      this.ensureRecentProcessesList();
+    }
   },
 
   // Data methods...
@@ -131,6 +205,15 @@ export const ProcessesList = {
         }
       }
     });
+  },
+
+  getRecentProcessesList() {
+    // Processes list
+    if (!this.recentProcessesList) {
+      const recentProcessesList = new RecentProcessesList('ProcessesList');
+      this.recentProcessesList = recentProcessesList;
+    }
+    return this.recentProcessesList;
   },
 
   /**

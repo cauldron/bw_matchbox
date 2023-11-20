@@ -4,6 +4,11 @@
     selector-class-pattern,
 */
 
+/* Wrapper fixups */
+.processes-list-layout #recent-processes-panel .recent-processes {
+  flex: 1;
+}
+
 /* Root node */
 .processes-list {
   margin-bottom: 20px;

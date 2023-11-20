@@ -25,6 +25,8 @@
   --panels-layout-actions-offset: 20px;
   --panels-layout-actions-offset-y: 10px;
   --minor-border-color: #eee;
+  /** Comments */
+  --comments-actions-button-size: 24px;
 }
 
 /* Basic layout */
@@ -174,11 +176,18 @@
 .panels-layout .panels-layout-actions-button.turnaround.turned {
   transform: rotate(90deg);
 }
+.panels-layout-content {
+  flex: 1;
+}
 .panels-layout-content.padded {
   margin: 20px auto;
 }
 .panels-layout-side:not(.hidden) {
   border-bottom: 1px solid var(--minor-border-color);
+}
+
+.panels-layout-container.padded {
+  padding: 20px;
 }
 
 /* TODO: To use vars for media queries? Eg, for `panels-layout-min-threshold`? */

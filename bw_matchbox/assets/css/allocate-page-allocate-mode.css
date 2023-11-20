@@ -103,16 +103,11 @@
   gap: 5px;
   padding-top: 10px;
 }
-.allocate-layout .allocate-mode-layout .production-group .group-item {
-}
 .allocate-layout .allocate-mode-layout .production-group .group-item .type {
   opacity: 0.5;
 }
 
 /* Collapsed/expanded group items */
-.allocate-layout .allocate-mode-layout .production-group .empty {
-  /* opacity: .5; */
-}
 .allocate-layout .allocate-mode-layout .production-group .action:not(.disabled) {
   transition: all var(--common-animation-time);
   /* opacity: 0.6; */

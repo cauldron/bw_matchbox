@@ -101,7 +101,7 @@ export class ProcessDetailPageInit {
         })
         .catch((/** @type {Error} */ error) => {
           // eslint-disable-next-line no-console
-          console.error('[ProcessDetailPageInit:start] threadComments.ensureInit error', error);
+          console.error('[ProcessDetailPageInit:ensureThreadComments] ensureInit error', error);
           // eslint-disable-next-line no-debugger
           debugger;
           // Set error

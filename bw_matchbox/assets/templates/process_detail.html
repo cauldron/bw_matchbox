@@ -2,54 +2,15 @@
 
 <div id="process-detail-layout" class="panels-layout process-detail-layout">
 
-  <div id="thread-comments-panel" class="panels-layout-side panels-layout-container panels-layout-right thread-comments-panel hidden">
-    <div id="thread-comments-panel-toolbar" class="thread-comments-panel-toolbar-wrapper">
-      <div class="thread-comments-toolbar">
-        <a
-          id="expandAllThreads"
-          title="Collapse/expand threads"
-          class="toolbar-icon"
-          onClick="processDetailPage.callbacks.expandAllThreads(this)"
-        >
-          <i class="fa fa-expand"></i>
-        </a>
-        <a
-          id="addNewThread"
-          title="Add new thread"
-          class="toolbar-icon"
-          onClick="processDetailPage.callbacks.addNewThread(this)"
-        >
-          <i class="fa fa-plus"></i>
-        </a>
-        <div class="group">
-          <label for="threadsSortMode">Sort by:</label>
-          <select
-            id="threadsSortMode"
-            onChange="processDetailPage.callbacks.setSortMode(this)"
-          >
-            <option value="resolved|modifiedDate" selected>Resolved / Modified date</option>
-            <option value="resolved|name">Resolved / Name</option>
-          </select>
-        </div>
-      </div>
-    </div>
-    <div class="panels-layout-content panels-layout-scrollable">
-      <div class="panels-layout-container container padded">
-        <div id="thread-comments" class="thread-comments">
-          <!-- Thread comments placehodler -->
-          <div id="temp-loader-splash" class="loader-splash"><div class="loader-spinner"></div></div>
-        </div>
-      </div>
-    </div>
-  </div>
+  {% include 'thread-comments-panel.html' %}
 
   <div id="process-detail" class="panels-layout-main panels-layout-container process-detail{{ ' waitlist' if ds.get('waitlist') }}">
     <div class="panels-layout-actions">
       <a
         id="toggle-side-panel-button"
         class="panels-layout-actions-button layout-actions-button activable"
-        title="Show/hide comments panel"
-        onClick="processDetailPage.callbacks.toggleCommentsPanel(this)"
+        title="Toggle comments panel"
+        onClick="window.processDetailPage.callbacks.toggleCommentsPanel(this)"
       >
         <i class="fa fa-comments icon-default"></i>
         <i class="fa fa-times icon-active"></i>
@@ -70,11 +31,11 @@
                 <div class="tools">
                   <div class="tools-wrapper">
                     {% if ds.database == source and config.role == 'editors'  %}
-                      <a id="mark-waitlist" class="tools-button {{ ' theme-primary' if not ds.get('waitlist') }}" onClick="processDetailPage.callbacks.markWaitlist(this)">{{ 'Waitlisted' if ds.waitlist else 'Waitlist' }}</a>
+                      <a id="mark-waitlist" class="tools-button {{ ' theme-primary' if not ds.get('waitlist') }}" onClick="window.processDetailPage.callbacks.markWaitlist(this)">{{ 'Waitlisted' if ds.waitlist else 'Waitlist' }}</a>
                       {% if not ds.matched %}
-                        <a id="manual-match" class="tools-button theme-primary" onClick="processDetailPage.callbacks.markMatched(this)">No match needed</a>
+                        <a id="manual-match" class="tools-button theme-primary" onClick="window.processDetailPage.callbacks.markMatched(this)">No match needed</a>
                         {% if same_name_count %}
-                          <a id="manual-multi-match" class="tools-button theme-primary" onClick="processDetailPage.callbacks.markAllMatched(this)">Mark all matched</a>
+                          <a id="manual-multi-match" class="tools-button theme-primary" onClick="window.processDetailPage.callbacks.markAllMatched(this)">Mark all matched</a>
                         {% endif %}
                         <a id="match-button" class="tools-button theme-primary" href="{{ url_for('match', source=ds.id)}}">Match</a>
                       {% else %}
