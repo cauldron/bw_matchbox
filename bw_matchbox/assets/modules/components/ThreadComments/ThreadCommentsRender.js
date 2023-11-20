@@ -2,7 +2,6 @@
 
 import * as CommonConstants from '../../common/CommonConstants.js';
 import * as CommonHelpers from '../../common/CommonHelpers.js';
-import { commonNotify } from '../../common/CommonNotify.js';
 
 import { ThreadCommentsData } from './ThreadCommentsData.js';
 import { ThreadCommentsNodes } from './ThreadCommentsNodes.js';

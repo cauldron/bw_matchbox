@@ -26,3 +26,6 @@ export const dateTimeFormatOptions = {
   minute: 'numeric',
   // second: 'numeric',
 };
+
+/** Timestamp ticks for one day (24 hours) */
+export const dailyTicks = 24 * 60 * 60 * 1000;

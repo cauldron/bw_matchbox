@@ -241,6 +241,7 @@
     currentRole: '{{ config.role }}',
     currentUser: '{{ config.user }}',
     currentProcess: {{ ds.id }},
+    currentProcessName: '{{ ds.name }}', // TODO: To escape with `|replace("'", "\\'")`?
   };
 
   // Export to global scope (to access from generated html code handlers).

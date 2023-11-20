@@ -8,7 +8,7 @@ import { WaitlistCommentDialog } from './WaitlistCommentDialog.js';
  * @property {TProcessDetailPageState} state
  * @property {TProcessDetailPageNodes} nodes
  * @property {TSharedHandlers} callbacks
- * @property {TSharedParams} sharedParams
+ * @property {TProcessDetailPageSharedParams} sharedParams
  * @property {TThreadComments} threadComments
  */
 
@@ -16,7 +16,7 @@ import { WaitlistCommentDialog } from './WaitlistCommentDialog.js';
  * @class ProcessDetailPageHandlers
  */
 export class ProcessDetailPageHandlers {
-  /** @type {TSharedParams} */
+  /** @type {TProcessDetailPageSharedParams} */
   sharedParams;
   /** @type {TProcessDetailPageState} */
   state;
