@@ -54,7 +54,7 @@ export const ProcessesList = {
    */
   onFilterByChange(target) {
     // TODO: Move to Handlers module?
-    const { value } = target;
+    const value = /** @type {TFilterProcessesByString} */ (target.value);
     ProcessesListStates.setFilterBy(value);
     ProcessesListDataLoad.loadData();
   },

@@ -53,7 +53,7 @@
             </span>
           </span>
           <span class="radio-group filter-by">
-            {# Controls for `filter` parameter: `matched`, `unmatched`, or `waitlist`. #}
+            {# Controls for `filter` parameter: `matched`, `unmatched`,  `waitlist` or `manual-match`. #}
             <span class="radio-group-title-wrapper">
               <label class="radio-group-title">Filter by:</label>
             </span>
@@ -70,8 +70,8 @@
               <label for="filter_by_unmatched">Unmatched</label>
             </span>
             <span class="radio-group-item">
-              <input type="radio" name="filter_by" id="filter_by_waitlist" value="waitlist" onChange="window.ProcessesList.onFilterByChange(this)">
-              <label for="filter_by_waitlist">Waitlist</label>
+              <input type="radio" name="filter_by" id="filter_by_manual-match" value="manual-match" onChange="window.ProcessesList.onFilterByChange(this)">
+              <label for="filter_by_manual-match">Manual match</label>
             </span>
           </span>
           <span class="radio-group user-db">
