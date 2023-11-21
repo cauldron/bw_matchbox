@@ -1,20 +1,12 @@
 // @ts-check
 
-import { dailyTicks } from './CommonConstants.js';
+import {
+  dailyTicks,
+  storeRecentProcessesCount,
+  storeRecentProcessesForDays,
+  storeRecentProcessesCookieName,
+} from './CommonConstants.js';
 import { getCookie, setCookie } from './CommonCookies.js';
-
-/* TODO:
- * - 2023.11.20, 17:10 -- To store process names in local storage instead of cookies?
- */
-
-/** The count of actual process records to store (0 - use all the records) */
-const actualCount = 20;
-
-/** Days to keep actual records (0 don't actualize by time) */
-const actualDays = 10;
-
-/** Cookie name to store process list */
-const cookieName = 'recent-processes';
 
 /** Helper function to sort processes by time (the latest entries are first)
  * @param {TRecentProcess} a
@@ -35,24 +27,25 @@ function sortRecentProcesses(processesList) {
   return processesList;
 }
 
-/** Actualize processes list (remain {actualCount} last records for {actualDays} last days)
+/** Actualize processes list (remain {storeRecentProcessesCount} last records for {storeRecentProcessesForDays} last days)
  * @param {TRecentProcesses} sortedList - Processes list should be sorted by date first
  * @return {TRecentProcesses}
  */
 function actualizeRecentProcecess(sortedList) {
   // Filter out outdated records...
   const actualizedList = [];
-  const earliestValidTimestamp = actualDays && Date.now() - dailyTicks * actualDays;
+  const earliestValidTimestamp =
+    storeRecentProcessesForDays && Date.now() - dailyTicks * storeRecentProcessesForDays;
   for (
     let i = 0;
     i < sortedList.length &&
     // Actualize by time if specified...
-    (!actualCount || actualizedList.length < actualCount);
+    (!storeRecentProcessesCount || actualizedList.length < storeRecentProcessesCount);
     i++
   ) {
     const item = sortedList[i];
     // If dated later than earliest valid time...
-    if (!actualDays || !item.time || item.time > earliestValidTimestamp) {
+    if (!storeRecentProcessesForDays || !item.time || item.time > earliestValidTimestamp) {
       actualizedList.push(item);
     }
   }
@@ -63,7 +56,7 @@ function actualizeRecentProcecess(sortedList) {
  * @return {TRecentProcesses}
  */
 export function getRecentProcesses() {
-  const json = getCookie(cookieName);
+  const json = getCookie(storeRecentProcessesCookieName);
   const processesList = /** @type {TRecentProcesses} */ (json ? JSON.parse(json) : []);
   return processesList;
 }
@@ -142,7 +135,7 @@ export function storeProcess(id) {
    */
   // Save cookie...
   const json = JSON.stringify(actualizedList);
-  setCookie(cookieName, json);
+  setCookie(storeRecentProcessesCookieName, json);
   // Return the updated list...
   return actualizedList;
 }

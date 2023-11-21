@@ -54,11 +54,10 @@ export class ProcessDetailPage {
 
     const { callbacks } = this;
 
-    const { isWaitlist, currentUser, currentRole, currentProcess, currentProcessName } =
-      sharedParams;
+    const { isWaitlist, currentUser, currentRole, currentProcess } = sharedParams;
 
-    // Store current process...
-    storeProcess(currentProcess, currentProcessName);
+    // Store current process for history...
+    storeProcess(currentProcess);
 
     const nodes = (this.nodes = new ProcessDetailPageNodes());
     const state = (this.state = new ProcessDetailPageState({
