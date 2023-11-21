@@ -5,7 +5,6 @@ import * as CommonHelpers from '../../common/CommonHelpers.js';
 
 import { RecentProcessesListData } from './RecentProcessesListData.js';
 import { RecentProcessesListNodes } from './RecentProcessesListNodes.js';
-// import { RecentProcessesListHelpers } from './RecentProcessesListHelpers.js';
 
 export class RecentProcessesListRender {
   /** @type {Intl.DateTimeFormat} */
@@ -52,8 +51,6 @@ export class RecentProcessesListRender {
    * @param {Error} error
    */
   renderError(error) {
-    // TODO: Set css class for id="processes-list-root" --> error, update local state
-    // TODO: Set global error status
     const isError = !!error;
     const rootNode = RecentProcessesListNodes.getRootNode();
     rootNode.classList.toggle('has-error', isError);

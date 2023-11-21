@@ -6,7 +6,6 @@ import { RecentProcessesListRender } from './RecentProcessesListRender.js';
 /* eslint-enable no-unused-vars */
 
 import { RecentProcessesListData } from './RecentProcessesListData.js';
-// import { RecentProcessesListHelpers } from './RecentProcessesListHelpers.js';
 import { RecentProcessesListNodes } from './RecentProcessesListNodes.js';
 
 export const RecentProcessesListStates = {
@@ -21,14 +20,6 @@ export const RecentProcessesListStates = {
 
   /** @type {RecentProcessesListRender} */
   recentProcessesListRender: undefined,
-  // [>* @type {RecentProcessesListNodes} <]
-  // recentProcessesListNodes: undefined,
-  // [>* @type {RecentProcessesListStates} <]
-  // recentProcessesListStates: undefined,
-  // [>* @type {RecentProcessesListHandlers} <]
-  // recentProcessesListHandlers: undefined,
-  // [>* @type {RecentProcessesListPrepare} <]
-  // recentProcessesListPrepare: undefined,
 
   /**
    * @param {boolean} isLoading
@@ -71,17 +62,11 @@ export const RecentProcessesListStates = {
     this.events.emit('error', error);
   },
 
-  clearData() {
-    this.setHasData(false);
-    // this.recentProcessesListRender.clearRenderedData();
-  },
-
   /** @param {TRecentProcessesListInitParams} initParams */
   init(initParams) {
     const { events, handlers, recentProcessesListRender } = initParams;
     this.events = events;
     this.handlers = handlers;
     this.recentProcessesListRender = recentProcessesListRender;
-    // TODO: Update all the dynamic parameters...
   },
 };

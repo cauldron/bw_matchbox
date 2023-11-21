@@ -7,8 +7,6 @@ import { RecentProcessesListRender } from './RecentProcessesListRender.js';
 import { RecentProcessesListApi } from './RecentProcessesListApi.js';
 import { RecentProcessesListLoader } from './RecentProcessesListLoader.js';
 import { RecentProcessesListStates } from './RecentProcessesListStates.js';
-// import { RecentProcessesListHandlers } from './RecentProcessesListHandlers.js';
-// import { RecentProcessesListPrepare } from './RecentProcessesListPrepare.js';
 
 /*-- @implements {TRecentProcessesList} */
 export class RecentProcessesList {
@@ -29,8 +27,6 @@ export class RecentProcessesList {
   /** @type {TEvents} */
   events = undefined;
 
-  // TODO: state, data?
-
   /** External API (alternate way, basic handlers are in `handlers` object (above)...
    * @type {RecentProcessesListApi}
    */
@@ -48,7 +44,6 @@ export class RecentProcessesList {
       recentProcessesListRender: this.recentProcessesListRender,
       recentProcessesListLoader: RecentProcessesListLoader,
       recentProcessesListStates: RecentProcessesListStates,
-      // recentProcessesListPrepare: RecentProcessesListPrepare,
     });
     this.api = recentProcessesListApi;
     const { handlers } = this;
@@ -58,8 +53,6 @@ export class RecentProcessesList {
       recentProcessesListRender: this.recentProcessesListRender,
       recentProcessesListNodes: RecentProcessesListNodes,
       recentProcessesListStates: RecentProcessesListStates,
-      // recentProcessesListHandlers: RecentProcessesListHandlers,
-      // recentProcessesListPrepare: RecentProcessesListPrepare,
     });
     this.events = this.recentProcessesListInit.events();
   }
