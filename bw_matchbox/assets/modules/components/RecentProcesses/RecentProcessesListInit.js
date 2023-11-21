@@ -129,16 +129,13 @@ export class RecentProcessesListInit {
 
   getDomNodeContent() {
     return `
-      <div id="recent-processes-list-empty" class="recent-processes-list-empty">No recent processes</div>
-      <div id="recent-processes-list-title" class="recent-processes-list-title">Recently viewed processes</div>
-      <div id="recent-processes-list" class="recent-processes-list"><!-- List placeholder --></div>
       <div id="recent-processes-list-tableau" class="recent-processes-list-tableau">
-        <div id="recent-processes-list-actions" class="recent-processes-list-actions">
-          <a id="addNewThread" title="Add new thread"><i class="fa fa-plus"></i></a>
-        </div>
-        <div id="recent-processes-list-error" class="error"><!-- Error text comes here --></div>
+        <div id="recent-processes-list-title" class="recent-processes-list-title">Recently viewed processes</div>
+        <div id="recent-processes-list-error" class="error"><!-- Error text placeholder --></div>
         <div id="loader-splash" class="loader-splash full-cover bg-white"><div class="loader-spinner"></div></div>
       </div>
+      <div id="recent-processes-list-empty" class="recent-processes-list-empty">No recent processes</div>
+      <div id="recent-processes-list" class="recent-processes-list"><!-- List placeholder --></div>
     `;
   }
 
