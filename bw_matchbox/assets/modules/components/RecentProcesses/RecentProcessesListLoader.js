@@ -1,12 +1,8 @@
 // @ts-check
 
-// import * as CommonHelpers from '../../common/CommonHelpers.js';
-// import { commonNotify } from '../../common/CommonNotify.js';
-
 import { getActualSortedRecentProcesses } from '../../common/RecentProcesses.js';
 
 import * as RecentProcessesListConstants from './RecentProcessesListConstants.js';
-// import { RecentProcessesListData } from './RecentProcessesListData.js';
 import { RecentProcessesListStates } from './RecentProcessesListStates.js';
 
 export const RecentProcessesListLoader = /** @lends RecentProcessesListLoader */ {
