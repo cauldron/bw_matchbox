@@ -2,27 +2,38 @@
 
 export const ProcessesListNodes = {
   getSearchBarNode() {
-    const node = /** @type {HTMLInputElement} */ (document.getElementById('query_string'));
-    return node;
+    return /** @type {HTMLInputElement} */ (document.getElementById('query_string'));
   },
 
+  getLayoutNode() {
+    return document.getElementById('processes-list-layout');
+  },
+
+  getRecentProcessesListNode() {
+    return document.getElementById('recent-processes-list');
+  },
+
+  getRecentProcessesListPanelNode() {
+    return document.getElementById('recent-processes-list-panel');
+  },
+
+  getRecentProcessesContainerNode() {
+    const recentProcessesListPanelNode = this.getRecentProcessesListPanelNode();
+    return recentProcessesListPanelNode.querySelector('#recent-processes-container');
+  },
   getTBodyNode() {
-    const node = document.getElementById('processes-list-table-body');
-    return node;
+    return document.getElementById('processes-list-table-body');
   },
 
   getRootNode() {
-    const node = document.getElementById('processes-list-root');
-    return node;
+    return document.getElementById('processes-list-root');
   },
 
   getNavigationNode() {
-    const node = document.getElementById('processes-list-navigation');
-    return node;
+    return document.getElementById('processes-list-navigation');
   },
 
   getErrorNode() {
-    const node = document.getElementById('processes-list-error');
-    return node;
+    return document.getElementById('processes-list-error');
   },
 };

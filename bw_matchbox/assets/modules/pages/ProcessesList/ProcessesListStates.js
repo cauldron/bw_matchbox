@@ -9,6 +9,15 @@ export const ProcessesListStates = {
   __id: 'ProcessesListStates',
 
   /**
+   * @param {boolean} isInited
+   */
+  setInited(isInited) {
+    const layoutNode = ProcessesListNodes.getLayoutNode();
+    layoutNode.classList.toggle('inited', isInited);
+    ProcessesListData.isInited = isInited;
+  },
+
+  /**
    * @param {boolean} isLoading
    */
   setLoading(isLoading) {

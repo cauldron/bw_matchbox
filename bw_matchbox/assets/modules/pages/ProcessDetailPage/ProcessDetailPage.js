@@ -1,8 +1,6 @@
 // @ts-check
 
-// import * as CommonHelpers from '../../common/CommonHelpers.js';
-// import { commonModal } from '../../common/CommonModal.js';
-// import { commonNotify } from '../../common/CommonNotify.js';
+import { storeProcess } from '../../common/RecentProcesses.js';
 
 import { ThreadComments } from '../../components/ThreadComments/ThreadComments.js';
 
@@ -14,7 +12,7 @@ import { ProcessDetailPageNodes } from './ProcessDetailPageNodes.js';
 
 export class ProcessDetailPage {
   /** External data...
-   * @type {TSharedParams}
+   * @type {TProcessDetailPageSharedParams}
    */
   sharedParams = undefined;
 
@@ -39,7 +37,7 @@ export class ProcessDetailPage {
   handlers;
 
   /**
-   * @param {TSharedParams} sharedParams
+   * @param {TProcessDetailPageSharedParams} sharedParams
    */
   constructor(sharedParams) {
     /* // (Optional) Pre-initialize common submodules...
@@ -57,6 +55,9 @@ export class ProcessDetailPage {
     const { callbacks } = this;
 
     const { isWaitlist, currentUser, currentRole, currentProcess } = sharedParams;
+
+    // Store current process for history...
+    storeProcess(currentProcess);
 
     const nodes = (this.nodes = new ProcessDetailPageNodes());
     const state = (this.state = new ProcessDetailPageState({

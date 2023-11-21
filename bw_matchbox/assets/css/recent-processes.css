@@ -1,0 +1,150 @@
+/* stylelint-disable selector-id-pattern, selector-class-pattern */
+
+.recent-processes-container {
+  --primary-bg-color05: rgb(30 174 219 / 5%);
+  --primary-bg-color1: rgb(30 174 219 / 10%);
+  --primary-bg-color2: rgb(30 174 219 / 20%);
+  --primary-bg-color3: rgb(30 174 219 / 30%);
+  --primary-bg-color4: rgb(30 174 219 / 40%);
+  --primary-bg-color5: rgb(30 174 219 / 50%);
+}
+
+.recent-processes-container {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+  gap: 16px;
+  flex: 1;
+}
+
+.recent-processes-container .recent-processes-list-tableau {
+  flex: 1;
+  position: relative;
+  min-height: 40px; /* Ensure space for loading splash */
+}
+.recent-processes-container.noTableau .recent-processes-list-tableau {
+  display: none;
+}
+
+/* Basic rules... */
+.recent-processes-container > * {
+  transition: all var(--common-animation-time);
+}
+
+/* Empty state: hide some elements... */
+.recent-processes-container.empty .recent-processes-list,
+.recent-processes-container.empty .recent-processes-list-title,
+.recent-processes-container.loading .recent-processes-list-empty,
+.recent-processes-container:not(.empty) .recent-processes-list-empty,
+.recent-processes-container.has-visible-threads .recent-processes-list-empty {
+  display: none;
+}
+.recent-processes-container .recent-processes-list-empty {
+  padding: 10px;
+  margin: 10px auto;
+  text-align: center;
+  opacity: 0.5;
+}
+
+/** Loading elements */
+.recent-processes-container.loading .recent-processes-list,
+.recent-processes-container.loading .recent-processes-list-empty {
+  opacity: 0.5;
+  pointer-events: none;
+}
+
+/* Actions */
+.recent-processes-container.noActions .recent-processes-list-actions {
+  display: none;
+}
+.recent-processes-container .recent-processes-list-actions {
+  border-radius: 4px;
+  padding: 4px 8px;
+  background-color: rgba(0 0 0 / 5%);
+}
+.recent-processes-container .recent-processes-list-actions a {
+  font-size: 0.9em;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: var(--comments-actions-button-size);
+  height: var(--comments-actions-button-size);
+  border-radius: 4px;
+  opacity: 0.5;
+}
+/* Some particular icons' fixes */
+.recent-processes-container .recent-processes-list-actions a#addNewThread i {
+  margin-top: 3px;
+}
+.recent-processes-container .recent-processes-list-actions a.disabled {
+  color: #ddd;
+  cursor: default;
+}
+.recent-processes-container .recent-processes-list-actions a:not(.disabled) {
+  transition: all var(--common-animation-time);
+  cursor: pointer;
+}
+.recent-processes-container .thread:hover .title-actions a:not(.disabled) {
+  color: var(--layout-theme-primary-color);
+}
+.recent-processes-container .recent-processes-list-actions a:not(.disabled):active,
+.recent-processes-container .recent-processes-list-actions a:not(.disabled):hover {
+  opacity: 1;
+}
+.recent-processes-container .recent-processes-list-actions a:not(.disabled):active {
+  background-color: var(--layout-theme-primary-color);
+  box-shadow: 0 0 4px 2px var(--layout-theme-primary-color);
+  color: #fff;
+}
+
+/* Loader splash */
+.recent-processes-container.noError .loader-splash {
+  display: none;
+}
+.recent-processes-container .loader-splash {
+  padding: 20px;
+}
+.recent-processes-container:not(.loading) .loader-splash {
+  /* Inherited from `.loader-splash.hidden`, see `bw_matchbox/assets/css/common.css` */
+  opacity: 0;
+  pointer-events: none;
+}
+
+/* Error */
+.recent-processes-container .error {
+  border-radius: 4px;
+  background-color: var(--common-error-color);
+  color: #fff;
+  margin: 20px auto;
+  padding: 10px 20px;
+}
+.recent-processes-container.noError .error,
+.recent-processes-container:not(.has-error) .error {
+  display: none;
+}
+
+/* List... */
+.recent-processes-container .recent-processes-list-title {
+  /* color: var(--layout-theme-primary-color); */
+  font-size: 120%;
+}
+.recent-processes-container .recent-processes-list {
+  margin: 0 -8px;
+}
+.recent-processes-container .recent-processes-list .recent-process-item a {
+  margin: 2px 0;
+  padding: 4px 8px;
+  border-radius: 4px;
+  transition: all var(--common-animation-time);
+  line-height: 1.3;
+  display: block;
+  text-decoration: none;
+}
+.recent-processes-container .recent-processes-list .recent-process-item a:hover {
+  background-color: var(--primary-bg-color1);
+  text-decoration: underline;
+}
+.recent-processes-container .recent-processes-list .recent-process-item .date {
+  opacity: 0.5;
+}

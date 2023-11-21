@@ -1,4 +1,4 @@
-interface TSharedParams {
+interface TProcessDetailPageSharedParams {
   addAttributeUrl: string;
   markMatchTypeUrl: string;
   markMatchedUrl: string;
@@ -8,4 +8,5 @@ interface TSharedParams {
   currentRole: string;
   currentUser: string;
   currentProcess: number;
+  currentProcessName: string;
 }

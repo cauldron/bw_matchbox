@@ -1,0 +1,40 @@
+<div id="thread-comments-panel" class="panels-layout-side panels-layout-container panels-layout-right thread-comments-panel hidden">
+  <div id="thread-comments-panel-toolbar" class="thread-comments-panel-toolbar-wrapper">
+    <div class="thread-comments-toolbar">
+      <a
+        id="expandAllThreads"
+        title="Collapse/expand threads"
+        class="toolbar-icon"
+        onClick="processDetailPage.callbacks.expandAllThreads(this)"
+      >
+        <i class="fa fa-expand"></i>
+      </a>
+      <a
+        id="addNewThread"
+        title="Add new thread"
+        class="toolbar-icon"
+        onClick="processDetailPage.callbacks.addNewThread(this)"
+      >
+        <i class="fa fa-plus"></i>
+      </a>
+      <div class="group">
+        <label for="threadsSortMode">Sort by:</label>
+        <select
+          id="threadsSortMode"
+          onChange="processDetailPage.callbacks.setSortMode(this)"
+        >
+          <option value="resolved|modifiedDate" selected>Resolved / Modified date</option>
+          <option value="resolved|name">Resolved / Name</option>
+        </select>
+      </div>
+    </div>
+  </div>
+  <div class="panels-layout-content panels-layout-scrollable">
+    <div class="panels-layout-container container padded">
+      <div id="thread-comments" class="thread-comments">
+        <!-- Thread comments placehodler -->
+        <div id="temp-loader-splash" class="loader-splash"><div class="loader-spinner"></div></div>
+      </div>
+    </div>
+  </div>
+</div>

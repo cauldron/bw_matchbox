@@ -1,9 +1,5 @@
 /* stylelint-disable selector-id-pattern, selector-class-pattern */
 
-:root {
-  --comments-actions-button-size: 24px;
-}
-
 .thread-comments {
   position: relative;
 }

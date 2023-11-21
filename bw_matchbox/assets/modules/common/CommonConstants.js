@@ -26,3 +26,15 @@ export const dateTimeFormatOptions = {
   minute: 'numeric',
   // second: 'numeric',
 };
+
+/** Timestamp ticks for one day (24 hours) */
+export const dailyTicks = 24 * 60 * 60 * 1000;
+
+/** The count of actual process records to store (0 - use all the records) */
+export const storeRecentProcessesCount = 10;
+
+/** Days to keep actual recent process records (0 don't actualize by time) */
+export const storeRecentProcessesForDays = 0;
+
+/** Cookie name to store recent process list */
+export const storeRecentProcessesCookieName = 'recent-processes';

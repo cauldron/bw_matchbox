@@ -81,7 +81,7 @@ export const ThreadCommentsData = {
   totalComments: 0,
   totalThreads: 0,
 
-  // Commpn params...
+  // Common params...
   error: undefined,
   isError: false,
   isLoading: true,

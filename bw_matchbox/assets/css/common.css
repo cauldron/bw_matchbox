@@ -7,6 +7,7 @@
   /* Error color */
   --layout-theme-common-error-color: #c33;
   /* Animations */
+  --common-transition-time: 150ms;
   --common-animation-time: 250ms;
   --common-effect-time: 500ms;
   /* Main colors */
@@ -25,6 +26,8 @@
   --panels-layout-actions-offset: 20px;
   --panels-layout-actions-offset-y: 10px;
   --minor-border-color: #eee;
+  /** Comments */
+  --comments-actions-button-size: 24px;
 }
 
 /* Basic layout */
@@ -127,12 +130,6 @@
   font-weight: normal;
 }
 
-/* Panels layout */
-/* TODO: Make width adaptive depending on the screen size? */
-.panels-layout-side.hidden {
-  display: none;
-}
-
 /* Panels layout actions */
 .panels-layout .panels-layout-actions {
   position: absolute;
@@ -161,11 +158,21 @@
 .panels-layout .panels-layout-actions-button:hover {
   opacity: 1;
 }
+.panels-layout .panels-layout-actions-button.activable > * {
+  transition: all var(--common-animation-time);
+}
+.panels-layout .panels-layout-actions-button.activable.active > .icon-default,
+.panels-layout .panels-layout-actions-button.activable:not(.active) > .icon-active {
+  display: none;
+}
 .panels-layout .panels-layout-actions-button.turnaround {
   transform: rotate(-90deg);
 }
 .panels-layout .panels-layout-actions-button.turnaround.turned {
   transform: rotate(90deg);
+}
+.panels-layout-content {
+  flex: 1;
 }
 .panels-layout-content.padded {
   margin: 20px auto;
@@ -174,7 +181,22 @@
   border-bottom: 1px solid var(--minor-border-color);
 }
 
+.panels-layout-container.padded {
+  padding: 20px;
+}
+
+/* Panels layout */
+/* TODO: Make width adaptive depending on the screen size? */
+.panels-layout-side.hidden {
+  /* display: none; */
+}
+
 /* TODO: To use vars for media queries? Eg, for `panels-layout-min-threshold`? */
+@media (width < 700px) {
+  .panels-layout-side.hidden {
+    display: none;
+  }
+}
 @media (width >= 700px) {
   .panels-layout-container.padded {
     padding: 20px;
@@ -209,10 +231,6 @@
     justify-content: stretch;
     /* flex-direction: row-reverse; */
   }
-  .panels-layout-side.hidden,
-  .panels-layout-side {
-    display: block;
-  }
   .panels-layout-main,
   .panels-layout-side {
     box-sizing: border-box;
@@ -227,7 +245,7 @@
     flex: 1;
   }
   .panels-layout-side {
-    transition: all 1s;
+    transition: all var(--common-animation-time) ease-out;
     width: var(--panels-layout-side-panel-width);
     flex-shrink: 0;
     opacity: 1;
