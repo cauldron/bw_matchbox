@@ -25,9 +25,9 @@ export class RecentProcessesListRender {
    * @return {string} - HTML content
    */
   renderRecentProcess(recentProcess) {
-    const { id, name, timestamp } = recentProcess;
+    const { id, name, time } = recentProcess;
     const dateTimeFormatter = this.getDateTimeFormatter();
-    const date = new Date(timestamp);
+    const date = new Date(time);
     const dateStr = dateTimeFormatter.format(date);
     const className = [
       // prettier-ignore

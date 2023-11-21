@@ -5,7 +5,8 @@ import { RecentProcessesListData } from './RecentProcessesListData.js';
 import { RecentProcessesListInit } from './RecentProcessesListInit.js';
 import { RecentProcessesListRender } from './RecentProcessesListRender.js';
 import { RecentProcessesListApi } from './RecentProcessesListApi.js';
-// import { RecentProcessesListStates } from './RecentProcessesListStates.js';
+import { RecentProcessesListLoader } from './RecentProcessesListLoader.js';
+import { RecentProcessesListStates } from './RecentProcessesListStates.js';
 // import { RecentProcessesListHandlers } from './RecentProcessesListHandlers.js';
 // import { RecentProcessesListPrepare } from './RecentProcessesListPrepare.js';
 
@@ -45,8 +46,8 @@ export class RecentProcessesList {
       recentProcessesListData: RecentProcessesListData,
       recentProcessesListNodes: RecentProcessesListNodes,
       recentProcessesListRender: this.recentProcessesListRender,
-      // recentProcessesListHandlers: RecentProcessesListHandlers,
-      // recentProcessesListStates: RecentProcessesListStates,
+      recentProcessesListLoader: RecentProcessesListLoader,
+      recentProcessesListStates: RecentProcessesListStates,
       // recentProcessesListPrepare: RecentProcessesListPrepare,
     });
     this.api = recentProcessesListApi;
@@ -56,7 +57,7 @@ export class RecentProcessesList {
       parentId: this.thisId,
       recentProcessesListRender: this.recentProcessesListRender,
       recentProcessesListNodes: RecentProcessesListNodes,
-      // recentProcessesListStates: RecentProcessesListStates,
+      recentProcessesListStates: RecentProcessesListStates,
       // recentProcessesListHandlers: RecentProcessesListHandlers,
       // recentProcessesListPrepare: RecentProcessesListPrepare,
     });

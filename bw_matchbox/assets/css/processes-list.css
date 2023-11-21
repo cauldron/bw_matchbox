@@ -8,6 +8,16 @@
 .processes-list-layout #recent-processes-panel .recent-processes {
   flex: 1;
 }
+.processes-list-layout {
+  opacity: 0.5;
+  transition: all var(--common-animation-time);
+}
+.processes-list-layout.inited {
+  opacity: 1;
+}
+.processes-list-layout:not(.inited) .panels-layout-actions {
+  display: none;
+}
 
 /* Root node */
 .processes-list {

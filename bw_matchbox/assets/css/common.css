@@ -7,6 +7,7 @@
   /* Error color */
   --layout-theme-common-error-color: #c33;
   /* Animations */
+  --common-transition-time: 150ms;
   --common-animation-time: 250ms;
   --common-effect-time: 500ms;
   /* Main colors */
@@ -129,12 +130,6 @@
   font-weight: normal;
 }
 
-/* Panels layout */
-/* TODO: Make width adaptive depending on the screen size? */
-.panels-layout-side.hidden {
-  display: none;
-}
-
 /* Panels layout actions */
 .panels-layout .panels-layout-actions {
   position: absolute;
@@ -190,7 +185,18 @@
   padding: 20px;
 }
 
+/* Panels layout */
+/* TODO: Make width adaptive depending on the screen size? */
+.panels-layout-side.hidden {
+  /* display: none; */
+}
+
 /* TODO: To use vars for media queries? Eg, for `panels-layout-min-threshold`? */
+@media (width < 700px) {
+  .panels-layout-side.hidden {
+    display: none;
+  }
+}
 @media (width >= 700px) {
   .panels-layout-container.padded {
     padding: 20px;
@@ -239,7 +245,7 @@
     flex: 1;
   }
   .panels-layout-side {
-    transition: all 1s;
+    transition: all var(--common-animation-time) ease-out;
     width: var(--panels-layout-side-panel-width);
     flex-shrink: 0;
     opacity: 1;

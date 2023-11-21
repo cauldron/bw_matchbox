@@ -4,8 +4,8 @@
 /* eslint-disable no-unused-vars */
 import { RecentProcessesListRender } from './RecentProcessesListRender.js';
 import { RecentProcessesListNodes } from './RecentProcessesListNodes.js';
+import { RecentProcessesListStates } from './RecentProcessesListStates.js';
 // import { RecentProcessesListHandlers } from './RecentProcessesListHandlers.js';
-// import { RecentProcessesListStates } from './RecentProcessesListStates.js';
 // import { RecentProcessesListPrepare } from './RecentProcessesListPrepare.js';
 /* eslint-enable no-unused-vars */
 
@@ -55,6 +55,7 @@ export class RecentProcessesListInit {
    * @param {string} [params.parentId]
    * @param {RecentProcessesListRender} params.recentProcessesListRender
    * @param {RecentProcessesListNodes} params.recentProcessesListNodes
+   * @param {RecentProcessesListStates} params.recentProcessesListStates
    */
   constructor({
     handlers,
@@ -62,7 +63,7 @@ export class RecentProcessesListInit {
     recentProcessesListRender,
     recentProcessesListNodes,
     // recentProcessesListHandlers,
-    // recentProcessesListStates,
+    recentProcessesListStates,
     // recentProcessesListPrepare,
   }) {
     this.handlers = handlers;
@@ -72,7 +73,7 @@ export class RecentProcessesListInit {
     this.recentProcessesListRender = recentProcessesListRender;
     this.recentProcessesListNodes = recentProcessesListNodes;
     // this.recentProcessesListHandlers = recentProcessesListHandlers;
-    // this.recentProcessesListStates = recentProcessesListStates;
+    this.recentProcessesListStates = recentProcessesListStates;
     // this.recentProcessesListPrepare = recentProcessesListPrepare;
   }
 
@@ -114,7 +115,7 @@ export class RecentProcessesListInit {
       // Init all initiable components...
       this.recentProcessesListRender.init(initParams);
       // this.recentProcessesListHandlers.init(initParams);
-      // this.recentProcessesListStates.init(initParams);
+      this.recentProcessesListStates.init(initParams);
       // this.recentProcessesListPrepare.init(initParams);
 
       this.initDomNodeActions();
@@ -149,6 +150,9 @@ export class RecentProcessesListInit {
 
   getDomNodeContent() {
     return `
+      <div id="recent-processes-list-empty" class="recent-processes-list-empty">No recent processes</div>
+      <div id="recent-processes-list-title" class="recent-processes-list-title">Recently viewed processes</div>
+      <div id="recent-processes-list" class="recent-processes-list"><!-- List placeholder --></div>
       <div id="recent-processes-list-tableau" class="recent-processes-list-tableau">
         <div id="recent-processes-list-actions" class="recent-processes-list-actions">
           <a id="addNewThread" title="Add new thread"><i class="fa fa-plus"></i></a>
@@ -156,8 +160,6 @@ export class RecentProcessesListInit {
         <div id="recent-processes-list-error" class="error"><!-- Error text comes here --></div>
         <div id="loader-splash" class="loader-splash full-cover bg-white"><div class="loader-spinner"></div></div>
       </div>
-      <div id="recent-processes-list-empty" class="recent-processes-list-empty">No recent processes</div>
-      <div id="recent-processes-list" class="recent-processes-list"><!-- List placeholder --></div>
     `;
   }
 

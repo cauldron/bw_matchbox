@@ -16,16 +16,16 @@ const actualDays = 10;
 /** Cookie name to store process list */
 const cookieName = 'recent-processes';
 
-/** Helper function to sort processes by timestamp (the latest entries are first)
+/** Helper function to sort processes by time (the latest entries are first)
  * @param {TRecentProcess} a
  * @param {TRecentProcess} b
  * @return number
  */
 function sortProcessItemsByTimestampIterator(a, b) {
-  return b.timestamp - a.timestamp;
+  return b.time - a.time;
 }
 
-/** Sort processes list by timestamp.
+/** Sort processes list by time.
  * @param {TRecentProcesses} processesList
  * @return {TRecentProcesses}
  */
@@ -51,8 +51,8 @@ function actualizeRecentProcecess(sortedList) {
     i++
   ) {
     const item = sortedList[i];
-    // If dated later than earliest valid timestamp...
-    if (!actualDays || !item.timestamp || item.timestamp > earliestValidTimestamp) {
+    // If dated later than earliest valid time...
+    if (!actualDays || !item.time || item.time > earliestValidTimestamp) {
       actualizedList.push(item);
     }
   }
@@ -90,21 +90,18 @@ export function getActualSortedRecentProcesses() {
 
 /** Add or update process
  * @param {number} id
- * @param {string} name
  * @return {TRecentProcesses}
  */
-export function storeProcess(id, name) {
+export function storeProcess(id) {
   /** @type TRecentProcess */
   const record = {
     id,
-    name,
-    timestamp: Date.now(),
+    time: Date.now(),
   };
   const processesList = getRecentProcesses();
   /* console.log('[RecentProcesses:storeProcess] start', {
    *   record,
    *   id,
-   *   name,
    *   processesList,
    * });
    */
@@ -119,7 +116,6 @@ export function storeProcess(id, name) {
        *   item,
        *   record,
        *   id,
-       *   name,
        *   processesList,
        * });
        */
@@ -132,7 +128,6 @@ export function storeProcess(id, name) {
     /* console.log('[RecentProcesses:storeProcess] add new record', {
      *   record,
      *   id,
-     *   name,
      *   processesList,
      * });
      */
@@ -140,6 +135,11 @@ export function storeProcess(id, name) {
   }
   // Actualize the list...
   const actualizedList = sortAndActualizeRecentProcesses(updatedProcesses);
+  /* console.log('[RecentProcesses:storeProcess] store actualized list', {
+   *   id,
+   *   actualizedList,
+   * });
+   */
   // Save cookie...
   const json = JSON.stringify(actualizedList);
   setCookie(cookieName, json);

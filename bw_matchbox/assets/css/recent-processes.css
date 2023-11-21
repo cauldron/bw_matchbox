@@ -11,9 +11,15 @@
 
 .recent-processes-container {
   position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+  gap: 16px;
+  flex: 1;
 }
 
 .recent-processes-container .recent-processes-list-tableau {
+  flex: 1;
   position: relative;
   min-height: 40px; /* Ensure space for loading splash */
 }
@@ -28,6 +34,7 @@
 
 /* Empty state: hide some elements... */
 .recent-processes-container.empty .recent-processes-list,
+.recent-processes-container.empty .recent-processes-list-title,
 .recent-processes-container.loading .recent-processes-list-empty,
 .recent-processes-container:not(.empty) .recent-processes-list-empty,
 .recent-processes-container.has-visible-threads .recent-processes-list-empty {
@@ -118,9 +125,14 @@
 }
 
 /* List... */
-.recent-process-item {
+.recent-processes-container .recent-processes-list-title {
+  /* color: var(--layout-theme-primary-color); */
+  font-size: 120%;
 }
-.recent-process-item a {
+.recent-processes-container .recent-processes-list {
+  margin: 0 -8px;
+}
+.recent-processes-container .recent-processes-list .recent-process-item a {
   margin: 2px 0;
   padding: 4px 8px;
   border-radius: 4px;
@@ -129,10 +141,10 @@
   display: block;
   text-decoration: none;
 }
-.recent-process-item a:hover {
+.recent-processes-container .recent-processes-list .recent-process-item a:hover {
   background-color: var(--primary-bg-color1);
   text-decoration: underline;
 }
-.recent-process-item .date {
+.recent-processes-container .recent-processes-list .recent-process-item .date {
   opacity: 0.5;
 }

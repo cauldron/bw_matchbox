@@ -1,4 +1,4 @@
 // @ts-check
 
 /** Api base */
-export {};
+export const processesAttributesApiUrl = '/processes-attributes-json/';

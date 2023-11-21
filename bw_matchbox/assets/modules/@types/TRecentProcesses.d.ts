@@ -1,6 +1,7 @@
 interface TRecentProcess {
   id: number;
-  name: string; // TODO: Is it neccessary to store name? Can we get name by id without extra requests on the frontend side?
-  timestamp: number;
+  // NOTE: The name shouldn't be stored in cookie. We can get it from server with `loadProcessesAttributes`.
+  name?: string;
+  time: number;
 }
 type TRecentProcesses = TRecentProcess[];

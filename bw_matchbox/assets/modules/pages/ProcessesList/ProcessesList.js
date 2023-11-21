@@ -229,5 +229,6 @@ export const ProcessesList = {
     this.startAllModules();
     // Load data...
     ProcessesListDataLoad.loadData();
+    ProcessesListStates.setInited(true);
   },
 };

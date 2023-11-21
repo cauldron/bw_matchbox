@@ -25,6 +25,7 @@ export const ProcessesListData = {
   currentPage: 0,
   error: undefined,
   isError: false,
+  isInited: true,
   isLoading: true,
   hasData: false,
 
