@@ -560,7 +560,7 @@ def processes():
     elif order_by == "importance":
         limit = limit or 250
         offset = offset or 0
-        qs = [bd.get_node(id=id_)._document for _, id_ in pr[offset : offset + limit]]
+        qs = [bd.get_node(id=id_)._document for _, id_ in pr[offset: offset + limit]]
         qs = apply_filter_to_qs(qs, filter_arg)
         total_records = len(bd.Database(config["source"]))
     else:
@@ -642,6 +642,16 @@ def search():
             table_data=table_data,  # =bd.Database(search_db).search(q, limit=100),
             query_string=q,
         )
+
+
+@matchbox_app.route("/processes-attributes-json/<ids_list_str>", methods=["GET"])
+@auth.login_required
+def processes_attributes_json(ids_list_str: str):
+    # ids_list_str = flask.request.args.get("ids")  # TODO: Use arguments? (Like `?ids={...}`?)
+    ids_list = map(int, ids_list_str.split(","))
+    attrs_list = map(format_process, ids_list)
+    response_data = list(attrs_list)
+    return flask.jsonify(response_data)
 
 
 @matchbox_app.route("/process-attributes-json/<id>", methods=["GET"])
