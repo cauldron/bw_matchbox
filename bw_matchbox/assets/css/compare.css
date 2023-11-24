@@ -35,7 +35,7 @@
 }
 .compare-table .cell-amount {
   width: var(--common-table-cell-amount-width);
-  /* width: 5.5em; */
+  width: 5.5em;
   white-space: nowrap;
 }
 .compare-table .cell-name {
