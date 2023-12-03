@@ -19,7 +19,7 @@ class JSONField(peewee.TextField):
 
 
 class LCIAScore(peewee.Model):
-    method = peewee.JSONField(null=False)
+    method = JSONField(null=False)
     process_id = peewee.IntegerField(null=False)
     relinked = peewee.BooleanField(default=False)
     score = peewee.FloatField(null=False)
