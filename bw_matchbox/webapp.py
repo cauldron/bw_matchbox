@@ -741,7 +741,7 @@ def get_scores(id):
     for ic in methods:
         a = random.random()
         b = 2 * random.random()
-        results.add({
+        results.append({
             'category': ic[2],
             'original': a,
             'relinked': b,
