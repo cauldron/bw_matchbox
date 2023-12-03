@@ -851,8 +851,7 @@ def to_json(lst):
     KEYS = ("name", "unit", "location", "reference product", "categories")
     MAPPING = {"reference product": "product"}
 
-    return json.dumps(
-        [
+    data = [
             {
                 # TODO: To use empty list as default value for the `categories`
                 # property (it provides list otherwise)?
@@ -863,13 +862,18 @@ def to_json(lst):
                     MAPPING.get(key, key): exc.output.get(key, "Unknown")
                     for key in KEYS
                 },
+                "product": exc.get("name"),
                 "type": exc["type"],
                 "amount": exc["amount"],
                 "id": exc._document.id,
             }
             for exc in lst
         ]
-    )
+    for exc in data:
+        if exc['type'] == 'production':
+            exc['input']['name'] = exc['product'] or exc['name']
+
+    return json.dumps(data)
 
 
 @matchbox_app.route("/allocate/<id>", methods=["GET"])
