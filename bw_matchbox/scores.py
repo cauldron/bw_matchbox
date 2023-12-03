@@ -24,6 +24,7 @@ class LCIAScore(peewee.Model):
     relinked = peewee.BooleanField(default=False)
     score = peewee.FloatField(null=False)
     created = peewee.DateTimeField(default=dt.utcnow)
+    unit = peewee.TextField(default="(Unknown)")
 
     class Meta:
         constraints = [peewee.SQL("UNIQUE (process_id, method)")]

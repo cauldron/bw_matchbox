@@ -744,7 +744,8 @@ def get_scores(id):
             'category': ic[2],
             'original': a,
             'relinked': b,
-            'ratio': a / b
+            'ratio': a / b,
+            'unit': bd.methods[ic].get('unit', '(Unknown)')
         })
 
     # try:
