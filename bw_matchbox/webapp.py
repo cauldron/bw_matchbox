@@ -6,6 +6,7 @@ import string
 import uuid
 from pathlib import Path
 
+import numpy as np
 import bw2data as bd
 import bw2calc as bc
 import flask
@@ -704,10 +705,14 @@ def get_authors(authors):
         return ", ".join({obj.get("name", "Unknown") for obj in authors.values()})
 
 
-@matchbox_app.route("/scores/calculate/<database>", methods=["GET"])
+@matchbox_app.route("/scores/calculate/original/<database>", methods=["GET"])
 @auth.login_required
 def calculate_scores(database):
     config = get_config()
+
+    if config["role"] != "editors":
+        flask.abort(403)
+
     methods = sorted([
         x
         for x in bd.methods
@@ -721,6 +726,26 @@ def calculate_scores(database):
     lca = bc.LCA({db.random(): 1}, methods[0])
     lca.lci()
     lca.lcia()
+
+    demand = np.identity(lca.demand_array.shape[0])
+    supply = bc.spsolve(lca.technosphere_matrix, demand)
+    inventory = lca.biosphere_matrix @ supply
+
+    for ic in methods:
+        unit = bd.databases[ic].get('unit', '(Unknown)')
+        lca.switch_method(ic)
+        vector = (lca.characterization_matrix * inventory).sum(axis=0)
+        for act in db:
+            LCIAScore.delete().where(LCIAScore.process_id == act.id, LCIAScore.method==ic[2]).execute()
+            LCIAScore.create(
+                method=ic[2],
+                process_id=act.id,
+                relinked=0,
+                score=float(vector[lca.dicts.product[act.id]]),
+                unit=unit,
+            )
+
+    return 'OK'
 
 
 @matchbox_app.route("/scores/get/<id>", methods=["GET"])
