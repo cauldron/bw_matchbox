@@ -5,7 +5,6 @@ import random
 import string
 import uuid
 from pathlib import Path
-from random import random
 
 import bw2data as bd
 import bw2calc as bc
