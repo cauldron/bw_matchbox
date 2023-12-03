@@ -732,7 +732,7 @@ def calculate_scores(database):
     inventory = lca.biosphere_matrix @ supply
 
     for ic in methods:
-        unit = bd.databases[ic].get('unit', '(Unknown)')
+        unit = bd.methods[ic].get('unit', '(Unknown)')
         lca.switch_method(ic)
         vector = (lca.characterization_matrix * inventory).sum(axis=0)
         for act in db:
