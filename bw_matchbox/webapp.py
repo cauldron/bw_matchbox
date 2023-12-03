@@ -5,8 +5,10 @@ import random
 import string
 import uuid
 from pathlib import Path
+from random import random
 
 import bw2data as bd
+import bw2calc as bc
 import flask
 import tomli
 import whoosh
@@ -17,6 +19,7 @@ from peewee import DoesNotExist, fn
 from werkzeug.security import check_password_hash, generate_password_hash
 
 from .comments import Comment, CommentThread
+from .scores import LCIAScore
 from .export import export_database_to_csv
 from .matching import MATCH_TYPE_ABBREVIATIONS, get_match_types
 from .utils import name_close_enough, normalize_name, similar_location
@@ -700,6 +703,59 @@ def get_authors(authors):
         return ", ".join({obj.get("name", "Unknown") for obj in authors})
     else:
         return ", ".join({obj.get("name", "Unknown") for obj in authors.values()})
+
+
+@matchbox_app.route("/scores/calculate/<database>", methods=["GET"])
+@auth.login_required
+def calculate_scores(database):
+    config = get_config()
+    methods = sorted([
+        x
+        for x in bd.methods
+        if x[0] == 'Ecological Scarcity 2021'
+        and x[1] != 'total'
+    ])
+    if database not in bd.databases:
+        flask.abort(500)
+    db = bd.Database(database)
+
+    lca = bc.LCA({db.random(): 1}, methods[0])
+    lca.lci()
+    lca.lcia()
+
+
+@matchbox_app.route("/scores/get/<id>", methods=["GET"])
+@auth.login_required
+def get_scores(id):
+    config = get_config()
+
+    methods = sorted([
+        x
+        for x in bd.methods
+        if x[0] == 'Ecological Scarcity 2021'
+        and x[1] != 'total'
+    ])
+
+    results = []
+
+    for ic in methods:
+        a = random.random()
+        b = 2 * random.random()
+        results.add({
+            'category': ic[2],
+            'original': a,
+            'relinked': b,
+            'ratio': a / b
+        })
+
+    # try:
+    #     node = bd.get_node(id=id)
+    # except bd.errors.UnknownObject:
+    #     return flask.redirect(flask.url_for("index"))
+
+    # scores = LCIAScore.select().where(LCIAScore.process_id == int(id))
+
+    return flask.jsonify(results)
 
 
 @matchbox_app.route("/remove-match/<id>", methods=["GET"])
