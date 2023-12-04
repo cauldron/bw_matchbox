@@ -8,23 +8,26 @@
     <div id="panels-layout-tabs" class="panels-layout-tabs panels-layout-container">
       <a
         id="comments"
-        class="panels-layout-tab active"
-        onClick="window.processDetailPage.callbacks.switchSidePanelTab(this)"
-      >
-        Comments
-      </a>
-      <a
-        id="scores"
         class="panels-layout-tab"
         onClick="window.processDetailPage.callbacks.switchSidePanelTab(this)"
       >
-        Scores
+        <i class="fa fa-comments"></i> Comments
+      </a>
+      <a
+        id="scores"
+        class="panels-layout-tab active"
+        onClick="window.processDetailPage.callbacks.switchSidePanelTab(this)"
+      >
+        <i class="fa fa-table-list"></i> Scores
       </a>
     </div>
     {% include 'thread-comments-panel.html' %}
+    {% include 'scores-list-panel.html' %}
+    {#
     <div id="thread-scores-panel panels-layout-tab-content" data-panels-layout-tab-content-id="scores">
       scores
     </div>
+    #}
   </div>
 
   <div id="process-detail" class="panels-layout-main panels-layout-container process-detail{{ ' waitlist' if ds.get('waitlist') }}">

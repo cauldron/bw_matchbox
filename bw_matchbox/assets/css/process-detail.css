@@ -150,8 +150,9 @@
   width: var(--common-table-cell-matched-width);
 }
 
-/* DEBUG */
+/* DEBUG
 .panels-layout-container.container {
-  /* border: 1px solid green; */
+  border: 1px solid green;
   height: 900px;
 }
+*/

@@ -24,9 +24,16 @@ export class ProcessDetailPageNodes {
 
   getThreadCommentsNode() {
     // Assumning single comments component?
-    return document.getElementById('thread-comments');
+    const layoutNode = this.getLayoutNode();
+    return layoutNode.querySelector('#thread-comments');
+    // return document.getElementById('thread-comments');
   }
 
+  getScoresListNode() {
+    const layoutNode = this.getLayoutNode();
+    // return layoutNode.querySelector('#scores-list-panel');
+    return layoutNode.querySelector('#scores-list-container');
+  }
   getErrorNode() {
     const rootNode = this.getRootNode();
     return rootNode.querySelector('.info-tableau .error');

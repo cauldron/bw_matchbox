@@ -184,6 +184,11 @@
   transition: all var(--common-animation-time);
   opacity: 0.5;
 }
+.panels-layout .panels-layout-tab i.fa {
+  display: inline-block;
+  opacity: 0.4;
+  margin-right: 4px;
+}
 .panels-layout .panels-layout-tab.active {
   background-color: var(--layout-theme-primary-color);
   color: #fff;

@@ -64,12 +64,13 @@ export class ProcessDetailPageHandlers {
     );
     const activeTabId = activeTabNode?.getAttribute('id');
     const isPanelHidden = sidePanelNode.classList.contains('hidden');
-    console.log('[ProcessDetailPageHandlers:initSidePanelTabs]', {
-      sidePanelNode,
-      activeTabId,
-      activeTabNode,
-      sidePanelTabsNode,
-    });
+    /* console.log('[ProcessDetailPageHandlers:initSidePanelTabs]', {
+     *   sidePanelNode,
+     *   activeTabId,
+     *   activeTabNode,
+     *   sidePanelTabsNode,
+     * });
+     */
     if (activeTabId && !isPanelHidden) {
       this.switchSidePanelTabById(activeTabId);
     }
@@ -84,16 +85,17 @@ export class ProcessDetailPageHandlers {
       activeId = this.getSidePanelActiveTabId();
     }
     if (activeId) {
-      console.log('[ProcessDetailPageHandlers:ensureSidePanelTabComponentById]', {
-        activeId,
-        callbacks: this.callbacks,
-      });
+      /* console.log('[ProcessDetailPageHandlers:ensureSidePanelTabComponentById]', {
+       *   activeId,
+       *   callbacks: this.callbacks,
+       * });
+       */
       switch (activeId) {
         case 'comments': {
           return this.callbacks.ensureThreadComments();
         }
         case 'scores': {
-          return this.callbacks.ensureScores();
+          return this.callbacks.ensureScoresList();
         }
       }
     }
@@ -113,15 +115,12 @@ export class ProcessDetailPageHandlers {
     const layoutNode = /** @type {HTMLElement} */ (this.nodes.getLayoutNode());
     const tabNodes = sidePanelTabsNode.getElementsByClassName('panels-layout-tab');
     const tabContentNodes = layoutNode.getElementsByClassName('panels-layout-tab-content');
-    // const activeTabNode = sidePanelTabsNode.querySelector('.panels-layout-tab.active');
-    // const activeTabId = activeTabNode?.getAttribute('id');
-    console.log('[ProcessDetailPageHandlers:switchSidePanelTabById]', {
-      activeId,
-      // activeTabNode,
-      // sidePanelTabsNode,
-      tabNodes,
-      tabContentNodes,
-    });
+    /* console.log('[ProcessDetailPageHandlers:switchSidePanelTabById]', {
+     *   activeId,
+     *   tabNodes,
+     *   tabContentNodes,
+     * });
+     */
     Array.from(tabNodes).forEach((node) => {
       const id = node.getAttribute('id');
       const isActive = id === activeId;
@@ -145,10 +144,11 @@ export class ProcessDetailPageHandlers {
    */
   switchSidePanelTab(tabNode) {
     const tabId = tabNode?.getAttribute('id');
-    console.log('[ProcessDetailPageHandlers:switchSidePanelTab]', {
-      tabId,
-      tabNode,
-    });
+    /* console.log('[ProcessDetailPageHandlers:switchSidePanelTab]', {
+     *   tabId,
+     *   tabNode,
+     * });
+     */
     this.switchSidePanelTabById(tabId);
   }
 
