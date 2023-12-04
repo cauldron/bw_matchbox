@@ -1,7 +1,5 @@
 // @ts-check
 
-import { commonNotify } from '../../common/CommonNotify.js';
-
 import { sortScoresDataIterator } from './ScoresListHelpers.js';
 
 // Import types only...
@@ -80,7 +78,6 @@ export class ScoresListApi {
         });
         // eslint-disable-next-line no-debugger
         debugger;
-        commonNotify.showError(error);
         this.scoresListStates.setError(error);
         this.scoresListStates.setHasData(false);
         // throw error;

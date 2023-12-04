@@ -1,5 +1,8 @@
 // @ts-check
 
+import { commonNotify } from '../../common/CommonNotify.js';
+import { getErrorText } from '../../common/CommonHelpers.js';
+
 // Import types only...
 /* eslint-disable no-unused-vars */
 import { ScoresListRender } from './ScoresListRender.js';
@@ -72,6 +75,10 @@ export class ScoresListStates {
    */
   setError(error) {
     this.scoresListData.isError = !!error;
+    const errorText = getErrorText(error);
+    if (errorText && errorText !== getErrorText(this.scoresListData.error)) {
+      commonNotify.showError(errorText);
+    }
     this.scoresListData.error = error;
     this.scoresListRender.renderError(error);
     this.scoresListData.events.emit('error', error);

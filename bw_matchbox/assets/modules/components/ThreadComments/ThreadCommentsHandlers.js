@@ -54,42 +54,55 @@ class ApiHandlers {
     const commentModalDialog = new CommentModalDialog();
     // Show comment text form modal first and wait for user action...
     const modalPromise = commentModalDialog.promiseCommentModal();
-    return modalPromise.then((userAction) => {
-      if (!userAction) {
-        // Comment edition canceled
-        return false;
-      }
-      // Make api request...
-      const { comment } = userAction;
-      return ThreadCommentsLoader.threadAddCommentRequest({ threadId, comment })
-        .then((/** @type {TComment} */ comment) => {
-          /* // DEBUG
-           * const { threadsHash } = ThreadCommentsData;
-           * const thread = threadsHash[threadId];
-           * console.log('[ThreadCommentsHandlers:threadAddCommentRequest]: done', {
-           *   comment,
-           *   thread,
-           *   threadId,
-           * });
-           */
-          ThreadCommentsPrepare.addCommentToThread({ threadId, threadNode, comment });
-          // Show noitification...
-          commonNotify.showSuccess('Comment successfully added');
-          return true;
-        })
-        .catch((error) => {
-          // eslint-disable-next-line no-console
-          console.error('[ThreadCommentsHandlers:threadAddComment]: catched', {
-            error,
-            params,
+    return modalPromise
+      .then((userAction) => {
+        if (!userAction) {
+          // Comment edition canceled
+          return false;
+        }
+        // Make api request...
+        const { comment } = userAction;
+        return ThreadCommentsLoader.threadAddCommentRequest({ threadId, comment })
+          .then((/** @type {TComment} */ comment) => {
+            /* // DEBUG
+             * const { threadsHash } = ThreadCommentsData;
+             * const thread = threadsHash[threadId];
+             * console.log('[ThreadCommentsHandlers:threadAddCommentRequest]: done', {
+             *   comment,
+             *   thread,
+             *   threadId,
+             * });
+             */
+            ThreadCommentsPrepare.addCommentToThread({ threadId, threadNode, comment });
+            // Show noitification...
+            commonNotify.showSuccess('Comment successfully added');
+            return true;
+          })
+          .catch((error) => {
+            // eslint-disable-next-line no-console
+            console.error('[ThreadCommentsHandlers:threadAddComment]: catched', {
+              error,
+              params,
+            });
+            // eslint-disable-next-line no-debugger
+            debugger;
+            // Store & display error...
+            ThreadCommentsStates.setError(error);
+            commonNotify.showError(error);
           });
-          // eslint-disable-next-line no-debugger
-          debugger;
-          // Store & display error...
-          ThreadCommentsStates.setError(error);
-          commonNotify.showError(error);
+      })
+      .catch((error) => {
+        // eslint-disable-next-line no-console
+        console.error('[ThreadCommentsHandlers:threadAddComment]: error (catched)', {
+          error,
+          params,
         });
-    });
+        // eslint-disable-next-line no-debugger
+        debugger;
+        // Store & display error...
+        ThreadCommentsStates.setError(error);
+        throw error;
+      });
   }
 
   /** threadResolve -- Set resolved status for thread (called from `handleTitleActionClick` by literal id: `apiHandlers[id]`)
@@ -156,6 +169,7 @@ class ApiHandlers {
         // Store & display error...
         ThreadCommentsStates.setError(error);
         commonNotify.showError(error);
+        // TODO: To throw an error?
       });
   }
 
@@ -190,7 +204,7 @@ class ApiHandlers {
         commonNotify.showSuccess('New thread successfully added');
       })
       .catch((error) => {
-        // Undefined eror is possible if user hasn't provided data or canceled mdal dialog
+        // Undefined error is possible if user hasn't provided data or canceled mdal dialog
         if (error) {
           // eslint-disable-next-line no-console
           console.error('[ThreadCommentsHandlers:addNewThread] catched', error);
@@ -198,7 +212,7 @@ class ApiHandlers {
           debugger;
           // Store & display error...
           ThreadCommentsStates.setError(error);
-          commonNotify.showError(error);
+          throw error;
         }
       });
   }

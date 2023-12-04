@@ -75,9 +75,6 @@ export class ScoresListRender {
       });
       // eslint-disable-next-line no-debugger
       debugger;
-      /* // NOTE: Show error only when it has occured (eg in `ScoresListHandlers`), not when it's rendering.
-       * commonNotify.showError(errorText);
-       */
     }
     // Update (or clear) error block content...
     errorNode.innerHTML = errorText;
