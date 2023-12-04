@@ -63,7 +63,21 @@ export class ScoresListApi {
       .then((scoresList) => {
         // Sort by categories...
         scoresList.sort((a, b) => {
-          return a.category > b.category ? 1 : a.category < b.category ? -1 : 0;
+          const aStr = a.category;
+          const bStr = b.category;
+          const aStrU = aStr.toLowerCase();
+          const bStrU = bStr.toLowerCase();
+          // First try to compare case-insensitive...
+          return aStrU > bStrU
+            ? 1
+            : aStrU < bStrU
+            ? -1
+            : // If unified strings are equal, then try to compare case-sensitive...
+            aStr > bStr
+            ? 1
+            : aStr < bStr
+            ? -1
+            : 0;
         });
         this.scoresListData.scoresList = scoresList;
         const hasData = !!scoresList.length;
