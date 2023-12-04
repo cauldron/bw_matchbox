@@ -8,9 +8,9 @@ export class ProcessDetailPageNodes {
     return document.getElementById('process-detail-layout');
   }
 
-  getThreadCommentsPanelNode() {
+  getSidePanelNode() {
     const layoutNode = this.getLayoutNode();
-    return layoutNode.querySelector('#thread-comments-panel');
+    return layoutNode.querySelector('#process-detail-panel');
   }
 
   getRootNode() {

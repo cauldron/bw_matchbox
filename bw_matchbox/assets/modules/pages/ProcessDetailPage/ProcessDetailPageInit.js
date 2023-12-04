@@ -96,8 +96,8 @@ export class ProcessDetailPageInit {
         })
         .then(() => {
           // const layoutNode = this.nodes.getLayoutNode();
-          const threadCommentsPanelNode = this.nodes.getThreadCommentsPanelNode();
-          threadCommentsPanelNode.classList.toggle('ready', true);
+          const sidePanelNode = this.nodes.getSidePanelNode();
+          sidePanelNode.classList.toggle('ready', true);
         })
         .catch((/** @type {Error} */ error) => {
           // eslint-disable-next-line no-console
