@@ -2,6 +2,8 @@
 
 import { commonNotify } from '../../common/CommonNotify.js';
 
+import { sortScoresDataIterator } from './ScoresListHelpers.js';
+
 // Import types only...
 /* eslint-disable no-unused-vars */
 import { ScoresListData } from './ScoresListData.js';
@@ -62,23 +64,7 @@ export class ScoresListApi {
       .loadScoresList(processId)
       .then((scoresList) => {
         // Sort by categories...
-        scoresList.sort((a, b) => {
-          const aStr = a.category;
-          const bStr = b.category;
-          const aStrU = aStr.toLowerCase();
-          const bStrU = bStr.toLowerCase();
-          // First try to compare case-insensitive...
-          return aStrU > bStrU
-            ? 1
-            : aStrU < bStrU
-            ? -1
-            : // If unified strings are equal, then try to compare case-sensitive...
-            aStr > bStr
-            ? 1
-            : aStr < bStr
-            ? -1
-            : 0;
-        });
+        scoresList.sort(sortScoresDataIterator);
         this.scoresListData.scoresList = scoresList;
         const hasData = !!scoresList.length;
         // TODO: Invoke events to re-render content?
