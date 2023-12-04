@@ -40,7 +40,22 @@ export class ProcessDetailPageInit {
     this.state = state;
     this.nodes = nodes;
     CommonHelpers.exportCallbacksFromInstance(callbacks, this);
+    // this.initSidePanelTabs();
   }
+
+  /*
+   * initSidePanelTabs() {
+   *   const sidePanelTabsNode = this.nodes.getSidePanelTabsNode();
+   *   const activeTabNode = sidePanelTabsNode.querySelector('.panels-layout-tab.active');
+   *   const activeTabId = activeTabNode?.getAttribute('id');
+   *   console.log('[ProcessDetailPageInit:initSidePanelTabs]', {
+   *     activeTabId,
+   *     activeTabNode,
+   *     sidePanelTabsNode,
+   *   });
+   *   debugger;
+   * }
+   */
 
   /** @return Promise */
   ensureThreadComments() {
@@ -50,6 +65,7 @@ export class ProcessDetailPageInit {
         threadComments,
         state,
       } = this;
+      // Initialize once!
       if (this.threadCommentsInitPromise) {
         return this.threadCommentsInitPromise;
       }
@@ -126,6 +142,21 @@ export class ProcessDetailPageInit {
     } catch (error) {
       // eslint-disable-next-line no-console
       console.error('[ProcessDetailPageInit:ensureThreadComments]', error);
+      // eslint-disable-next-line no-debugger
+      debugger;
+      commonNotify.showError(error);
+    }
+  }
+
+  /** @return Promise */
+  ensureScores() {
+    try {
+      console.log('[ProcessDetailPageInit:ensureScores]');
+      debugger;
+      return Promise.resolve();
+    } catch (error) {
+      // eslint-disable-next-line no-console
+      console.error('[ProcessDetailPageInit:ensureScores]', error);
       // eslint-disable-next-line no-debugger
       debugger;
       commonNotify.showError(error);

@@ -2,16 +2,29 @@
 
 <div id="process-detail-layout" class="panels-layout process-detail-layout">
 
-  <div id="process-detail-panel" class="panels-layout-side panels-layout-container panels-layout-vertical panels-layout-right process-detail-panel hidden">
-    <div class="panels-layout-tabs panels-layout-container">
-      <a id="comments" class="panels-layout-tab active">
+  <div id="process-detail-panel" class="panels-layout-side
+           panels-layout-container panels-layout-vertical panels-layout-right
+           process-detail-panel hidden">
+    <div id="panels-layout-tabs" class="panels-layout-tabs panels-layout-container">
+      <a
+        id="comments"
+        class="panels-layout-tab active"
+        onClick="window.processDetailPage.callbacks.switchSidePanelTab(this)"
+      >
         Comments
       </a>
-      <a id="scores" class="panels-layout-tab">
+      <a
+        id="scores"
+        class="panels-layout-tab"
+        onClick="window.processDetailPage.callbacks.switchSidePanelTab(this)"
+      >
         Scores
       </a>
     </div>
     {% include 'thread-comments-panel.html' %}
+    <div id="thread-scores-panel panels-layout-tab-content" data-panels-layout-tab-content-id="scores">
+      scores
+    </div>
   </div>
 
   <div id="process-detail" class="panels-layout-main panels-layout-container process-detail{{ ' waitlist' if ds.get('waitlist') }}">

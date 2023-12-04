@@ -13,6 +13,11 @@ export class ProcessDetailPageNodes {
     return layoutNode.querySelector('#process-detail-panel');
   }
 
+  getSidePanelTabsNode() {
+    const sidePanelNode = this.getSidePanelNode();
+    return sidePanelNode.querySelector('#panels-layout-tabs');
+  }
+
   getRootNode() {
     return document.getElementById('process-detail');
   }

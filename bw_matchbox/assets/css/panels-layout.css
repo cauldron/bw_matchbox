@@ -1,9 +1,12 @@
+/* stylelint-disable custom-property-empty-line-before, declaration-empty-line-before */
+
 .panels-layout {
   /** Side panels */
   --panels-layout-side-panel-width: 500px;
   --panels-layout-button-size: 38px;
   --panels-layout-actions-offset: 20px;
   --panels-layout-actions-offset-y: 10px;
+  /** Tabs */
 }
 
 /* Panels layout actions */
@@ -72,10 +75,6 @@
 
 /* Panels layout */
 /* TODO: Make width adaptive depending on the screen size? */
-.panels-layout .panels-layout-side.hidden {
-  /* display: none; */
-}
-
 /* TODO: To use vars for media queries? Eg, for `panels-layout-min-threshold`? */
 @media (width < 700px) {
   .panels-layout .panels-layout-side.hidden {
@@ -128,12 +127,12 @@
     width: auto;
     flex: 1;
   }
+  /* TODO: The animation effect based on panel width, so it requires to be fixed before use resize feature
   .panels-layout.has-panel .panels-layout-main {
-    /* TODO: The animation effect based on panel width, so it requires to be fixed before use resize feature
     overflow: hidden;
     resize: horizontal;
-    */
   }
+  */
   .panels-layout .panels-layout-side {
     transition: all var(--common-animation-time) ease-out;
     width: var(--panels-layout-side-panel-width);
@@ -161,8 +160,37 @@
 
 /* Tabs */
 .panels-layout .panels-layout-tabs {
+  padding: 8px 20px;
+  padding-bottom: 0;
+  background-color: #f8f8f8;
+  border-bottom: 1px solid #eee;
+  display: flex;
+  gap: 10px;
 }
 .panels-layout .panels-layout-tab {
   display: block;
-  border: 1px solid red;
+  --panels-layout-tabs-radius: 6px;
+  border-top-left-radius: var(--panels-layout-tabs-radius);
+  border-top-right-radius: var(--panels-layout-tabs-radius);
+  border: 1px solid #eee;
+  border-bottom: none;
+  padding: 8px 40px;
+  cursor: pointer;
+  --bg-color: #ddd;
+  /* background-color: color.change(var(--bg-color), $alpha: .8); */
+  background-color: var(--bg-color);
+  color: var(--layout-theme-text-color);
+  font-weight: bold;
+  transition: all var(--common-animation-time);
+  opacity: 0.5;
+}
+.panels-layout .panels-layout-tab.active {
+  background-color: var(--layout-theme-primary-color);
+  color: #fff;
+}
+.panels-layout .panels-layout-tab:hover {
+  opacity: 1;
+}
+.panels-layout-tab-content:not(.panels-layout-tab-content-active) {
+  display: none;
 }
