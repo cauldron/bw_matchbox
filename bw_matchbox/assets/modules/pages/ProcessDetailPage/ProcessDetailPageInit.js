@@ -3,8 +3,14 @@
 import { commonNotify } from '../../common/CommonNotify.js';
 import * as CommonHelpers from '../../common/CommonHelpers.js';
 
+// Import types only...
+/* eslint-disable no-unused-vars */
+import { ScoresList } from '../../components/ScoresList/ScoresList.js';
+/* eslint-enable no-unused-vars */
+
 /** @typedef TCreateParams
  * @property {TThreadComments} threadComments
+ * @property {ScoresList} scoresList
  * @property {TProcessDetailPageState} state
  * @property {TProcessDetailPageNodes} nodes
  * @property {TSharedHandlers} callbacks
@@ -22,9 +28,13 @@ export class ProcessDetailPageInit {
 
   /** @type {TThreadComments} */
   threadComments;
-
   /** @type {Promise} */
   threadCommentsInitPromise;
+
+  /** @type {ScoresList} */
+  scoresList;
+  /** @type {Promise} */
+  scoresListInitPromise;
 
   /** @param {TCreateParams} params */
   constructor(params) {
@@ -32,39 +42,22 @@ export class ProcessDetailPageInit {
       // prettier-ignore
       callbacks,
       threadComments,
+      scoresList,
       state,
       nodes,
     } = params;
     // this.callbacks = callbacks;
     this.threadComments = threadComments;
+    this.scoresList = scoresList;
     this.state = state;
     this.nodes = nodes;
     CommonHelpers.exportCallbacksFromInstance(callbacks, this);
-    // this.initSidePanelTabs();
   }
-
-  /*
-   * initSidePanelTabs() {
-   *   const sidePanelTabsNode = this.nodes.getSidePanelTabsNode();
-   *   const activeTabNode = sidePanelTabsNode.querySelector('.panels-layout-tab.active');
-   *   const activeTabId = activeTabNode?.getAttribute('id');
-   *   console.log('[ProcessDetailPageInit:initSidePanelTabs]', {
-   *     activeTabId,
-   *     activeTabNode,
-   *     sidePanelTabsNode,
-   *   });
-   *   debugger;
-   * }
-   */
 
   /** @return Promise */
   ensureThreadComments() {
     try {
-      const {
-        // handlers,
-        threadComments,
-        state,
-      } = this;
+      const { threadComments, state } = this;
       // Initialize once!
       if (this.threadCommentsInitPromise) {
         return this.threadCommentsInitPromise;
@@ -149,10 +142,60 @@ export class ProcessDetailPageInit {
   }
 
   /** @return Promise */
-  ensureScores() {
+  ensureScoresList() {
     try {
-      console.log('[ProcessDetailPageInit:ensureScores]');
+      const { scoresList, state } = this;
+      // Initialize once!
+      if (this.scoresListInitPromise) {
+        return this.scoresListInitPromise;
+      }
+      const { currentProcess } = state;
+      const scoresListNode = this.nodes.getScoresListNode();
+      // Init comments module parameters
+      scoresList.setParams(
+        /** @type {TScoresListParams} */ {
+          rootNode: scoresListNode,
+          processId: currentProcess,
+          // noTableau: true,
+          // noLoader: true,
+          // noError: true,
+          noActions: true, // Disable inegrated actions panel
+        },
+      );
+      // Init sub-components...
+      this.scoresListInitPromise = scoresList
+        .ensureInit()
+        .then(() => {
+          // Invoke `loadData`...
+          return scoresList.api.loadData();
+        })
+        .then(() => {
+          // const layoutNode = this.nodes.getLayoutNode();
+          const sidePanelNode = this.nodes.getSidePanelNode();
+          sidePanelNode.classList.toggle('ready', true);
+        })
+        .catch((/** @type {Error} */ error) => {
+          // eslint-disable-next-line no-console
+          console.error('[ProcessDetailPageInit:ensureScoresList] ensureInit error', error);
+          // eslint-disable-next-line no-debugger
+          debugger;
+          // Set error
+          this.state.setError(error);
+          commonNotify.showError(error);
+        });
+      return this.scoresListInitPromise;
+    } catch (error) {
+      // eslint-disable-next-line no-console
+      console.error('[ProcessDetailPageInit:ensureScoresList]', error);
+      // eslint-disable-next-line no-debugger
       debugger;
+      commonNotify.showError(error);
+    }
+  }
+
+  /** @return Promise */
+  ensureScoresOld() {
+    try {
       return Promise.resolve();
     } catch (error) {
       // eslint-disable-next-line no-console

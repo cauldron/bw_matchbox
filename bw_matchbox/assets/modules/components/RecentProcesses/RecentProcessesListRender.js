@@ -37,7 +37,6 @@ export class RecentProcessesListRender {
     const content = `
           <div data-recent-process-id="${id}" id="recent-process-${id}" class="${className}">
             <a href="/process/${id}">${name} <span class="date">(visited at ${dateStr})</span></a>
-            </div>
           </div>
         `;
     /* console.log('[RecentProcessesListRender:renderHelpers:renderRecentProcess]', {

@@ -1,0 +1,104 @@
+/* stylelint-disable selector-id-pattern, selector-class-pattern */
+
+.scores-list-container {
+  --primary-bg-color05: rgb(30 174 219 / 5%);
+  --primary-bg-color1: rgb(30 174 219 / 10%);
+  --primary-bg-color2: rgb(30 174 219 / 20%);
+  --primary-bg-color3: rgb(30 174 219 / 30%);
+  --primary-bg-color4: rgb(30 174 219 / 40%);
+  --primary-bg-color5: rgb(30 174 219 / 50%);
+}
+
+.scores-list-container {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+  gap: 16px;
+  flex: 1;
+}
+
+.scores-list-container .scores-list-tableau {
+  flex: 1;
+  position: relative;
+  min-height: 40px; /* Ensure space for loading splash */
+  flex-direction: column;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 16px;
+}
+.scores-list-container.noTableau .scores-list-tableau {
+  display: none;
+}
+
+/* Basic rules... */
+.scores-list-container > * {
+  transition: all var(--common-animation-time);
+}
+
+/* Empty state: hide some elements... */
+.scores-list-container.empty #scores-list-table,
+.scores-list-container.empty .scores-list-title,
+.scores-list-container.loading .scores-list-empty,
+.scores-list-container:not(.empty) .scores-list-empty,
+.scores-list-container.has-visible-threads .scores-list-empty {
+  display: none;
+}
+.scores-list-container .scores-list-empty {
+  padding: 10px;
+  margin: 10px auto;
+  text-align: center;
+  opacity: 0.5;
+}
+
+/** Loading elements */
+.scores-list-container.loading #scores-list-table,
+.scores-list-container.loading .scores-list-empty {
+  opacity: 0.5;
+  pointer-events: none;
+}
+
+/* Loader splash */
+.scores-list-container.noError .loader-splash {
+  display: none;
+}
+.scores-list-container .loader-splash {
+  padding: 20px;
+}
+.scores-list-container:not(.loading) .loader-splash {
+  /* Inherited from `.loader-splash.hidden`, see `bw_matchbox/assets/css/common.css` */
+  opacity: 0;
+  pointer-events: none;
+}
+
+/* Error */
+.scores-list-container .error {
+  border-radius: 4px;
+  background-color: var(--common-error-color);
+  color: #fff;
+  margin: 20px auto;
+  padding: 10px 20px;
+}
+.scores-list-container.noError .error,
+.scores-list-container:not(.has-error) .error {
+  display: none;
+}
+
+/* Title... */
+.scores-list-container .scores-list-title {
+  font-size: 120%;
+}
+
+/* Table */
+
+.scores-list-container #scores-list-table .cell-original,
+.scores-list-container #scores-list-table .cell-ratio,
+.scores-list-container #scores-list-table .cell-relinked {
+  width: 4.5em;
+  white-space: nowrap;
+}
+.scores-list-container #scores-list-table .cell-unit {
+  width: 3em;
+  white-space: nowrap;
+}

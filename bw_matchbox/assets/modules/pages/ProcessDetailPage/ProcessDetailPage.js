@@ -3,6 +3,7 @@
 import { storeProcess } from '../../common/RecentProcesses.js';
 
 import { ThreadComments } from '../../components/ThreadComments/ThreadComments.js';
+import { ScoresList } from '../../components/ScoresList/ScoresList.js';
 
 // import * as ProcessDetailPageHelpers from './ProcessDetailPageHelpers.js';
 import { ProcessDetailPageState } from './ProcessDetailPageState.js';
@@ -23,6 +24,9 @@ export class ProcessDetailPage {
 
   /** @type {TThreadComments} */
   threadComments;
+
+  /** @type {ScoresList} */
+  scoresList;
 
   /** @type {ProcessDetailPageState} */
   state;
@@ -52,6 +56,10 @@ export class ProcessDetailPage {
     const threadComments = new ThreadComments('ProcessDetailPage');
     this.threadComments = threadComments;
 
+    // Create ScoresList component...
+    const scoresList = new ScoresList('ProcessDetailPage');
+    this.scoresList = scoresList;
+
     const { callbacks } = this;
 
     const { isWaitlist, currentUser, currentRole, currentProcess } = sharedParams;
@@ -69,6 +77,7 @@ export class ProcessDetailPage {
     this.init = new ProcessDetailPageInit({
       callbacks,
       threadComments,
+      scoresList,
       state,
       nodes,
     });

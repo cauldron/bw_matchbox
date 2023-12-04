@@ -2,11 +2,9 @@
 
 // Import types only...
 /* eslint-disable no-unused-vars */
-import { ThreadCommentsRender } from './ThreadCommentsRender.js';
-import { ThreadCommentsNodes } from './ThreadCommentsNodes.js';
-import { ThreadCommentsStates } from './ThreadCommentsStates.js';
-import { ThreadCommentsHandlers } from './ThreadCommentsHandlers.js';
-import { ThreadCommentsPrepare } from './ThreadCommentsPrepare.js';
+import { ScoresListRender } from './ScoresListRender.js';
+import { ScoresListNodes } from './ScoresListNodes.js';
+import { ScoresListStates } from './ScoresListStates.js';
 /* eslint-enable no-unused-vars */
 
 import * as CommonHelpers from '../../common/CommonHelpers.js';
@@ -15,8 +13,7 @@ import { commonNotify } from '../../common/CommonNotify.js';
 
 const cssStyleUrls = [
   // Styles urls...
-  '/assets/css/thread-comments.css',
-  '/assets/css/thread-comments-threads-list.css',
+  '/assets/css/scores-list.css',
 ];
 
 /** List of initilization steps.
@@ -29,54 +26,45 @@ const initChunksList = [
   'dom', // Created required dom elements
 ];
 
-export class ThreadCommentsInit {
+export class ScoresListInit {
   /** Initializer
    * @type {InitChunks}
    */
-  initChunks = undefined; // new InitChunks(initChunksList, 'ThreadComments');
+  initChunks = undefined; // new InitChunks(initChunksList, 'ScoresList');
 
   /** @type {TSharedHandlers} */
   handlers = {};
 
-  /** @type {ThreadCommentsRender} */
-  threadCommentsRender;
-  /** @type {ThreadCommentsNodes} */
-  threadCommentsNodes;
-  /** @type {ThreadCommentsStates} */
-  threadCommentsStates;
-  /** @type {ThreadCommentsHandlers} */
-  threadCommentsHandlers;
-  /** @type {ThreadCommentsPrepare} */
-  threadCommentsPrepare;
+  /** @type {ScoresListRender} */
+  scoresListRender;
+  /** @type {ScoresListNodes} */
+  scoresListNodes;
+  /** @type {ScoresListStates} */
+  scoresListStates;
 
   /**
    * @param {object} params
    * @param {TSharedHandlers} params.handlers
    * @param {string} [params.parentId]
-   * @param {ThreadCommentsRender} params.threadCommentsRender
-   * @param {ThreadCommentsNodes} params.threadCommentsNodes
-   * @param {ThreadCommentsStates} params.threadCommentsStates
-   * @param {ThreadCommentsHandlers} params.threadCommentsHandlers
-   * @param {ThreadCommentsPrepare} params.threadCommentsPrepare
+   * @param {ScoresListRender} params.scoresListRender
+   * @param {ScoresListNodes} params.scoresListNodes
+   * @param {ScoresListStates} params.scoresListStates
    */
   constructor({
+    // prettier-ignore
     handlers,
     parentId,
-    threadCommentsRender,
-    threadCommentsNodes,
-    threadCommentsStates,
-    threadCommentsHandlers,
-    threadCommentsPrepare,
+    scoresListRender,
+    scoresListNodes,
+    scoresListStates,
   }) {
     this.handlers = handlers;
     const thisId = [parentId, 'Init'].filter(Boolean).join('_');
     this.initChunks = new InitChunks(initChunksList, thisId);
     // Set parameters for future initalization (see `initComponent`)
-    this.threadCommentsRender = threadCommentsRender;
-    this.threadCommentsNodes = threadCommentsNodes;
-    this.threadCommentsStates = threadCommentsStates;
-    this.threadCommentsHandlers = threadCommentsHandlers;
-    this.threadCommentsPrepare = threadCommentsPrepare;
+    this.scoresListRender = scoresListRender;
+    this.scoresListNodes = scoresListNodes;
+    this.scoresListStates = scoresListStates;
   }
 
   /** Ensure the modal has initiazlized
@@ -94,7 +82,7 @@ export class ThreadCommentsInit {
     return this.initChunks.events;
   }
 
-  /** Initialize the longest things (loading external css styles)
+  /** Initialize the heaviest things (loading external css styles)
    */
   preInit() {
     // return this.initCssStyle();
@@ -103,22 +91,6 @@ export class ThreadCommentsInit {
   initComponent() {
     if (!this.initChunks.isChunkStarted('component')) {
       this.initChunks.startChunk('component');
-      /** @type {TThreadCommentsInitParams} */
-      const initParams = {
-        handlers: this.handlers,
-        events: this.events(),
-        threadCommentsRender: this.threadCommentsRender,
-        threadCommentsNodes: this.threadCommentsNodes,
-        threadCommentsStates: this.threadCommentsStates,
-        threadCommentsHandlers: this.threadCommentsHandlers,
-        threadCommentsPrepare: this.threadCommentsPrepare,
-      };
-
-      // Init all initiable components...
-      this.threadCommentsRender.init(initParams);
-      this.threadCommentsStates.init(initParams);
-      this.threadCommentsHandlers.init(initParams);
-      this.threadCommentsPrepare.init(initParams);
 
       this.initDomNodeActions();
 
@@ -136,14 +108,11 @@ export class ThreadCommentsInit {
       } catch (error) {
         /** @param {Error} error */
         // eslint-disable-next-line no-console
-        console.error('[ThreadCommentsInit:initCssStyle]', error);
+        console.error('[ScoresListInit:initCssStyle]', error);
         // eslint-disable-next-line no-debugger
         debugger;
         commonNotify.showError(error);
       }
-      /* // TODO
-       * await CommonHelpers.addCssStyle(cssStyleUrl);
-       */
       // Wait animation frame to finish updating css styles...
       const finishCssStyleChunk = this.initChunks.finishChunk.bind(this.initChunks, 'cssStyle');
       window.requestAnimationFrame(finishCssStyleChunk);
@@ -151,26 +120,35 @@ export class ThreadCommentsInit {
   }
 
   getDomNodeContent() {
-    // TODO 2023.08.21, 23:41: Display some statistic info (to fill the empty space, preserved for loader spinner)?
     return `
-      <div id="threads-list-tableau" class="threads-list-tableau">
-        <div id="threads-list-actions" class="threads-list-actions">
-          <a id="addNewThread" title="Add new thread"><i class="fa fa-plus"></i></a>
-        </div>
-        <div id="threads-list-title" class="threads-list-title">Comments</div>
-        <div id="threads-list-error" class="error"><!-- Error text comes here --></div>
+      <div id="scores-list-tableau" class="scores-list-tableau">
+        <div id="scores-list-title" class="scores-list-title">Scores</div>
+        <div id="scores-list-error" class="error"><!-- Error text placeholder --></div>
         <div id="loader-splash" class="loader-splash full-cover bg-white"><div class="loader-spinner"></div></div>
       </div>
-      <div id="threads-list-empty" class="threads-list-empty">No avaialable comment threads</div>
-      <div id="threads-list" class="threads-list"><!-- List placeholder --></div>
+      <div id="scores-list-empty" class="scores-list-empty">No score items</div>
+      <table id="scores-list-table" class="fixed-table" width="100%">
+        <thead>
+          <tr>
+            <th class="cell-category"><div>Category</div></th>
+            <th class="cell-original"><div>Original</div></th>
+            <th class="cell-ratio"><div>Ratio</div></th>
+            <th class="cell-relinked"><div>Relinked</div></th>
+            <th class="cell-unit"><div>Unit</div></th>
+          </tr>
+        </thead>
+        <tbody id="scores-list">
+          <!-- List placeholder -->
+        </tbody>
+      </table>
     `;
   }
 
   initDomNodeActions() {
-    const rootNode = this.threadCommentsNodes.getRootNode();
+    const rootNode = this.scoresListNodes.getRootNode();
     const { handlers } = this;
     const { handleTitleActionClick } = handlers;
-    const actionElems = rootNode.querySelectorAll('.threads-list-actions a');
+    const actionElems = rootNode.querySelectorAll('.scores-list-actions a');
     actionElems.forEach((elem) => {
       elem.addEventListener('click', handleTitleActionClick);
     });
@@ -179,7 +157,7 @@ export class ThreadCommentsInit {
   initDomNode() {
     if (!this.initChunks.isChunkStarted('dom')) {
       this.initChunks.startChunk('dom');
-      const rootNode = this.threadCommentsNodes.getRootNode();
+      const rootNode = this.scoresListNodes.getRootNode();
       // Set dafault classes...
       rootNode.classList.toggle('loading', true);
       rootNode.classList.toggle('empty', true);
@@ -196,11 +174,6 @@ export class ThreadCommentsInit {
       // NOTE: Can't work without initialized dom!
       this.initDomNode();
       this.initChunks.startChunk('events');
-      /* // TODO
-       * // Link close modal button handler (TODO: To use more specific class name?)...
-       * const closeEl = this.getModalNodeElementByClass('close');
-       * closeEl.addEventListener('click', this.getBoundHideModal());
-       */
       this.initChunks.finishChunk('events');
     }
   }
@@ -210,8 +183,7 @@ export class ThreadCommentsInit {
   doInit() {
     if (!this.initChunks.isWaitingOrInited()) {
       this.initChunks.start();
-      this.initCssStyle() // TODO
-        // Promise.resolve() // Temporarily: empty promise (replace with first initialization stage, see `CommonModal` as example)
+      this.initCssStyle()
         .then(() => {
           // Create all dom nodes...
           this.initDomNode();
