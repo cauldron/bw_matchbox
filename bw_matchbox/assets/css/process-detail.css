@@ -18,16 +18,16 @@
   pointer-events: none;
 }
 /* Thread comments panel */
-.panels-layout .thread-comments-panel:not(.ready) .thread-comments-panel-toolbar-wrapper {
+.panels-layout .process-detail-panel:not(.ready) .process-detail-panel-toolbar-wrapper {
   /* XXX: Can be disabed temporarily */
   display: none;
 }
-.panels-layout .thread-comments-panel:not(.hidden) {
+.panels-layout .process-detail-panel:not(.hidden) {
   display: flex;
   flex-direction: column;
   overflow: hidden;
 }
-.panels-layout .thread-comments-panel .panels-layout-content {
+.panels-layout .process-detail-panel .panels-layout-content {
   flex: 1;
   overflow: auto;
 }
@@ -149,3 +149,10 @@
 .process-detail .fixed-table .cell-matched {
   width: var(--common-table-cell-matched-width);
 }
+
+/* DEBUG
+.panels-layout-container.container {
+  border: 1px solid green;
+  height: 900px;
+}
+*/

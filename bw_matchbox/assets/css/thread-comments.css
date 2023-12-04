@@ -7,6 +7,11 @@
 .thread-comments .threads-list-tableau {
   position: relative;
   min-height: 40px; /* Ensure space for loading splash */
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 16px;
 }
 .thread-comments.noTableau .threads-list-tableau {
   display: none;
@@ -19,6 +24,7 @@
 
 /* Empty state: hide some elements... */
 .thread-comments.empty .threads-list,
+.thread-comments.empty .threads-list-title,
 .thread-comments.loading .threads-list-empty,
 .thread-comments.has-visible-threads .threads-list-empty {
   display: none;
@@ -28,6 +34,11 @@
   margin: 10px auto;
   text-align: center;
   opacity: 0.5;
+}
+
+/** Title */
+.thread-comments .threads-list-title {
+  font-size: 120%;
 }
 
 /** Loading elements */
