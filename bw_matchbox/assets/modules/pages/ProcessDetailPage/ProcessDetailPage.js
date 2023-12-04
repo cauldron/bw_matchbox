@@ -80,6 +80,8 @@ export class ProcessDetailPage {
       threadComments,
     });
 
+    callbacks.initSidePanelTabs();
+
     // Set initialized state...
     const layoutNode = nodes.getLayoutNode();
     layoutNode.classList.toggle('inited', true);

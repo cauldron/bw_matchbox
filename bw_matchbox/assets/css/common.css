@@ -4,6 +4,8 @@
   /* Primary colors for hovered elements */
   --layout-theme-primary-color-dark1: #1eaedb; /* aka rgb(30,174,219) */
   --layout-theme-primary-color-dark2: #0fa0ce; /* aka gb(15,160,206) */
+  /** Text color */
+  --layout-theme-text-color: #222;
   /* Error color */
   --layout-theme-common-error-color: #c33;
   /* Animations */
@@ -125,4 +127,3 @@
   opacity: 0.5;
   font-weight: normal;
 }
-

@@ -45,6 +45,113 @@ export class ProcessDetailPageHandlers {
     CommonHelpers.exportCallbacksFromInstance(callbacks, this);
   }
 
+  // Tabs...
+
+  getSidePanelActiveTabId() {
+    const sidePanelTabsNode = /** @type {HTMLElement} */ (this.nodes.getSidePanelTabsNode());
+    const activeTabNode = /** @type {HTMLElement} */ (
+      sidePanelTabsNode.querySelector('.panels-layout-tab.active')
+    );
+    const activeTabId = activeTabNode?.getAttribute('id');
+    return activeTabId;
+  }
+
+  initSidePanelTabs() {
+    const sidePanelNode = /** @type {HTMLElement} */ (this.nodes.getSidePanelNode());
+    const sidePanelTabsNode = /** @type {HTMLElement} */ (this.nodes.getSidePanelTabsNode());
+    const activeTabNode = /** @type {HTMLElement} */ (
+      sidePanelTabsNode.querySelector('.panels-layout-tab.active')
+    );
+    const activeTabId = activeTabNode?.getAttribute('id');
+    const isPanelHidden = sidePanelNode.classList.contains('hidden');
+    console.log('[ProcessDetailPageHandlers:initSidePanelTabs]', {
+      sidePanelNode,
+      activeTabId,
+      activeTabNode,
+      sidePanelTabsNode,
+    });
+    if (activeTabId && !isPanelHidden) {
+      this.switchSidePanelTabById(activeTabId);
+    }
+  }
+
+  /**
+   * @param {string} [activeId]
+   * @return {Promise}
+   */
+  ensureSidePanelTabComponentById(activeId) {
+    if (!activeId) {
+      activeId = this.getSidePanelActiveTabId();
+    }
+    if (activeId) {
+      console.log('[ProcessDetailPageHandlers:ensureSidePanelTabComponentById]', {
+        activeId,
+        callbacks: this.callbacks,
+      });
+      switch (activeId) {
+        case 'comments': {
+          return this.callbacks.ensureThreadComments();
+        }
+        case 'scores': {
+          return this.callbacks.ensureScores();
+        }
+      }
+    }
+    // TODO: Show/reject an error?
+    return Promise.resolve();
+  }
+
+  /* @return {Promise} */
+  ensureSidePanelTabComponent() {
+    const activeId = this.getSidePanelActiveTabId();
+    return this.ensureSidePanelTabComponentById(activeId);
+  }
+
+  /** @param {string} activeId */
+  switchSidePanelTabById(activeId) {
+    const sidePanelTabsNode = /** @type {HTMLElement} */ (this.nodes.getSidePanelTabsNode());
+    const layoutNode = /** @type {HTMLElement} */ (this.nodes.getLayoutNode());
+    const tabNodes = sidePanelTabsNode.getElementsByClassName('panels-layout-tab');
+    const tabContentNodes = layoutNode.getElementsByClassName('panels-layout-tab-content');
+    // const activeTabNode = sidePanelTabsNode.querySelector('.panels-layout-tab.active');
+    // const activeTabId = activeTabNode?.getAttribute('id');
+    console.log('[ProcessDetailPageHandlers:switchSidePanelTabById]', {
+      activeId,
+      // activeTabNode,
+      // sidePanelTabsNode,
+      tabNodes,
+      tabContentNodes,
+    });
+    Array.from(tabNodes).forEach((node) => {
+      const id = node.getAttribute('id');
+      const isActive = id === activeId;
+      node.classList.toggle('active', isActive);
+    });
+    Array.from(tabContentNodes).forEach((node) => {
+      const id = node.getAttribute('data-panels-layout-tab-content-id');
+      const isActive = id === activeId;
+      node.classList.toggle('panels-layout-tab-content-active', isActive);
+    });
+    return this.ensureSidePanelTabComponentById(activeId);
+  }
+
+  /* @return {Promise} */
+  updateSidePanelTabs() {
+    const activeId = this.getSidePanelActiveTabId();
+    return this.switchSidePanelTabById(activeId);
+  }
+
+  /** @param {HTMLButtonElement} tabNode
+   */
+  switchSidePanelTab(tabNode) {
+    const tabId = tabNode?.getAttribute('id');
+    console.log('[ProcessDetailPageHandlers:switchSidePanelTab]', {
+      tabId,
+      tabNode,
+    });
+    this.switchSidePanelTabById(tabId);
+  }
+
   // Handlers...
 
   /** doMarkWaitlist -- Send mark as waitlist requests
@@ -183,7 +290,8 @@ export class ProcessDetailPageHandlers {
     button.classList.toggle('turned', showPanel); // For turnaround button type
     panel.classList.toggle('hidden', !showPanel);
     if (showPanel) {
-      callbacks.ensureThreadComments();
+      // callbacks.ensureThreadComments(); // OLD_CODE
+      callbacks.updateSidePanelTabs();
     }
   }
 
