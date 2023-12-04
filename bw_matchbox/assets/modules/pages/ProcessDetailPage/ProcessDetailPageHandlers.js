@@ -175,12 +175,12 @@ export class ProcessDetailPageHandlers {
   toggleCommentsPanel() {
     const { nodes, callbacks } = this;
     const layoutNode = nodes.getLayoutNode();
-    const panel = this.nodes.getThreadCommentsPanelNode();
+    const panel = this.nodes.getSidePanelNode();
     const button = layoutNode.querySelector('#toggle-side-panel-button');
     const hasPanel = layoutNode.classList.contains('has-panel');
     const showPanel = !hasPanel;
     layoutNode.classList.toggle('has-panel', showPanel);
-    button.classList.toggle('active', showPanel);
+    button.classList.toggle('turned', showPanel); // For turnaround button type
     panel.classList.toggle('hidden', !showPanel);
     if (showPanel) {
       callbacks.ensureThreadComments();
