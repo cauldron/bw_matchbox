@@ -82,6 +82,11 @@ export class ScoresList {
       scoresListStates: this.scoresListStates,
     });
     this.scoresListData.events = this.events = this.scoresListInit.events();
+    // NOTE: Expose instance reference for ui elements callbacks
+    if (typeof window !== 'undefined') {
+      // @ts-ignore
+      window.scoresListInstance = this;
+    }
   }
 
   /** Ensure the modal has initiazlized

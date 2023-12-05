@@ -86,4 +86,25 @@ export class ScoresListApi {
         this.scoresListStates.setLoading(false);
       });
   }
+
+  /** @param {HTMLSelectElement} node */
+  setSortMode(node) {
+    const { value } = node;
+    console.log('[ScoresListApi:setSortMode]', {
+      value,
+    });
+    debugger;
+    // threadComments.handlers.setSortMode(value);
+  }
+
+  /** @param {HTMLInputElement} node */
+  setSortReversed(node) {
+    const { value, checked } = node;
+    console.log('[ScoresListApi:setSortReversed]', {
+      // value,
+      checked,
+    });
+    debugger;
+    // threadComments.handlers.setSortMode(value);
+  }
 }

@@ -1,5 +1,34 @@
 <div id="scores-list-panel" data-panels-layout-tab-content-id="scores"
-  class="panels-layout-tab-content thread-comments-panel panels-layout-container panels-layout-vertical panels-layout-wrapper">
+  class="panels-layout-tab-content scores-list-panel panels-layout-container panels-layout-vertical panels-layout-wrapper">
+
+  <!-- Toolbar -->
+  <div id="scores-list-panel-toolbar" class="scores-list-panel-toolbar-wrapper">
+    <div class="scores-list-toolbar">
+      <!-- Sort mode -->
+      <div class="group">
+        <label for="threadsSortMode">Sort by:</label>
+        <select
+          id="threadsSortMode"
+          onChange="window.scoresListInstance.api.setSortMode(this)"
+        >
+          <option value="name">Name</option>
+          <option value="unit">Unit</option>
+          <option value="ratio">Ratio</option>
+          <option value="original">Original</option>
+          <option value="relinked">Relinked</option>
+        </select>
+      </div>
+      <!-- Sort reversed switch -->
+      <span class="filter-inline">
+        <input type="checkbox" name="sortReversed" id="sortReversed"
+          onChange="window.scoresListInstance.api.setSortReversed(this)"
+        />
+        <label for="sortReversed">Reversed</label>
+      </span>
+    </div>
+  </div>
+
+  <!-- Scores content -->
   <div class="panels-layout-content panels-layout-scrollable">
     <div class="panels-layout-container container padded">
       <div id="scores-list-container" class="scores-list-container">
@@ -8,4 +37,5 @@
       </div>
     </div>
   </div>
+
 </div>
