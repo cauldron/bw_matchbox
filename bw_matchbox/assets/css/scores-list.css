@@ -110,6 +110,13 @@
 .scores-list-container[data-sort-mode='unit'] .cell-unit {
   background: var(--primary-bg-color1);
 }
+.scores-list-container[data-sort-mode='category'] th.cell-category,
+.scores-list-container[data-sort-mode='original'] th.cell-original,
+.scores-list-container[data-sort-mode='ratio'] th.cell-ratio,
+.scores-list-container[data-sort-mode='relinked'] th.cell-relinked,
+.scores-list-container[data-sort-mode='unit'] th.cell-unit {
+  background: var(--primary-bg-color3);
+}
 
 /* Toolbar */
 .scores-list-panel-toolbar-wrapper {
