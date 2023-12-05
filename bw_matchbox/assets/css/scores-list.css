@@ -91,7 +91,6 @@
 }
 
 /* Table */
-
 .scores-list-container #scores-list-table .cell-original,
 .scores-list-container #scores-list-table .cell-ratio,
 .scores-list-container #scores-list-table .cell-relinked {
@@ -101,6 +100,15 @@
 .scores-list-container #scores-list-table .cell-unit {
   width: 3em;
   white-space: nowrap;
+}
+
+/* Sort modes highlighting */
+.scores-list-container[data-sort-mode='category'] .cell-category,
+.scores-list-container[data-sort-mode='original'] .cell-original,
+.scores-list-container[data-sort-mode='ratio'] .cell-ratio,
+.scores-list-container[data-sort-mode='relinked'] .cell-relinked,
+.scores-list-container[data-sort-mode='unit'] .cell-unit {
+  background: var(--primary-bg-color1);
 }
 
 /* Toolbar */

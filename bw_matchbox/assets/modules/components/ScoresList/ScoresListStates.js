@@ -132,6 +132,7 @@ export class ScoresListStates {
    * @param {boolean} [opts.omitUpdate]
    */
   setSortMode(sortMode, opts = {}) {
+    const scoresContainerNode = this.scoresListNodes.getScoresContainerNode();
     const { scoresListData } = this;
     /* console.log('[ScoresListStates:setSortMode]', {
      *   sortMode,
@@ -139,6 +140,8 @@ export class ScoresListStates {
      * });
      */
     scoresListData.sortMode = sortMode;
+    // Highlight sorted column...
+    scoresContainerNode.setAttribute('data-sort-mode', sortMode);
     // NOTE: Should call `sortScoresList` to update data!
     if (!opts.omitUpdate) {
       this.sortScoresList();

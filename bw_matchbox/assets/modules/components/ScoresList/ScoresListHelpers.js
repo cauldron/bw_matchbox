@@ -66,7 +66,7 @@ export function sortDataItemIterator(sortData, a, b) {
     result = sortStringsIterator(String(aVal), String(bVal));
   } else {
     // Numbers...
-    result = Number(bVal) - Number(aVal);
+    result = Number(aVal) - Number(bVal);
   }
   if (sortReversed) {
     result = /** @type {TSortResult} */ (-result);

@@ -48,15 +48,16 @@ export class ScoresListRender {
     const relinkedStr = formatNumberToString(relinked);
     const content = `
       <tr>
-        <td><div>${category}</div></td>
-        <td><div>${originalStr}</div></td>
-        <td><div>${ratioStr}</div></td>
-        <td><div>${relinkedStr}</div></td>
-        <td><div>${unit}</div></td>
+        <td class="cell-category"><div>${category}</div></td>
+        <td class="cell-original"><div>${originalStr}</div></td>
+        <td class="cell-ratio"><div>${ratioStr}</div></td>
+        <td class="cell-relinked"><div>${relinkedStr}</div></td>
+        <td class="cell-unit"><div>${unit}</div></td>
       </tr>
     `;
     return content;
   }
+
   /**
    * @param {Error} error
    */
