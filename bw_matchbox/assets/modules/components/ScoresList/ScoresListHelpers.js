@@ -9,7 +9,7 @@ export function formatNumberToString(number) {
   if (fractionDigits) {
     const absNumber = Math.abs(number);
     if (absNumber >= 0.1 && absNumber <= 10) {
-      result = number.toFixed(fractionDigits).replace(/0+$/, '');
+      result = number.toFixed(fractionDigits).replace(/0+$/, '').replace(/\.$/, '');
     } else {
       result = number.toExponential(fractionDigits);
     }
