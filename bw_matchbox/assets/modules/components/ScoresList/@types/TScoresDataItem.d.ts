@@ -5,4 +5,9 @@ interface TScoresDataItem {
   relinked: number; // 1.891434157616526
   unit: string; // 'UBP'
 }
+type TScoresDataItemKey = keyof TScoresDataItem;
 type TScoresList = TScoresDataItem[];
+interface TSortData {
+  sortMode: TSortMode;
+  sortReversed: TSortReversed;
+}
