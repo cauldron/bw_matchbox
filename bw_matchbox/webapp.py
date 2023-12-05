@@ -852,23 +852,23 @@ def to_json(lst):
     MAPPING = {"reference product": "product"}
 
     data = [
-            {
-                # TODO: To use empty list as default value for the `categories`
-                # property (it provides list otherwise)?
-                "input": {
-                    MAPPING.get(key, key): exc.input.get(key, "Unknown") for key in KEYS
-                },
-                "output": {
-                    MAPPING.get(key, key): exc.output.get(key, "Unknown")
-                    for key in KEYS
-                },
-                "product": exc.get("name"),
-                "type": exc["type"],
-                "amount": exc["amount"],
-                "id": exc._document.id,
-            }
-            for exc in lst
-        ]
+        {
+            # TODO: To use empty list as default value for the `categories`
+            # property (it provides list otherwise)?
+            "input": {
+                MAPPING.get(key, key): exc.input.get(key, "Unknown") for key in KEYS
+            },
+            "output": {
+                MAPPING.get(key, key): exc.output.get(key, "Unknown")
+                for key in KEYS
+            },
+            "product": exc.get("name"),
+            "type": exc["type"],
+            "amount": exc["amount"],
+            "id": exc._document.id,
+        }
+        for exc in lst
+    ]
     for exc in data:
         if exc['type'] == 'production':
             exc['input']['name'] = exc['product'] or exc['name']

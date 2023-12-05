@@ -1,7 +1,5 @@
 // @ts-check
 
-import { sortScoresDataIterator } from './ScoresListHelpers.js';
-
 // Import types only...
 /* eslint-disable no-unused-vars */
 import { ScoresListData } from './ScoresListData.js';
@@ -55,20 +53,21 @@ export class ScoresListApi {
   }
 
   loadData() {
-    const { scoresListData } = this;
+    const { scoresListRender, scoresListData, scoresListStates } = this;
     const { processId } = scoresListData;
     this.scoresListStates.setLoading(true);
     return this.scoresListLoader
       .loadScoresList(processId)
       .then((scoresList) => {
         // Sort by categories...
-        scoresList.sort(sortScoresDataIterator);
-        this.scoresListData.scoresList = scoresList;
+        scoresListData.scoresList = scoresList;
+        scoresListStates.sortScoresList();
+        // TODO: Sort data
         const hasData = !!scoresList.length;
         // TODO: Invoke events to re-render content?
-        this.scoresListRender.renderData();
-        this.scoresListStates.setHasData(hasData);
-        this.scoresListStates.setError(undefined);
+        scoresListRender.renderData();
+        scoresListStates.setHasData(hasData);
+        scoresListStates.setError(undefined);
         return scoresList;
       })
       .catch((error) => {
@@ -85,5 +84,27 @@ export class ScoresListApi {
       .finally(() => {
         this.scoresListStates.setLoading(false);
       });
+  }
+
+  /** @param {HTMLSelectElement} node */
+  setSortMode(node) {
+    const { scoresListStates } = this;
+    const sortMode = /** @type {TSortMode} */ (node.value);
+    /* console.log('[ScoresListApi:setSortMode]', {
+     *   sortMode,
+     * });
+     */
+    scoresListStates.setSortMode(sortMode);
+  }
+
+  /** @param {HTMLInputElement} node */
+  setSortReversed(node) {
+    const { scoresListStates } = this;
+    const sortReversed = /** @type {TSortReversed} */ (node.checked);
+    /* console.log('[ScoresListApi:setSortReversed]', {
+     *   sortReversed,
+     * });
+     */
+    scoresListStates.setSortReversed(sortReversed);
   }
 }

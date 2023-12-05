@@ -5,6 +5,7 @@
 import { ScoresListRender } from './ScoresListRender.js';
 import { ScoresListNodes } from './ScoresListNodes.js';
 import { ScoresListStates } from './ScoresListStates.js';
+import { ScoresListApi } from './ScoresListApi.js';
 /* eslint-enable no-unused-vars */
 
 import * as CommonHelpers from '../../common/CommonHelpers.js';
@@ -24,6 +25,7 @@ const initChunksList = [
   'cssStyle', // Loaded css module
   'events', // Inited events
   'dom', // Created required dom elements
+  'initSortNodesFromDom',
 ];
 
 export class ScoresListInit {
@@ -41,6 +43,8 @@ export class ScoresListInit {
   scoresListNodes;
   /** @type {ScoresListStates} */
   scoresListStates;
+  /** @type {ScoresListApi} */
+  scoresListApi;
 
   /**
    * @param {object} params
@@ -49,6 +53,7 @@ export class ScoresListInit {
    * @param {ScoresListRender} params.scoresListRender
    * @param {ScoresListNodes} params.scoresListNodes
    * @param {ScoresListStates} params.scoresListStates
+   * @param {ScoresListApi} params.scoresListApi
    */
   constructor({
     // prettier-ignore
@@ -57,6 +62,7 @@ export class ScoresListInit {
     scoresListRender,
     scoresListNodes,
     scoresListStates,
+    scoresListApi,
   }) {
     this.handlers = handlers;
     const thisId = [parentId, 'Init'].filter(Boolean).join('_');
@@ -65,6 +71,7 @@ export class ScoresListInit {
     this.scoresListRender = scoresListRender;
     this.scoresListNodes = scoresListNodes;
     this.scoresListStates = scoresListStates;
+    this.scoresListApi = scoresListApi;
   }
 
   /** Ensure the modal has initiazlized
@@ -157,13 +164,13 @@ export class ScoresListInit {
   initDomNode() {
     if (!this.initChunks.isChunkStarted('dom')) {
       this.initChunks.startChunk('dom');
-      const rootNode = this.scoresListNodes.getRootNode();
+      const scoresContainerNode = this.scoresListNodes.getScoresContainerNode();
       // Set dafault classes...
-      rootNode.classList.toggle('loading', true);
-      rootNode.classList.toggle('empty', true);
+      scoresContainerNode.classList.toggle('loading', true);
+      scoresContainerNode.classList.toggle('empty', true);
       // Create content...
       const html = this.getDomNodeContent();
-      rootNode.innerHTML = html;
+      scoresContainerNode.innerHTML = html;
       // Finish nitialization stage...
       this.initChunks.finishChunk('dom');
     }
@@ -175,6 +182,31 @@ export class ScoresListInit {
       this.initDomNode();
       this.initChunks.startChunk('events');
       this.initChunks.finishChunk('events');
+    }
+  }
+
+  initSortNodesFromDom() {
+    if (!this.initChunks.isChunkStarted('initSortNodesFromDom')) {
+      this.initChunks.startChunk('initSortNodesFromDom');
+
+      const rootNode = this.scoresListNodes.getRootNode();
+
+      // Init sort mode...
+      const sortModeNode = /** @type {HTMLSelectElement} */ (
+        rootNode.querySelector('#scoresListSortMode')
+      );
+      this.scoresListApi.setSortMode(sortModeNode);
+
+      // Init reversed sort mode...
+      const sortReversedNode = /** @type {HTMLInputElement} */ (
+        rootNode.querySelector('#scoresListSortReversed')
+      );
+      this.scoresListApi.setSortReversed(sortReversedNode);
+
+      // TODO: Check and throw errors if nodes hasn't found?
+
+      // Finish initialization stage...
+      this.initChunks.finishChunk('initSortNodesFromDom');
     }
   }
 
@@ -190,7 +222,9 @@ export class ScoresListInit {
           // Init events...
           this.initEvents();
           // Create all dom nodes...
-          return this.initComponent();
+          this.initComponent();
+          // initSortNodesFromDom
+          this.initSortNodesFromDom();
         })
         // TODO: Catch error with initFailed?
         .catch((error) => {
