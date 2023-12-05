@@ -4,7 +4,17 @@ import { fractionDigits, sortFieldsAsString } from './ScoresListConstants.js';
 
 /** @param {number} number */
 export function formatNumberToString(number) {
-  return fractionDigits ? number.toExponential(fractionDigits) : String(number);
+  /** @type {string} */
+  let result = String(number);
+  if (fractionDigits) {
+    const absNumber = Math.abs(number);
+    if (absNumber >= 0.1 && absNumber <= 10) {
+      result = number.toFixed(fractionDigits).replace(/0+$/, '');
+    } else {
+      result = number.toExponential(fractionDigits);
+    }
+  }
+  return result;
 }
 
 /**
