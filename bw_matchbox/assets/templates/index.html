@@ -146,6 +146,8 @@
       source: '{{ config.source }}',
       target: '{{ config.target }}',
       proxy: '{{ config.proxy }}',
+      // Could be null or a string
+      unallocated: {{ unallocated|tojson }}
     },
     // hasProxy: {{ 'true' if config.proxy else 'false' }}, // Example
     currentRole: '{{ config.role }}',

@@ -458,6 +458,7 @@ def index():
         config=config,
         table_data=[],
         query_string="",
+        unallocated=config.get('unallocated'),
     )
 
 
@@ -592,6 +593,7 @@ def processes():
             {
                 "details_url": flask.url_for("process_detail", id=obj.id),
                 "match_url": flask.url_for("match", source=obj.id),
+                "allocate_url": flask.url_for("allocate_process", id=obj.id),
                 "proxy_url": get_proxy_url(obj),
                 "matched": bool(obj.data.get("matched")),
                 "match_type": get_match_type_for_source_process(obj),
@@ -876,6 +878,12 @@ def to_json(lst):
     return json.dumps(data)
 
 
+@matchbox_app.route("/allocate/save/", methods=["POST"])
+@auth.login_required
+def allocate_save(id):
+    return ''
+
+
 @matchbox_app.route("/allocate/<id>", methods=["GET"])
 @auth.login_required
 def allocate_process(id):
@@ -913,6 +921,7 @@ def allocate_process(id):
         technosphere_json=to_json(technosphere),
         biosphere_json=to_json(biosphere),
     )
+
 
 
 @matchbox_app.route("/process/<id>", methods=["GET"])
