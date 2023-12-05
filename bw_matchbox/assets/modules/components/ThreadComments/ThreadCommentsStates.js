@@ -1,5 +1,8 @@
 // @ts-check
 
+import { commonNotify } from '../../common/CommonNotify.js';
+import { getErrorText } from '../../common/CommonHelpers.js';
+
 // Import types only...
 /* eslint-disable no-unused-vars */
 import { ThreadCommentsRender } from './ThreadCommentsRender.js';
@@ -18,14 +21,6 @@ export const ThreadCommentsStates = {
 
   /** @type {ThreadCommentsRender} */
   threadCommentsRender: undefined,
-  // [>* @type {ThreadCommentsNodes} <]
-  // threadCommentsNodes: undefined,
-  // [>* @type {ThreadCommentsStates} <]
-  // threadCommentsStates: undefined,
-  // [>* @type {ThreadCommentsHandlers} <]
-  // threadCommentsHandlers: undefined,
-  // [>* @type {ThreadCommentsPrepare} <]
-  // threadCommentsPrepare: undefined,
 
   /**
    * @param {boolean} isLoading
@@ -204,6 +199,10 @@ export const ThreadCommentsStates = {
    */
   setError(error) {
     ThreadCommentsData.isError = !!error;
+    const errorText = getErrorText(error);
+    if (errorText && errorText !== getErrorText(ThreadCommentsData.error)) {
+      commonNotify.showError(errorText);
+    }
     ThreadCommentsData.error = error;
     this.threadCommentsRender.renderError(error);
     this.events.emit('error', error);

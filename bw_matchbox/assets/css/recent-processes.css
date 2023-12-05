@@ -23,8 +23,9 @@
   position: relative;
   min-height: 40px; /* Ensure space for loading splash */
   display: flex;
+  flex-direction: column;
   align-items: center;
-  justify-content: stretch;
+  justify-content: center;
   gap: 16px;
 }
 .recent-processes-container.noTableau .recent-processes-list-tableau {
