@@ -26,13 +26,11 @@ export class ProcessDetailPageNodes {
     // Assumning single comments component?
     const layoutNode = this.getLayoutNode();
     return layoutNode.querySelector('#thread-comments');
-    // return document.getElementById('thread-comments');
   }
 
   getScoresListNode() {
     const layoutNode = this.getLayoutNode();
-    // return layoutNode.querySelector('#scores-list-panel');
-    return layoutNode.querySelector('#scores-list-container');
+    return layoutNode.querySelector('#scores-list-panel');
   }
   getErrorNode() {
     const rootNode = this.getRootNode();

@@ -62,8 +62,8 @@ export class ScoresListRender {
    */
   renderError(error) {
     const isError = !!error;
-    const rootNode = this.scoresListNodes.getRootNode();
-    rootNode.classList.toggle('has-error', isError);
+    const scoresContainerNode = this.scoresListNodes.getScoresContainerNode();
+    scoresContainerNode.classList.toggle('has-error', isError);
     const errorNode = this.scoresListNodes.getErrorNode();
     const errorText = error ? error.message || String(error) : '';
     // DEBUG: Show error in console

@@ -31,6 +31,8 @@ export class ScoresList {
   scoresListRender;
   /* @type {ScoresListStates} */
   scoresListStates;
+  /* @type {ScoresListApi} */
+  scoresListApi;
   /* @type {ScoresListLoader} */
   scoresListLoader;
 
@@ -72,7 +74,7 @@ export class ScoresList {
       scoresListLoader: this.scoresListLoader,
       scoresListStates: this.scoresListStates,
     });
-    this.api = scoresListApi;
+    this.scoresListApi = this.api = scoresListApi;
     const { handlers } = this;
     this.scoresListInit = new ScoresListInit({
       handlers,
@@ -80,8 +82,10 @@ export class ScoresList {
       scoresListRender: this.scoresListRender,
       scoresListNodes: this.scoresListNodes,
       scoresListStates: this.scoresListStates,
+      scoresListApi: this.scoresListApi,
     });
     this.scoresListData.events = this.events = this.scoresListInit.events();
+    // TODO: Update sort params...
     // NOTE: Expose instance reference for ui elements callbacks
     if (typeof window !== 'undefined') {
       // @ts-ignore

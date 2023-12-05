@@ -6,12 +6,12 @@
     <div class="scores-list-toolbar">
       <!-- Sort mode -->
       <div class="group">
-        <label for="threadsSortMode">Sort by:</label>
+        <label for="scoresListSortMode">Sort by:</label>
         <select
-          id="threadsSortMode"
+          id="scoresListSortMode"
           onChange="window.scoresListInstance.api.setSortMode(this)"
         >
-          <option value="name">Name</option>
+          <option value="category">Category</option>
           <option value="unit">Unit</option>
           <option value="ratio">Ratio</option>
           <option value="original">Original</option>
@@ -20,10 +20,10 @@
       </div>
       <!-- Sort reversed switch -->
       <span class="filter-inline">
-        <input type="checkbox" name="sortReversed" id="sortReversed"
+        <input type="checkbox" name="scoresListSortReversed" id="scoresListSortReversed"
           onChange="window.scoresListInstance.api.setSortReversed(this)"
         />
-        <label for="sortReversed">Reversed</label>
+        <label for="scoresListSortReversed">Reversed</label>
       </span>
     </div>
   </div>
