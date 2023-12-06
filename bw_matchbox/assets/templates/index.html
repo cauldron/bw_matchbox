@@ -153,8 +153,8 @@
       target: '{{ config.target }}',
       proxy: '{{ config.proxy }}',
       // Could be null or a string
-      unallocated: '{{ config.source }}', // DEBUG
-      // unallocated: {{ unallocated|tojson }}
+      unallocated: {{ unallocated|tojson }}
+      // unallocated: '{{ config.source }}', // DEBUG
     },
     // hasProxy: {{ 'true' if config.proxy else 'false' }}, // Example
     currentRole: '{{ config.role }}',
