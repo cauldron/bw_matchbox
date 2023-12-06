@@ -221,6 +221,7 @@ export const ProcessesList = {
    * @param {any} sharedParams
    */
   start(sharedParams) {
+    console.log('[ProcessesList:sharedParams]', sharedParams);
     // Save shared data for future use...
     ProcessesListData.sharedParams = sharedParams;
     // Fetch url query parameters...

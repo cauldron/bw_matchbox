@@ -29,10 +29,23 @@ export const ProcessesListDataRender = {
       match_type, // 'No direct match available'
       matched, // false
       product,
+      allocated,
+      allocate_url,
     } = rowData;
+    /* // DEBUG: Test different allocated statuses (random value depended on process id)
+     * const allocated = Boolean(id % 2);
+     */
     const hasMatchType = !!match_type;
     const isSource = userDb === 'source';
-    if (!isSource) {
+    const isUnallocated = userDb === 'unallocated';
+    if (isUnallocated) {
+      if (!allocated) {
+        const allocateUrl = allocate_url || '/allocate/' + id;
+        return `<span class="allocate-cell unallocated"><a href="${allocateUrl}"><i class="fa fa-arrow-right"></i> Allocate</a></span>`;
+      } else {
+        return '<span class="allocate-cell allocated"><i class="fa fa-check"></i> Allocated</span>';
+      }
+    } else if (!isSource) {
       return product || '';
     } else if (isEditor) {
       const matchUrl = '/match/' + id;
@@ -43,7 +56,7 @@ export const ProcessesListDataRender = {
       return `<a
             class="${matchClass}"
             href="${matchUrl}">
-              <i class="fa-solid ${matchIcon}"></i>
+              <i class="fa ${matchIcon}"></i>
               ${matchText}
             </a>`;
     } else if (hasProxy) {

@@ -39,6 +39,14 @@
   opacity: 0.5;
 }
 
+/* Allocated cells */
+.processes-list .processes-list-table .allocate-cell .fa {
+  opacity: 0.5;
+}
+.processes-list .processes-list-table .allocate-cell.allocated {
+  color: var(--common-success-color);
+}
+
 /* Loading state: disable some elements... */
 .processes-list > * {
   transition: all var(--common-animation-time);
@@ -76,6 +84,10 @@
   pointer-events: none;
   opacity: 0.5;
 }
+/* Show/hide unallocated db */
+.processes-list:not(.hasUnallocated) #database-option-user-db-unallocated {
+  display: none;
+}
 
 /* Table */
 .processes-list .processes-list-table {
@@ -86,8 +98,10 @@
   width: 100%;
   margin-bottom: 0;
 }
-/* Display 'Matched' or 'Reference product' title for 'matched' column respectively by the `userDb` propery. */
+/* Display 'Allocate', 'Matched' or 'Reference product' title for 'matched' column respectively by the `userDb` properly. */
+.processes-list:not(.userDb-unallocated) .processes-list-table .cell-matched-title-unallocated,
 .processes-list.userDb-source .processes-list-table .cell-matched-title-other,
+.processes-list.userDb-unallocated .processes-list-table .cell-matched-title-other,
 .processes-list:not(.userDb-source) .processes-list-table .cell-matched-title-source {
   display: none;
 }

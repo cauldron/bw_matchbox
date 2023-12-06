@@ -91,6 +91,11 @@
               <input type="radio" name="user-db" id="user-db-proxy" value="proxy" onChange="window.ProcessesList.onUserDbChange(this)">
               <label for="user-db-proxy">Proxy</label>
             </span>
+            <span class="radio-group-item" id="database-option-user-db-unallocated">
+              <input type="radio" name="user-db" id="user-db-unallocated" value="unallocated" onChange="window.ProcessesList.onUserDbChange(this)">
+              <label for="user-db-unallocated">Unallocated</label>
+            </span>
+            {# TODO: Add 'Allocate' control #}
           </span>
         </div>
         <div id="processes-list-error" class="error">
@@ -104,6 +109,7 @@
               <th class="cell-location"><div>Location</div></th>
               <th class="cell-unit"><div>Unit</div></th>
               <th class="cell-matched">
+                <div class="cell-matched-title-unallocated">Allocate</div>
                 <div class="cell-matched-title-source">Matched</div>
                 <div class="cell-matched-title-other">Reference product</div>
               </th>
@@ -147,7 +153,8 @@
       target: '{{ config.target }}',
       proxy: '{{ config.proxy }}',
       // Could be null or a string
-      unallocated: {{ unallocated|tojson }}
+      unallocated: '{{ config.source }}', // DEBUG
+      // unallocated: {{ unallocated|tojson }}
     },
     // hasProxy: {{ 'true' if config.proxy else 'false' }}, // Example
     currentRole: '{{ config.role }}',

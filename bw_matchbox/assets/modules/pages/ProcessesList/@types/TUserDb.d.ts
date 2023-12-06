@@ -1,2 +1,2 @@
-type TUserDb = 'source' | 'target' | 'proxy';
+type TUserDb = 'source' | 'target' | 'proxy' | 'unallocated';
 type TUserDbString = 'none' | TUserDb;
