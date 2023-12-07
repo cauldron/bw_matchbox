@@ -41,9 +41,15 @@ export const ProcessesListDataRender = {
     if (isUnallocated) {
       if (!allocated) {
         const allocateUrl = allocate_url || '/allocate/' + id;
-        return `<span class="allocate-cell unallocated"><a href="${allocateUrl}"><i class="fa fa-arrow-right"></i> Allocate</a></span>`;
+        return `<span class="allocate-cell unallocated">
+          <a class="button button-primary" href="${allocateUrl}">
+            <i class="fa fa-arrow-right"></i> Allocate
+          </a>
+        </span>`;
       } else {
-        return '<span class="allocate-cell allocated"><i class="fa fa-check"></i> Allocated</span>';
+        return `<span class="allocate-cell allocated">
+          <i class="fa fa-check"></i> Allocated
+        </span>`;
       }
     } else if (!isSource) {
       return product || '';
@@ -83,12 +89,17 @@ export const ProcessesListDataRender = {
       // matched, // false
     } = rowData;
     const matchContent = this.renderMatchCellContent(rowData);
+    const matchString = matchContent
+      .replace(/<[^<>]*>/g, '')
+      .replace(/"/g, '&quote;')
+      .replace(/\s\s+/, ' ')
+      .trim();
     const content = `
           <tr>
-            <td><div><a href="/process/${id || ''}">${name || ''}</a></div></td>
-            <td><div>${location || ''}</div></td>
-            <td><div>${unit || ''}</div></td>
-            <td><div>${matchContent || ''}</div></td>
+            <td class="cell-name"><div><a href="/process/${id || ''}">${name || ''}</a></div></td>
+            <td class="cell-location"><div>${location || ''}</div></td>
+            <td class="cell-unit"><div>${unit || ''}</div></td>
+            <td class="cell-matched" title="${matchString}"><div>${matchContent || ''}</div></td>
           </tr>
         `;
     return content;

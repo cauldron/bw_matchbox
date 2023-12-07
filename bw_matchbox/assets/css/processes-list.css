@@ -39,14 +39,6 @@
   opacity: 0.5;
 }
 
-/* Allocated cells */
-.processes-list .processes-list-table .allocate-cell .fa {
-  opacity: 0.5;
-}
-.processes-list .processes-list-table .allocate-cell.allocated {
-  color: var(--common-success-color);
-}
-
 /* Loading state: disable some elements... */
 .processes-list > * {
   transition: all var(--common-animation-time);
@@ -93,11 +85,6 @@
 .processes-list .processes-list-table {
   margin: 20px 0;
 }
-.processes-list .processes-list-table tr td:last-child div > .button {
-  display: block;
-  width: 100%;
-  margin-bottom: 0;
-}
 /* Display 'Allocate', 'Matched' or 'Reference product' title for 'matched' column respectively by the `userDb` properly. */
 .processes-list:not(.userDb-unallocated) .processes-list-table .cell-matched-title-unallocated,
 .processes-list.userDb-source .processes-list-table .cell-matched-title-other,
@@ -121,6 +108,26 @@
 }
 .processes-list .processes-list-table .cell-matched {
   width: var(--common-table-cell-matched-width);
+}
+.processes-list .processes-list-table .cell-matched div {
+  white-space: nowrap;
+}
+
+/* Allocated cells */
+.processes-list .processes-list-table .allocate-cell {
+  display: block;
+}
+.processes-list .processes-list-table .allocate-cell .fa {
+  opacity: 0.5;
+}
+.processes-list .processes-list-table .allocate-cell.allocated {
+  color: var(--common-success-color);
+}
+
+/* Customize table buttons */
+.processes-list .processes-list-table td .button {
+  padding: 0 15px;
+  margin: 0;
 }
 
 /* Filter controls section */

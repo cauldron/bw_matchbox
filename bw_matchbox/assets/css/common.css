@@ -19,9 +19,9 @@
   /* Default table cell widths */
   --common-table-cell-amount-width: 14em;
   --common-table-cell-name-width: auto;
-  --common-table-cell-location-width: 12em;
-  --common-table-cell-unit-width: 5em;
-  --common-table-cell-matched-width: 8em;
+  --common-table-cell-location-width: 8%; /* 4em; */
+  --common-table-cell-unit-width: 12%; /* 5em; */
+  --common-table-cell-matched-width: 15%; /* 9em; */
   /* Misc */
   --minor-border-color: #eee;
   /** Comments */
