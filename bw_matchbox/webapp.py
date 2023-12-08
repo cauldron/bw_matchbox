@@ -602,7 +602,8 @@ def processes():
                 "name": obj.name,
                 "location": obj.location,
                 "product": obj.product,
-                "unit": obj.data["unit"],
+                # ["unit"], -- Have got KeyError: 'unit' here
+                "unit": obj.data.get("unit"),
             }
             for obj in qs
         ],
@@ -738,7 +739,8 @@ def calculate_scores(database):
         lca.switch_method(ic)
         vector = (lca.characterization_matrix * inventory).sum(axis=0)
         for act in db:
-            LCIAScore.delete().where(LCIAScore.process_id == act.id, LCIAScore.method==ic[2]).execute()
+            LCIAScore.delete().where(LCIAScore.process_id == act.id,
+                                     LCIAScore.method == ic[2]).execute()
             LCIAScore.create(
                 method=ic[2],
                 process_id=act.id,
@@ -921,7 +923,6 @@ def allocate_process(id):
         technosphere_json=to_json(technosphere),
         biosphere_json=to_json(biosphere),
     )
-
 
 
 @matchbox_app.route("/process/<id>", methods=["GET"])
