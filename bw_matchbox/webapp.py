@@ -880,7 +880,7 @@ def to_json(lst):
     return json.dumps(data)
 
 
-@matchbox_app.route("/allocate/save/", methods=["POST"])
+@matchbox_app.route("/allocate/save/<id>", methods=["POST"])
 @auth.login_required
 def allocate_save(id):
     return ''

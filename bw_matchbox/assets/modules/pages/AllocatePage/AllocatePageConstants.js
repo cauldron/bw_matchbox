@@ -1,1 +1,1 @@
-export const saveApiUrl = '/allocate/save';
+export const saveApiUrl = '/allocate/save/';

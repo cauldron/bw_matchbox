@@ -464,15 +464,16 @@ export class AllocatePageAllocateModeUpdaters {
   async confirmAllocateUpdater() {
     const { updaters } = this;
     const allocationResult = this.getAllocationResultData();
+    const { process } = allocationResult;
     // TODO: Send data to the server here.
     const resultJson = JSON.stringify(allocationResult, undefined, 2);
-    const url = saveApiUrl;
-    /* console.log('[AllocatePageAllocateModeUpdaters:confirmAllocateUpdater] start', {
-     *   url,
-     *   resultJson,
-     *   allocationResult,
-     * });
-     */
+    const url = saveApiUrl + process;
+    console.log('[AllocatePageAllocateModeUpdaters:confirmAllocateUpdater] start', {
+      process,
+      url,
+      resultJson,
+      allocationResult,
+    });
     updaters.setLoading(true);
     try {
       const response = await fetch(url, {
