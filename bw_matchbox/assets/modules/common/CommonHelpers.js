@@ -78,7 +78,7 @@ export function runPromisesSequentially(promises) {
 }
 
 /** getErrorText - Return plain text for error.
- * @param {string|Error|string[]|Error[]} error - Error or errors list.
+ * @param {TErrorLikePlural} error - Error or errors list.
  * @return {string}
  */
 export function getErrorText(error) {

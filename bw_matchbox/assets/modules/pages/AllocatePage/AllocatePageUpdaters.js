@@ -2,6 +2,7 @@
 
 import * as CommonHelpers from '../../common/CommonHelpers.js';
 import { commonIndicators } from '../../common/CommonIndicators.js';
+import { commonNotify } from '../../common/CommonNotify.js';
 
 import { AllocatePageGroupEditor } from './AllocatePageGroupEditor.js';
 
@@ -65,6 +66,10 @@ export class AllocatePageUpdaters {
    */
   setError(id, error) {
     const { state, render } = this;
+    const errorText = CommonHelpers.getErrorText(error);
+    if (errorText !== CommonHelpers.getErrorText(state.errors[id])) {
+      commonNotify.showError(errorText);
+    }
     state.errors[id] = error;
     render.renderErrors();
   }
