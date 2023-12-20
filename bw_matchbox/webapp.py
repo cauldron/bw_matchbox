@@ -596,6 +596,7 @@ def processes():
                 "allocate_url": flask.url_for("allocate_process", id=obj.id),
                 "proxy_url": get_proxy_url(obj),
                 "matched": bool(obj.data.get("matched")),
+                "allocated": bool(obj.data.get("allocated")),
                 "match_type": get_match_type_for_source_process(obj),
                 "waitlist": bool(obj.data.get("waitlist")),
                 "id": obj.id,
