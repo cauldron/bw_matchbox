@@ -23,6 +23,7 @@ from .scores import LCIAScore
 from .export import export_database_to_csv
 from .matching import MATCH_TYPE_ABBREVIATIONS, get_match_types
 from .utils import name_close_enough, normalize_name, similar_location
+from .datapackages import refresh_proxy_database_if_needed, datapackage_for_source_database
 
 BASE_DIR = Path(__file__).resolve().parent
 DATA_DIR = BASE_DIR / "data"
@@ -758,6 +759,10 @@ def calculate_scores(database):
 def get_scores(id):
     config = get_config()
 
+    node = bd.get_node(id=int(id))
+
+    refresh_proxy_database_if_needed(bd.Database(config["source"]))
+
     methods = sorted([
         x
         for x in bd.methods
@@ -765,11 +770,28 @@ def get_scores(id):
         and x[1] != 'total'
     ])
 
+    demand, data_objs, _ = bd.prepare_lca_inputs({node: 1}, methods[0])
+    data_objs.append(datapackage_for_source_database(bd.Database(config["source"])))
+    _, data_objs_proxy, _ = bd.prepare_lca_inputs({bd.Database(config["proxy"]).random(): 1})
+    data_objs.extend(data_objs_proxy)
+
+    lca_o = bc.LCA({node: 1}, methods[0])
+    lca_o.lci()
+    lca_o.lcia()
+
+    lca_p = bc.LCA(demand, data_objs=data_objs)
+    lca_p.lci()
+    lca_p.lcia()
+
     results = []
 
     for ic in methods:
-        a = random.random()
-        b = 2 * random.random()
+        lca_o.switch_method(ic)
+        lca_p.switch_method(ic)
+
+        a = (lca_o.characterization_matrix * lca_o.inventory).sum()
+        b = (lca_p.characterization_matrix * lca_p.inventory).sum()
+
         results.append({
             'category': ic[2],
             'original': a,
@@ -777,13 +799,6 @@ def get_scores(id):
             'ratio': a / b,
             'unit': bd.methods[ic].get('unit', '(Unknown)')
         })
-
-    # try:
-    #     node = bd.get_node(id=id)
-    # except bd.errors.UnknownObject:
-    #     return flask.redirect(flask.url_for("index"))
-
-    # scores = LCIAScore.select().where(LCIAScore.process_id == int(id))
 
     return flask.jsonify(results)
 
