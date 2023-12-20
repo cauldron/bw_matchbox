@@ -1,17 +1,23 @@
 // @ts-check
 
-import { commonModal } from '../../common/CommonModal.js';
+/* // NOTE: Common modal used to display demo data save result
+ * import { commonModal } from '../../common/CommonModal.js';
+ */
 
-import * as AllocatePageHelpers from './AllocatePageHelpers.js';
+import { commonNotify } from '../../common/CommonNotify.js';
 
 // Import only types...
 /* eslint-disable no-unused-vars */
+
 import { AllocatePageNodes } from './AllocatePageNodes.js';
 import { AllocatePageState } from './AllocatePageState.js';
 import { AllocatePageRender } from './AllocatePageRender.js';
 import { AllocatePageRenderAllocate } from './AllocatePageRenderAllocate.js';
 import { AllocatePageUpdaters } from './AllocatePageUpdaters.js';
 /* eslint-enable no-unused-vars */
+
+import { saveApiUrl } from './AllocatePageConstants.js';
+import * as AllocatePageHelpers from './AllocatePageHelpers.js';
 
 /**
  * @class AllocatePageAllocateModeUpdaters
@@ -455,41 +461,81 @@ export class AllocatePageAllocateModeUpdaters {
   }
 
   // Final action. Prepare and send data to the server...
-  confirmAllocateUpdater() {
+  async confirmAllocateUpdater() {
     const { updaters } = this;
     const allocationResult = this.getAllocationResultData();
+    const { process } = allocationResult;
     // TODO: Send data to the server here.
     const resultJson = JSON.stringify(allocationResult, undefined, 2);
-    const resultStr = resultJson.replace(/"/g, "'").replace(/'([^':]+)':/g, '$1:');
-    /* console.log('[AllocatePageAllocateModeUpdaters:confirmAllocateUpdater]', {
-     *   resultStr,
-     *   allocationResult,
+    const url = saveApiUrl + process;
+    console.log('[AllocatePageAllocateModeUpdaters:confirmAllocateUpdater] start', {
+      process,
+      url,
+      resultJson,
+      allocationResult,
+    });
+    updaters.setLoading(true);
+    try {
+      const response = await fetch(url, {
+        method: 'POST', // *GET, POST, PUT, DELETE, etc.
+        mode: 'cors', // no-cors, *cors, same-origin
+        cache: 'no-cache', // *default, no-cache, reload, force-cache, only-if-cached
+        credentials: 'same-origin', // include, *same-origin, omit
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        redirect: 'follow', // manual, *follow, error
+        referrerPolicy: 'no-referrer', // no-referrer, *no-referrer-when-downgrade, origin, origin-when-cross-origin, same-origin, strict-origin, strict-origin-when-cross-origin, unsafe-url
+        body: resultJson, // body data type must match "Content-Type" header
+      });
+      // DEBUG: Keep it until the save procedure hasn't checked
+      console.log('[AllocatePageAllocateModeUpdaters:confirmAllocateUpdater] done', {
+        response,
+        url,
+        resultJson,
+        allocationResult,
+      });
+      commonNotify.showSuccess('Allocation data has succesfully saved');
+    } catch (error) {
+      // eslint-disable-next-line no-console
+      console.error('[AllocatePageAllocateModeUpdaters:confirmAllocateUpdater]', error, {
+        error,
+        url,
+        resultJson,
+        allocationResult,
+      });
+      // eslint-disable-next-line no-debugger
+      debugger;
+      this.updaters.setError('recent', error);
+    }
+    updaters.setLoading(false);
+    /* // OLD_CODE
+     * const resultStr = resultJson.replace(/"/g, "'").replace(/'([^':]+)':/g, '$1:');
+     * const previewContent = `
+     *   <h4>These results will be sent to the server:</h4>
+     *   <pre>${resultStr}
+     *   </pre>
+     * `;
+     * commonModal.ensureInit().then(() => {
+     *   // TODO: Send data to the server
+     *   commonModal
+     *     .setModalContentId('show-allocation-result')
+     *     .setTitle('Allocation result preview')
+     *     .setModalWindowOptions({
+     *       // autoHeight: true,
+     *       width: 'md',
+     *     })
+     *     .setModalContentOptions({
+     *       // Scrollings and paddings will be set for inner components particaluary.
+     *       scrollable: true,
+     *       padded: true,
+     *     })
+     *     .setContent(previewContent)
+     *     .onHide(() => {
+     *       updaters.setLoading(false);
+     *     })
+     *     .showModal();
      * });
      */
-    const previewContent = `
-      <h4>These results will be sent to the server:</h4>
-      <pre>${resultStr}
-      </pre>
-    `;
-    updaters.setLoading(true);
-    commonModal.ensureInit().then(() => {
-      commonModal
-        .setModalContentId('show-allocation-result')
-        .setTitle('Allocation result preview')
-        .setModalWindowOptions({
-          // autoHeight: true,
-          width: 'md',
-        })
-        .setModalContentOptions({
-          // Scrollings and paddings will be set for inner components particaluary.
-          scrollable: true,
-          padded: true,
-        })
-        .setContent(previewContent)
-        .onHide(() => {
-          updaters.setLoading(false);
-        })
-        .showModal();
-    });
   }
 }

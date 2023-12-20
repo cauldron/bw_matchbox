@@ -11,4 +11,7 @@ interface TProcess {
   proxy_url?: string; // null
   unit: string; // 'USD'
   waitlist: boolean; // false
+  // Issue #156: Unallocated properties...
+  allocated?: boolean; // ??? -- Can't see it in the server data (in the method `processes` of `webapp.py`)
+  allocate_url?: string; // 'allocate/149'
 }

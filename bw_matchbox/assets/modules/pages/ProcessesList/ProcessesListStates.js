@@ -318,8 +318,20 @@ export const ProcessesListStates = {
     return elem && elem.value;
   },
 
+  updateContainerClasses() {
+    const { sharedParams } = ProcessesListData;
+    const { databases } = sharedParams;
+    const { unallocated } = databases;
+    const hasUnallocated = !!unallocated;
+    const rootNode = ProcessesListNodes.getRootNode();
+    rootNode.classList.toggle('hasUnallocated', hasUnallocated);
+  },
+
   start() {
     // Update all the dynamic parameters...
+
+    // Set unallocated state...
+    this.updateContainerClasses();
 
     // Order by...
     this.updateDomCheckedOrderBy(undefined);

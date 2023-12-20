@@ -29,10 +29,29 @@ export const ProcessesListDataRender = {
       match_type, // 'No direct match available'
       matched, // false
       product,
+      allocated,
+      allocate_url,
     } = rowData;
+    /* // DEBUG: Test different allocated statuses (random value depended on process id)
+     * const allocated = Boolean(id % 2);
+     */
     const hasMatchType = !!match_type;
     const isSource = userDb === 'source';
-    if (!isSource) {
+    const isUnallocated = userDb === 'unallocated';
+    if (isUnallocated) {
+      if (!allocated) {
+        const allocateUrl = allocate_url || '/allocate/' + id;
+        return `<span class="allocate-cell unallocated">
+          <a class="button button-primary" href="${allocateUrl}">
+            <i class="fa fa-arrow-right"></i> Allocate
+          </a>
+        </span>`;
+      } else {
+        return `<span class="allocate-cell allocated">
+          <i class="fa fa-check"></i> Allocated
+        </span>`;
+      }
+    } else if (!isSource) {
       return product || '';
     } else if (isEditor) {
       const matchUrl = '/match/' + id;
@@ -43,7 +62,7 @@ export const ProcessesListDataRender = {
       return `<a
             class="${matchClass}"
             href="${matchUrl}">
-              <i class="fa-solid ${matchIcon}"></i>
+              <i class="fa ${matchIcon}"></i>
               ${matchText}
             </a>`;
     } else if (hasProxy) {
@@ -70,12 +89,17 @@ export const ProcessesListDataRender = {
       // matched, // false
     } = rowData;
     const matchContent = this.renderMatchCellContent(rowData);
+    const matchString = matchContent
+      .replace(/<[^<>]*>/g, '')
+      .replace(/"/g, '&quote;')
+      .replace(/\s\s+/, ' ')
+      .trim();
     const content = `
           <tr>
-            <td><div><a href="/process/${id || ''}">${name || ''}</a></div></td>
-            <td><div>${location || ''}</div></td>
-            <td><div>${unit || ''}</div></td>
-            <td><div>${matchContent || ''}</div></td>
+            <td class="cell-name"><div><a href="/process/${id || ''}">${name || ''}</a></div></td>
+            <td class="cell-location"><div>${location || ''}</div></td>
+            <td class="cell-unit"><div>${unit || ''}</div></td>
+            <td class="cell-matched" title="${matchString}"><div>${matchContent || ''}</div></td>
           </tr>
         `;
     return content;
